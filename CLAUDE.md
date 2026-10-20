@@ -174,7 +174,7 @@ Done (2026-10-06):
   dark bg, cadre switches instead of zoom, zoom only inside a tile ≤1.08 (`src/enta/Meet.tsx`, cue `shot`). 13 QA boards
   `src/enta/BoardQA.tsx`, vector stickers `src/enta/vstick.tsx`. Render = 5-min muted chunks + ffmpeg audio (`work/scripts/render.sh`),
   30 fps proxy `source30.mp4` + PNG grain (SVG noise made it 14 h). Recipe docs/22 "حاسبات ep01", scripts `tools/recipes/enta_cs01/`.
-  `output/review_01.mp4` -> waiting for Aly's review.
+  Aly reviewed the review_01 chunks -> `output/review_02.mp4` (full, with sound, compressed 540 MB) -> waiting for his review.
 - ⚠ Remotion copies public/ (~2 GB) into Temp on EVERY bundle/still → C: hit 0 bytes twice. Use `stills_cli.sh`
   (one bundle in out/bundle), set TEMP/TMP to `motion-library/out/tmp` for renders and DELETE that folder after (one render left 13 GB).
 - ⚠ E: ~17 GB free. Premiere 2020 alpha format still untested by Aly (`_tests/premiere-test`).
