@@ -16,6 +16,7 @@ plan (written by Claude, small):
  "keep": [[13.6, 20.4], [33.0, 37.1]],   # optional: exact source ranges (s) in order -> overrides range/cut
  "append": [{"video": "input/cta.mp4", "transcript": "work/cta/transcript.json", "keep": [[1.6, 5.3]], "fit": "cover"}],
                                     # fit "cover" = clip already in the output aspect (vertical phone CTA in a 9:16 short)
+ "meet": {"G": [x, y, w, h], "A": [...], "left": "G"},   # Google Meet recording: webcam tiles (source px), layouts = "shot" cues {m: two|G|A|GP|AP}
  "cropX": 0.4, "vShift": 0.15,      # 9:16 only: speaker x in the 16:9 footage; lift footage so the face sits higher
  "roto": [{"start": 14.4, "file": "projects/<code>/roto_14.4.webm"}], "rotoScale": 0.62, "gShift": 0.3, "capBottom": 0.2,
                                     # 9:16 roto mode: speaker cut out (matte.py --fps 30) over a motion background
@@ -88,7 +89,7 @@ def render_overlays(code, cues, edit_json, out_dir, fps=30, vertical=False):
     last = round(d['duration'] * fps) - 1
     for layer, jobs in (('motion', [{'out': str((out_dir / cue_name(code, i, c)).resolve()), 'a': round(c['at'] * fps),
                                      'b': min(round((c['at'] + c['dur']) * fps) - 1, last)}
-                                    for i, c in enumerate(cues) if c['t'] not in ('zoom', 'sfx')]),
+                                    for i, c in enumerate(cues) if c['t'] not in ('zoom', 'sfx', 'shot')]),
                         ('captions', [{'out': str((out_dir / f'{code}_captions.mov').resolve()), 'a': 0, 'b': last}])):
         props = edit_json.with_name(f'edit_{layer}.json'); jf = edit_json.with_name(f'jobs_{layer}.json')
         json.dump({**d, 'layer': layer}, open(props, 'w', encoding='utf8'), ensure_ascii=False)
@@ -206,7 +207,7 @@ def build(proj: Path, render=False):
 
     # No two overlay graphics at once: a graphic ends when the next one starts (zoom/icon_pop may overlap).
     cues.sort(key=lambda c: c['at'])
-    solo = [c for c in cues if c['t'] not in ('zoom', 'icon_pop', 'green_clip', 'sfx', 'enta_glitch', 'enta_stickers', 'enta_leak', 'enta_bubble', 'enta_note')]
+    solo = [c for c in cues if c['t'] not in ('zoom', 'shot', 'icon_pop', 'green_clip', 'sfx', 'enta_glitch', 'enta_stickers', 'enta_leak', 'enta_bubble', 'enta_note')]
     for a, b in zip(solo, solo[1:]):
         if a['at'] + a['dur'] > b['at'] - 0.1:
             a['dur'] = max(0.8, round(b['at'] - 0.1 - a['at'], 3))
@@ -231,7 +232,7 @@ def build(proj: Path, render=False):
             s['pub'] = f'projects/{code}/{p.name}'
     edit = {'source': f'projects/{code}/{src_pub.name}', 'fps': fps, 'duration': duration, 'layer': 'all',
             'pack': plan.get('pack', 'charcoal'), 'cropX': plan.get('cropX', 0.5), 'vShift': plan.get('vShift', 0), 'roto': plan.get('roto', []), 'rotoScale': plan.get('rotoScale', 0.62),
-            'gShift': plan.get('gShift', 0), 'capBottom': plan.get('capBottom', -1), 'captions': plan.get('captions', True),
+            'gShift': plan.get('gShift', 0), 'capBottom': plan.get('capBottom', -1), 'captions': plan.get('captions', True), 'meet': plan.get('meet'),
             'segments': [{'src': round(s['a'], 3), 'tl': round(s['tl'], 3), 'len': round(s['b'] - s['a'], 3),
                           **({'source': s['pub']} if 'pub' in s else {}), **({'fit': s['fit']} if s.get('fit') else {})} for s in segs],
             'words': [{k: w[k] for k in ('w', 'start', 'end')} for w in words], 'cues': cues}
@@ -325,7 +326,7 @@ def write_xml(video, segs, cues, fps, duration, path, code, vertical=False):
         return (f'<clipitem id="{cid}"><name>{name}</name>{rate}<start>{st}</start><end>{en}</end><in>0</in><out>{en - st}</out>'
                 f'<file id="f_{cid}"><name>{name}</name><pathurl>{escape(url(p))}</pathurl>{rate}</file></clipitem>')
     v2 = [ov(f'm{i}', cue_name(code, i, c), f(c['at']), min(f(c['at'] + c['dur']), f(duration)))
-          for i, c in enumerate(cues) if c['t'] not in ('zoom', 'sfx')]
+          for i, c in enumerate(cues) if c['t'] not in ('zoom', 'sfx', 'shot')]
     v3 = [ov('cap', f'{code}_captions.mov', 0, f(duration))]
     xml = ('<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE xmeml>\n'
            f'<xmeml version="4"><sequence id="seq"><name>{escape(code)}_{path.stem}</name>'

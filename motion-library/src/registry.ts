@@ -30,6 +30,7 @@ import {EntaStickers, entaStickersSchema, EntaBubble, entaBubbleSchema, EntaName
 import {EntaPipeline, entaPipelineSchema, EntaClash, entaClashSchema, EntaDeadEnd, entaDeadEndSchema} from './enta/Board';
 import {EntaRender, entaRenderSchema, EntaMerge, entaMergeSchema} from './enta/Board2';
 import {EntaFlavours, entaFlavoursSchema, EntaDrawer, entaDrawerSchema} from './enta/Board3';
+import {QaWhat, qaWhatSchema, QaReq, qaReqSchema, QaEyes, qaEyesSchema, QaTypes, qaTypesSchema, QaLogin, qaLoginSchema, QaApi, qaApiSchema, QaPerf, qaPerfSchema, QaRoad, qaRoadSchema, QaJoker, qaJokerSchema, QaIstqb, qaIstqbSchema, QaAi, qaAiSchema, QaProd, qaProdSchema, QaDemand, qaDemandSchema} from './enta/BoardQA';
 
 // Single list of templates: id (= catalog id) -> component, schema, preview length, has 9:16.
 export type Entry = {C: React.FC<any>; schema: z.ZodTypeAny; frames: number; v: boolean};
@@ -74,4 +75,17 @@ export const registry: Record<string, Entry> = {
   enta_merge: {C: EntaMerge, schema: entaMergeSchema, frames: 220, v: false},
   enta_flavours: {C: EntaFlavours, schema: entaFlavoursSchema, frames: 160, v: false},
   enta_drawer: {C: EntaDrawer, schema: entaDrawerSchema, frames: 240, v: false},
+  qa_what: {C: QaWhat, schema: qaWhatSchema, frames: 240, v: false},
+  qa_req: {C: QaReq, schema: qaReqSchema, frames: 240, v: false},
+  qa_eyes: {C: QaEyes, schema: qaEyesSchema, frames: 240, v: false},
+  qa_types: {C: QaTypes, schema: qaTypesSchema, frames: 240, v: false},
+  qa_login: {C: QaLogin, schema: qaLoginSchema, frames: 420, v: false},
+  qa_api: {C: QaApi, schema: qaApiSchema, frames: 260, v: false},
+  qa_perf: {C: QaPerf, schema: qaPerfSchema, frames: 200, v: false},
+  qa_road: {C: QaRoad, schema: qaRoadSchema, frames: 300, v: false},
+  qa_joker: {C: QaJoker, schema: qaJokerSchema, frames: 300, v: false},
+  qa_istqb: {C: QaIstqb, schema: qaIstqbSchema, frames: 300, v: false},
+  qa_ai: {C: QaAi, schema: qaAiSchema, frames: 300, v: false},
+  qa_prod: {C: QaProd, schema: qaProdSchema, frames: 260, v: false},
+  qa_demand: {C: QaDemand, schema: qaDemandSchema, frames: 200, v: false},
 };

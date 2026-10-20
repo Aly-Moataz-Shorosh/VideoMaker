@@ -1,5 +1,6 @@
 import React from 'react';
 import {Img, staticFile} from 'remotion';
+import {VEC, VSticker} from './vstick';
 
 // Show "انت بتشتغل ايه" kit (docs/22): Aly's styles.png look — flat hand-drawn stickers with a white outline,
 // muted orange / blue / olive / mustard on dark, blue paper speech bubbles, cut-out photos with a white border,
@@ -11,7 +12,8 @@ export const E = {
 export const accentOf = (a: string) => (E as Record<string, string>)[a] ?? E.orange;
 
 // Sticker from Aly's sheet. size = width px.
-export const Sticker: React.FC<{name: string; size: number; style?: React.CSSProperties}> = ({name, size, style}) => (
+// Vector version first (sharp at any size, 2026-10-20); PNG crop only for names without one.
+export const Sticker: React.FC<{name: string; size: number; style?: React.CSSProperties}> = ({name, size, style}) => VEC[name] ? <VSticker name={name} size={size} style={style} /> : (
   <Img src={staticFile(`enta/${name}.png`)} style={{width: size, height: 'auto', filter: 'drop-shadow(0 6px 10px rgba(0,0,0,.45))', ...style}} />
 );
 

@@ -4,6 +4,7 @@ import {z} from 'zod';
 import {Captions} from './templates/Captions';
 import {registry} from './registry';
 import {applyPack, C} from './blocks/theme';
+import {MeetStage} from './enta/Meet';
 
 // Whole-video assembly. edit.json is produced by tools/build_edit.py (all times in timeline seconds).
 // layer: 'all' = review video (footage + motion + captions); 'captions' / 'motion' = alpha tracks only.
@@ -105,11 +106,13 @@ export const editSchema = z.object({
   capBottom: z.number().default(-1), // captions bottom (fraction); -1 = default
   captions: z.boolean().default(true), // Aly 2026-10-13: captions only in reels/shorts, OFF in long videos (Whisper mistakes)
   segments: z.array(z.object({src: z.number(), tl: z.number(), len: z.number(), source: z.string().optional(), fit: z.string().optional()})).default([]), // source: appended clip (CTA); fit 'cover' = clip already in the output aspect
+  // Online interview (Google Meet recording): webcam tiles cut out of the screen recording, layouts via 'shot' cues (enta/Meet.tsx)
+  meet: z.object({G: z.array(z.number()), A: z.array(z.number()), left: z.enum(['G', 'A'])}).nullable().default(null),
   words: z.array(z.object({w: z.string(), start: z.number(), end: z.number()})).default([]),
   cues: z.array(z.object({t: z.string(), at: z.number(), dur: z.number(), props: z.record(z.string(), z.any())})).default([]),
 });
 
-export const Edit: React.FC<z.infer<typeof editSchema>> = ({source, segments, words, cues, layer, pack, cropX, vShift, roto, rotoScale, gShift, capBottom, captions}) => {
+export const Edit: React.FC<z.infer<typeof editSchema>> = ({source, segments, words, cues, layer, pack, cropX, vShift, roto, rotoScale, gShift, capBottom, captions, meet}) => {
   applyPack(pack);
   const {fps, width, height} = useVideoConfig();
   const frame = useCurrentFrame();
@@ -149,7 +152,8 @@ export const Edit: React.FC<z.infer<typeof editSchema>> = ({source, segments, wo
           })}
         </AbsoluteFill>
       ) : null}
-      {layer === 'all' && !useRoto ? (
+      {layer === 'all' && meet && !vertical ? <MeetStage source={source} tiles={meet} cues={cues as Cue[]} segments={segments} /> : null}
+      {layer === 'all' && !useRoto && !(meet && !vertical) ? (
         <AbsoluteFill style={vertical && !segments.some((s) => s.fit === 'cover' && frame >= f(s.tl) && frame < f(s.tl + s.len)) ? splitStyle(splitAmount(frame, fps, cues as Cue[]), height) : {}}>
         <AbsoluteFill style={camera(frame, fps, cues as Cue[])}>
           {segments.map((s, i) => (
