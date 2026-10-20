@@ -121,7 +121,7 @@ export const MeetPip: React.FC<{source: string; tiles: MeetTiles; cues: Cue[]}> 
   const S = 250;
   const face = (cc: Cue, op: number) => {
     const who = cc.props.who as 'G' | 'A', t = tiles[who];
-    const sc = (S * 1.9) / t[3]; // tile height -> ~1.9 circle: a head-and-shoulders crop
+    const sc = (S * 1.15) / t[3]; // tile height ~1.15 circle: room around the head (Aly: "not so zoomed on the face")
     const fx = (cc.props.zx ?? 0.5) * t[2], fy = (cc.props.zy ?? 0.4) * t[3];
     return (
       <div key={who + cc.at} style={{position: 'absolute', inset: 0, opacity: op, overflow: 'hidden', borderRadius: '50%'}}>
