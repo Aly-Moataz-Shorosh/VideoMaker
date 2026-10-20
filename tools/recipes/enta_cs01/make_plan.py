@@ -114,7 +114,7 @@ note(T('S002', 'الكفاح'), 'صاحبي *وزميل شغل* من سنين', 
 a = T('S003', 'Software')
 term(a, T('S004', 'Testing') - a - 0.1, 'Software *Engineer*', 'مهندس بيصمم ويبني *البرامج*', sticker='brace_l', accent='olive', w='A')
 a = T('S004', 'Testing')
-term(a, T('S006', 'فأنا') - a + 1.5, '*Testing* · *QA* · *QC*', 'أسامي بتتقال في السوق على *نفس المجال*', 'ملحوظة: فعليًا *QA غير QC*… كل واحد *شغلانة لوحده*',
+term(a, T('S006', 'فأنا') - a + 1.5, '*Testing* · *QA* · *QC*', 'أسامي بتتقال في السوق على *نفس المجال*', 'ملحوظة: *QA* مجال و*QC* مجال تاني… وإحنا هنا بنتكلم عن الـ*QC*',
      exAt=T('S005', 'QA'), en='Software Testing', sticker='bug', accent='blue', paper='blue', w='A')
 note(S('S006') + 0.3, 'وعلي كمان *Tester*', sticker='bug', accent='mustard', d=3.5)
 stick(T('S007', 'اشتغلنا'), [('brace_l', 0.44, 0.1, 90, 0, -8), ('brace_r', 0.56, 0.1, 90, 0.12, 8)], 1.8)
@@ -305,7 +305,7 @@ note(T('S570', 'نريزست'), 'مش هنرجع لعصر *ما قبل الـAI*
 a = T('S581', 'لينكات')
 photos(a, E('S586') - a + 0.3, [dict(src='logos/linkedin_c.svg', x=0.7, w=190, h=190, rot=-4, caption='*aimanismail07*'),
                                   dict(src='logos/instagram.svg', x=0.88, w=190, h=190, rot=4, at=10, caption='*@aiman7407*')], w='A')
-note(T('S584', 'لينك'), 'اللينك *في الوصف*', accent='blue', d=3.4)
+note(T('S584', 'لينك'), 'لينكات أيمن (LinkedIn و Instagram) *في الوصف*', accent='blue', d=5.0)
 a = S('S587')
 stick(a, [('star_y', 0.6, 0.1, 90, 0, 0), ('spark_o', 0.7, 0.16, 80, 0.15, 0), ('star8_b', 0.8, 0.1, 80, 0.3, 0)], 2.0)
 add('enta_leak', a, 2.0, kind='leak_warm', x=0.5, y=0.3)
