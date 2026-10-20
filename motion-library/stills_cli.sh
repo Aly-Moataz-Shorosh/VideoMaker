@@ -11,6 +11,7 @@ tmp=$(mktemp -d -p out); i=0
 mkdir -p "$tmp/t"; export TEMP="$(cygpath -w "$PWD/$tmp/t")" TMP="$(cygpath -w "$PWD/$tmp/t")"
 for f in "$@"; do
   npx remotion still $B "$comp" "$tmp/$(printf %02d $i).png" --frame=$f --scale=0.4 --timeout=240000 --props="$props" > "$tmp/log.txt" 2>&1 || { echo "fail $f"; tail -3 "$tmp/log.txt"; }
+  rm -rf "$tmp/t"; mkdir -p "$tmp/t"   # every still copies public/ (incl. a 2 GB source) into TEMP: 11 stills filled E: on 2026-10-20
   i=$((i+1))
 done
 # montage with PIL (2026-10-14: the ffmpeg tile filter dropped the first frames of big sheets)

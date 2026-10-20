@@ -22,9 +22,9 @@ const layout = (m: string, who: 'G' | 'A', ar: number, left: boolean, W: number,
   const ty = H * 0.44 - tw / ar / 2;
   const two = left ? r(tw - 12, 40, ty) : r(tw - 12, W / 2 + 12, ty);
   if (m === 'two') return two;
-  const big = 1480, side = 1060;
+  const big = 1480, side = 1180;
   if (m === who) return r(big, (W - big) / 2, H * 0.44 - big / ar / 2);
-  if (m === who + 'P') return r(side, 70, H * 0.47 - side / ar / 2);
+  if (m === who + 'P') return r(side, 50, H * 0.5 - side / ar / 2);
   // the other person leaves towards his own side of the screen
   return {...two, x: left ? -two.w - 60 : W + 60, o: 0};
 };

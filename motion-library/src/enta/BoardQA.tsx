@@ -1,5 +1,5 @@
 import React from 'react';
-import {Img, interpolate, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {z} from 'zod';
 import {Base} from '../blocks/Base';
 import {enter, lerp} from '../blocks/anim';
@@ -76,7 +76,7 @@ export const QaWhat: React.FC<z.infer<typeof qaWhatSchema>> = ({title, appAt, bu
   const bugs = [[-170, -60, 0], [120, 40, 14], [-40, 110, 28]];
   return (
     <Base previewBg={previewBg}>
-      <Backdrop>
+      <Backdrop><AbsoluteFill style={{direction: 'rtl'}}>
         <Title text={title} />
         {/* the software: laptop + phone + web */}
         <Pop x={W / 2} y={H * 0.52} at={appAt}>
@@ -125,7 +125,7 @@ export const QaWhat: React.FC<z.infer<typeof qaWhatSchema>> = ({title, appAt, bu
             ) : null)}
           </Paper>
         </Pop>
-      </Backdrop>
+      </AbsoluteFill></Backdrop>
     </Base>
   );
 };
@@ -150,9 +150,9 @@ export const QaReq: React.FC<z.infer<typeof qaReqSchema>> = ({title, req, people
   const n = people.length || 1;
   return (
     <Base previewBg={previewBg}>
-      <Backdrop>
+      <Backdrop><AbsoluteFill style={{direction: 'rtl'}}>
         <Title text={title} />
-        <Pop x={W / 2} y={260} at={6}>
+        <Pop x={W / 2} y={300} at={6}>
           <Paper w={560}><div style={{fontSize: 52, fontWeight: 900, textAlign: 'center'}}><Hi text={req} color={E.orange} /></div></Paper>
         </Pop>
         {people.map((p, i) => {
@@ -180,7 +180,7 @@ export const QaReq: React.FC<z.infer<typeof qaReqSchema>> = ({title, req, people
             <Emo n="bug" s={100} /><Chip text={bugText} bg={E.orange} size={46} />
           </div>
         </Pop>
-      </Backdrop>
+      </AbsoluteFill></Backdrop>
     </Base>
   );
 };
@@ -193,49 +193,48 @@ export const qaEyesSchema = z.object({
   anglesAt: z.number().default(160), anglesText: z.string().default('أكتر من *زاوية*'),
   previewBg: z.string().default(''),
 });
-// cube faces drawn as SVG (no WebGL needed): an isometric cube whose visible faces change while it "turns"
+// cube drawn as SVG (no WebGL): a real 3D box seen a little from above that turns around its vertical axis.
+// Face 0 = ✓ (the side the developer looks at); the other faces = bugs the tester finds by turning it.
 const IsoCube: React.FC<{t: number; s: number; bugs: boolean}> = ({t, s, bugs}) => {
-  // t = rotation turns (0 = front only). Faces: front ✓; the others hide bugs.
-  const a = t * Math.PI / 2;
-  const faces = [0, 1, 2, 3].map((k) => {
-    const ang = a + k * Math.PI / 2, c = Math.cos(ang), sn = Math.sin(ang);
-    return {k, c, sn};
-  }).filter((f) => f.c > 0.02);
-  const h = s * 0.7;
+  const a = t * Math.PI / 2 - Math.PI / 4 + 0.12;     // t = 0 -> face 0 almost frontal, a hint of the next side
+  const r = s * 0.62, tilt = 0.32, h = s * 0.9, top = -h / 2;
+  const V = [0, 1, 2, 3].map((j) => { const ph = a + Math.PI / 4 + j * Math.PI / 2; return {x: r * Math.sin(ph), z: r * Math.cos(ph)}; });
+  const yT = (v: {z: number}) => top + v.z * tilt;      // nearer (z > 0) = lower on screen
+  const faces = [0, 1, 2, 3].map((k) => ({k, p: V[k], q: V[(k + 1) % 4], z: (V[k].z + V[(k + 1) % 4].z) / 2}))
+    .filter((f) => f.z > 0.5).sort((x, y) => x.z - y.z);
   return (
-    <svg width={s * 2} height={s * 1.9} viewBox={`${-s} ${-s * 0.75} ${s * 2} ${s * 1.9}`}>
-      {/* top */}
-      <path d={`M${-s * 0.72} ${-h * 0.42} L0 ${-h * 0.42 - s * 0.32} L${s * 0.72} ${-h * 0.42} L0 ${-h * 0.42 + s * 0.32}Z`} fill={E.paper} stroke={E.ink} strokeWidth={5} />
+    <svg width={s * 1.8} height={s * 1.7} viewBox={`${-s * 0.9} ${-s * 0.85} ${s * 1.8} ${s * 1.7}`}>
+      <ellipse cx={0} cy={h / 2 + r * tilt + 18} rx={r * 1.1} ry={r * 0.22} fill="rgba(0,0,0,.35)" />
       {faces.map((f) => {
-        const x0 = Math.sin(a + f.k * Math.PI / 2 - Math.PI / 4) * s * 0.72 * 1.0, x1 = Math.sin(a + f.k * Math.PI / 2 + Math.PI / 4) * s * 0.72;
-        const ya = (x: number) => -h * 0.42 + s * 0.32 * (1 - Math.abs(x) / (s * 0.72));
-        const cx = (x0 + x1) / 2, w = Math.abs(x1 - x0);
-        const isBug = bugs && f.k !== 0;
+        const isBug = bugs && f.k !== 0, w = Math.abs(f.q.x - f.p.x), light = 0.72 + 0.4 * (f.z / r);
+        const cx = (f.p.x + f.q.x) / 2, cy = (yT(f.p) + yT(f.q)) / 2 + h / 2;
         return (
           <g key={f.k}>
-            <path d={`M${x0} ${ya(x0)} L${x1} ${ya(x1)} L${x1} ${ya(x1) + h} L${x0} ${ya(x0) + h}Z`} fill={f.k === 0 ? E.olive : isBug ? E.orange : E.blue}
-              stroke={E.ink} strokeWidth={5} strokeLinejoin="round" style={{filter: `brightness(${0.75 + 0.35 * f.c})`}} />
-            {w > s * 0.25 ? (
-              <text x={cx} y={(ya(x0) + ya(x1)) / 2 + h * 0.62} textAnchor="middle" fontSize={s * 0.32 * Math.min(1, w / (s * 0.7))} fontWeight={900}
-                fill={E.white} fontFamily="Montserrat">{f.k === 0 ? '✓' : isBug ? 'BUG' : '?'}</text>
+            <path d={`M${f.p.x} ${yT(f.p)} L${f.q.x} ${yT(f.q)} L${f.q.x} ${yT(f.q) + h} L${f.p.x} ${yT(f.p) + h}Z`}
+              fill={f.k === 0 ? E.olive : isBug ? E.orange : E.blue} stroke={E.ink} strokeWidth={5} strokeLinejoin="round" style={{filter: `brightness(${light})`}} />
+            {w > s * 0.3 ? (
+              <text x={cx} y={cy + s * 0.11} textAnchor="middle" fontSize={s * 0.3 * Math.min(1, w / (s * 0.8))} fontWeight={900} fill={E.white}
+                fontFamily="Montserrat" transform={`translate(${cx} 0) scale(${Math.min(1, w / (s * 0.8))} 1) translate(${-cx} 0)`}>{f.k === 0 ? '✓' : isBug ? 'BUG' : '?'}</text>
             ) : null}
           </g>
         );
       })}
+      <path d={`M${V.map((v) => `${v.x} ${yT(v)}`).join(' L')}Z`} fill={E.paper} stroke={E.ink} strokeWidth={5} strokeLinejoin="round" />
     </svg>
   );
 };
 export const QaEyes: React.FC<z.infer<typeof qaEyesSchema>> = ({title, devAt, devText, testAt, testText, anglesAt, anglesText, previewBg}) => {
   const {frame, width: W, height: H} = useF();
-  const turn = frame < anglesAt ? 0 : (frame - anglesAt) / 45; // keeps turning
+  const FRONT = -0.5764; // t where face 0 (✓) faces the camera
+  const turn = FRONT + (frame < anglesAt ? 0 : (frame - anglesAt) / 45); // keeps turning
   return (
     <Base previewBg={previewBg}>
-      <Backdrop>
+      <Backdrop><AbsoluteFill style={{direction: 'rtl'}}>
         <Title text={title} />
         {/* RTL: developer on the right, tester on the left */}
         <Pop x={W * 0.73} y={H * 0.55} at={devAt}>
           <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-            <IsoCube t={0} s={190} bugs={false} />
+            <IsoCube t={FRONT} s={190} bugs={false} />
             <div style={{display: 'flex', alignItems: 'center', gap: 14, marginTop: -10}}><Emo n="eye" s={90} /><Label text="Developer" size={50} /></div>
             <Label text={devText} size={56} />
           </div>
@@ -249,7 +248,7 @@ export const QaEyes: React.FC<z.infer<typeof qaEyesSchema>> = ({title, devAt, de
         </Pop>
         <Pop x={W / 2} y={H - 90} at={anglesAt}><Chip text={anglesText} bg={E.mustard} size={44} /></Pop>
         <div style={{position: 'absolute', left: W / 2 - 3, top: 250, width: 6, height: H - 420, background: 'rgba(255,255,255,.15)', borderRadius: 3}} />
-      </Backdrop>
+      </AbsoluteFill></Backdrop>
     </Base>
   );
 };
@@ -291,11 +290,11 @@ export const QaTypes: React.FC<z.infer<typeof qaTypesSchema>> = ({title, funcAt,
   );
   return (
     <Base previewBg={previewBg}>
-      <Backdrop>
+      <Backdrop><AbsoluteFill style={{direction: 'rtl'}}>
         <Title text={title} />
         {branch(W * 0.73, funcAt, 'Functional', 'الفيتشر *شغالة*؟', func, E.olive)}
         {branch(W * 0.27, nonAt, 'Non-Functional', 'سريع؟ آمن؟ *سهل*؟', non, E.blue)}
-      </Backdrop>
+      </AbsoluteFill></Backdrop>
     </Base>
   );
 };
@@ -323,11 +322,11 @@ export const QaLogin: React.FC<z.infer<typeof qaLoginSchema>> = ({title, manualA
   const fx = W * 0.66, fy = H * 0.55;
   return (
     <Base previewBg={previewBg}>
-      <Backdrop>
+      <Backdrop><AbsoluteFill style={{direction: 'rtl'}}>
         <Title text={title} />
         {/* the browser with the login form */}
         <Pop x={fx} y={fy} at={4}>
-          <div style={{width: 640, background: '#F6F4EF', borderRadius: 16, overflow: 'hidden', ...stickerBorder(6)}}>
+          <div style={{width: 640, background: '#F6F4EF', borderRadius: 16, overflow: 'hidden', direction: 'ltr', ...stickerBorder(6)}}>
             <div style={{height: 46, background: '#D9D4C8', display: 'flex', alignItems: 'center', gap: 10, padding: '0 16px'}}>
               {[E.orange, E.mustard, E.olive].map((k, i) => <div key={i} style={{width: 16, height: 16, borderRadius: 8, background: k}} />)}
               <div style={{flex: 1, height: 26, background: '#fff', borderRadius: 13, marginLeft: 10, fontSize: 18, color: '#777', padding: '2px 14px', fontFamily: 'Montserrat'}}>myapp.com/login</div>
@@ -387,7 +386,7 @@ export const QaLogin: React.FC<z.infer<typeof qaLoginSchema>> = ({title, manualA
             ) : null}
           </>
         )}
-      </Backdrop>
+      </AbsoluteFill></Backdrop>
     </Base>
   );
 };
@@ -417,7 +416,7 @@ export const QaApi: React.FC<z.infer<typeof qaApiSchema>> = ({title, uiAt, selAt
   };
   return (
     <Base previewBg={previewBg}>
-      <Backdrop>
+      <Backdrop><AbsoluteFill style={{direction: 'rtl'}}>
         <Title text={title} />
         {/* left to right like the request flow: browser -> API -> server */}
         <div style={{position: 'absolute', left: xs[0] + 190, top: y - 3, width: xs[2] - xs[0] - 380, height: 6, background: 'rgba(255,255,255,.25)', borderRadius: 3}} />
@@ -429,7 +428,7 @@ export const QaApi: React.FC<z.infer<typeof qaApiSchema>> = ({title, uiAt, selAt
         <Pop x={xs[1]} y={y - 270} at={postmanAt} rot={-3}><div style={{display: 'flex', alignItems: 'center', gap: 14}}><LogoTile src="logos/postman_c.svg" s={110} /><Chip text="*Postman*: جرب كل الاحتمالات" bg={E.olive} size={38} /></div></Pop>
         <Pop x={xs[1]} y={y + 300} at={autoAt}><Chip text="API *Automation*" bg={E.blue} size={42} /></Pop>
         <Pop x={xs[1]} y={y + 390} at={libAt}><Label text="بـ *Libraries* تانية (زي REST Assured)" size={38} /></Pop>
-      </Backdrop>
+      </AbsoluteFill></Backdrop>
     </Base>
   );
 };
@@ -446,7 +445,7 @@ export const QaPerf: React.FC<z.infer<typeof qaPerfSchema>> = ({title, secAt, pe
   const dots = Math.floor(load * 40);
   return (
     <Base previewBg={previewBg}>
-      <Backdrop>
+      <Backdrop><AbsoluteFill style={{direction: 'rtl'}}>
         <Title text={title} />
         <Pop x={W * 0.75} y={H * 0.5} at={secAt}>
           <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
@@ -475,7 +474,7 @@ export const QaPerf: React.FC<z.infer<typeof qaPerfSchema>> = ({title, secAt, pe
             </Pop>
           </>
         ) : null}
-      </Backdrop>
+      </AbsoluteFill></Backdrop>
     </Base>
   );
 };
@@ -496,7 +495,7 @@ export const QaRoad: React.FC<z.infer<typeof qaRoadSchema>> = ({title, steps, pr
   const d = steps.map((_, i) => { const p = pt(i); return `${i ? 'L' : 'M'}${p.x} ${p.y}`; }).join(' ');
   return (
     <Base previewBg={previewBg}>
-      <Backdrop>
+      <Backdrop><AbsoluteFill style={{direction: 'rtl'}}>
         <Title text={title} />
         <svg style={{position: 'absolute', left: 0, top: 0, width: W, height: H}}>
           <path d={d} stroke="rgba(255,255,255,.18)" strokeWidth={14} fill="none" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="2 26" />
@@ -519,7 +518,7 @@ export const QaRoad: React.FC<z.infer<typeof qaRoadSchema>> = ({title, steps, pr
             </Pop>
           );
         })}
-      </Backdrop>
+      </AbsoluteFill></Backdrop>
     </Base>
   );
 };
@@ -535,7 +534,7 @@ export const QaJoker: React.FC<z.infer<typeof qaJokerSchema>> = ({title, skills,
   const cx = W / 2, cy = H * 0.56, n = Math.max(1, skills.length);
   return (
     <Base previewBg={previewBg}>
-      <Backdrop>
+      <Backdrop><AbsoluteFill style={{direction: 'rtl'}}>
         <Title text={title} />
         <Pop x={cx} y={cy} at={4}><Emo n="joker" s={250} style={{transform: `rotate(${Math.sin(frame / 30) * 4}deg)`}} /></Pop>
         {skills.map((s, i) => {
@@ -553,7 +552,7 @@ export const QaJoker: React.FC<z.infer<typeof qaJokerSchema>> = ({title, skills,
             </React.Fragment>
           );
         })}
-      </Backdrop>
+      </AbsoluteFill></Backdrop>
     </Base>
   );
 };
@@ -572,7 +571,7 @@ export const QaIstqb: React.FC<z.infer<typeof qaIstqbSchema>> = ({title, logo, c
   const n = Math.max(1, certs.length), cw = 300, gap = 60, x0 = W / 2 + ((n - 1) * (cw + gap)) / 2;
   return (
     <Base previewBg={previewBg}>
-      <Backdrop>
+      <Backdrop><AbsoluteFill style={{direction: 'rtl'}}>
         <Title text={title} />
         {logo ? <Pop x={W / 2} y={265} at={6}><div style={{background: E.white, borderRadius: 18, padding: '12px 30px', ...stickerBorder(4)}}><Img src={staticFile(logo)} style={{height: 110}} /></div></Pop> : null}
         {certs.map((c, i) => {
@@ -592,7 +591,7 @@ export const QaIstqb: React.FC<z.infer<typeof qaIstqbSchema>> = ({title, logo, c
         })}
         {frame >= stampAt ? <Pop x={W / 2} y={H - 120} at={stampAt}><Chip text={stampText} bg={E.olive} size={44} /></Pop> : null}
         {chips.map((c, i) => <Pop key={i} x={W / 2 + (i - (chips.length - 1) / 2) * 620} y={H - 120 - (frame >= stampAt ? 110 : 0)} at={c.at}><Chip text={c.text} bg={[E.mustard, E.blue][i % 2]} size={38} /></Pop>)}
-      </Backdrop>
+      </AbsoluteFill></Backdrop>
     </Base>
   );
 };
@@ -624,7 +623,7 @@ export const QaAi: React.FC<z.infer<typeof qaAiSchema>> = ({title, meAt, aiAt, t
   ));
   return (
     <Base previewBg={previewBg}>
-      <Backdrop>
+      <Backdrop><AbsoluteFill style={{direction: 'rtl'}}>
         <Title text={title} />
         <div style={{opacity: q ? 0.25 : 1, filter: q ? 'blur(3px)' : 'none'}}>
           <Pop x={W * 0.73} y={H * 0.5} at={meAt}><Screen emo="man_technologist" label="شاشتي: *شغال*" tint={E.blue}>{code(0)}</Screen></Pop>
@@ -646,7 +645,7 @@ export const QaAi: React.FC<z.infer<typeof qaAiSchema>> = ({title, meAt, aiAt, t
         </div>
         {q ? <Pop x={W / 2} y={H * 0.45} at={qAt}><div style={{fontSize: 110, fontWeight: 900, color: E.white, textShadow: '0 8px 20px rgba(0,0,0,.6)'}}><Hi text={qText} color={E.orange} /></div></Pop> : null}
         {frame >= aAt && frame < qEnd ? <Pop x={W / 2} y={H * 0.65} at={aAt}><div style={{display: 'flex', alignItems: 'center', gap: 20}}><Mark ok={false} s={100} /><Chip text={aText} bg={E.olive} size={60} /></div></Pop> : null}
-      </Backdrop>
+      </AbsoluteFill></Backdrop>
     </Base>
   );
 };
@@ -661,7 +660,7 @@ export const QaProd: React.FC<z.infer<typeof qaProdSchema>> = ({title, usersAt, 
   const {frame, width: W, height: H, pop} = useF();
   return (
     <Base previewBg={previewBg}>
-      <Backdrop>
+      <Backdrop><AbsoluteFill style={{direction: 'rtl'}}>
         <Title text={title} />
         <Pop x={W * 0.75} y={H * 0.48} at={usersAt}>
           <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
@@ -686,7 +685,7 @@ export const QaProd: React.FC<z.infer<typeof qaProdSchema>> = ({title, usersAt, 
             <div style={{display: 'flex', alignItems: 'center', gap: 16, transform: `scale(${pop(bankAt)})`}}><Emo n="bank" s={100} /><Emo n="hourglass_not_done" s={80} /><Chip text="تطبيق بنك: الناس *مستنية* الحل" bg={E.blue} size={40} /></div>
           </Pop>
         ) : null}
-      </Backdrop>
+      </AbsoluteFill></Backdrop>
     </Base>
   );
 };
@@ -702,7 +701,7 @@ export const QaDemand: React.FC<z.infer<typeof qaDemandSchema>> = ({title, senio
   const {frame, width: W, height: H} = useF();
   return (
     <Base previewBg={previewBg}>
-      <Backdrop>
+      <Backdrop><AbsoluteFill style={{direction: 'rtl'}}>
         <Title text={title} />
         <Pop x={W * 0.73} y={H * 0.5} at={seniorAt}>
           <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
@@ -717,7 +716,7 @@ export const QaDemand: React.FC<z.infer<typeof qaDemandSchema>> = ({title, senio
             {more.map((m, i) => frame >= m.at ? <div key={i} style={{marginTop: 12, transform: `rotate(${i % 2 ? 2 : -2}deg)`}}><Paper w={420} tape={false} style={{padding: '8px 18px'}}><div style={{fontSize: 32, fontWeight: 800, textAlign: 'center'}}><Hi text={m.text} color={E.orange} /></div></Paper></div> : null)}
           </div>
         </Pop>
-      </Backdrop>
+      </AbsoluteFill></Backdrop>
     </Base>
   );
 };

@@ -101,3 +101,21 @@ the guest's job, terms and examples. Goal (Aly): fun, visualized, explain every 
 - Pictures: his 2023 OBS designs (`_assets/OBS/scene2.png`, `_assets/OBS 2/Background.png`), Adobe icons from Wikimedia,
   Wikimedia workshop + camera photos, Claude logo when he says "في كلود دلوقتي" (Whisper heard "فيك لود").
 - Camera: single person, static 'cut' crops 1.25 / 1.4, card on the right -> origin x 0.95 (pushes him left to ~0.33).
+
+## حاسبات ep01 (2026-10-20, guest Aiman Ismail — Senior Software QA Engineer) — ONLINE episode (Google Meet screen recording)
+- Input `input/main video.mp4` (30:23, 1080p60): Meet tiles guest LEFT [36,290,910,470], Aly RIGHT [985,290,910,470] (source px,
+  name labels/corners cropped), his intro 0-17.13 and again 1806.5-end (found by the dark Meet bar under the tiles).
+- Aly: his OBS frames were "دوشة" -> SIMPLE: no frame, hide the Meet UI (browser bar, call buttons) completely, calm dark bg.
+  Instead of zoom: switch "كادرات" (both / one person big / one person left + card right), soft slide 14 frames. Zoom ONLY
+  inside the tile and only a little (1.08) — "it's a screen recording, not a camera".
+- Code: `src/enta/Meet.tsx` (Edit prop `meet`, cue `shot` {m: two|G|A|GP|AP|full, z, zx, zy}; 'full' = his intro as is).
+  Boards `src/enta/BoardQA.tsx` (13: qa_what, qa_req, qa_eyes (SVG cube that turns), qa_types, qa_login (manual cases ->
+  automation code -> ×N -> report), qa_api, qa_perf, qa_road, qa_joker, qa_istqb (real ISTQB badges from istqb.org),
+  qa_ai, qa_prod, qa_demand (labelled as Aly's opinion, not a statistic)). Real objects = Fluent 3D emoji + real logos.
+- Stickers are VECTOR now (`src/enta/vstick.tsx`, used by Sticker() first) — no more pixelated PNG crops.
+- Board text: wrap in `direction: rtl` (mixed "*Postman*: جرّب" was reversed in LTR). Cards capped at 9 s, bubbles 5 s.
+- Speakers: voices.py + speakers.py (same as ep01) worked on the Meet mix (remote voice vs local mic). Aly's camera dropped
+  ~1129-1131 -> guest-only shot there.
+- Render: `work/scripts/render.sh review_NN` = 5-min MUTED chunks + `mix_audio.py` (his audio untouched + sfx) + join.
+  stills_cli.sh now empties TEMP after every still (each still copied the 2 GB source: 11 stills filled E:).
+- Scripts archived in `tools/recipes/enta_cs01/`.

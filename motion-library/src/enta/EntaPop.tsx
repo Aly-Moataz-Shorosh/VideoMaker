@@ -92,8 +92,8 @@ export const EntaName: React.FC<z.infer<typeof entaNameSchema>> = ({name, role, 
           transform: `rotate(1.5deg) translateX(${lerp(Math.min(r, out), right ? 300 : -300, 0)}px)`, border: `4px solid ${E.white}`}}>
           <Hi text={role} color={acc} />
         </div>
-        <div style={{position: 'absolute', top: -70, [right ? 'right' : 'left']: -40, transform: `scale(${enter(frame, fps, 14) * out}) rotate(-8deg)`}}>
-          <Sticker name="onair" size={210} />
+        <div style={{position: 'absolute', top: -120, [right ? 'right' : 'left']: -40, transform: `scale(${enter(frame, fps, 14) * out}) rotate(-8deg)`}}>
+          <Sticker name="onair" size={190} />
         </div>
         <Tape w={140} rot={-30} style={{top: -10, [right ? 'left' : 'right']: -40}} />
       </div>

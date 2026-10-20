@@ -57,7 +57,7 @@ export const VEC: Record<string, Shape[]> = {
 export const VSticker: React.FC<{name: string; size: number; style?: React.CSSProperties}> = ({name, size, style}) => {
   const sh = VEC[name];
   return (
-    <svg width={size} height={size} viewBox="-10 -10 120 120" style={{overflow: 'visible', filter: 'drop-shadow(0 6px 10px rgba(0,0,0,.45))', ...style}}>
+    <svg width={size} height={name === 'onair' ? size * 0.7 : size} viewBox={name === 'onair' ? '-10 8 120 84' : '-10 -10 120 120'} style={{overflow: 'visible', filter: 'drop-shadow(0 6px 10px rgba(0,0,0,.45))', ...style}}>
       {/* white sticker border: every shape stroked wide in white, under everything */}
       {sh.map((s, i) => <path key={'w' + i} d={s.d} fill={s.fill === 'none' ? 'none' : W} stroke={W} strokeWidth={(s.ink ?? 0) + 14} strokeLinejoin="round" strokeLinecap="round" />)}
       {sh.map((s, i) => s.fill === 'none'
