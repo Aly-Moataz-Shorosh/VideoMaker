@@ -4,7 +4,8 @@ import {AbsoluteFill, Img, OffthreadVideo, Sequence, staticFile, useCurrentFrame
 // Online episode (Google Meet screen recording, cs ep01 2026-10-20). Aly: "simple, keep our focus on the video, hide the
 // top and bottom parts" -> the Meet UI is never shown: each webcam tile is cut from the recording and laid on a calm dark
 // background. Instead of zoom, the camera changes between layouts ("كادرات"), a soft slide/grow between them:
-//   two = both side by side · G / A = one person big · GP / AP = one person on the LEFT (card on the right)
+//   two = both side by side · G / A = one person big · GP / AP = one person on HIS side, card on the other side
+//   (Aly 2026-10-20: Aly always LEFT, the guest always RIGHT — meet.left = 'A' — also for the speaker circle)
 // Shots come from cues {t: 'shot', at, props: {m, z?, zx?, zy?}}; each change blends over BLEND frames.
 // Zoom (Aly 2026-10-20: "inside the same frame of his cadre, only a little — it's a screen recording, not a camera"):
 // z = gentle zoom of the picture INSIDE the tile (1.06-1.12), the tile itself keeps its size; zx/zy = focus (0..1 of the tile).
@@ -24,7 +25,7 @@ const layout = (m: string, who: 'G' | 'A', ar: number, left: boolean, W: number,
   if (m === 'two') return two;
   const big = 1480, side = 1180;
   if (m === who) return r(big, (W - big) / 2, H * 0.44 - big / ar / 2);
-  if (m === who + 'P') return r(side, 50, H * 0.5 - side / ar / 2);
+  if (m === who + 'P') return r(side, left ? 50 : W - side - 50, H * 0.5 - side / ar / 2); // person on his own side, card on the other
   // the other person leaves towards his own side of the screen
   return {...two, x: left ? -two.w - 60 : W + 60, o: 0};
 };
@@ -106,7 +107,8 @@ export const MeetBg: React.FC<{frame: number}> = ({frame}) => {
 
 // Speaker circle over the full-screen boards (Aly 2026-10-20: when an explanation board stays > ~5 s, show whoever is talking in
 // a circle in a corner "so people see him while he talks"; skip it only where the board itself is busy with motion).
-// Cues {t: 'pip', at, dur, props: {who: 'G' | 'A', zx, zy}} — consecutive cues crossfade, a new run pops in.
+// Cues {t: 'pip', at, dur, props: {who: 'G' | 'A', zx, zy, side: 'L' | 'R'}} — consecutive cues crossfade, a new run pops in.
+// side: he looks towards the left of the screen -> circle on the RIGHT, and the other way round (Aly 2026-10-20; work/scripts/gaze.py).
 export const MeetPip: React.FC<{source: string; tiles: MeetTiles; cues: Cue[]}> = ({source, tiles, cues}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
@@ -133,7 +135,7 @@ export const MeetPip: React.FC<{source: string; tiles: MeetTiles; cues: Cue[]}> 
   const xfade = pc && pc.props.who !== c.props.who ? smooth(Math.min(1, k / 8)) : 1;
   return (
     <AbsoluteFill style={{pointerEvents: 'none'}}>
-      <div style={{position: 'absolute', left: 44, top: 44, width: S, height: S, borderRadius: '50%', transform: `scale(${Math.min(inP, outP)})`,
+      <div style={{position: 'absolute', [c.props.side === 'R' ? 'right' : 'left']: 44, top: 44, width: S, height: S, borderRadius: '50%', transform: `scale(${Math.min(inP, outP)})`,
         boxShadow: '0 16px 34px rgba(0,0,0,.55)', border: '7px solid #FBF7EE', outline: '3px solid rgba(20,20,30,.5)', background: '#111'}}>
         {pc && xfade < 1 ? face(pc, 1) : null}
         {face(c, xfade)}

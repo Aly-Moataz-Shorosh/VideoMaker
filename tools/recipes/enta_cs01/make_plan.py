@@ -37,6 +37,7 @@ def who(t):  # who talks at t (word labels from speakers.py)
 
 cues, locks, boards = [], [], []
 FACE = {'G': (0.47, 0.36), 'A': (0.49, 0.55)}  # face centre inside each tile (0..1)
+GAZE = json.load(open(W / 'gaze.json')) if (W / 'gaze.json').exists() else []  # [src, who, eye offset] from gaze.py
 F = lambda base, t: int(round((t - base) * 30))
 
 
@@ -52,17 +53,19 @@ def lock(at, dur, shot):
     locks.append((at - 0.2, at + dur, shot))
 
 
-def side(at, dur, w=None):  # the speaker big on the LEFT, card on the right
-    lock(at, dur, (w or who(at + min(1.0, dur / 2))) + 'P')
+def side(at, dur, w=None):  # the speaker big on HIS side (Aly left, guest right), the card on the other side
+    sp = w or who(at + min(1.0, dur / 2))
+    lock(at, dur, sp + 'P')
+    return sp
 
 
 def term(at, dur, term, defn='', example='', exAt=None, en='', sticker='', accent='orange', paper='cream', w=None, exLabel=''):
     # exLabel 'مثال' ONLY when the example line is MY simplification of a term; his/the guest's words get no label (Aly 2026-10-20)
     dur = min(dur, 9.0)  # a card never stays longer than ~9 s
     if exAt and exAt > at + dur - 2.0: exAt = at + min(dur - 2.0, max(1.5, dur * 0.5))
-    side(at, dur, w)
+    sp = side(at, dur, w)
     add('enta_term', at, dur, term=term, example=example, exampleAt=int(((exAt or at + 1.5) - at) * 30), en=en,
-        sticker=sticker, accent=accent, paper=paper, pic='', side='right', top=0.1, exLabel=exLabel)
+        sticker=sticker, accent=accent, paper=paper, pic='', side='left' if sp == 'G' else 'right', top=0.1, exLabel=exLabel)
     cues[-1]['props']['def'] = defn
     sfx(at, 'swish', 0.35); sfx(at + 0.17, 'tape', 0.3)
     if example and exAt: sfx(exAt, 'pop_2', 0.3)
@@ -70,9 +73,12 @@ def term(at, dur, term, defn='', example='', exAt=None, en='', sticker='', accen
 
 def photos(at, dur, items, snd='pop_1', w=None):
     dur = min(dur, 8.0)
-    side(at, dur, w)
-    add('enta_photos', at, dur, items=[dict(dict(x=0.79, y=0.4, w=420, h=0, at=0, rot=-3, caption='', sepia=False, pos='50% 50%',
-                                                 fit='contain', sticker='', start=0, bare=True), **it) for it in items])
+    sp = side(at, dur, w)
+    its = [dict(dict(x=0.79, y=0.4, w=420, h=0, at=0, rot=-3, caption='', sepia=False, pos='50% 50%',
+                     fit='contain', sticker='', start=0, bare=True), **it) for it in items]
+    if sp == 'G':  # guest is on the right -> pictures on the left
+        for it in its: it['x'] = round(1 - it['x'], 3)
+    add('enta_photos', at, dur, items=its)
     for it in items: sfx(at + it.get('at', 0) / 30, snd, 0.35)
 
 
@@ -85,7 +91,7 @@ def bubble(at, dur, text, w=None):  # speech bubble above the speaker's tile in 
     sp = w or who(at + 0.3)
     dur = min(dur, 5.0)
     lock(at, dur, 'two')
-    add('enta_bubble', at, dur, text=text, x=0.25 if sp == 'G' else 0.75, y=0.11, tail='left' if sp == 'G' else 'right', w=560)
+    add('enta_bubble', at, dur, text=text, x=0.75 if sp == 'G' else 0.25, y=0.11, tail='right' if sp == 'G' else 'left', w=560)
     sfx(at, 'pop_3', 0.4)
 
 
@@ -108,7 +114,7 @@ a = T('S001', 'الحاسبات')
 photos(a - 0.2, T('S001', 'فضيف') - a + 0.1, [dict(src=P + 'logo_cs_trim.png', w=380, h=384, rot=-4, caption='أول حلقة *حاسبات*')], w='A')
 note(T('S001', 'الحلقة'), 'الحلقة *التانية* · وأول حلقة *حاسبات*', accent='blue', d=4.0)
 a = S('S002')
-add('enta_name', a, 4.6, name='أيمن إسماعيل', role='Senior Software *QA Engineer*', side='right', accent='blue')
+add('enta_name', a, 4.6, name='أيمن إسماعيل', role='Senior Software *QA Engineer*', side='left', accent='blue')
 side(a, 4.6, 'G'); sfx(a, 'swoop_up', 0.45); sfx(a + 0.45, 'stamp', 0.3)
 note(T('S002', 'الكفاح'), 'صاحبي *وزميل شغل* من سنين', accent='olive', d=3.6)
 a = T('S003', 'Software')
@@ -461,11 +467,12 @@ for c in [c for c in cues if c['t'].startswith('qa_') and c['t'] != 'qa_login' a
         k += 1
     segs[-1][1] = b
     for s0, s1, sp in segs:
-        add('pip', s0, s1 - s0, who=sp, zx=FACE[sp][0], zy=FACE[sp][1])
+        o = next((g[2] for g in GAZE if abs(g[0] - s0) < 0.3 and g[1] == sp), 0.0)
+        add('pip', s0, s1 - s0, who=sp, zx=FACE[sp][0], zy=FACE[sp][1], side='R' if sp == 'G' else 'L')  # Aly's circle left, the guest's right
 
 cues.sort(key=lambda c: c['src'])
 plan = {'cut': False, 'captions': False, 'pack': 'charcoal', 'video': 'input/main video.mp4', 'quiet': [[0.0, 17.13], [1806.5, 1823.7]],
-        'meet': {'G': [36, 290, 910, 470], 'A': [985, 290, 910, 470], 'left': 'G'}, 'cues': cues}
+        'meet': {'G': [36, 290, 910, 470], 'A': [985, 290, 910, 470], 'left': 'A'}, 'cues': cues}
 json.dump(plan, open(W / 'plan.json', 'w', encoding='utf8'), ensure_ascii=False, indent=0)
 cards = sorted((c['src'], c['src'] + c['dur']) for c in cues if c['t'].startswith(('enta_', 'qa_')) and c['t'] not in ('enta_glitch', 'enta_leak'))
 gaps, prev = [], A0
