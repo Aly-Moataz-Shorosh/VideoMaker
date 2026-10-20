@@ -35,6 +35,7 @@ Full context: `docs/01-about-aly.md`.
   To check a motion visually, render ONE still frame (PNG), not a video.
 - Never put money-costing services in the flow.
 - Keep `motion-library/catalog.json` as the single source of truth for templates (see spec).
+- Git: repo https://github.com/Aly-Moataz-Shorosh/VideoMaker, branch `main` only. After EVERY code/docs change: commit + push right away (no asking). Never commit `projects/` (new jobs) or videos/audio — .gitignore handles it.
 
 ## Current state (update this section after each work session)
 **Start every job with `docs/14-production-modes.md` (job types, density rule) + `docs/13-plan-rules.md`
