@@ -1,0 +1,127 @@
+{
+ "_about": "Numbered styles Aly picks from (notes.txt: 'الستايل: 04'). For Claude: what each number means and how to build it. Sample = styles/<folder>/sample.mp4.",
+ "styles": {
+  "01": {
+   "folder": "01 youtube-motion",
+   "name": "YouTube motion on his final edit (16:9)",
+   "approved": "figmaMake review_02 (2026-10-08, 'كدا احسن بكتير')",
+   "input": "his finished edit (any length)",
+   "build": "tools/build_edit.py, composition 'edit'",
+   "recipe": "docs/17-recipe-youtube-motion-only.md",
+   "scripts": "tools/recipes/figmaMake/"
+  },
+  "02": {
+   "folder": "02 reels-roto",
+   "name": "Vertical reels, ROTO MODE: he is cut out at the bottom over grainy two-blue background, screen recordings big on top",
+   "approved": "figmaMake reels (2026-10-08, 'زي الفل')",
+   "input": "his edited long video (with screen recordings)",
+   "build": "composition 'edit-v' + work/scripts/make_reels.py",
+   "recipe": "skill aly-video-motion (Vertical reels section)",
+   "scripts": "tools/recipes/figmaMake/make_reels.py"
+  },
+  "03": {
+   "folder": "03 tutorial-short",
+   "name": "One condensed tutorial short: his face 9:16 + real screen UI cards with click marks",
+   "approved": "RippleCutToll short_02 (2026-10-06)",
+   "input": "his raw/edited tutorial + screen recording",
+   "build": "tools/build_edit.py --vertical",
+   "recipe": "docs/16-recipe-tutorial-short.md",
+   "scripts": ""
+  },
+  "04": {
+   "folder": "04 film-faceless",
+   "name": "Faceless-first shorts, darkroom collage look (paper, B&W cut-outs, red marker, grain)",
+   "approved": "theodesy (2026-10-08, animation 'ممتاز ممتاز ممتاز')",
+   "input": "long video or YouTube link",
+   "build": "composition 'film-short' look 'film', kit src/film/",
+   "recipe": "docs/18-recipe-faceless-film-shorts.md",
+   "scripts": "tools/recipes/theodesy/"
+  },
+  "05": {
+   "folder": "05 film-face",
+   "name": "Same as 04 but his cut-out stays the WHOLE short at the bottom, scenes as a card on top (layout 'v4')",
+   "approved": "theodesy short 2 v4 (2026-10-09, closed the job)",
+   "input": "long video + raw clips (or the video itself)",
+   "build": "film-short layout 'v4'",
+   "recipe": "docs/18 (v4 section)",
+   "scripts": "tools/recipes/theodesy/make_v4.py, faces_full.py"
+  },
+  "06": {
+   "folder": "06 vhs-faceless",
+   "name": "Faceless-first shorts, VHS tape look (CRT, VCR, cassettes, RCA cables, OSD, scanlines)",
+   "approved": "vhstodigital v2 (2026-10-09, 'زي الفل')",
+   "input": "long video or YouTube link",
+   "build": "composition 'film-short' look 'vhs', kit src/vhs/",
+   "recipe": "docs/19-recipe-vhs-shorts.md",
+   "scripts": "tools/recipes/vhstodigital/"
+  },
+  "07": {
+   "folder": "07 map-history",
+   "name": "History MAP shorts: tilted 3D map built from HIS Google Earth KMZ (cities rise era by era, years, countryball cities, walls, canals, crown hops, his old maps on taped paper); he is big cut-out in the opening, then a small round webcam (no roto) to the end",
+   "approved": "cairohistory v2 shorts 4/5/6 (2026-10-10, motion 'ممتاز جدا جدا جدا', layout 'ممتاز')",
+   "input": "long video or YouTube link + his KMZ (search E:/root/output/GoogleEarth, myplaces.kml)",
+   "build": "composition 'film-short' look 'cairo', scene 'cmap' (src/cairo/map.tsx) + overlays ct/cpaper/cchip; V=v2 layout = big 'anchor' roto in piece 0, 'bubble' camr_ clips after",
+   "recipe": "docs/20-recipe-map-history-shorts.md",
+   "scripts": "tools/recipes/cairohistory/"
+  },
+  "08": {
+   "folder": "08 timeline-history",
+   "name": "ONE-SHOT timeline world (flat warm drawing, paper grain): old LEFT -> new RIGHT, camera walks / stops / zooms per era, each era animates, HUD era+year + 3 criteria meters, small photo/clip circles, his face = big circle opening that shrinks into a small circle to the end",
+   "approved": "historyOfGraphics 9 shorts (2026-10-10, 'الجودة حلوة اوي اوي اوي ممتاز')",
+   "input": "long video or YouTube link (history / evolution of something)",
+   "build": "composition 'film-short' look 'hist', scene 'hworld' (src/hist/world.tsx + stations.tsx); his face modes bubble-big -> bubble-s; music prop",
+   "recipe": "docs/21-recipe-timeline-history-shorts.md",
+   "scripts": "tools/recipes/historyOfGraphics/",
+   "music": "calm tracks only (Aly: curious_mind of short 1 too busy/loud) - Pixabay WITHOUT Content ID"
+  },
+  "09": {
+   "folder": "09 pop-studio",
+   "name": "Faceless POP STUDIO shorts: electric violet + neon lime design-tool world (grid, pixel dissolves, Figma selection boxes, cursor clicks, echo italic type, tickers, polaroids, lavender HUD); software UI rebuilt as clean vector, his screen recording only as small polaroid proof",
+   "approved": "ffmpeg v2 one full short (2026-10-14, animation 'حلوين كا animation اوي', full short 'تمام')",
+   "input": "long video or YouTube link (tutorials / tech explainers)",
+   "build": "composition 'film-short' look 'pop', kit src/pop/ (kit.tsx + f1..f4 scenes)",
+   "recipe": "docs/23-recipe-pop-studio-shorts.md",
+   "scripts": "tools/recipes/ffmpeg/",
+   "rules": "ASK one short or several first; one = whole goal of the video; never >= 3:00"
+  },
+  "10": {
+   "folder": "10 glass-face",
+   "name": "GLASS + his face ALWAYS on screen: frosted glass cards on charcoal-navy glows in HIS channel colours (sky blue, royal, gold pill), words typing grey->white, Light-Studio style toggle panel clicked on the real moment, cursor, glowing light dots, clean vector diagrams; his camera stays on screen the whole short (full/low/wide/mini/hide layouts, wide on every change in the room)",
+   "approved": "lighting one full short (2026-10-15, 'الستايل حلو')",
+   "input": "long video or YouTube link where his real picture matters (light, camera, setup, room)",
+   "build": "composition 'film-short' look 'glass' (src/glass/kit.tsx + scenes.tsx), prop cam {file: cam.mp4 of the kept pieces, keys}",
+   "recipe": "docs/24-recipe-glass-face-shorts.md",
+   "scripts": "tools/recipes/lighting/"
+  },
+  "11": {
+   "folder": "11 tutorial-hook-glass",
+   "name": "TUTORIAL with a before/after HOOK, glass look: opens with HIS real before/after demo (his own clip big in the middle via cam 'wide' + voice bars; demo audio untouched), then straight to the steps: his real screen recording in a big glass card that zooms onto every click (gold box + cursor ripple + label), chapter chip, current step line, progress dots; his face = small round webcam from the corner of his screen recording (cam 'cmini'); end = all steps list + QR of the full video; CTA with QR at the top",
+   "approved": "adobeaudition v4 one full short (2026-10-15, 'تمام')",
+   "input": "long tutorial video with a screen recording (or YouTube link); find the before/after he already shows (often the first seconds)",
+   "build": "composition 'film-short' look 'glass', scenes src/glass/audition.tsx (au_hook2, au_tool, au_step, au_end), kit Screen/Sound/AuLogo in src/glass/kit.tsx, CommentCta qr/qrAt",
+   "recipe": "docs/25-recipe-tutorial-hook-glass.md",
+   "scripts": "tools/recipes/adobeaudition/ (make_short_v4.py = the approved one)"
+  },
+  "12": {
+   "folder": "12 lottie-mix",
+   "name": "SIMPLE + FAST tutorial short (~1 min) in a mixed look 02+06+10: grainy two-blue background, glass cards + typed titles + gold pill, light VHS OSD (PLAY + timecode, scanlines); the thing he explains rebuilt in vector as the motif; code typed in a vector editor; his real screen only where readable with gold click boxes; round webcam (bigger in the opening if his source webcam is big)",
+   "approved": "aftereffects-to-code v3 (2026-10-16, 'ده ممتاز حلو اوي')",
+   "input": "long tutorial video or YouTube link",
+   "build": "composition 'film-short' look 'lottie' (src/glass/lottie.tsx), Cam modes lbig/lmini (glass/kit.tsx)",
+   "recipe": "docs/26-recipe-lottie-mixed-short.md",
+   "scripts": "tools/recipes/aftereffects2code/ (make_short_v3.py = the approved one)",
+   "rules": "~1 min, one key sentence per step: hook, tool + what it's FOR, download, real look in the program, convert, code, result + his 'trying it' clip + use cases, compare (explain every term), summary + QR, CTA"
+  },
+  "13": {
+   "folder": "13 lecture-stage",
+   "name": "SERIES of viral shorts from a stage lecture: he FILLS the 9:16 frame the whole time (tracked crop from the RAW HLG file), hook sentence first + 0.9 s rewind, top band (lecture + NN/30 + headline with coloured word), exact-word captions, motion panel under him = REAL material (his slides/slide videos, real logos, web clips, his YouTube thumbs + QR) or Fluent 3D emoji, concept motions (material ball, 3D rotate, moving map), side badge + QR of the full lecture, no CTA",
+   "approved": "newstage19 v3 (2026-10-19, 'حلو اوي اوي ممتاز') + review fixes",
+   "input": "lecture video (+ RAW camera file for quality) + pptx + full-lecture YouTube link",
+   "build": "composition 'stage-short' (src/stage/: kit, emo, emo2, extra, three = @remotion/three)",
+   "recipe": "docs/28-recipe-lecture-stage-shorts.md",
+   "scripts": "tools/recipes/newstage19/ (build.sh N.. = make_short -> cam.py -> qc_cam -> render -> level; qc_sync.py)",
+   "rules": "no blur (he does it), no roto, never a small card, every word whole + sentence finished, no repeated speech between shorts, real material first, audio/video concat separately (lip sync), < 3:00"
+  }
+ },
+ "_always": "Every style: his ORIGINAL voice (only per-sentence gain to one level, no cleanup), edges fitted on the waveform, sfx, CTA clip + comment card at the end of shorts, <video>.txt beside every output, sfx + voice stems. Word script only on request. Shorts: ASK one short (whole goal of the video) or several (suggestions, he picks) first; no short ever reaches 3:00."
+}

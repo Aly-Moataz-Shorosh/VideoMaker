@@ -1,0 +1,20 @@
+{
+  "version": "v03", "date": "2026-10-04", "width": 1080, "height": 1920, "fps": 30,
+  "authorization": "New independent short from input media. Free creative toolchain authorized. No borrowing Aly's prior same-video edit.",
+  "palette": {"bg": "#111820", "panel": "#202B36", "ink": "#FAF5E8", "accent": "#FFD568", "voice": "#79CECA", "silence": "#EC847D"},
+  "scenes": [
+    {"id":"01_hook","kind":"hook","title":"السكتات بتاكل وقتك؟","tag":"المشكلة","clips":[[68.68,75.10]],"note":"Continuous complete problem and promise; no cut within the conjunction. No greeting or repeated intro.","caption":"خلّي البرنامج يشيلها"},
+    {"id":"02_tool","kind":"tool","title":"DaVinci Resolve","tag":"الحل","clips":[[99.98,104.56],[107.22,110.94]],"caption":"Ripple Delete Silence"},
+    {"id":"03_setup","kind":"setup","title":"جهّز التايملاين","tag":"01 / ابدأ هنا","clips":[[155.43,160.52],[174.64,178.46]],"caption":"من الفيديو لتايملاين جاهزة"},
+    {"id":"04_open","kind":"menu","title":"مكان الأداة","tag":"02 / افتح الأداة","clips":[[182.24,189.06]],"screen":"2026-10-01 19-50-39.mp4","screen_in":14.3,"crop":[315,0,1185,600],"caption":"Clip → Audio Operations","note":"Verified actual screen menu; not Audio Transcription."},
+    {"id":"05_threshold","kind":"threshold","title":"إيه اللي يعتبر صمت؟","tag":"03 / Threshold","clips":[[223.34,230.56],[237.24,242.20],[249.08,252.98]],"screen":"2026-10-01 19-50-39.mp4","screen_in":21.5,"crop":[747,396,1172,644],"caption":"القيمة بتختلف حسب تسجيلك","note":"Keep negative dB clarification and above-threshold speech. -20 dB is an example, not a recommendation."},
+    {"id":"06_padding","kind":"padding","title":"احمي أول وآخر كلمة","tag":"04 / Pre head + Post tail","clips":[[279.16,291.90]],"screen":"2026-10-01 19-50-39.mp4","screen_in":57.5,"crop":[747,396,1172,644],"caption":"فريمات قبل وبعد الكلام"},
+    {"id":"07_minimum","kind":"minimum","title":"مش كل سكتة تتقص","tag":"05 / Minimum to strip","clips":[[309.90,316.32],[316.42,320.62]],"screen":"2026-10-01 19-50-39.mp4","screen_in":50,"crop":[747,396,1172,644],"caption":"حدد أقل مدة صمت للحذف"},
+    {"id":"08_crossfade","kind":"crossfade","title":"خلّي القطع أنعم","tag":"06 / Cross fade audio","clips":[[333.42,335.75],[336.04,345.92]],"screen":"2026-10-01 19-50-39.mp4","screen_in":64,"crop":[747,396,1172,644],"caption":"مزج قصير بين الصوتين"},
+    {"id":"09_result","kind":"result","title":"اضغط Remove","tag":"النتيجة","clips":[],"duration":2.8,"screen":"2026-10-01 19-50-39.mp4","screen_in":68.4,"crop":[710,390,1900,880],"caption":"السكتات اتشالت… راجع القصات","note":"Purposeful nonverbal payoff, not an accidental silent take."},
+    {"id":"10_export","kind":"export","title":"بتكمّل في Premiere؟","tag":"خطوة أخيرة","clips":[[373.70,379.34]],"screen":"2026-10-01 19-52-50.mp4","screen_in":12,"crop":[0,0,1060,660],"caption":"Export Timeline → XML"},
+    {"id":"11_import","kind":"import","title":"كمّل مونتاجك","tag":"XML → Premiere","clips":[[381.90,389.90]],"screen":"2026-10-01 19-52-50.mp4","screen_in":82,"crop":[450,680,1900,1020],"caption":"احفظ الخطوات للمونتاج الجاي"}
+  ],
+  "review_limits": ["No claim of full auditory review through image tools", "Automatic Arabic transcripts contain errors and are not burned as verbatim subtitles", "No QR without a supplied destination URL"],
+  "inspiration": ["Aly R11: presenter-led explanation with progressively built diagrams", "Simple Learning Pro sampled reference: relationship and change, then outcome", "Fireship sampled reference: evidence attached to technical claim", "MrBeast sampled reference: early before/after payoff; no copied assets"]
+}

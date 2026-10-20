@@ -1,0 +1,13 @@
+{
+  "note": "Per-video color packs (docs/15-style-library.md). Keys override theme.colors. gold = main emphasis, blue = structure.",
+  "charcoal": {"bg": "#14181F", "panel": "#1F2530", "ink": "#FFFFFF", "inkSoft": "#C9D1DC", "outline": "#0B0E13", "gold": "#F5B83D", "blue": "#3BA9F5", "red": "#E53935", "green": "#35D07F"},
+  "cinema":   {"bg": "#07080B", "panel": "#16130F", "ink": "#F2E9D8", "inkSoft": "#BFB39D", "outline": "#050403", "gold": "#D9B165", "blue": "#B5542E", "red": "#B3261E", "green": "#7A8F4E"},
+  "concept":  {"bg": "#A9A9A9", "panel": "#FFFFFF", "ink": "#FFFFFF", "inkSoft": "#E9E9EE", "outline": "#1E1E24", "gold": "#F7931E", "blue": "#E8175D", "red": "#E53935", "green": "#2DBE60"},
+  "map":      {"bg": "#1C2422", "panel": "#F3EEE2", "ink": "#FFFFFF", "inkSoft": "#E7E1D2", "outline": "#101010", "gold": "#D7263D", "blue": "#39B54A", "red": "#D7263D", "green": "#39B54A"},
+  "mint":     {"bg": "#E7F3EE", "panel": "#FFFFFF", "ink": "#1F3B57", "inkSoft": "#4F6B7F", "outline": "#FFFFFF", "gold": "#1E8E3E", "blue": "#1F3B57", "red": "#D64545", "green": "#1E8E3E"},
+  "night":    {"bg": "#10002E", "panel": "#26164F", "ink": "#FFFFFF", "inkSoft": "#C9C2E6", "outline": "#07001A", "gold": "#F9C80E", "blue": "#7B2CBF", "red": "#FF4D6D", "green": "#2EC4B6"},
+  "stats":    {"bg": "#0E5FA8", "panel": "#0B4C87", "ink": "#FFFFFF", "inkSoft": "#D6E6F5", "outline": "#06325A", "gold": "#FFD23F", "blue": "#8BAF89", "red": "#E63946", "green": "#8BAF89"},
+  "sunset":   {"bg": "#160920", "panel": "#41232D", "ink": "#FBEBD8", "inkSoft": "#E2C3A8", "outline": "#12060F", "gold": "#F6A04D", "blue": "#E2583E", "red": "#94152E", "green": "#D9B165"},
+  "flat":     {"bg": "#D1E6F9", "panel": "#FFFFFF", "ink": "#24303A", "inkSoft": "#4C5A66", "outline": "#FFFFFF", "gold": "#F26D5B", "blue": "#2F80C8", "red": "#E63946", "green": "#4CAF7A"},
+  "peace":    {"bg": "#201715", "panel": "#F4C430", "ink": "#FFFFFF", "inkSoft": "#F1E4C8", "outline": "#1A1210", "gold": "#F4C430", "blue": "#E53935", "red": "#E53935", "green": "#3DBB6C"}
+}

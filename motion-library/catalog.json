@@ -1,0 +1,453 @@
+{
+ "version": 1,
+ "note": "status: planned | building | ready. Keep desc <= 15 words. comp = Remotion composition id (+'-v' for 9:16).",
+ "templates": [
+  {
+   "id": "side_picture",
+   "ar": "صورة جنبي",
+   "cat": "media",
+   "desc": "Picture beside speaker, framed, Ken Burns.",
+   "out": "overlay",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "building",
+   "comp": "side-picture"
+  },
+  {
+   "id": "side_video",
+   "ar": "فيديو جنبي",
+   "cat": "media",
+   "desc": "Video clip beside speaker in a frame.",
+   "out": "overlay",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "planned"
+  },
+  {
+   "id": "fullscreen_picture",
+   "ar": "صورة ملء الشاشة",
+   "cat": "media",
+   "desc": "Full-screen picture with slow Ken Burns and optional caption.",
+   "out": "full",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "planned"
+  },
+  {
+   "id": "keyword_pop",
+   "ar": "كلمة مهمة",
+   "cat": "text",
+   "desc": "Key word or short phrase pops beside speaker.",
+   "out": "overlay",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "building",
+   "comp": "keyword-pop"
+  },
+  {
+   "id": "lower_third",
+   "ar": "تعريف شخص/مكان",
+   "cat": "text",
+   "desc": "Name and title bar, lower third.",
+   "out": "overlay",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "planned"
+  },
+  {
+   "id": "chapter_title",
+   "ar": "عنوان جزء",
+   "cat": "text",
+   "desc": "Section card with number and title.",
+   "out": "full",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "planned"
+  },
+  {
+   "id": "bullet_list",
+   "ar": "نقط ورا بعض",
+   "cat": "text",
+   "desc": "Points appear one by one.",
+   "out": "overlay",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "planned"
+  },
+  {
+   "id": "quote_card",
+   "ar": "اقتباس",
+   "cat": "text",
+   "desc": "Quote with author.",
+   "out": "overlay",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "planned"
+  },
+  {
+   "id": "religious_quote",
+   "ar": "آية/حديث",
+   "cat": "text",
+   "desc": "Calm respectful verse or hadith card with source.",
+   "out": "overlay",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "planned"
+  },
+  {
+   "id": "counter",
+   "ar": "رقم بيعد",
+   "cat": "data",
+   "desc": "Big number counts up beside Aly; optional percent ring.",
+   "out": "overlay",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "building",
+   "comp": "counter"
+  },
+  {
+   "id": "versus",
+   "ar": "مقارنة",
+   "cat": "data",
+   "desc": "Two-column X vs Y comparison.",
+   "out": "full",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "planned"
+  },
+  {
+   "id": "history_timeline",
+   "ar": "خط زمني",
+   "cat": "data",
+   "desc": "Events with years on animated timeline.",
+   "out": "full",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "planned"
+  },
+  {
+   "id": "map_highlight",
+   "ar": "تحديد دولة",
+   "cat": "geo",
+   "desc": "Map zooms and highlights countries with label.",
+   "out": "full",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "planned"
+  },
+  {
+   "id": "captions_word",
+   "ar": "كابشن كلمة بكلمة",
+   "cat": "shorts",
+   "desc": "Always-on Arabic captions, word highlight, from whisper timestamps.",
+   "out": "overlay",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "building",
+   "comp": "captions"
+  },
+  {
+   "id": "portal_world",
+   "ar": "دخول جوه الموشن",
+   "cat": "media",
+   "desc": "Aly cut out; room wipes into image/map world behind him.",
+   "out": "full",
+   "formats": [
+    "16:9"
+   ],
+   "p": 1,
+   "status": "building",
+   "comp": "portal-world"
+  },
+  {
+   "id": "subscribe_press",
+   "ar": "زرار اشترك",
+   "cat": "brand",
+   "desc": "3D keycap subscribe pressed, bell rings, signature rises.",
+   "out": "overlay",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "building",
+   "comp": "subscribe-press"
+  },
+  {
+   "id": "bar_chart",
+   "ar": "أعمدة مقارنة",
+   "cat": "data",
+   "desc": "Animated comparison bars on glass panel; side or full.",
+   "out": "overlay",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "building",
+   "comp": "bar-chart"
+  },
+  {
+   "id": "steps_list",
+   "ar": "خطوات",
+   "cat": "text",
+   "desc": "Numbered steps reveal one by one; current step glows gold.",
+   "out": "overlay",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "building",
+   "comp": "steps-list"
+  },
+  {
+   "id": "icon_pop",
+   "ar": "أيقونة",
+   "cat": "attention",
+   "desc": "Emoji pops near Aly with burst lines; quick gap filler.",
+   "out": "overlay",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "building",
+   "comp": "icon-pop"
+  },
+  {
+   "id": "section_transition",
+   "ar": "فاصل جزء",
+   "cat": "brand",
+   "desc": "Genjutsu chapter break: cinema bars, dark stage, gold title. Long videos only.",
+   "out": "full",
+   "formats": [
+    "16:9"
+   ],
+   "p": 1,
+   "status": "building",
+   "comp": "section-transition"
+  },
+  {
+   "id": "zoom",
+   "ar": "زووم ذكي",
+   "cat": "camera",
+   "desc": "Camera on footage: punch, push or out. Not a file; edit only.",
+   "out": "camera",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "building",
+   "comp": "edit"
+  },
+  {
+   "id": "cta_endcard",
+   "ar": "كارت نهاية الريل",
+   "cat": "brand",
+   "desc": "Reel end card: question, long-video thumbnail, socials, YouTube, QR.",
+   "out": "full",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "building",
+   "comp": "cta-endcard"
+  },
+  {
+   "id": "brand_clip",
+   "ar": "انترو/فاصل/أوترو Genjutsu",
+   "cat": "brand",
+   "desc": "Real Genjutsu intro sting, transitions, outro clips. Videos over 5 min only.",
+   "out": "full",
+   "formats": [
+    "16:9"
+   ],
+   "p": 1,
+   "status": "ready",
+   "comp": "edit"
+  },
+  {
+   "id": "screen_ui",
+   "ar": "تسجيل شاشة مقصوص",
+   "cat": "media",
+   "desc": "Crop of a screen recording (real UI) as a card; camera move crop->crop2; glowing highlight boxes + labels on fields. Rects in source px. 16:9: hx/hw/htop place the card (Aly on the left -> right side); volume plays its sound.",
+   "out": "overlay",
+   "formats": [
+    "16:9",
+    "9:16"
+   ],
+   "p": 1,
+   "status": "building"
+  },
+  {
+   "id": "comment_cta",
+   "ar": "اكتب كلمة في كومنت",
+   "cat": "cta",
+   "desc": "Comment-keyword CTA: comment box types the keyword, posts, DM with link arrives (ties to comment->DM automation).",
+   "out": "overlay",
+   "formats": [
+    "9:16",
+    "16:9"
+   ],
+   "p": 1,
+   "status": "building"
+  },
+  {
+   "id": "threshold_wave",
+   "ar": "موجة وحد الصمت",
+   "cat": "explainer",
+   "desc": "Waveform + dB line: under = silence (red, removed), over = speech (green, kept), gaps close.",
+   "out": "overlay",
+   "formats": [
+    "9:16",
+    "16:9"
+   ],
+   "p": 1,
+   "status": "building"
+  },
+  {
+   "id": "trim_handles",
+   "ar": "قبل وبعد القطعة",
+   "cat": "explainer",
+   "desc": "Speech clip between silences; silence cut but pre/post handle frames stay, then closes up.",
+   "out": "overlay",
+   "formats": [
+    "9:16",
+    "16:9"
+   ],
+   "p": 1,
+   "status": "building"
+  },
+  {
+   "id": "audio_crossfade",
+   "ar": "الصوت يدخل في بعض",
+   "cat": "explainer",
+   "desc": "Two clips: hard cut click, then overlap with X fade lines, playhead plays smoothly.",
+   "out": "overlay",
+   "formats": [
+    "9:16",
+    "16:9"
+   ],
+   "p": 1,
+   "status": "building"
+  },
+  {
+   "id": "green_clip",
+   "ar": "فيديو كروما بتاعي",
+   "cat": "media",
+   "desc": "Aly's own green-screen animations (_branding/on video youtube/instagram) keyed once to alpha webm; dx/dy move it to a free corner. May overlap other graphics.",
+   "out": "overlay",
+   "formats": [
+    "16:9"
+   ],
+   "p": 1,
+   "status": "built (figmaMake 2026-10-08)"
+  },
+  {
+   "id": "egypt_crowd",
+   "ar": "خريطة مصر بالناس",
+   "cat": "infographic",
+   "desc": "Full-screen: Egypt map fills with pictogram people (1 icon ≈ 1M) -> laptops -> jump/raise hands -> one grows & glows, others look -> map folds like a book and flies off. Titles per phase.",
+   "out": "fullscreen",
+   "formats": [
+    "16:9"
+   ],
+   "p": 1,
+   "status": "built (figmaMake 2026-10-08)"
+  },
+  {
+   "id": "judge_scene",
+   "ar": "قطة وكلب / دكتورين",
+   "cat": "infographic",
+   "desc": "Full-screen objective vs subjective: world map, cat & dog photos, people in China/USA agree -> fly to Egypt university pin + chips -> split screen two doctors, same answer, different marks.",
+   "out": "fullscreen",
+   "formats": [
+    "16:9"
+   ],
+   "p": 1,
+   "status": "built (figmaMake 2026-10-08)"
+  },
+  {
+   "id": "logo_flow",
+   "ar": "سلسلة لوجوهات",
+   "cat": "diagram",
+   "desc": "Tool chain: logo tiles + dashed arrows + travelling packet chip (Prompt / Code). arrows:false = just a list of options. Side column or centered row.",
+   "out": "overlay",
+   "formats": [
+    "16:9"
+   ],
+   "p": 1,
+   "status": "built (figmaMake 2026-10-08)"
+  },
+  {
+   "id": "same_word",
+   "ar": "كلمات مختلفة = نفس الحاجة",
+   "cat": "text",
+   "desc": "Chips appear as each name is said, then join in one gold frame with '= نفس الحاجة' (UI/UX said 3 ways).",
+   "out": "overlay",
+   "formats": [
+    "16:9"
+   ],
+   "p": 1,
+   "status": "built (figmaMake 2026-10-08)"
+  },
+  {
+   "id": "credits_drain",
+   "ar": "الكريدت بيخلص",
+   "cat": "infographic",
+   "desc": "Credits battery drains with a counting number, turns red + shake + 'الكريدت خلص!', then choices (pay / wait).",
+   "out": "overlay",
+   "formats": [
+    "16:9"
+   ],
+   "p": 1,
+   "status": "built (figmaMake 2026-10-08)"
+  }
+ ],
+ "packs": "brand/packs.json — set plan.pack per video (charcoal, cinema, concept, map, mint, night, stats, sunset, flat, peace)"
+}

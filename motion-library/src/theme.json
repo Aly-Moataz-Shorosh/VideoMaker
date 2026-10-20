@@ -1,0 +1,61 @@
+{
+  "version": "1-proposal",
+  "status": "proposal — built from Aly's own branding/thumbnails (docs/11-brand-identity.md); needs his OK on a style frame",
+  "fps": 30,
+  "formats": {
+    "16:9": [
+      1920,
+      1080
+    ],
+    "9:16": [
+      1080,
+      1920
+    ]
+  },
+  "colors": {
+    "bg": "#14181F",
+    "panel": "#1F2530",
+    "ink": "#FFFFFF",
+    "inkSoft": "#C9D1DC",
+    "outline": "#0B0E13",
+    "gold": "#F5B83D",
+    "blue": "#3BA9F5",
+    "royal": "#1F4E9F",
+    "red": "#E53935",
+    "green": "#35D07F"
+  },
+  "fonts": {
+    "ar": "Cairo",
+    "en": "Montserrat",
+    "religious": "Amiri"
+  },
+  "weights": {
+    "body": 700,
+    "title": 900
+  },
+  "radius": 22,
+  "shadow": "0 18px 50px rgba(0,0,0,0.45)",
+  "textShadow": "0 4px 0 #0B0E13, 0 0 18px rgba(0,0,0,0.55)",
+  "motion": {
+    "inFrames": 10,
+    "outFrames": 7,
+    "overshoot": 1.07
+  },
+  "digits": "western",
+  "defaultSide": "left",
+  "logo": "brand/logo/signature-calligraphy.png",
+  "mascotSheet": "brand/logo/mascot-sheet-2026.png",
+  "safeArea": {
+    "16:9": {
+      "x": 96,
+      "y": 64
+    },
+    "9:16": {
+      "x": 72,
+      "top": 220,
+      "bottom": 420
+    }
+  },
+  "speaker": "center",
+  "captions": "always"
+}

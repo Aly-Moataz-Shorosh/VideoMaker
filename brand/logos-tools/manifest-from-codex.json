@@ -1,0 +1,51 @@
+{
+ "updated": "2026-10-04",
+ "purpose": "Local cache for future Aly channel edits. Check this registry before browsing.",
+ "logos": {
+  "premiere_pro": {
+   "source_page": "https://www.adobe.com/products/premiere.html",
+   "source_url": "https://main--cc--adobecom.aem.live/cc-shared/assets/img/product-icons/svg/premiere-pro.svg",
+   "original": "premiere-pro-official.svg",
+   "render_derivative": "premiere-pro-official.png",
+   "render_method": "Original Adobe SVG rasterized automatically with resvg-py at 720px, preserving transparent corners; no paths or letters redrawn",
+   "source_sha256": "BB8A26C488D8EA444E88878B83FAF35D7F7760ECFF0A11410270E641B2B905EA",
+   "png_sha256": "EBE101C6547B981C4AAE5B8848A73F6EE3E0EF991697C70E0FB39FE28D3500E8",
+   "note": "Adobe product trademark. Used only for factual identification; verify applicable brand rules before other uses."
+  },
+  "davinci_resolve": {
+   "source_page": "https://commons.wikimedia.org/wiki/File:DaVinci_Resolve_17_logo.svg",
+   "source_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/DaVinci_Resolve_17_logo.svg/500px-DaVinci_Resolve_17_logo.svg.png",
+   "original": "davinci-resolve.png",
+   "sha256": "9C6B0F8F9D2664602C16A074A803BE461EA5F4340006512760F778BED753953E",
+   "note": "Historical recognizable icon; do not claim specific app version. Brand mark/trademark."
+  },
+  "youtube": {
+   "source_page": "https://commons.wikimedia.org/wiki/File:YouTube_full-color_icon_(2017).svg",
+   "file": "youtube-icon.svg",
+   "fetched": "2026-10-06",
+   "note": "Official YouTube icon (trademark) — identification only."
+  }
+ },
+ "sfx": {
+  "explainer_pop": {
+   "file": "mixkit-explainer-pop-3005.wav",
+   "source_url": "https://assets.mixkit.co/active_storage/sfx/3005/3005.wav",
+   "category_page": "https://mixkit.co/free-sound-effects/pop/",
+   "sha256": "2AE8C9395CB02FEC01D1C24BA85E2251ADDE5A57B34CA890247D2ECD5BC12A83"
+  },
+  "select_click": {
+   "file": "mixkit-select-click-1109.wav",
+   "source_url": "https://assets.mixkit.co/active_storage/sfx/1109/1109.wav",
+   "category_page": "https://mixkit.co/free-sound-effects/click/",
+   "sha256": "9136CAEB750756176BD696D639EC74261523FA1F9D8312BE6CCD673A506E0A2B"
+  },
+  "air_woosh": {
+   "file": "mixkit-air-woosh-1489.wav",
+   "source_url": "https://assets.mixkit.co/active_storage/sfx/1489/1489.wav",
+   "category_page": "https://mixkit.co/free-sound-effects/woosh/",
+   "sha256": "FDC4F87EB2C6D29EC3567B299FDC3B2AEEA2432AFE27801DB80C496BDA084499"
+  }
+ },
+ "sfx_license": "https://mixkit.co/license/modal/sfxFree/",
+ "sfx_license_note": "May use in commercial YouTube/social video. Do not redistribute the raw items as stock or source-file library to others; this folder is an internal working cache."
+}

@@ -1,0 +1,22 @@
+{
+  "name": "aly-motion-library",
+  "private": true,
+  "scripts": {
+    "studio": "remotion studio",
+    "still": "remotion still",
+    "render": "remotion render"
+  },
+  "dependencies": {
+    "@react-three/fiber": "8.17.10",
+    "@remotion/cli": "^4.0.533",
+    "@remotion/three": "4.0.533",
+    "@types/react": "^18.3.31",
+    "@types/three": "0.170.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.533",
+    "three": "0.170.0",
+    "typescript": "^7.0.2",
+    "zod": "^4.5.4"
+  }
+}

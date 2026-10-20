@@ -1,0 +1,173 @@
+# Video Maker — Aly Shorosh (read me first)
+
+Goal: help Aly produce MANY high-quality YouTube videos (+ Shorts/Reels) with the least time, zero money,
+and the fewest tokens. First deliverable: a reusable **Motion Graphics Library**.
+
+## Who you work with
+Aly Shorosh — Egyptian content creator (Cairo), CS graduate, software QC engineer, strong professional
+background in graphics, media and video production. Topics: geography, history, religion, sports,
+self-development, relationships, philosophy, general knowledge, explainers. New long video every Friday.
+Full context: `docs/01-about-aly.md`.
+
+## How to talk to Aly (important)
+- Reply in **simple Egyptian Arabic**. Avoid mixing many English words into Arabic sentences — it confuses
+  him. Use an English term only when it is a tool/button name, once, and explain it in Arabic.
+- Short, practical, step by step. One question at a time at most.
+- Code: clean and simple, no over-engineering. UIs: calm and descriptive.
+- Free tools only. No paid services, no subscriptions beyond what he already has.
+
+## Read order (load only what the task needs — saves tokens)
+0. Skill `.claude/skills/aly-video-motion/SKILL.md` — what Aly loved (repeat) + his review mistakes (never repeat).
+   Load it for every video job.
+1. `docs/03-decisions.md` — what was decided and why (don't re-argue settled points).
+2. `docs/05-motion-library-spec.md` — the library to build.
+3. `docs/07-learn-from-codex.md` — review his earlier Codex attempt FIRST (incl. its Excel project catalog).
+4. `docs/06-brand-and-setup.md` — DISCOVER brand/setup from his folders. Aly does NOT fill forms;
+   ask him only what you truly can't find, in one short message.
+5. Tutorial/UI shorts: `docs/16-recipe-tutorial-short.md` (proven recipe + review lessons).
+6. Only if needed: `docs/02-current-workflow.md`, `docs/04-pipeline-plan.md`, `docs/08-token-rules.md`,
+   `docs/09-chat-history.md`.
+
+## Hard rules
+- Never edit, move or delete anything in the Codex folder or in Aly's other automations
+  (reels-publisher, instagram-comment-dm). Read only.
+- Never open/read video files as frames to "look" at them (exception: ONE frame when 06 says so). Work from text (transcripts, JSON, code).
+  To check a motion visually, render ONE still frame (PNG), not a video.
+- Never put money-costing services in the flow.
+- Keep `motion-library/catalog.json` as the single source of truth for templates (see spec).
+
+## Current state (update this section after each work session)
+**Start every job with `docs/14-production-modes.md` (job types, density rule) + `docs/13-plan-rules.md`
++ `docs/15-style-library.md` (what Aly's work looks like; pick a color pack per video).**
+Aly-facing guide: `ابدأ هنا.md`; new project = `new-project.bat` → `projects/<date> <type> <name>/`
+(input/, assets/, notes.txt). Tests live in `projects/_tests/` (00-calibration input is a HARD LINK — never write).
+
+Done (2026-10-06):
+- Codex review `docs/10`; identity `docs/11` (Aly-approved colors/text; name = logo images, text "Aly Shorosh";
+  Arabic spelling شرش); `brand/theme.json` v1; brand files in `brand/` (logo, sfx, logos-tools).
+- Remotion lib (registry in `motion-library/src/registry.ts`): keyword_pop, side_picture, captions (always on,
+  LTR groups for English), subscribe_press (youtube/instagram), portal_world (matte, wave world, alyX move),
+  counter, bar_chart, steps_list, icon_pop, section_transition; `edit`/`edit-v` compositions with smart zoom
+  cues (punch/push/out). 9:16 = centered crop; graphics zone 0.40–0.66, captions below.
+- Tools: transcribe.py (large-v3-turbo + 2nd pass for weak parts), matte.py (RVM mobilenet r0.4, despill
+  edges; resnet50 tested — not better), build_edit.py (plan → edit json, Premiere XML, SRT, review mp4,
+  overlays; --plan/--name/--vertical; cut=false default), fetch.py (yt-dlp).
+- Dry run: full auto-edit 440→198 s (Aly: "very nice", wants MORE motion; cutting is his job now).
+  Test short `_tests/00-calibration/output/short_01.mp4` (16 cues / 39 s).
+- Aly wants (not built yet): intro + transitions + outro for > 5 min videos (outro asset
+  `_branding/outro_1.mov`; R01 originals on drive F:), faceless videos (full-screen scenes), maps,
+  better roto (ask what looked bad), more infographic types.
+- 2026-10-06 style study of ALL his folders (F: Youtube/180 Daraga/Work + archives) → `docs/15-style-library.md`,
+  `brand/packs.json` (10 packs, `plan.pack`), evidence `references/style-sheets/` (3 MB). Identity = logo/
+  signature + subscribe + intro/outro + Aly; colors free per video. New: `cta_endcard` (his reel end card + QR).
+  Tools: `style_sheet.py` (local), `stream_sheet.py` (YouTube frames, no download).
+- F: drive and all external folders are READ-ONLY. Copy small things only. Genjutsu clips copied to `brand/clips/` (cue brand_clip).
+- 2026-10-06 first real job `projects/2026-10-06 shorts RippleCutToll` → ONE condensed 9:16 short (~75 s) +
+  his CTA clip. New: templates `screen_ui` (crop of a real screen recording + highlight marks) and `comment_cta`;
+  build_edit plan keys `video` (alt footage), `keep` (exact ranges), `append` (CTA clip, anchors "A1:S001"),
+  cue `"src": <sec>`; `motion-library/stills.mjs` (N still frames → 1 sheet). His edit had overlays baked in →
+  `work/mkclean.py` rebuilt clean V1 from his .prproj. (transcribe.py print crash on Windows fixed.)
+- RippleCutToll DONE: Aly approved `output/short_02.mp4` (v2 after review). Full recipe + lessons: `docs/16-recipe-tutorial-short.md`.
+- NEXT (Aly 2026-10-06): After Effects versions of `comment_cta` (YouTube/comment popups), `screen_ui` (video card)
+  and `side_picture` (picture sliding in) — editable colors (Essential Graphics / controls) so he reuses them himself in AE.
+- 2026-10-08 `projects/2026-10-07 youtube figmaMake` (his final 8:18 edit, motion only, nothing cut, his intro/outro
+  untouched via `plan.quiet`) → `output/review_01.mp4`. Recipe + gotchas: `docs/17-recipe-youtube-motion-only.md`.
+  New templates: egypt_crowd, judge_scene, logo_flow, same_word, credits_drain, green_clip (+ world map data).
+  Aly reviewed v1 (scenes "ممتاز جدا"; 6 mistakes → checklist in docs/17 + memory) → `output/review_02.mp4`
+  fixes all 6 (badge greeting, picture on the word, face pan via tools/face_pos.py, green clip native side,
+  click marks in every tutorial recording, Claude Code/Codex/Copilot/Cursor logos). Aly approved v2 ("كدا احسن بكتير"). Lessons saved in skill `aly-video-motion`.
+- 2026-10-08 figmaMake → 6 VERTICAL reels `output/reel_1..6.mp4` (ROTO MODE: he is cut out at the bottom over a
+  grainy two-blue motion background, recordings big on top, his CTA clip + comment_cta at the end). Plans:
+  `work/scripts/make_reels.py`; mattes `public/projects/<code>/roto_*.webm`; textures `tools/make_grain_bg.py`.
+  Aly approved the reels ("زي الفل"). Project folders may be archived off-PC: reusable scripts in `tools/recipes/`,
+  green-screen clips `public/brand/greenscreen/`, CTA clip `brand/clips/cta_comment_youtube_9x16.mp4`. Layout rules in skill `aly-video-motion`.
+- 2026-10-08 `projects/2026-10-08 shorts theodesy` (17:18 "حكاية الفيلم") → 10 FACELESS-FIRST vertical shorts: full
+  motion graphics (new composition `film-short`, kit `src/film/`, pack `darkroom`), his cut-out only start/middle/end
+  (raw HDR clips, auto-graded car shots), CTA clip at the end. Recipe: `docs/18-recipe-faceless-film-shorts.md`.
+  Old projects' public assets parked in `motion-library/_parked_public/` (move back if an old project is re-rendered).
+  Aly: animation "ممتاز ممتاز ممتاز" (technique = default for coming projects). Audio was his only complaint → versions:
+  v2 podcast-processed voice + 39 synthesized sfx (`tools/make_sfx.py`, sfx liked), v3 AI voice (Edge TTS + OpenVoice
+  timbre, short re-timed to the voice), v4 (short 2 only) his cut-out the whole short + ORIGINAL voice + sfx. He closed the
+  job after v4 ("كدا شكرا"). Exports: `output/sfx_only/` (sfx stems), `output/voice_original/`, Word script, and a
+  `<video>.txt` (titles + description + pinned comment) beside EVERY video in all projects. Scripts archived in
+  `tools/recipes/theodesy/`. Next time: suggest Adobe Podcast "Enhance Speech" (free tier) for his voice — none of my
+  local voice cleanups satisfied him.
+- 2026-10-09 `projects/2026-10-09 shorts vhstodigital` (his 2023 video "VHS لـ Digital", fetched from YouTube) → 4 shorts he
+  picked from my list (1 his own way, 2 price 30→300, 4 EasyCap vs his way, 8 nostalgia) = `output/short_{1,2,4,8}.mp4`.
+  New look `vhs` for `film-short` (prop `look`, kit `src/vhs/`: CRT, VCR, cassettes, RCA cables, OSD, scanlines, chain diagram);
+  real footage = cropped clips of his screen captures (B&W EasyCap vs colour). Scripts `tools/recipes/vhstodigital/`.
+  **Aly rule (2026-10-09): never clean/process his voice unless he asks — original audio + sfx only.**
+  yt-dlp needs `--js-runtimes node` (else ~100 KB/s). v1 review → v2 (waveform edges `edges.py`, even voice level
+  `level_voice.py`, short 1 = both ways from his summary). Aly approved v2 ("زي الفل"). Recipe: `docs/19-recipe-vhs-shorts.md`.
+- 2026-10-09 **STYLES CATALOG** `styles/` (Aly: "لما اجي اعمل فيديو جديد احط بس انهي ستايل"): numbered folders 01–06, each
+  `sample.mp4` + `cover.jpg` + `اقرأني.txt`; index `styles/الستايلات.md` (Aly) + `styles/styles.json` (Claude: recipe/scripts
+  per number). `projects/_template/notes.txt` has a line `الستايل: ..` → read it first and build that style. Add a new
+  numbered folder whenever a new look gets approved.
+- 2026-10-09 `projects/2026-10-09 shorts cairohistory` (his "خريطة القاهرة", Google Earth) → 4 MAP shorts (1 summary build, 3 Port Said
+  street was a canal, 2 Zamalek, 9 seat of power ×7). Map = HIS KMZ (`E:/root/output/GoogleEarth/*.kmz`) + OSM Nile → `src/cairo/` engine
+  (3D tilted map, houses rise inside his polygons, years, countryball cities, crown hops). Recipe `docs/20-recipe-map-history-shorts.md`.
+  Then all 9 shorts (4–8 too). APPROVED = v2 of 4/5/6 → **style 07 map-history** (big cut-out in the opening, small round webcam after,
+  no roto). Outputs: `output/` (v1), `output/v2/`. Scripts `tools/recipes/cairohistory/`. Aly: "ممتاز… عاش اوي" (2026-10-10).
+- 2026-10-10 `projects/2026-10-10 shorts historyOfGraphics` (his "تاريخ الجرافيكس", 12:25) → 9 ideas, best 5 first (3 death→writing,
+  4 pyramids/dead sciences, 5 stone→paper→print, 7 main skill per era, 9 whole history), then the rest (1 weak human, 2 three criteria,
+  6 picture = 1000 words, 8 82% video + teach kids) = `output/short_1..9.mp4` (first 5/7/9 kept in output/v1; v1 press was frozen + a Nazi poster
+  in his propaganda insert — never use that clip). NEW look 'hist'
+  (`src/hist/`): ONE continuous timeline world, old LEFT → new RIGHT, camera walks/stops/zooms per era, photo/clip circles, HUD era+year,
+  3 criteria meters; his face = BIG circle opening that shrinks into a small circle to the end (NOT a cut-out). Music from Pixabay
+  (only tracks WITHOUT Content ID), pictures Wikimedia Commons. Recipe `docs/21-recipe-timeline-history-shorts.md`, scripts
+  `tools/recipes/historyOfGraphics/`. APPROVED ("الجودة حلوة اوي اوي اوي ممتاز") → **style 08 timeline-history**; job closed.
+  Only note: short 1's music (curious_mind) too busy → calm music only from now on (don't re-edit the delivered ones). Cairohistory/vhstodigital public parked.
+- 2026-10-10 NEW SHOW "انت بتشتغل ايه" (interview, guest per episode, depts حاسبات cs / فنون fnon): show bible
+  `docs/22-show-enta-btshtghl-eh.md` (look = his intros + styles.png stickers + film grain/glitch; pacing ~1 change / 2 s).
+  Episodes via `projects/انت بتشتغل ايه/new-episode.bat` → `<date> epNN <dept> <guest>/`; brand copies in `brand/enta/`.
+  Nothing rendered yet — waiting for his first edited episode.
+- 2026-10-10 EP01 `projects/انت بتشتغل ايه/2026-10-10 ep01 fnon Ahmed Moataz Shorosh` (guest = BIM architect, Technical Design dept;
+  ONE wide couch camera, Aly LEFT) → `output/review_01.mp4` (+ .xml/.srt/.txt). Virtual camera on the speaker (voice clustering),
+  enta kit (`src/enta/`: stickers from his sheet, term cards, taped photos, 5 full-screen boards), sfx cue. Recipe in docs/22
+  ("Episode 1 recipe"), scripts `tools/recipes/enta_ep01/`. Waiting for Aly's review.
+- 2026-10-14 `projects/2026-10-14 shorts ffmpeg` (his 2021 FFmpeg lecture clip, no face, style "جديد" + 5 Behance links) → NEW look 'pop'
+  (`src/pop/`: violet + neon lime, grid, pixel dissolves, Figma selection boxes, glossy smiley ball, cursor clicks, echo type, tickers,
+  polaroids, lavender HUD) → 3 faceless shorts `output/short_1..3.mp4` (1 condensed tutorial, 2 why it opens & closes, 3 three ways to open CMD).
+  Aly: animation liked a lot, but split shorts = incomplete info → v2 ONE full short `output/v2/short_full.mp4` (2:43). RULES: ask one or
+  several shorts first; never ≥ 3:00. Recipe `docs/23-recipe-pop-studio-shorts.md`, scripts `tools/recipes/ffmpeg/`. v2 APPROVED ("تمام") → **style 09 pop-studio**.
+- 2026-10-14 `projects/2026-10-14 shorts lighting` (his "lighting your setup", 12:41, style "new" + Behance ref S.r. Seth Portfolio 2026) →
+  asked first → ONE full short `output/short_1.mp4` (2:49). NEW look 'glass' (`src/glass/`: frosted glass cards on charcoal-navy glows in HIS
+  channel colours, typing words + gold pill, Light Studio toggles clicked on the moment each light turns on, sphere 2D→3D, vector bust lit
+  from an angle, spill/foil/grid, phone Manual Focus) + `Cam` = his camera ALWAYS on screen (cam.mp4 of the kept pieces, modes full/low/
+  wide/mini/hide; wide on every light reveal). Recipe `docs/24-recipe-glass-face-shorts.md`, scripts `tools/recipes/lighting/`.
+  APPROVED ("الستايل حلو", 2026-10-15) → **style 10 glass-face**. Parked public: ep01 + historyOfGraphics → `_parked_public/` (move back to re-render).
+- 2026-10-15 `projects/2026-10-15 shorts adobeaudition` (his Audition voice-fix video, style 10) → asked first → ONE full short
+  `output/short_1.mp4` (2:02). Glass look + his face always on (talking head, then the webcam CORNER of his screen recording: Cam modes
+  `corner`/`cmini`), his real Audition recording big in a glass card with gold boxes on every click (`Screen`), real voice bars before/after
+  (`Sound`), scenes `src/glass/audition.tsx`. NEW TRIAL: QR of the full-video link in the CTA (`CommentCta` qr/qrAt; at the top, never on
+  his face) + in the last scene. Scripts `tools/recipes/adobeaudition/`. Aly v1 review: needs a HOOK → `output/v2/short_1.mp4` (1:32): before→after hook, steps at once with zoom on every click, small round webcam, voice enhanced (not the demo). v2 review: hook must be the REAL demo he played (1:53 before / 1:59 after) → v3; Aly: use his OPENING demo (0:00 Before label / 0:10.8 After) → `output/v4/short_1.mp4` (1:31, his real clip big in the middle). APPROVED v4 ("تمام") → **style 11 tutorial-hook-glass**, recipe `docs/25-recipe-tutorial-hook-glass.md`.
+- 2026-10-16 show intro video `projects/انت بتشتغل ايه/فيديو تعريفي` (Aly alone, 4:23, nothing cut, no intro/outro) → `output/review_01.mp4`:
+  enta look, files screenshot 2023, muted intro teasers on the side, new boards enta_flavours + enta_drawer. Code `enta00`, recipe in docs/22. APPROVED v1 ("حلو جدا الفيديو").
+- 2026-10-16 `projects/2026-10-15 shorts aftereffects to code` (his AE → Lottie/Bodymovin tutorial, style "2 and 6 and 10") → asked first → ONE
+  full short `output/short_1.mp4` (2:51): NEW mixed look 'lottie' (`src/glass/lottie.tsx`: grainy two-blue bg + glass + light VHS OSD, his
+  water-circle animation rebuilt in vector, code typed in a vector editor, real AE/browser screen with gold click boxes, round webcam).
+  Aly: v1 "طويل على الفاضي" → v2 `output/v2/short_1.mp4` (1:01, his 8-part outline, one sentence each).
+  Recipe `docs/26-recipe-lottie-mixed-short.md`, scripts `tools/recipes/aftereffects2code/`. v2 "احسن بكتير" + 4 notes → v3 `output/v3/short_1.mp4` (1:23). APPROVED v3 ("ده ممتاز حلو اوي") → **style 12 lottie-mix**.
+- 2026-10-16/17 `projects/2026-10-16 youtube premiere pro course` (his 2018 Premiere course, 3 YouTube parts 2:55 h → ONE course video 2:58,
+  nothing cut, no intro/outro): NEW composition `course` (25 fps, `src/course/`: screen ALWAYS visible full/side + click zooms, Kw pills,
+  Def/Fig cards, keycaps, DaVinci names, ⚡ 2026 cards with best video + QR, concept animations, 47 chapter separators with music, opening =
+  2018 proof + 3 coverage rings 100/81/71 + timestamps, last chapter = what to learn next). Ch1 review approved after 2 notes (music in the
+  opening, no "الحلقة N"). Recipe `docs/27-recipe-course-video.md`, scripts `tools/recipes/premierecourse/`, sources `research/` (44 verified
+  screenshots), Excel `output/تغطية_كورس_بريمير.xlsx`, description `output/premiere_course_full.txt`. Full render → `output/premiere_course_full.mp4`.
+- 2026-10-18 premiere course → 44 SHORTS series (`output/shorts/NN_name.mp4` + `.txt`, posting order = file number, most impressive
+  first). Composition `course-short` (series frame + band: title, REEL NN/44, chapter + minute; captions; QR + his whole CTA clip).
+  Aly's review notes (whole words, whole sentences, show the changing panel, anim + real screen, correct drawings, self-contained,
+  compress like `ffmpeg -i in out`) → docs/27 "Shorts series" + skill. All 44 rendered; 2nd review fixed 1/25/30/31/34 (click marks in
+  dual cards + manual `clicks`, timeline on screen, fast start, his own rose+Save example drawn = anim `RoseKey`). Job DONE (Aly: "thank you").
+  `_raw` deleted; `output/full` course chunks (1.5 GB) still kept — ask before deleting.
+- 2026-10-18/19 `projects/2026-10-18 shorts newstage19shorts` (his 52-min New Stage 19 lecture "Digital Art") → 30 viral shorts
+  (hook first + rewind, headline, 3D-emoji tray, side badge + QR, no CTA). v1 small card + v2 roto rejected → v3: he fills the
+  9:16 frame cut from the RAW HLG file (`cam.py`), faces of others blurred, Fluent 3D emoji. Recipe `docs/28-recipe-lecture-stage-shorts.md`,
+  scripts `work/scripts/` (build.sh N…). Output `output/v3/NN_slug.mp4` + .txt. Review 2026-10-19 ("حلو اوي اوي ممتاز") → 18 shorts redone (real material,
+  three.js scenes, NO blur — he blurs himself; old in `output/v3/archive/`), then 28 v2 (lip-sync fix: separate audio/video concat;
+  qc_sync.py + qc_cam.py). APPROVED → **style 13 lecture-stage**, scripts `tools/recipes/newstage19/`. Shorts built before the sync fix
+  (all but 28) drift up to 0.28 s — rebuild only if Aly asks. 28 v3 fixes a stale reused camera (build.sh now checks camera timeline + length). Then 4 more shorts 31–34 from the
+  unused lecture parts (`new_1019.py`, TOTAL 34). Job closed (Aly: "thank you").
+- ⚠ Remotion copies public/ (~2 GB) into Temp on EVERY bundle/still → C: hit 0 bytes twice. Use `stills_cli.sh`
+  (one bundle in out/bundle), set TEMP/TMP to `motion-library/out/tmp` for renders and DELETE that folder after (one render left 13 GB).
+- ⚠ E: ~17 GB free. Premiere 2020 alpha format still untested by Aly (`_tests/premiere-test`).

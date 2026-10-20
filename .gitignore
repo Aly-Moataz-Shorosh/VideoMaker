@@ -1,0 +1,34 @@
+# dependencies / build
+node_modules/
+motion-library/out/
+motion-library/public/
+motion-library/_parked_public/
+__pycache__/
+*.pyc
+
+# project media (too big for GitHub)
+projects/*/
+!projects/_template/
+projects/_tests/
+
+# heavy media anywhere
+*.mp4
+*.mov
+*.mkv
+*.avi
+*.webm
+*.wav
+*.mp3
+*.m4a
+*.aac
+*.flac
+*.prproj
+*.aep
+*.psd
+*.kmz
+*.zip
+*.7z
+*.pt
+*.pth
+*.onnx
+*.bin
