@@ -9,5 +9,5 @@ python -X utf8 tools/build_edit.py "$proj" --name "$name" || exit 1
 pub=motion-library/public/projects
 mv -f "$pub/$code/edit_$name.json" "$pub/entacs01/" && rm -rf "$pub/$code"   # source.mp4 there is a hard link
 python -X utf8 -c "
-import sys; p=sys.argv[1]; s=open(p,encoding='utf8').read().replace('projects/$code/','projects/entacs01/'); open(p,'w',encoding='utf8').write(s)" "$pub/entacs01/edit_$name.json"
+import sys; p=sys.argv[1]; s=open(p,encoding='utf8').read().replace('projects/$code/','projects/entacs01/').replace('entacs01/source.mp4','entacs01/source30.mp4'); open(p,'w',encoding='utf8').write(s)" "$pub/entacs01/edit_$name.json"
 echo "ok $pub/entacs01/edit_$name.json"

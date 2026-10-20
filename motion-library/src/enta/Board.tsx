@@ -22,7 +22,8 @@ export const Backdrop: React.FC<{children: React.ReactNode; tint?: string}> = ({
       <AbsoluteFill style={{background: `radial-gradient(circle at ${gx}% ${gy}%, rgba(92,139,192,.22) 0%, transparent 45%), radial-gradient(circle at ${100 - gx}% ${100 - gy}%, rgba(224,100,46,.12) 0%, transparent 40%)`}} />
       <AbsoluteFill style={{background: 'radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,.55) 100%)'}} />
       <AbsoluteFill>{children}</AbsoluteFill>
-      <Grain opacity={0.18} seed={41} />
+      {/* static paper grain as a PNG (a full-frame SVG noise filter is very slow to render) */}
+      <Img src={staticFile('enta/meet_grain_0.png')} style={{position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.08, mixBlendMode: 'overlay'}} />
     </AbsoluteFill>
   );
 };

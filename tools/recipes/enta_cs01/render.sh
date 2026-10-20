@@ -17,7 +17,7 @@ while [ $s -lt $TOTAL ]; do
   if [ ! -f "$f" ]; then
     mkdir -p "$T"; export TEMP="$(cygpath -w "$T")" TMP="$(cygpath -w "$T")"
     st=$(date +%s)
-    npx remotion render out/bundle edit "$f.part.mp4" --props="$PROPS" --frames=$s-$e --muted --crf=20 --concurrency=6 --timeout=240000 > "$W/render_$i.log" 2>&1 \
+    npx remotion render out/bundle edit "$f.part.mp4" --props="$PROPS" --frames=$s-$e --muted --crf=20 --concurrency=10 --timeout=240000 > "$W/render_$i.log" 2>&1 \
       && mv "$f.part.mp4" "$f" && echo "chunk $i ($s-$e) OK $(( $(date +%s) - st ))s" || { echo "chunk $i FAILED"; tail -5 "$W/render_$i.log"; exit 1; }
     rm -rf "$T"
   fi

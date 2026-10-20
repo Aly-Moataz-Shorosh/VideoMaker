@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, OffthreadVideo, Sequence, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, Img, OffthreadVideo, Sequence, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 
 // Online episode (Google Meet screen recording, cs ep01 2026-10-20). Aly: "simple, keep our focus on the video, hide the
 // top and bottom parts" -> the Meet UI is never shown: each webcam tile is cut from the recording and laid on a calm dark
@@ -98,10 +98,8 @@ export const MeetBg: React.FC<{frame: number}> = ({frame}) => {
       <AbsoluteFill style={{background: `radial-gradient(ellipse 55% 60% at ${22 + d(400, 4)}% ${30 + d(530, 5)}%, rgba(92,139,192,.16), transparent 70%)`}} />
       <AbsoluteFill style={{background: `radial-gradient(ellipse 50% 55% at ${80 + d(470, 4)}% ${75 + d(610, 4)}%, rgba(224,100,46,.10), transparent 70%)`}} />
       <AbsoluteFill style={{background: 'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 55%, rgba(0,0,0,.45))'}} />
-      <svg style={{position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.07, mixBlendMode: 'screen'}}>
-        <filter id="meetgrain"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed={Math.floor(frame / 3) % 4} /></filter>
-        <rect width="100%" height="100%" filter="url(#meetgrain)" />
-      </svg>
+      {/* fine grain = pre-made noise PNGs (an SVG feTurbulence over the full frame made the render ~1 fps) */}
+      <Img src={staticFile(`enta/meet_grain_${Math.floor(frame / 3) % 3}.png`)} style={{position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.05, mixBlendMode: 'screen'}} />
     </AbsoluteFill>
   );
 };
