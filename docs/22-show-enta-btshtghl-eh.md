@@ -122,4 +122,4 @@ the guest's job, terms and examples. Goal (Aly): fun, visualized, explain every 
 - Aly's notes on review_01 (chunks 0-3): one-path bubble, ON AIR text fits, NO 'مثال' unless I simplify a term myself, a short
   definition for EVERY term said, QA/QC card = "QA مجال وQC مجال تاني… إحنا هنا بنتكلم عن الـQC" (don't correct the words said),
   links note "في الوصف", speaker circle on boards > 5 s (MeetPip, `pip` cues; not on qa_login — busy enough), circle not zoomed
-  on the face, Aly ALWAYS left / guest ALWAYS right (meet.left = 'A', person+card on his side). Liked: cadre switching + background.
+  on the face, sides by GAZE (looks left -> placed right; here Aly left / guest right, meet.left = 'A' — usual, not a law), person+card on his side. Liked: cadre switching + background.
