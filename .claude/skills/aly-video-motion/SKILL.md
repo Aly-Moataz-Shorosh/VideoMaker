@@ -19,7 +19,7 @@ But (v2 review): keep the sentence that gives the hook its meaning (what it's FO
 
 ## 0. Style number first
 `notes.txt` line `الستايل: NN` → `styles/styles.json` tells the recipe/scripts for that number (01 youtube-motion, 02 reels-roto,
-03 tutorial-short, 04 film-faceless, 05 film-face, 06 vhs-faceless, 07 map-history, 08 timeline-history, 09 pop-studio, 10 glass-face, 11 tutorial-hook-glass, 12 lottie-mix; samples in `styles/`). No number → ask him ONE
+03 tutorial-short, 04 film-faceless, 05 film-face, 06 vhs-faceless, 07 map-history, 08 timeline-history, 09 pop-studio, 10 glass-face, 11 tutorial-hook-glass, 12 lottie-mix, 13 lecture-stage, 14 online-interview; samples in `styles/`). No number → ask him ONE
 question with the list. A newly approved look = a new numbered folder (sample.mp4 12 s, cover.jpg, اقرأني.txt) + styles.json entry.
 
 ## 1. Read the job first
@@ -98,6 +98,13 @@ question with the list. A newly approved look = a new numbered folder (sample.mp
    Bubble tail again looked glued on (#16) -> EntaBubble is now ONE SVG path. Text must fit its sticker (ON AIR was cut).
    Explanation boards > ~5 s: the person talking in a circle in a corner (MeetPip, cue `pip`) — skip only when the board
    itself is full of motion. Liked: the cadre switching ("حركة التنقل حلوة جدا جدا") and the calm dark background.
+
+## ONLINE interview (style 14, enta cs ep01 2026-10-20, docs/22 'حاسبات ep01') — cadre switching + background "حلوة جدا جدا"
+- Google Meet/Zoom screen recording: hide the meeting UI, tiles on a calm dark bg, NO decorative frame ("دوشة"), switch cadres
+  (two / one big / person + card) instead of zoom; zoom only inside a tile, ≤ 1.08. Sides by gaze (usually Aly left, guest right).
+- Every term = card with a plain definition; boards > 5 s get the speaker circle (not a tight face crop) unless the board is busy.
+- Render: 30 fps proxy + PNG grain (full-frame SVG noise = 14 h render), 5-min muted chunks + ffmpeg audio.
+- LONG videos: never compress without asking him (shorts: always compress).
 
 ## Vertical reels from a long video (figmaMake reels 2026-10-08)
 - Ranges = closed ideas; his edit has almost no pauses → put every edge on a measured audio dip (50 ms dB profile),

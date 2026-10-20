@@ -121,6 +121,16 @@
    "recipe": "docs/28-recipe-lecture-stage-shorts.md",
    "scripts": "tools/recipes/newstage19/ (build.sh N.. = make_short -> cam.py -> qc_cam -> render -> level; qc_sync.py)",
    "rules": "no blur (he does it), no roto, never a small card, every word whole + sentence finished, no repeated speech between shorts, real material first, audio/video concat separately (lip sync), < 3:00"
+  },
+  "14": {
+   "folder": "14 online-interview",
+   "name": "ONLINE interview from a Google Meet screen recording: Meet UI hidden, webcam tiles on a calm dark bg (MeetBg), cadre switches (two / one big / person + card) with a soft 14-frame slide instead of zoom, zoom only inside a tile <= 1.08, sides by gaze (usually Aly left / guest right), term card with a plain definition for every term ('مثال' only for my own simplification), full-screen QA-style boards with the speaker circle (pip) on boards > 5 s, bottom notes instead of captions, his intro as is ('full' shot)",
+   "approved": "enta cs ep01 review_02 (2026-10-20, cadre switching + background 'حلوة جدا جدا')",
+   "input": "his edited episode (Meet recording) + guest links",
+   "build": "composition 'edit' with prop meet {G,A,left} + cues shot/pip (src/enta/Meet.tsx), boards src/enta/BoardQA.tsx, cards src/enta/EntaTerm/EntaPop, vector stickers vstick.tsx",
+   "recipe": "docs/22-show-enta-btshtghl-eh.md (section 'حاسبات ep01')",
+   "scripts": "tools/recipes/enta_cs01/ (voices -> speakers -> gaze_tl -> make_plan -> build.sh -> render.sh = 5-min muted chunks + mix_audio.py)",
+   "rules": "30 fps proxy + PNG grain (render speed), no captions, original voice + sfx, long videos: ask before compressing"
   }
  },
  "_always": "Every style: his ORIGINAL voice (only per-sentence gain to one level, no cleanup), edges fitted on the waveform, sfx, CTA clip + comment card at the end of shorts, <video>.txt beside every output, sfx + voice stems. Word script only on request. Shorts: ASK one short (whole goal of the video) or several (suggestions, he picks) first; no short ever reaches 3:00."

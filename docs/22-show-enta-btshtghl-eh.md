@@ -123,3 +123,4 @@ the guest's job, terms and examples. Goal (Aly): fun, visualized, explain every 
   definition for EVERY term said, QA/QC card = "QA مجال وQC مجال تاني… إحنا هنا بنتكلم عن الـQC" (don't correct the words said),
   links note "في الوصف", speaker circle on boards > 5 s (MeetPip, `pip` cues; not on qa_login — busy enough), circle not zoomed
   on the face, sides by GAZE (looks left -> placed right; here Aly left / guest right, meet.left = 'A' — usual, not a law), person+card on his side. Liked: cadre switching + background.
+- review_02 APPROVED (Aly 2026-10-20: "حلو جدا") -> **style 14 online-interview** (styles/14). Long videos: ask before compressing (shorts: always).
