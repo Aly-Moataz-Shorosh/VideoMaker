@@ -169,6 +169,12 @@ Done (2026-10-06):
   qc_sync.py + qc_cam.py). APPROVED → **style 13 lecture-stage**, scripts `tools/recipes/newstage19/`. Shorts built before the sync fix
   (all but 28) drift up to 0.28 s — rebuild only if Aly asks. 28 v3 fixes a stale reused camera (build.sh now checks camera timeline + length). Then 4 more shorts 31–34 from the
   unused lecture parts (`new_1019.py`, TOTAL 34). Job closed (Aly: "thank you").
+- 2026-10-20 show "انت بتشتغل ايه" حاسبات EP01 `projects/انت بتشتغل ايه/2026-10-20 ep01 cs quality control` (guest Aiman Ismail, Senior QA;
+  ONLINE = Google Meet screen recording 30:23). Aly rejected his OBS frames ("دوشة") -> simple: Meet UI hidden, webcam tiles on a calm
+  dark bg, cadre switches instead of zoom, zoom only inside a tile ≤1.08 (`src/enta/Meet.tsx`, cue `shot`). 13 QA boards
+  `src/enta/BoardQA.tsx`, vector stickers `src/enta/vstick.tsx`. Render = 5-min muted chunks + ffmpeg audio (`work/scripts/render.sh`),
+  30 fps proxy `source30.mp4` + PNG grain (SVG noise made it 14 h). Recipe docs/22 "حاسبات ep01", scripts `tools/recipes/enta_cs01/`.
+  `output/review_01.mp4` -> waiting for Aly's review.
 - ⚠ Remotion copies public/ (~2 GB) into Temp on EVERY bundle/still → C: hit 0 bytes twice. Use `stills_cli.sh`
   (one bundle in out/bundle), set TEMP/TMP to `motion-library/out/tmp` for renders and DELETE that folder after (one render left 13 GB).
 - ⚠ E: ~17 GB free. Premiere 2020 alpha format still untested by Aly (`_tests/premiere-test`).
