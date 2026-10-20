@@ -119,3 +119,7 @@ the guest's job, terms and examples. Goal (Aly): fun, visualized, explain every 
 - Render: `work/scripts/render.sh review_NN` = 5-min MUTED chunks + `mix_audio.py` (his audio untouched + sfx) + join.
   stills_cli.sh now empties TEMP after every still (each still copied the 2 GB source: 11 stills filled E:).
 - Scripts archived in `tools/recipes/enta_cs01/`.
+- Aly's notes on review_01 (chunks 0-3): one-path bubble, ON AIR text fits, NO 'مثال' unless I simplify a term myself, a short
+  definition for EVERY term said, QA/QC card = "QA مجال وQC مجال تاني… إحنا هنا بنتكلم عن الـQC" (don't correct the words said),
+  links note "في الوصف", speaker circle on boards > 5 s (MeetPip, `pip` cues; not on qa_login — busy enough), circle not zoomed
+  on the face, Aly ALWAYS left / guest ALWAYS right (meet.left = 'A', person+card on his side). Liked: cadre switching + background.
