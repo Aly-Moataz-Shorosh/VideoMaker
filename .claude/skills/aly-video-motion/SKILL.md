@@ -92,6 +92,13 @@ question with the list. A newly approved look = a new numbered folder (sample.mp
 
 16. Speech bubbles: body + tail are ONE shape with one continuous outline — no visible seam at the tail (Aly 2026-10-13).
 
+17. (enta cs ep01 review 2026-10-20) "مثال" label on term cards was wrong almost every time: write "مثال" ONLY when the line is MY
+   simplification of a scientific term; when it is what he/the guest said, no label (EntaTerm `exLabel`, default empty).
+   EVERY term that is said (UI/UX, Postman, Agile, Refund, Soft Skills…) gets a short plain definition on screen.
+   Bubble tail again looked glued on (#16) -> EntaBubble is now ONE SVG path. Text must fit its sticker (ON AIR was cut).
+   Explanation boards > ~5 s: the person talking in a circle in a corner (MeetPip, cue `pip`) — skip only when the board
+   itself is full of motion. Liked: the cadre switching ("حركة التنقل حلوة جدا جدا") and the calm dark background.
+
 ## Vertical reels from a long video (figmaMake reels 2026-10-08)
 - Ranges = closed ideas; his edit has almost no pauses → put every edge on a measured audio dip (50 ms dB profile),
   never on Whisper word times (they are ~0.3 s off). No clean dip → keep the piece whole.

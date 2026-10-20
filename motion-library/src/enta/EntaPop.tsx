@@ -47,19 +47,24 @@ export const EntaBubble: React.FC<z.infer<typeof entaBubbleSchema>> = ({text, x,
   const p = enter(frame, fps), out = exit(frame, durationInFrames, 7), k = Math.min(p, out);
   const acc = (E as Record<string, string>)[accent];
   const tl = tail === 'left';
+  // Bubble + tail = ONE path with one outline (Aly 2026-10-13 / 2026-10-20: the tail looked glued on, not part of the bubble).
+  const lines = Math.max(1, Math.ceil(text.split('*').join('').length / Math.max(8, (w - 90) / 34)));
+  const h = 70 + lines * 70, r = h / 2, T = 64;  // body height, corner radius, tail length
+  const tx = tl ? r + 30 : w - r - 30;              // tail root (on the bottom edge, towards the speaker)
+  const tailPts = tl ? `H${tx + 30} L${tx - 22} ${h + T} L${tx - 8} ${h}` : `H${tx + 8} L${tx + 22} ${h + T} L${tx - 30} ${h}`;
+  const d = `M${r} 0 H${w - r} A${r} ${r} 0 0 1 ${w - r} ${h} ${tailPts} H${r} A${r} ${r} 0 0 1 ${r} 0 Z`;
   return (
     <Base previewBg={previewBg}>
-      <div style={{position: 'absolute', left: x * width - w / 2, top: y * height, width: w, transform: `translateY(-50%) scale(${k}) rotate(${tl ? 2 : -2}deg)`,
-        transformOrigin: tl ? '0% 100%' : '100% 100%'}}>
-        <div style={{position: 'relative', background: E.bluePaper, borderRadius: 999, padding: '34px 46px', textAlign: 'center',
-          border: `6px solid ${E.ink}`, outline: `7px solid ${E.white}`, boxShadow: '0 16px 30px rgba(0,0,0,.5)', overflow: 'hidden'}}>
-          <Grain opacity={0.35} seed={21} />
-          <div style={{position: 'relative', fontSize: 58, fontWeight: 900, color: E.ink, lineHeight: 1.2}}><Hi text={text} color={acc} /></div>
-        </div>
-        <svg width={90} height={80} style={{position: 'absolute', bottom: -58, [tl ? 'left' : 'right']: 40, transform: tl ? 'none' : 'scaleX(-1)'}}>
-          <path d="M10 0 L70 0 L4 74 Z" fill={E.bluePaper} stroke={E.ink} strokeWidth={6} strokeLinejoin="round" />
-          <rect x={14} y={-8} width={50} height={14} fill={E.bluePaper} />
+      <div style={{position: 'absolute', left: x * width - w / 2, top: y * height - h / 2, width: w, height: h + T,
+        transform: `scale(${k}) rotate(${tl ? 2 : -2}deg)`, transformOrigin: tl ? '15% 100%' : '85% 100%', filter: 'drop-shadow(0 16px 20px rgba(0,0,0,.5))'}}>
+        <svg width={w + 16} height={h + T + 18} viewBox={`-8 -8 ${w + 16} ${h + T + 18}`} style={{position: 'absolute', left: -8, top: -8, overflow: 'visible'}}>
+          <path d={d} fill={E.white} stroke={E.white} strokeWidth={20} strokeLinejoin="round" />
+          <path d={d} fill={E.bluePaper} stroke={E.ink} strokeWidth={6} strokeLinejoin="round" />
         </svg>
+        <div style={{position: 'absolute', left: 0, top: 0, width: w, height: h, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 46px',
+          boxSizing: 'border-box', textAlign: 'center', fontSize: 58, fontWeight: 900, color: E.ink, lineHeight: 1.2}}>
+          <span><Hi text={text} color={acc} /></span>
+        </div>
       </div>
     </Base>
   );

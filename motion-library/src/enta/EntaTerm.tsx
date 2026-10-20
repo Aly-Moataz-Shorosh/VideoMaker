@@ -14,6 +14,7 @@ export const entaTermSchema = z.object({
   def: z.string().default('الرسمة اللي المقاول بيبني منها'),
   example: z.string().default(''),
   exampleAt: z.number().default(45), // frame the example line appears (on its word)
+  exLabel: z.string().default(''), // 'مثال' ONLY when Claude simplifies a term with its own example (Aly 2026-10-20); his/guest's words = no label
   pic: z.string().default(''), // optional small picture inside the card (public path)
   sticker: z.string().default(''), // optional sticker from his sheet on the card corner
   side: z.enum(['left', 'right', 'center']).default('right'),
@@ -58,8 +59,8 @@ export const EntaTerm: React.FC<z.infer<typeof entaTermSchema>> = (p) => {
           ) : null}
           {p.example ? (
             <div style={{marginTop: 18, display: 'flex', alignItems: 'center', gap: 14, opacity: exP, transform: `translateX(${lerp(exP, -30, 0)}px)`}}>
-              <span style={{background: acc, color: E.white, fontWeight: 900, fontSize: 28, padding: '4px 16px', borderRadius: 10,
-                transform: 'rotate(-3deg)', flexShrink: 0}}>مثال</span>
+              {p.exLabel ? <span style={{background: acc, color: E.white, fontWeight: 900, fontSize: 28, padding: '4px 16px', borderRadius: 10,
+                transform: 'rotate(-3deg)', flexShrink: 0}}>{p.exLabel}</span> : null}
               <span style={{fontSize: 34, fontWeight: 800, lineHeight: 1.3}}><Hi text={p.example} color={acc} /></span>
             </div>
           ) : null}

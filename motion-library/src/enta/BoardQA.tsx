@@ -197,7 +197,7 @@ export const qaEyesSchema = z.object({
 // Face 0 = ✓ (the side the developer looks at); the other faces = bugs the tester finds by turning it.
 const IsoCube: React.FC<{t: number; s: number; bugs: boolean}> = ({t, s, bugs}) => {
   const a = t * Math.PI / 2 - Math.PI / 4 + 0.12;     // t = 0 -> face 0 almost frontal, a hint of the next side
-  const r = s * 0.62, tilt = 0.32, h = s * 0.9, top = -h / 2;
+  const r = s * 0.62, tilt = 0.45, h = s * 0.9, top = -h / 2;
   const V = [0, 1, 2, 3].map((j) => { const ph = a + Math.PI / 4 + j * Math.PI / 2; return {x: r * Math.sin(ph), z: r * Math.cos(ph)}; });
   const yT = (v: {z: number}) => top + v.z * tilt;      // nearer (z > 0) = lower on screen
   const faces = [0, 1, 2, 3].map((k) => ({k, p: V[k], q: V[(k + 1) % 4], z: (V[k].z + V[(k + 1) % 4].z) / 2}))
@@ -225,7 +225,7 @@ const IsoCube: React.FC<{t: number; s: number; bugs: boolean}> = ({t, s, bugs}) 
 };
 export const QaEyes: React.FC<z.infer<typeof qaEyesSchema>> = ({title, devAt, devText, testAt, testText, anglesAt, anglesText, previewBg}) => {
   const {frame, width: W, height: H} = useF();
-  const FRONT = -0.5764; // t where face 0 (✓) faces the camera
+  const FRONT = -0.29; // face 0 (✓) mostly towards the camera, the next side visible (a real 3D box, not a flat square)
   const turn = FRONT + (frame < anglesAt ? 0 : (frame - anglesAt) / 45); // keeps turning
   return (
     <Base previewBg={previewBg}>
@@ -421,8 +421,8 @@ export const QaApi: React.FC<z.infer<typeof qaApiSchema>> = ({title, uiAt, selAt
         {/* left to right like the request flow: browser -> API -> server */}
         <div style={{position: 'absolute', left: xs[0] + 190, top: y - 3, width: xs[2] - xs[0] - 380, height: 6, background: 'rgba(255,255,255,.25)', borderRadius: 3}} />
         {frame >= apiAt ? [0, 1, 2].map(pkt) : null}
-        {box(0, uiAt, 'globe_with_meridians', 'UI', 'المتصفح', frame >= uiAt && frame < postmanAt)}
-        {box(1, apiAt, 'link', 'API', 'بيكلّم الـBack End', frame >= postmanAt)}
+        {box(0, uiAt, 'globe_with_meridians', 'UI', 'الشاشة اللي بتشوفها', frame >= uiAt && frame < postmanAt)}
+        {box(1, apiAt, 'link', 'API', 'الوسيط بين الشاشة والسيرفر', frame >= postmanAt)}
         {box(2, apiAt + 10, 'file_cabinet', 'Back End', 'السيرفر والداتا', false)}
         <Pop x={xs[0]} y={y + 300} at={selAt}><div style={{display: 'flex', alignItems: 'center', gap: 14}}><LogoTile src="logos/selenium_c.svg" s={90} /><Label text="Selenium" size={40} /></div></Pop>
         <Pop x={xs[1]} y={y - 270} at={postmanAt} rot={-3}><div style={{display: 'flex', alignItems: 'center', gap: 14}}><LogoTile src="logos/postman_c.svg" s={110} /><Chip text="*Postman*: جرب كل الاحتمالات" bg={E.olive} size={38} /></div></Pop>

@@ -63,7 +63,7 @@ export const VSticker: React.FC<{name: string; size: number; style?: React.CSSPr
       {sh.map((s, i) => s.fill === 'none'
         ? <path key={i} d={s.d} fill="none" stroke={INK} strokeWidth={s.ink ?? 4} strokeLinecap="round" />
         : <path key={i} d={s.d} fill={s.fill} stroke={INK} strokeWidth={3} strokeLinejoin="round" fillRule="evenodd" />)}
-      {name === 'onair' ? <text x={50} y={60} textAnchor="middle" fontSize={26} fontWeight={900} fill={W} fontFamily="Montserrat">ON AIR</text> : null}
+      {name === 'onair' ? <text x={50} y={58} textAnchor="middle" fontSize={20} fontWeight={900} fill={W} fontFamily="Montserrat" textLength={70} lengthAdjust="spacingAndGlyphs">ON AIR</text> : null}
     </svg>
   );
 };

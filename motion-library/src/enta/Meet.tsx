@@ -103,3 +103,41 @@ export const MeetBg: React.FC<{frame: number}> = ({frame}) => {
     </AbsoluteFill>
   );
 };
+
+// Speaker circle over the full-screen boards (Aly 2026-10-20: when an explanation board stays > ~5 s, show whoever is talking in
+// a circle in a corner "so people see him while he talks"; skip it only where the board itself is busy with motion).
+// Cues {t: 'pip', at, dur, props: {who: 'G' | 'A', zx, zy}} — consecutive cues crossfade, a new run pops in.
+export const MeetPip: React.FC<{source: string; tiles: MeetTiles; cues: Cue[]}> = ({source, tiles, cues}) => {
+  const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const f = (s: number) => Math.round(s * fps);
+  const pips = cues.filter((c) => c.t === 'pip').sort((a, b) => a.at - b.at);
+  const i = pips.findIndex((c) => frame >= f(c.at) && frame < f(c.at + c.dur));
+  if (i < 0) return null;
+  const c = pips[i], pc = i > 0 && Math.abs(f(pips[i - 1].at + pips[i - 1].dur) - f(c.at)) <= 1 ? pips[i - 1] : null;
+  const nc = i + 1 < pips.length && Math.abs(f(c.at + c.dur) - f(pips[i + 1].at)) <= 1 ? pips[i + 1] : null;
+  const k = frame - f(c.at), left = f(c.at + c.dur) - frame;
+  const inP = pc ? 1 : smooth(Math.min(1, k / 10)), outP = nc ? 1 : smooth(Math.min(1, left / 10));
+  const S = 250;
+  const face = (cc: Cue, op: number) => {
+    const who = cc.props.who as 'G' | 'A', t = tiles[who];
+    const sc = (S * 1.9) / t[3]; // tile height -> ~1.9 circle: a head-and-shoulders crop
+    const fx = (cc.props.zx ?? 0.5) * t[2], fy = (cc.props.zy ?? 0.4) * t[3];
+    return (
+      <div key={who + cc.at} style={{position: 'absolute', inset: 0, opacity: op, overflow: 'hidden', borderRadius: '50%'}}>
+        <OffthreadVideo src={staticFile(source)} muted startFrom={0}
+          style={{position: 'absolute', width: 1920 * sc, height: 1080 * sc, maxWidth: 'none', left: S / 2 - (t[0] + fx) * sc, top: S * 0.45 - (t[1] + fy) * sc}} />
+      </div>
+    );
+  };
+  const xfade = pc && pc.props.who !== c.props.who ? smooth(Math.min(1, k / 8)) : 1;
+  return (
+    <AbsoluteFill style={{pointerEvents: 'none'}}>
+      <div style={{position: 'absolute', left: 44, top: 44, width: S, height: S, borderRadius: '50%', transform: `scale(${Math.min(inP, outP)})`,
+        boxShadow: '0 16px 34px rgba(0,0,0,.55)', border: '7px solid #FBF7EE', outline: '3px solid rgba(20,20,30,.5)', background: '#111'}}>
+        {pc && xfade < 1 ? face(pc, 1) : null}
+        {face(c, xfade)}
+      </div>
+    </AbsoluteFill>
+  );
+};

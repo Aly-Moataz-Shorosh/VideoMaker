@@ -89,7 +89,7 @@ def render_overlays(code, cues, edit_json, out_dir, fps=30, vertical=False):
     last = round(d['duration'] * fps) - 1
     for layer, jobs in (('motion', [{'out': str((out_dir / cue_name(code, i, c)).resolve()), 'a': round(c['at'] * fps),
                                      'b': min(round((c['at'] + c['dur']) * fps) - 1, last)}
-                                    for i, c in enumerate(cues) if c['t'] not in ('zoom', 'sfx', 'shot')]),
+                                    for i, c in enumerate(cues) if c['t'] not in ('zoom', 'sfx', 'shot', 'pip')]),
                         ('captions', [{'out': str((out_dir / f'{code}_captions.mov').resolve()), 'a': 0, 'b': last}])):
         props = edit_json.with_name(f'edit_{layer}.json'); jf = edit_json.with_name(f'jobs_{layer}.json')
         json.dump({**d, 'layer': layer}, open(props, 'w', encoding='utf8'), ensure_ascii=False)
@@ -207,7 +207,7 @@ def build(proj: Path, render=False):
 
     # No two overlay graphics at once: a graphic ends when the next one starts (zoom/icon_pop may overlap).
     cues.sort(key=lambda c: c['at'])
-    solo = [c for c in cues if c['t'] not in ('zoom', 'shot', 'icon_pop', 'green_clip', 'sfx', 'enta_glitch', 'enta_stickers', 'enta_leak', 'enta_bubble', 'enta_note')]
+    solo = [c for c in cues if c['t'] not in ('zoom', 'shot', 'pip', 'icon_pop', 'green_clip', 'sfx', 'enta_glitch', 'enta_stickers', 'enta_leak', 'enta_bubble', 'enta_note')]
     for a, b in zip(solo, solo[1:]):
         if a['at'] + a['dur'] > b['at'] - 0.1:
             a['dur'] = max(0.8, round(b['at'] - 0.1 - a['at'], 3))
@@ -326,7 +326,7 @@ def write_xml(video, segs, cues, fps, duration, path, code, vertical=False):
         return (f'<clipitem id="{cid}"><name>{name}</name>{rate}<start>{st}</start><end>{en}</end><in>0</in><out>{en - st}</out>'
                 f'<file id="f_{cid}"><name>{name}</name><pathurl>{escape(url(p))}</pathurl>{rate}</file></clipitem>')
     v2 = [ov(f'm{i}', cue_name(code, i, c), f(c['at']), min(f(c['at'] + c['dur']), f(duration)))
-          for i, c in enumerate(cues) if c['t'] not in ('zoom', 'sfx', 'shot')]
+          for i, c in enumerate(cues) if c['t'] not in ('zoom', 'sfx', 'shot', 'pip')]
     v3 = [ov('cap', f'{code}_captions.mov', 0, f(duration))]
     xml = ('<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE xmeml>\n'
            f'<xmeml version="4"><sequence id="seq"><name>{escape(code)}_{path.stem}</name>'

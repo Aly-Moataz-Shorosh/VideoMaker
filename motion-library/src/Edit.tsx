@@ -4,7 +4,7 @@ import {z} from 'zod';
 import {Captions} from './templates/Captions';
 import {registry} from './registry';
 import {applyPack, C} from './blocks/theme';
-import {MeetStage} from './enta/Meet';
+import {MeetPip, MeetStage} from './enta/Meet';
 
 // Whole-video assembly. edit.json is produced by tools/build_edit.py (all times in timeline seconds).
 // layer: 'all' = review video (footage + motion + captions); 'captions' / 'motion' = alpha tracks only.
@@ -188,6 +188,7 @@ export const Edit: React.FC<z.infer<typeof editSchema>> = ({source, segments, wo
             );
           })
         : null}
+      {layer === 'all' && meet && !vertical ? <MeetPip source={source} tiles={meet} cues={cues as Cue[]} /> : null}
       {layer !== 'motion' && captions ? <Captions words={words} maxWords={5} accent="gold" previewBg="" lift={vertical && !useRoto ? splitAmount(frame, fps, cues as Cue[]) : 0} bottomFrac={capBottom} /> : null}
     </AbsoluteFill>
   );

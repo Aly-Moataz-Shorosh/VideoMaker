@@ -36,6 +36,7 @@ def who(t):  # who talks at t (word labels from speakers.py)
 
 
 cues, locks, boards = [], [], []
+FACE = {'G': (0.47, 0.36), 'A': (0.49, 0.55)}  # face centre inside each tile (0..1)
 F = lambda base, t: int(round((t - base) * 30))
 
 
@@ -55,12 +56,13 @@ def side(at, dur, w=None):  # the speaker big on the LEFT, card on the right
     lock(at, dur, (w or who(at + min(1.0, dur / 2))) + 'P')
 
 
-def term(at, dur, term, defn='', example='', exAt=None, en='', sticker='', accent='orange', paper='cream', w=None):
+def term(at, dur, term, defn='', example='', exAt=None, en='', sticker='', accent='orange', paper='cream', w=None, exLabel=''):
+    # exLabel 'مثال' ONLY when the example line is MY simplification of a term; his/the guest's words get no label (Aly 2026-10-20)
     dur = min(dur, 9.0)  # a card never stays longer than ~9 s
     if exAt and exAt > at + dur - 2.0: exAt = at + min(dur - 2.0, max(1.5, dur * 0.5))
     side(at, dur, w)
     add('enta_term', at, dur, term=term, example=example, exampleAt=int(((exAt or at + 1.5) - at) * 30), en=en,
-        sticker=sticker, accent=accent, paper=paper, pic='', side='right', top=0.1)
+        sticker=sticker, accent=accent, paper=paper, pic='', side='right', top=0.1, exLabel=exLabel)
     cues[-1]['props']['def'] = defn
     sfx(at, 'swish', 0.35); sfx(at + 0.17, 'tape', 0.3)
     if example and exAt: sfx(exAt, 'pop_2', 0.3)
@@ -109,8 +111,10 @@ a = S('S002')
 add('enta_name', a, 4.6, name='أيمن إسماعيل', role='Senior Software *QA Engineer*', side='right', accent='blue')
 side(a, 4.6, 'G'); sfx(a, 'swoop_up', 0.45); sfx(a + 0.45, 'stamp', 0.3)
 note(T('S002', 'الكفاح'), 'صاحبي *وزميل شغل* من سنين', accent='olive', d=3.6)
+a = T('S003', 'Software')
+term(a, T('S004', 'Testing') - a - 0.1, 'Software *Engineer*', 'مهندس بيصمم ويبني *البرامج*', sticker='brace_l', accent='olive', w='A')
 a = T('S004', 'Testing')
-term(a, T('S006', 'فأنا') - a, '*Testing* · *QA* · *QC*', 'أسامي كتير… *لنفس المجال*', 'Quality Assurance · Quality *Control*',
+term(a, T('S006', 'فأنا') - a + 1.5, '*Testing* · *QA* · *QC*', 'أسامي بتتقال في السوق على *نفس المجال*', 'ملحوظة: فعليًا *QA غير QC*… كل واحد *شغلانة لوحده*',
      exAt=T('S005', 'QA'), en='Software Testing', sticker='bug', accent='blue', paper='blue', w='A')
 note(S('S006') + 0.3, 'وعلي كمان *Tester*', sticker='bug', accent='mustard', d=3.5)
 stick(T('S007', 'اشتغلنا'), [('brace_l', 0.44, 0.1, 90, 0, -8), ('brace_r', 0.56, 0.1, 90, 0.12, 8)], 1.8)
@@ -120,9 +124,9 @@ bubble(S('S018'), E('S019') - S('S018'), 'عرّفنا *بيك*؟', w='A')
 a = S('S020')
 term(a, E('S023') - a + 0.6, 'أيمن · دفعة *2021*', 'شغال *QA*', 'بقاله قرب *5 سنين*', exAt=T('S023', 'خمس'), sticker='star_y', accent='mustard', w='G')
 a = S('S027') + 0.3
-photos(a, E('S031') - a + 1.6, [dict(src='fluent/mobile_phone.png', w=230, h=230, rot=-6, caption='قبلها: *Mobile Dev*')], w='A')
+photos(a, E('S031') - a + 1.6, [dict(src='fluent/mobile_phone.png', w=230, h=230, rot=-6, caption='قبلها: برمجة *تطبيقات موبايل*')], w='A')
 a = T('S035', 'جربت')
-term(a, E('S038') - a + 0.3, 'جرّب *حاجات كتير*', 'Front End · Back End', 'Graphic Design · *Motion*', exAt=T('S037', 'الجرافيك'),
+term(a, E('S038') - a + 0.3, 'جرّب *حاجات كتير*', 'Front End = *الشاشة* · Back End = *السيرفر*', 'وبرّه المجال: Graphic Design · *Motion*', exAt=T('S037', 'الجرافيك'),
      sticker='spark_o', accent='orange', w='G')
 note(T('S041', 'وخترته'), 'اختار التستنج *عن شغف*', sticker='star_y', accent='mustard', d=4.0)
 stick(T('S045', 'شغف'), [('spark_o', 0.62, 0.1, 80, 0, 0), ('star_y', 0.7, 0.16, 70, 0.15, 10)], 1.6)
@@ -133,7 +137,7 @@ bubble(S('S053'), E('S056') - S('S053'), 'اشرحها لحد *برّه المج
 a = S('S062')
 term(a, E('S066') - a + 0.3, 'تصوّر *غلط*', 'ممل؟ روتيني؟ *مفيش كود*؟', 'هنصححه *في الأسئلة*', exAt=S('S066'), sticker='qmark', accent='orange', w='G')
 stick(T('S065', 'كودنج'), [('brace_l', 0.62, 0.12, 80, 0, -6), ('cross', 0.7, 0.12, 80, 0.15, 6)], 1.6)
-note(T('S069', 'تيم'), 'أول *Team Lead*: "ممكن تزهق"', accent='mustard', d=3.6)
+note(T('S069', 'تيم'), 'أول *Team Lead* (رئيس الفريق): "ممكن تزهق"', accent='mustard', d=3.6)
 note(T('S071', 'مالقتش'), 'ومن ساعتها… *مزهقش*', sticker='star_y', accent='olive', d=3.4)
 a = S('S080')
 term(a, E('S098') - a + 0.4, 'ممل *ولا لأ*؟', 'حسب *المكان* والـ*Challenges*', 'وحسبك: تنفّذ التاسك وبس… ولا *تتعلم Tools جديدة*؟',
@@ -141,7 +145,7 @@ term(a, E('S098') - a + 0.4, 'ممل *ولا لأ*؟', 'حسب *المكان* و
 # ================= Testing = ? =================
 a = S('S101') + 0.8; b = E('S111') + 0.5
 board('qa_what', a, b, appAt=F(a, T('S103', 'software')), bugsAt=F(a, T('S107', 'مشاكل')), reqAt=F(a, T('S109', 'requirements')),
-      req=[dict(text='اللي *الـClient* طلبه', at=F(a, T('S110', 'client'))), dict(text='بالظبط *زي ما اتطلب*', at=F(a, T('S111', 'validate')))])
+      req=[dict(text='اللي *الـClient* (العميل) طلبه', at=F(a, T('S110', 'client'))), dict(text='بالظبط *زي ما اتطلب*', at=F(a, T('S111', 'validate')))])
 sfx(T('S103', 'software'), 'pop_1', 0.4); sfx(T('S107', 'مشاكل'), 'buzz_wrong', 0.25); sfx(T('S109', 'requirements'), 'paper', 0.35)
 bubble(S('S113'), E('S114') - S('S113'), 'على *أساس* إيه؟', w='A')
 note(T('S118', 'كريتيريا'), 'فيه *Criteria* تقيس عليها الصح والغلط', accent='blue', d=4.2)
@@ -150,8 +154,10 @@ term(a, E('S130') - a - 2.0, '*Requirements*', 'اللي الـClient *كتبه*
      en='Requirements', sticker='floppy', accent='olive', w='G')
 note(T('S131', 'سوفتوير'), 'أي *Software*: أبلكيشن · ويبسايت · أي حاجة', accent='mustard', d=4.0)
 a = T('S134', 'فانكشناليتيز')
-term(a, E('S138') - a + 0.3, 'Functional و *Non-Functional*', 'شغال صح؟ + بطيء؟ *Security*؟ *Performance*؟', 'و*UI/UX* اللي الناس متعودة عليه',
-     exAt=T('S138', 'اليوزرز'), sticker='spark_b', accent='blue', paper='blue', w='A')
+term(a, T('S138', 'اليوزرز') - a - 1.2, 'Functional و *Non-Functional*', 'Functional = الفيتشر *بتشتغل صح*؟', 'Non-Functional = سريع؟ *آمن*؟ (Performance · Security)',
+     exAt=T('S136', 'سيكيوريتي'), sticker='spark_b', accent='blue', paper='blue', w='A')
+a = T('S138', 'اليوزرز') - 1.0
+term(a, T('S139', 'جاهز') - a - 0.1, '*UI* / *UX*', 'UI = *شكل* الشاشة والزراير', 'UX = *تجربة* المستخدم: سهلة ومريحة؟', exAt=a + 1.6, sticker='star8_b', accent='mustard', w='A')
 note(T('S139', 'جاهز'), 'جاهز *ينزل للناس*؟', sticker='check', accent='olive', d=4.2)
 bubble(T('S147', 'محتاجك'), E('S151') - T('S147', 'محتاجك'), 'فيه *Developers* شطار… *محتاجينك* ليه؟', w='A')
 # ================= developer eye vs tester eye =================
@@ -176,7 +182,7 @@ term(a, 4.4, 'يعني إيه *Bug*؟', 'حاجة *بايظة* · مشكلة · 
 a = T('S199', 'الستوري')
 term(a, E('S202') - a + 0.5, '*Story* (فيتشر)', 'حاجة عايزين *نعملها*', 'الـBug: ما خدش باله إنها *بتأثر* في حتة بعيدة', exAt=T('S202', 'بيأفكت'),
      en='User Story', sticker='floppy', accent='blue', paper='blue', w='A')
-note(T('S204', 'ببرامتر'), 'وBug تانية: *Parameter* ضخم محدش *هندله*', sticker='bug', accent='mustard', d=4.4)
+note(T('S204', 'ببرامتر'), '*Parameter* (قيمة بتتبعت للبرنامج) ضخمة… محدش *هندلها*', sticker='bug', accent='mustard', d=4.4)
 # ================= production? =================
 a = T('S209', 'production')
 term(a, 4.0, '*Production*', 'النسخة اللي *الناس* بتستخدمها', '', en='Production', sticker='onair', accent='orange', w='A')
@@ -190,11 +196,11 @@ bubble(T('S271', 'تطبق'), T('S274', 'طيب') - T('S271', 'تطبق'), 'بت
 note(T('S276', 'تشن'), 'السؤال ده *عايز حلقة لوحده*', sticker='qmark', accent='mustard', d=3.8)
 a = T('S278', 'الانواع'); b = T('S287', 'تولز') - 0.3
 board('qa_types', a, b, funcAt=F(a, T('S279', 'فنكشنال')), nonAt=F(a, T('S284', 'والنون')),
-      func=[dict(emo='backhand_index_pointing_up', label='Manual', sub='تجرب *بإيدك*', at=F(a, T('S281', 'منول'))),
-            dict(emo='robot', label='Automation', sub='*Script* بيجرب', at=F(a, T('S282', 'سكريبت')))],
-      non=[dict(emo='high_voltage', label='Performance', at=F(a, T('S284', 'والنون')) + 20),
-           dict(emo='shield', label='Security', at=F(a, T('S284', 'والنون')) + 35),
-           dict(emo='thumbs_up', label='Usability', at=F(a, T('S286', 'اليوزابيليتي')))])
+      func=[dict(emo='backhand_index_pointing_up', label='Manual', sub='يدوي: تجرب *بإيدك*', at=F(a, T('S281', 'منول'))),
+            dict(emo='robot', label='Automation', sub='*Script* (كود) بيجرب لوحده', at=F(a, T('S282', 'سكريبت')))],
+      non=[dict(emo='high_voltage', label='Performance', sub='سريع تحت *الضغط*؟', at=F(a, T('S284', 'والنون')) + 20),
+           dict(emo='shield', label='Security', sub='محمي من *الاختراق*؟', at=F(a, T('S284', 'والنون')) + 35),
+           dict(emo='thumbs_up', label='Usability', sub='سهل في *الاستخدام*؟', at=F(a, T('S286', 'اليوزابيليتي')))])
 sfx(T('S281', 'منول'), 'pop_1', 0.35); sfx(T('S282', 'سكريبت'), 'pop_2', 0.35); sfx(T('S286', 'اليوزابيليتي'), 'pop_3', 0.35)
 a = T('S289', 'الاي')
 photos(a, T('S291', 'لان') - a, [dict(src='logos/claude.svg', x=0.7, w=160, h=160, rot=-5), dict(src='logos/chatgpt.svg', x=0.82, w=160, h=160, rot=4, at=6),
@@ -220,7 +226,7 @@ for c in cues[-12:]:  # 'pass' is a python word; the schema key is pass
 # ================= API, security, performance =================
 a = S('S331'); b = E('S341') + 0.4
 board('qa_api', a, b, uiAt=F(a, T('S332', 'البراوزر')), selAt=F(a, T('S338', 'شلينيوم')), apiAt=F(a, T('S333', 'end')) - 40,
-      postmanAt=F(a, T('S334', 'Postman')), autoAt=F(a, T('S335', 'Automation')), libAt=F(a, T('S339', 'رسط')))
+      postmanAt=F(a, T('S334', 'Postman')), autoAt=F(a, T('S335', 'Automation')), libAt=99999)
 sfx(T('S334', 'Postman'), 'pop_1', 0.4); sfx(T('S338', 'شلينيوم'), 'pop_2', 0.35)
 a = S('S342'); b = E('S345') + 0.3
 board('qa_perf', a, b, secAt=F(a, T('S342', 'Security')), perfAt=F(a, T('S344', 'performance')))
@@ -240,7 +246,7 @@ term(a, E('S380') - a, 'لازم *Computer Science*؟', '*لأ*… فيه ناس
 a = S('S382'); b = E('S403') + 0.5
 board('qa_road', a, b, steps=[
     dict(emo='laptop', label='افهم *Software*', sub='جرّب وابني بإيدك', at=F(a, T('S383', 'فهم'))),
-    dict(pic=P + 'istqb-ctfl-4-logo.jpg', label='ISTQB *Foundation*', sub='المنهج بتاعنا', at=F(a, T('S384', 'ISTQP'))),
+    dict(pic=P + 'istqb-ctfl-4-logo.jpg', label='ISTQB *Foundation*', sub='شهادة التستنج *الأساسية*', at=F(a, T('S384', 'ISTQP'))),
     dict(emo='lady_beetle', label='*Manual*', sub='طلّع Bugs واعمل *Report*', at=F(a, T('S387', 'ويبسايت'))),
     dict(logo=['logos/openjdk_c.svg', 'logos/javascript_c.svg', 'logos/python_c.svg'], label='*Automation*', sub='بأي لغة', at=F(a, T('S389', 'automation'))),
     dict(emo='briefcase', label='*قدّم* على شغل', sub='بإذن الله', at=F(a, T('S403', 'يقدم')))])
@@ -253,12 +259,12 @@ board('qa_joker', a, b, skills=[
     dict(emo='handshake', text='يتعامل مع *Developers*', at=F(a, T('S411', 'الديبلبرز'))),
     dict(emo='artist_palette', text='عين *فنية*', at=F(a, T('S413', 'فنية'))),
     dict(emo='globe_with_meridians', text='*Front End*', at=F(a, T('S418', 'الفرونت'))),
-    dict(emo='file_cabinet', text='*Back End* · API', at=F(a, T('S423', 'الباك')))])
+    dict(emo='file_cabinet', text='*Back End* (السيرفر) · API', at=F(a, T('S423', 'الباك')))])
 for s_, k in (('S407', 'تتكلم'), ('S408', 'تفكير'), ('S411', 'الديبلبرز'), ('S413', 'فنية'), ('S418', 'الفرونت'), ('S423', 'الباك')): sfx(T(s_, k), 'pop_2', 0.3)
 a = T('S425', 'الاتابيسيز')
-term(a, E('S426') - a + 0.3, '*Database*', 'تعمل *Query* وتشوف الداتا', 'تتأكد إن الـRecord *اتسيف صح*', exAt=T('S426', 'تتسايف'),
+term(a, E('S426') - a + 0.3, '*Database*', '*Query* = سؤال بتسأله للداتا', 'تتأكد إن الـRecord *اتسيف صح*', exAt=T('S426', 'تتسايف'),
      en='SQL', sticker='floppy', accent='blue', paper='blue', w='A')
-note(T('S427', 'سكينزي'), 'ومهارات *Soft Skills* كتير', sticker='star_y', accent='mustard', d=4.0)
+note(T('S427', 'سكينزي'), '*Soft Skills* = مهارات *التعامل مع الناس*', sticker='star_y', accent='mustard', d=4.0)
 note(T('S440', 'تجربة'), 'للمبتدئ: *متتخضّش*… هتتعلمها مع الوقت', accent='olive', d=4.6)
 note(T('S446', 'بدأت'), 'ناس بدأت *من الصفر*… وبقالها سنين', accent='blue', d=4.2)
 a = T('S456', 'تبريدكت')
@@ -282,8 +288,8 @@ term(a, E('S511') - a + 0.4, '*Senior*', 'بعدد *سنين الخبرة*', 'و
 # ================= AI =================
 a = S('S520'); b = E('S533') + 0.3
 board('qa_ai', a, b, aiAt=8, meAt=F(a, T('S532', 'شاشتين')),
-      tasks=[dict(text='*Manual* Testing', at=F(a, T('S522', 'manual'))), dict(text='يكتب *Test Cases*', at=F(a, T('S523', 'تيستي'))),
-             dict(text='*Demo* Video', at=F(a, T('S524', 'الديمو'))), dict(text='يرفع الشغل', at=F(a, T('S525', 'ويرفعه')))],
+      tasks=[dict(text='*Manual* Testing', at=F(a, T('S522', 'manual'))), dict(text='*Test Cases* (خطوات الاختبار)', at=F(a, T('S523', 'تيستي'))),
+             dict(text='فيديو *Demo* للـBug', at=F(a, T('S524', 'الديمو'))), dict(text='يرفع الشغل', at=F(a, T('S525', 'ويرفعه')))],
       qAt=F(a, T('S525', 'بيستبدلنا')), aAt=F(a, T('S530', 'بيستبدلنا')), qEnd=F(a, T('S532', 'شاشتين')) - 6)
 sfx(T('S525', 'بيستبدلنا'), 'glitch', 0.25); sfx(T('S530', 'بيستبدلنا'), 'ding', 0.35)
 note(T('S536', 'كتول'), 'الـAI = *Tool* بتسرّع الشغل', sticker='spark_o', accent='olive', d=4.0)
@@ -303,6 +309,16 @@ note(T('S584', 'لينك'), 'اللينك *في الوصف*', accent='blue', d=3
 a = S('S587')
 stick(a, [('star_y', 0.6, 0.1, 90, 0, 0), ('spark_o', 0.7, 0.16, 80, 0.15, 0), ('star8_b', 0.8, 0.1, 80, 0.3, 0)], 2.0)
 add('enta_leak', a, 2.0, kind='leak_warm', x=0.5, y=0.3)
+
+# ================= definitions of every term said (Aly 2026-10-20: "لما نقول مصطلح معين اكتب تعريف له") =================
+note(T('S243', 'ريفوند'), '*Refund* = ترجيع الفلوس للعميل', accent='mustard', d=3.6)
+note(T('S334', 'Postman') + 0.4, '*Postman* = برنامج تبعت بيه طلبات للـAPI', accent='olive', d=3.8)
+note(T('S338', 'شلينيوم') - 0.3, '*Selenium* = بيتحكم في المتصفح *أوتوماتيك*', accent='blue', d=3.6)
+note(T('S339', 'رسط'), '*REST Assured* = Library بتختبر الـAPI *بالكود*', accent='mustard', d=4.2)
+note(T('S473', 'الايستي') + 1.0, '*ISTQB* = هيئة دولية لشهادات التستنج', accent='blue', d=4.0)
+note(T('S477', 'واجايل') + 0.3, '*Agile* = طريقة شغل بمراحل *قصيرة*', accent='olive', d=3.6)
+note(T('S548', 'الجونيورز'), '*Junior* = لسه في أول الطريق', accent='mustard', d=3.6)
+note(T('S534', 'انبوت') if any('انبوت' in w['w'] for w in SENT['S534']['words']) else S('S534'), '*Input* = اللي بتديهوله يشتغل عليه', accent='olive', d=3.6)
 
 # ================= fillers: short point notes / bubbles where nothing explained the talk for > 8 s =================
 note(T('S013', 'المجال'), 'نعرف أكتر عن *مجال التستنج*', accent='blue', d=3.6)
@@ -360,7 +376,6 @@ note(T('S465', 'الستوري'), 'ستوري معيّنة = *Bug متوقّعة
 # ================= shots ("كادرات") =================
 # Calm: hold a framing >= 3.5 s; short exchanges = both; long turns = the speaker alone, then both, then alone again with a
 # gentle zoom INSIDE his tile (1.08, never twice in a row on the same person). Aly's camera dropped ~1126.5-1133 -> guest only.
-FACE = {'G': (0.47, 0.36), 'A': (0.49, 0.55)}
 turns = [[s, e, sp] for s, e, sp in SPK['turns'] if e > A0 and s < A1]
 merged = []
 for s, e, sp in turns:
@@ -418,6 +433,35 @@ for s, e, m, z in fixed:
     if sp and z > 1.0 and m in ('G', 'A'): props.update(z=z, zx=FACE[sp][0], zy=FACE[sp][1])
     add('shot', max(17.13, s), e - max(17.13, s), **props)
 add('shot', 1806.5, 1823.7 - 1806.5, m='full')
+
+# ================= speaker circle over long boards (Aly 2026-10-20) =================
+# every board > 5 s gets the speaker in a circle (top-left), switching with the talker (held >= 2.5 s);
+# not on qa_login (the board itself is full of motion — his exception).
+for c in [c for c in cues if c['t'].startswith('qa_') and c['t'] != 'qa_login' and c['dur'] > 5]:
+    a, b = c['src'] + 0.8, c['src'] + c['dur'] - 0.3
+    ts = [a + i * 0.25 for i in range(int((b - a) / 0.25) + 1)]
+    lab = [who(t) for t in ts]
+    lab = [max('AG', key=lambda x: lab[max(0, i - 6):i + 7].count(x)) for i in range(len(lab))]  # ~3 s majority
+    segs = []
+    for t, sp in zip(ts, lab):
+        if segs and segs[-1][2] == sp: segs[-1][1] = t + 0.25
+        else: segs.append([t, t + 0.25, sp])
+    k = 0
+    while k < len(segs):  # runs < 2.5 s join the previous run (or the next, at the start)
+        if segs[k][1] - segs[k][0] < 2.5 and len(segs) > 1:
+            if k: segs[k - 1][1] = segs[k][1]
+            else: segs[1][0] = segs[0][0]
+            segs.pop(k)
+            m = [segs[0]]
+            for x in segs[1:]:
+                if x[2] == m[-1][2]: m[-1][1] = x[1]
+                else: m.append(x)
+            segs, k = m, 0
+            continue
+        k += 1
+    segs[-1][1] = b
+    for s0, s1, sp in segs:
+        add('pip', s0, s1 - s0, who=sp, zx=FACE[sp][0], zy=FACE[sp][1])
 
 cues.sort(key=lambda c: c['src'])
 plan = {'cut': False, 'captions': False, 'pack': 'charcoal', 'video': 'input/main video.mp4', 'quiet': [[0.0, 17.13], [1806.5, 1823.7]],
