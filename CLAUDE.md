@@ -187,6 +187,8 @@ Done (2026-10-06):
   scripts `tools/recipes/graphictablet/`. APPROVED ("الفيديوهات ممتازة") → **style 15 glass-face-talk**. RULE: a YouTube QR NEVER without
   that video's thumbnail → v2 = thumbnail + QR end in `output/v2/` (v1 kept; only the end re-rendered + spliced, `v2_end.sh`). Job closed.
   Unsure: he says "14" buttons (Huion page: 12 hard + 16 soft) — hidden in captions.
+- RULE 2026-10-21: the `<video>.txt` beside every video = Aly's EXACT notepad template (العناوين: / الوصف: / hashtags / الكومنت المثبت: /
+  ترتيب النشر: N من M) — his posting script reads the header words. Template in skill aly-video-motion + memory aly-notepad-format.
 - ⚠ Remotion copies public/ (~2 GB) into Temp on EVERY bundle/still → C: hit 0 bytes twice. Use `stills_cli.sh`
   (one bundle in out/bundle), set TEMP/TMP to `motion-library/out/tmp` for renders and DELETE that folder after (one render left 13 GB).
 - ⚠ E: ~17 GB free. Premiere 2020 alpha format still untested by Aly (`_tests/premiere-test`).
