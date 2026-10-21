@@ -62,6 +62,7 @@ question with the list. A newly approved look = a new numbered folder (sample.mp
    walk to 150 ms of real quiet, never into the next word) and print the edge dB. Never start on the tail of an earlier word.
 10. Uneven voice level between pieces ("كل مشهد تحسه متسجل في يوم") → per-sentence GAIN to one target for every short
    (`level_voice.py`, gain only, no cleanup), then -15 LUFS. Voice processing itself only on request.
+   One loud peak must not leave one short quieter (cs ep01 roadmap -19 vs -16): reach the target with a light peak limiter, check all LUFS equal.
 11. Shorts from a tutorial: when he summarizes BOTH ways at the end, use the summary (both ways), not one way only.
    Hook = straight into the idea; don't stack two intro sentences. Real footage of him talking = big (16:9 card), not a small TV.
    Explain WHY visually when he says something costs more (count it up: 10 × 300 = 3000).
