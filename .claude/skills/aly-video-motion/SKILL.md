@@ -269,6 +269,5 @@ Add what he liked to section 2 and every mistake to section 3 (with the fix), pl
 
 ## The .txt beside every video (Aly 2026-10-21) — his posting script reads the word "العناوين:"
 Usual layout: `العناوين:` (exact header, first line) + 1) 2) 3) titles / `الوصف:` free length / #tags / `كومنت مثبت:`.
-NO YouTube link in the txt, NO "ترتيب النشر" line (he tried a strict template and took it back). UTF-8 without BOM, 
- line ends.
+NO YouTube link in the txt, NO "ترتيب النشر" line (he tried a strict template and took it back). UTF-8 without BOM, LF line ends.
 Writer: tools/recipes/graphictablet/write_meta.py.
