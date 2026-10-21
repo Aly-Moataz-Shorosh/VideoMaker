@@ -173,7 +173,7 @@ def build(n):
     if keys[0]['t'] > 0:
         keys.insert(0, {'t': 0, 'm': 'tlow'})
     # end card (QR) over the last second of his talk + the tail
-    scenes.append({'t': 'tb_end', 'at': round(main_len - 0.6, 3), 'dur': round(TAIL + 0.6, 3), 'layer': 'front', 'props': {'qr': PJ + 'qr.png'}})
+    scenes.append({'t': 'tb_end', 'at': round(main_len - 0.6, 3), 'dur': round(TAIL + 0.6, 3), 'layer': 'front', 'props': {'qr': PJ + 'qr.png', 'thumb': PJ + 'thumb.jpg'}})
 
     # ---------- captions (his real words) ----------
     words = []

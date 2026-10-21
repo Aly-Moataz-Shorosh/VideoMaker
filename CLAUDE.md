@@ -184,7 +184,9 @@ Done (2026-10-06):
   6/3/5/2/7 of 8 ideas → `output/short_{6,3,5,2,7}.mp4` (0:52–1:38) + .txt, sfx_only, voice_original. Scenes `src/glass/tablet.tsx`
   (declarative `tb_free` items, his picture-in-picture inserts shown big `tb_clip`, checklist, tablet↔screen map, LaTeX vs pen, whiteboard
   story map, QR end). Camera = ONE decode + trim per piece + concat in order (select reorders!). Recipe `docs/29-recipe-glass-face-talk-shorts.md`,
-  scripts `tools/recipes/graphictablet/`. Waiting for review. Unsure: he says "14" buttons (Huion page: 12 hard + 16 soft) — hidden in captions.
+  scripts `tools/recipes/graphictablet/`. APPROVED ("الفيديوهات ممتازة") → **style 15 glass-face-talk**. RULE: a YouTube QR NEVER without
+  that video's thumbnail → v2 = thumbnail + QR end in `output/v2/` (v1 kept; only the end re-rendered + spliced, `v2_end.sh`). Job closed.
+  Unsure: he says "14" buttons (Huion page: 12 hard + 16 soft) — hidden in captions.
 - ⚠ Remotion copies public/ (~2 GB) into Temp on EVERY bundle/still → C: hit 0 bytes twice. Use `stills_cli.sh`
   (one bundle in out/bundle), set TEMP/TMP to `motion-library/out/tmp` for renders and DELETE that folder after (one render left 13 GB).
 - ⚠ E: ~17 GB free. Premiere 2020 alpha format still untested by Aly (`_tests/premiere-test`).

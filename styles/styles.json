@@ -131,6 +131,16 @@
    "recipe": "docs/22-show-enta-btshtghl-eh.md (section 'حاسبات ep01')",
    "scripts": "tools/recipes/enta_cs01/ (voices -> speakers -> gaze_tl -> make_plan -> build.sh -> render.sh = 5-min muted chunks + mix_audio.py)",
    "rules": "30 fps proxy + PNG grain (render speed), no captions, original voice + sfx, long videos: ask before compressing"
+  },
+  "15": {
+   "folder": "15 glass-face-talk",
+   "name": "Several shorts from a TALKING video: style 10 glass look with his camera always on (tfull hook, tlow, tlowr while his picture-in-picture inserts are on, wbig/tbig for his full-frame footage, hide + big cards where the footage shows someone else), his own inserts shown BIG on the stage (tb_clip), idea scenes from his words (lit checklist, two-kind comparison, tablet->screen mapping, keyboard vs pen, whiteboard -> story map), hook + rewind, END = the full video's THUMBNAIL + QR (no face CTA clip)",
+   "approved": "graphictablet 5 shorts (2026-10-21, 'الفيديوهات ممتازة'); v2 = thumbnail added beside the QR",
+   "input": "his talking video (YouTube link or file)",
+   "build": "composition 'film-short' look 'glass', scenes src/glass/tablet.tsx (tb_free declarative items, tb_clip, tb_check, tb_types, tb_map, tb_math, tb_board, tb_rewind, tb_end thumb+qr), camera modes in src/glass/kit.tsx",
+   "recipe": "docs/29-recipe-glass-face-talk-shorts.md",
+   "scripts": "tools/recipes/graphictablet/ (shorts_data.py -> make_shorts.py -> qc_cam.py -> render.sh -> finalize.py; write_meta.py, export_sfx.py; v2_end.sh = re-render only the end and splice)",
+   "rules": "ask one or many first, list ideas with motion %; original voice + sfx; any YouTube QR goes WITH that video's thumbnail; camera mp4 = split+trim+concat in order; never >= 3:00"
   }
  },
  "_always": "Every style: his ORIGINAL voice (only per-sentence gain to one level, no cleanup), edges fitted on the waveform, sfx, CTA clip + comment card at the end of shorts, <video>.txt beside every output, sfx + voice stems. Word script only on request. Shorts: ASK one short (whole goal of the video) or several (suggestions, he picks) first; no short ever reaches 3:00."

@@ -10,9 +10,10 @@ def lufs(f):
     return float(re.findall(r'I:\s+(-?[\d.]+) LUFS', r)[-1])
 
 
-for n in map(int, sys.argv[1:]):
-    raw = P / 'output' / '_raw' / f'short_{n}.mp4'
-    out = P / 'output' / f'short_{n}.mp4'
+V2 = '--v2' in sys.argv  # v2 = thumbnail + QR end (output/v2/, v1 kept)
+for n in [int(a) for a in sys.argv[1:] if a.isdigit()]:
+    raw = P / 'output' / '_raw' / (f'short_{n}_v2.mp4' if V2 else f'short_{n}.mp4')
+    out = P / 'output' / ('v2' if V2 else '') / f'short_{n}.mp4'
     L, trim = lufs(raw), 0.0
     for _ in range(4):
         subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(raw), '-c:v', 'libx264', '-crf', '23', '-preset', 'medium',

@@ -192,7 +192,7 @@ question with the list. A newly approved look = a new numbered folder (sample.mp
 - A short is not a normal video: open with a HOOK = the result (before → after), then go straight to the steps. Cut the long video's intro talk.
 - The before/after = the REAL demo he already shows (look at the FIRST seconds first: burned-in Before/After labels). Never two takes I pick myself (v2), and not a later demo (v3).
 - His real screen recording big in a glass card that ZOOMS onto every click (gold box, cursor ripple, label); his face = small round webcam. More motion, less face.
-- CTA: QR of the full-video link at the top (never on his face) + a QR card in the last scene. Check the QR scans from the rendered mp4.
+- CTA: QR of the full-video link at the top (never on his face) + a QR card in the last scene, ALWAYS with the video's thumbnail. Check the QR scans from the rendered mp4.
 
 ## 4. Workflow (commands in docs/17)
 transcribe (`--prompt` English terms) → fill skipped speech (`work/scripts/fill_gaps.py` (copy from `tools/recipes/figmaMake/`)) → contact sheet per
@@ -259,8 +259,10 @@ Add what he liked to section 2 and every mistake to section 3 (with the fix), pl
   camera was reused → he froze while the voice went on). Check every short: camera length = short length.
 - More shorts from one source: list the parts no short used yet (gaps) and propose them; use his slides (proj_sheet.py) for motion.
 
-## Shorts from a TALKING video, style 10 (graphictablet 2026-10-21, docs/29) — waiting for review
+## Shorts from a TALKING video = style 15 glass-face-talk (graphictablet 2026-10-21, docs/29) — APPROVED "الفيديوهات ممتازة"
 - His own picture-in-picture inserts (product clips, his screen) = real material: show them BIG on the stage (`tb_clip`), camera `tlowr`.
 - Full-frame footage → camera `wbig`/`tbig`; footage of someone else → `hide` + big cards (never an empty screen).
-- "CTA مش فيديو بوشي زي ستايل 11" = no face CTA clip; QR card of the full video in the middle at the end.
+- "CTA مش فيديو بوشي زي ستايل 11" = no face CTA clip; end card = the full video's THUMBNAIL + its QR.
+- RULE (Aly 2026-10-21): NEVER a QR of a YouTube video without that video's thumbnail next to it (i.ytimg.com/vi/<id>/maxresdefault.jpg).
+- Redo of delivered videos = new folder (output/v2), keep the old; if only the end changes, render the end frames only and splice (v2_end.sh).
 - Camera mp4: split + trim per piece + concat in the short's order (select=between reorders a hook to source order).

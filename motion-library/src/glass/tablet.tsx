@@ -318,21 +318,26 @@ export const TbBoard: React.FC<{lines?: number; map?: number; pins?: number[]; i
   );
 };
 
-// ---------- end: QR of the full video (style 11's CTA idea, without a face clip) ----------
-export const TbEnd: React.FC<{qr: string; title?: string; at?: number}> = ({qr, title = 'الفيديو كامل على القناة', at = 0}) => {
-  return (
-    <GScene>
-      <div style={{position: 'absolute', inset: 0, background: 'rgba(5,8,14,0.55)'}} />
-      <In at={at} x={540} y={560}><Type text={title.replace('كامل', '*كامل*')} size={70} /></In>
-      <In at={at + 6} x={540} y={930}>
-        <div style={{background: '#fff', borderRadius: 34, padding: 20, border: `6px solid ${G.gold}`, boxShadow: `0 0 60px ${G.gold}66`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8}}>
-          <Img src={staticFile(qr)} style={{width: 420, height: 420, display: 'block'}} />
-          <div style={{fontFamily: AR, fontWeight: 900, fontSize: 42, color: '#14181F'}}>امسح وشوفه 📲</div>
-        </div>
+// ---------- end: the full video = its THUMBNAIL + its QR (Aly 2026-10-21: never a YouTube QR without the video's thumbnail) ----------
+export const TbEnd: React.FC<{qr: string; thumb?: string; title?: string; at?: number}> = ({qr, thumb, title = 'الفيديو كامل على القناة', at = 0}) => (
+  <GScene>
+    <div style={{position: 'absolute', inset: 0, background: 'rgba(5,8,14,0.55)'}} />
+    <In at={at} x={540} y={thumb ? 330 : 560}><Type text={title.replace('كامل', '*كامل*')} size={70} /></In>
+    {thumb ? (
+      <In at={at + 4} x={540} y={740}>
+        <Glass w={944} pad={12} r={36} glow={G.gold}>
+          <Img src={staticFile(thumb)} style={{width: 920, height: 517, borderRadius: 26, display: 'block', objectFit: 'cover'}} />
+        </Glass>
       </In>
-    </GScene>
-  );
-};
+    ) : null}
+    <In at={at + 8} x={540} y={thumb ? 1290 : 930}>
+      <div style={{background: '#fff', borderRadius: 34, padding: 18, border: `6px solid ${G.gold}`, boxShadow: `0 0 60px ${G.gold}66`, display: 'flex', alignItems: 'center', gap: 22, direction: 'rtl'}}>
+        <Img src={staticFile(qr)} style={{width: thumb ? 300 : 420, height: thumb ? 300 : 420, display: 'block'}} />
+        <div style={{fontFamily: AR, fontWeight: 900, fontSize: 44, color: '#14181F', lineHeight: 1.3}}>امسح<br />وشوفه 📲</div>
+      </div>
+    </In>
+  </GScene>
+);
 
 // rewind flash after the hook (⏪ + streaks)
 export const TbRewind: React.FC = () => {

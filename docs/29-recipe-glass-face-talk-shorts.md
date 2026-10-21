@@ -1,4 +1,4 @@
-# Recipe: several shorts from a TALKING video, style 10 glass-face + QR end (graphictablet, 2026-10-21) — waiting for review
+# Recipe: several shorts from a TALKING video = style 15 glass-face-talk (graphictablet, 2026-10-21) — APPROVED "الفيديوهات ممتازة"
 
 Job: `projects/2026-10-21 shorts graphictablet` — his 2022 video "أهمية الجرافيك تابلت" (12:20, YouTube Uc47QvWaocs). notes.txt:
 style 10, CTA = "مش فيديو بوشي، اعملها بالطريقة اللي عملناها في ستايل 11" (read as: no face CTA clip, QR of the full video at the end),
@@ -30,3 +30,8 @@ frame number gave 0; the gate aligns to the frame grid. `render.sh` → `output/
 `tb_map` (pen on the tablet → same stroke + cursor on the monitor), `tb_math` (LaTeX typed ✕ vs written formula ✓),
 `tb_board` (his red-framed whiteboard: scribbles, then the story map with pins), `tb_rewind` (after a hook), `tb_end` (QR, middle).
 Hooks: 5 math = the Word equation converting; 2 study = "summary in big handwriting" over the board photo; 7 = his brother's finished drawing.
+
+## Review (2026-10-21)
+All 5 "ممتازة". One rule: a QR of a YouTube video ALWAYS with that video's thumbnail → `tb_end` shows the thumbnail (glass card, 920 wide)
+with the QR under it. v2 in `output/v2/` (v1 kept): only the end frames re-rendered (`--frames`) and spliced onto the v1 render with the
+v1 audio (`v2_end.sh`), then `finalize.py --v2`. Frame counts equal, QR decodes.
