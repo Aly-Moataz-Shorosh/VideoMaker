@@ -176,6 +176,10 @@ Done (2026-10-06):
   30 fps proxy `source30.mp4` + PNG grain (SVG noise made it 14 h). Recipe docs/22 "حاسبات ep01", scripts `tools/recipes/enta_cs01/`.
   Aly reviewed the review_01 chunks -> `output/review_02.mp4` (full, with sound) — APPROVED ("حلو جدا") -> **style 14 online-interview**.
   Rule: compress shorts always, LONG videos only after asking him.
+- 2026-10-21 cs ep01 -> 17 vertical SHORTS `output/shorts/NN_slug.mp4` (+ .txt titles/description/pinned, link youtu.be/5xqomlWcKzE):
+  NEW composition `meet-short` (`src/enta/MeetShort.tsx`): stacked Meet tiles / speaker big / approved long-edit board on top, hook +
+  rewind, captions, end card = episode thumbnail + QR (no CTA clip). Recipe docs/22 "17 vertical SHORTS", scripts `tools/recipes/enta_cs01_shorts/`.
+  Waiting for Aly's review. Long-episode public (source30.mp4) parked in `_parked_public/2026-10-20 ep01 cs quality control/`.
 - ⚠ Remotion copies public/ (~2 GB) into Temp on EVERY bundle/still → C: hit 0 bytes twice. Use `stills_cli.sh`
   (one bundle in out/bundle), set TEMP/TMP to `motion-library/out/tmp` for renders and DELETE that folder after (one render left 13 GB).
 - ⚠ E: ~17 GB free. Premiere 2020 alpha format still untested by Aly (`_tests/premiere-test`).

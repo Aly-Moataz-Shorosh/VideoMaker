@@ -56,7 +56,10 @@ export const StageBg: React.FC<{hue?: number}> = () => {
 };
 
 // ---------- the frame that stays: progress bar, series tag, the headline (hook question) with its key word boxed ----------
-export const Frame: React.FC<{no: number; total: number; head: string; dur: number; hookEnd: number}> = ({no, total, head, dur, hookEnd}) => {
+// pal / tag: other shows reuse the frame in their own colours (enta cs shorts 2026-10-21)
+export type Pal = {box: string; boxInk: string; bar: string[]; now: string; hl: string};
+export const STAGE_PAL: Pal = {box: S.yellow, boxInk: S.ink, bar: [S.blue, S.violet, S.red], now: S.yellow, hl: S.red};
+export const Frame: React.FC<{no: number; total: number; head: string; dur: number; hookEnd: number; tag?: string; pal?: Pal}> = ({no, total, head, dur, hookEnd, tag = 'NEW STAGE 19 · DIGITAL ART', pal = STAGE_PAL}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const p = f / Math.max(1, dur);
@@ -65,9 +68,9 @@ export const Frame: React.FC<{no: number; total: number; head: string; dur: numb
   const words = groupLatin(head);
   return (
     <AbsoluteFill style={{pointerEvents: 'none'}}>
-      <div style={{position: 'absolute', left: 0, top: 0, height: 10, width: W * p, background: `linear-gradient(90deg, ${S.blue}, ${S.violet}, ${S.red})`, boxShadow: `0 0 20px ${S.violet}`}} />
+      <div style={{position: 'absolute', left: 0, top: 0, height: 10, width: W * p, background: `linear-gradient(90deg, ${pal.bar.join(', ')})`, boxShadow: `0 0 20px ${pal.bar[1]}`}} />
       <div style={{position: 'absolute', left: 0, right: 0, top: L.tag, display: 'flex', justifyContent: 'center', gap: 14, alignItems: 'center', opacity: q}}>
-        <span style={{fontFamily: EN, fontWeight: 800, fontSize: 24, letterSpacing: 4, color: S.soft}}>NEW STAGE 19 · DIGITAL ART</span>
+        <span style={{fontWeight: 800, fontSize: 24, letterSpacing: /[A-Za-z]/.test(tag) ? 4 : 0, color: S.soft, fontFamily: /[A-Za-z]/.test(tag) ? EN : AR}}>{tag}</span>
         <span style={{fontFamily: EN, fontWeight: 900, fontSize: 22, color: S.ink, background: S.white, borderRadius: 12, padding: '2px 10px'}}>{String(no).padStart(2, '0')}/{total}</span>
       </div>
       <div style={{position: 'absolute', left: 50, right: 50, top: L.head, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center',
@@ -81,8 +84,8 @@ export const Frame: React.FC<{no: number; total: number; head: string; dur: numb
           const re = f > hookEnd ? spr(f, fps, hookEnd + 4, 260, 10) : 1;
           return box ? (
             <span key={i} style={{display: 'inline-block', opacity: a, transform: `scale(${(0.6 + 0.4 * a) * (f > hookEnd ? 0.85 + 0.15 * re : 1)}) rotate(-2deg)`,
-              background: S.yellow, color: S.ink, fontFamily: AR, fontWeight: 900, fontSize: 70, lineHeight: 1.18, padding: '0 18px 6px', borderRadius: 14,
-              boxShadow: `0 10px 40px ${S.yellow}55`}}>{clean}</span>
+              background: pal.box, color: pal.boxInk, fontFamily: AR, fontWeight: 900, fontSize: 70, lineHeight: 1.18, padding: '0 18px 6px', borderRadius: 14,
+              boxShadow: `0 10px 40px ${pal.box}55`}}>{clean}</span>
           ) : (
             <span key={i} style={{display: 'inline-block', opacity: a, transform: `translateY(${(1 - a) * 24}px)`, fontFamily: AR, fontWeight: 900, fontSize: 70,
               lineHeight: 1.18, color: S.white, textShadow: '0 6px 30px rgba(0,0,0,0.6)'}}>{clean}</span>
@@ -107,7 +110,7 @@ const chunks = (ws: Wd[], max = 4) => {
   if (cur.length) out.push(cur);
   return out;
 };
-export const Caps: React.FC<{words: Wd[]; hide?: [number, number][]}> = ({words, hide = []}) => {
+export const Caps: React.FC<{words: Wd[]; hide?: [number, number][]; top?: number; pal?: Pal}> = ({words, hide = [], top = L.cap, pal = STAGE_PAL}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const t = f / fps;
@@ -118,7 +121,7 @@ export const Caps: React.FC<{words: Wd[]; hide?: [number, number][]}> = ({words,
   const k0 = Math.round((c[0].start - 0.05) * fps);
   const pop = spr(f, fps, k0, 260, 14);
   return (
-    <div style={{position: 'absolute', left: 40, right: 40, top: L.cap, display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '4px 16px', direction: 'rtl',
+    <div style={{position: 'absolute', left: 40, right: 40, top, display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '4px 16px', direction: 'rtl',
       transform: `scale(${0.86 + 0.14 * pop})`}}>
       {c.map((w, i) => {
         const on = t >= w.start - 0.03;
@@ -126,7 +129,7 @@ export const Caps: React.FC<{words: Wd[]; hide?: [number, number][]}> = ({words,
         const latin = /^[A-Za-z0-9.\-]+$/.test(w.w);
         return (
           <span key={i} style={{display: 'inline-block', fontFamily: latin ? EN : AR, fontWeight: 900, fontSize: latin ? 60 : 68, lineHeight: 1.2, padding: '0 12px 4px', borderRadius: 14,
-            color: now ? S.ink : w.hl ? S.yellow : S.white, background: now ? (w.hl ? S.red : S.yellow) : 'transparent', opacity: on ? 1 : 0.35,
+            color: now ? S.ink : w.hl ? pal.now : S.white, background: now ? (w.hl ? pal.hl : pal.now) : 'transparent', opacity: on ? 1 : 0.35,
             transform: now ? 'scale(1.07) rotate(-1.5deg)' : 'none',
             WebkitTextStroke: now ? undefined : '2px rgba(0,0,0,0.55)', textShadow: now ? undefined : '0 6px 22px rgba(0,0,0,0.85)'}}>{w.w.replace(/[.،,:]+$/, '')}</span>
         );
@@ -136,26 +139,27 @@ export const Caps: React.FC<{words: Wd[]; hide?: [number, number][]}> = ({words,
 };
 
 // ---------- side badge: the full lecture is on YouTube (thumb + QR). Small on the side; grows at the end ----------
-export const Badge: React.FC<{thumb: string; qr: string; at: number; big: number}> = ({thumb, qr, at, big}) => {
+export const Badge: React.FC<{thumb: string; qr: string; at: number; big: number; label?: string; sub?: string; len?: string; y0?: number; hide?: number}> = (
+  {thumb, qr, at, big, label = 'المحاضرة كاملة', sub = 'على قناتي في يوتيوب', len = '52:07', y0 = 520, hide = 0}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   if (f < at) return null;
   const p = spr(f, fps, at, 150, 15);
   const g = f >= big ? spr(f, fps, big, 120, 15) : 0;
   const s = 1 + 1.3 * g, w = 250;
-  const x = 34 + (540 - w * s / 2 - 34) * g, y = 520 + (700 - 520) * g;
+  const x = 34 + (540 - w * s / 2 - 34) * g, y = y0 + (700 - y0) * g;
   return (
     <>
     {g > 0 ? <div style={{position: 'absolute', inset: 0, background: `rgba(7,9,18,${0.7 * g})`}} /> : null}
-    <div style={{position: 'absolute', left: x, top: y, transform: `scale(${s * (0.8 + 0.2 * p)})`, transformOrigin: '0 0', opacity: p}}>
+    <div style={{position: 'absolute', left: x, top: y, transform: `scale(${s * (0.8 + 0.2 * p)})`, transformOrigin: '0 0', opacity: p * (g > 0 ? 1 : 1 - hide)}}>
       <div style={{width: w, padding: 10, borderRadius: 20, background: 'rgba(12,15,28,0.86)', border: '2px solid rgba(255,255,255,0.18)', boxSizing: 'border-box',
         boxShadow: '0 16px 40px rgba(0,0,0,0.5)', direction: 'rtl', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8}}>
         <div style={{position: 'relative'}}>
           <Img src={staticFile(thumb)} style={{width: w - 20, height: (w - 20) * 9 / 16, objectFit: 'cover', borderRadius: 10, display: 'block'}} />
-          <div style={{position: 'absolute', left: 6, bottom: 6, background: '#FF0033', borderRadius: 6, padding: '0 7px', fontFamily: EN, fontWeight: 900, fontSize: 15, color: '#fff'}}>▶ 52:07</div>
+          <div style={{position: 'absolute', left: 6, bottom: 6, background: '#FF0033', borderRadius: 6, padding: '0 7px', fontFamily: EN, fontWeight: 900, fontSize: 15, color: '#fff'}}>▶ {len}</div>
         </div>
         <div style={{display: 'flex', alignItems: 'center', gap: 8, width: '100%'}}>
-          <div style={{flex: 1, fontFamily: AR, fontWeight: 900, fontSize: 24, color: S.white, lineHeight: 1.2}}>المحاضرة كاملة<br /><span style={{color: S.soft, fontWeight: 700, fontSize: 18}}>على قناتي في يوتيوب</span></div>
+          <div style={{flex: 1, fontFamily: AR, fontWeight: 900, fontSize: 24, color: S.white, lineHeight: 1.2}}>{label}<br /><span style={{color: S.soft, fontWeight: 700, fontSize: 18}}>{sub}</span></div>
           <div style={{background: '#fff', padding: 4, borderRadius: 8}}><Img src={staticFile(qr)} style={{width: 78, height: 78, display: 'block'}} /></div>
         </div>
       </div>

@@ -105,6 +105,8 @@ question with the list. A newly approved look = a new numbered folder (sample.mp
 - Every term = card with a plain definition; boards > 5 s get the speaker circle (not a tight face crop) unless the board is busy.
 - Render: 30 fps proxy + PNG grain (full-frame SVG noise = 14 h render), 5-min muted chunks + ffmpeg audio.
 - LONG videos: never compress without asking him (shorts: always compress).
+- Shorts from an online episode (cs ep01 2026-10-21, docs/22): composition `meet-short` — tiles stacked (Aly top), speaker big,
+  the approved long edit's boards on top; hook + rewind + captions; END = episode thumbnail + QR only (no CTA clip). Waiting for review.
 
 ## Vertical reels from a long video (figmaMake reels 2026-10-08)
 - Ranges = closed ideas; his edit has almost no pauses → put every edge on a measured audio dip (50 ms dB profile),

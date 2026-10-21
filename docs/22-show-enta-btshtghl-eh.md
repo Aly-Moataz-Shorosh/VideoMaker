@@ -124,3 +124,20 @@ the guest's job, terms and examples. Goal (Aly): fun, visualized, explain every 
   links note "في الوصف", speaker circle on boards > 5 s (MeetPip, `pip` cues; not on qa_login — busy enough), circle not zoomed
   on the face, sides by GAZE (looks left -> placed right; here Aly left / guest right, meet.left = 'A' — usual, not a law), person+card on his side. Liked: cadre switching + background.
 - review_02 APPROVED (Aly 2026-10-20: "حلو جدا") -> **style 14 online-interview** (styles/14). Long videos: ask before compressing (shorts: always).
+
+## حاسبات ep01 -> 17 vertical SHORTS (2026-10-21) — `output/shorts/NN_slug.mp4` + `.txt`, composition `meet-short`
+- Aly: "حولي الفيديو ده ل shorts" + full episode link (https://youtu.be/5xqomlWcKzE) + his thumbnail `input/e2.png`; END of every short =
+  the episode itself + QR (like newstage19), NO CTA clip of his.
+- Ideas = every self-contained Q&A of the episode (17), posting order = strongest first (tester vs developer eyes, AI replace, boring?...).
+  Data `work/scripts/shorts_data.py` (hook + pieces in source sec), captions hand-corrected per piece in `caps.py` (Whisper on the Meet
+  mix is weak: re-transcribe per piece with `cap_words.py`, then write their exact words; English terms in English).
+- Look (`src/enta/MeetShort.tsx`): style 14 turned 9:16 — calm Meet bg, headline + series tag "انت بتشتغل ايه · حاسبات NN/17", captions
+  (enta palette: paper box / mustard / orange via stage kit `pal`), hook sentence first + VCR rewind. Cadres: `two` = Aly top / guest
+  bottom stacked · `one` = speaker big (zoom inside tile ≤ 1.08) · `board`/`card` = the APPROVED long edit (review_02, 1080x608) on top
+  where it shows a board or person+card, with the speaker (board) / listener (card) under it. Notes of the long plan = taped strips on
+  the seam. Small episode badge top-left, then a 3.2 s END CARD: "شوف الحلقة كاملة", big thumbnail, QR + "امسح الكود · أو اللينك في الوصف".
+- Pipeline: `bash work/scripts/build_shorts.sh N…` = make_short (edges.fit on the waveform, Meet strip + review strip cut with audio/video
+  concatenated SEPARATELY) -> one bundle, media copied into out/bundle/public -> render -> `level.py` (-16 LUFS, CRF 23 = compressed).
+  QC `qc_sync.py N…` (piece offsets 0, length = timeline); QR decoded from the rendered end frame with cv2. ~5 min render per short.
+- Edges: Meet audio has digital silence (-80 dB) between speakers -> easy cuts; but within one speaker check with `edges.py` profile
+  (fit() walked into "اللي بعده" / "طبعا" / "معينة" -> exact `(a, b, 'x')` edges by hand).
