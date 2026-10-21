@@ -10,6 +10,8 @@ for x in "$@"; do
   n=$(printf %02d $x); st=$(date +%s)
   cd "$S"
   PYTHONIOENCODING=utf8 python make_short.py $x > "$S/../shorts/build_$n.log" 2>&1 || { echo "short $n make_short FAILED"; continue; }
+  # GATE (Aly 2026-10-21 "الغلطة دي متحصلش تاني"): picture of every piece must match the source frame (±0.025 s), else stop
+  python qc_av.py strip $x | tee -a "$S/../shorts/build_$n.log" || { echo "short $n PICTURE OUT OF SYNC - not rendered"; continue; }
   cd "$ML"
   rm -rf out/bundle/public/projects/entacs01s; mkdir -p out/bundle/public/projects; cp -r public/projects/entacs01s out/bundle/public/projects/   # fresh media without re-bundling
   T="$PWD/out/tmp_render"; mkdir -p "$T"; export TEMP="$(cygpath -w "$T")" TMP="$(cygpath -w "$T")"
@@ -17,5 +19,6 @@ for x in "$@"; do
     || { echo "short $n render FAILED"; rm -rf "$T"; continue; }
   rm -rf "$T"
   cd "$S"; PYTHONIOENCODING=utf8 python level.py $x
+  python qc_sync.py $x || { echo "short $n VOICE OUT OF SYNC"; f=$(ls "$P/output/shorts/${n}_"*.mp4); mv "$f" "${f%.mp4}.BAD.mp4"; continue; }
   echo "short $n done in $(( $(date +%s) - st ))s"
 done

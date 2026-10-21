@@ -66,6 +66,8 @@ def build(n):
         nxt = min((s0 for s0, e in allw if s0 >= b + 0.05), default=None)
         return prev, nxt
     spans = [(r[0], r[1]) if len(r) > 2 else fit(r[0], r[1], *nb(r[0], r[1]))[:2] for r in [sh['hook']] + sh['pieces']]
+    # whole frames per piece: picture (frames) and voice (samples) get the SAME length -> no drift
+    spans = [(a, round(a + round((b - a) * 30) / 30, 4)) for a, b in spans]
     tl, t = [], 0.0
     hook = spans[0]
     tl.append((hook[0], hook[1], 0.0)); t = hook[1] - hook[0]
@@ -84,7 +86,7 @@ def build(n):
             nonlocal k
             ins.extend(['-ss', f'{a:.3f}', '-t', f'{b - a + 0.2:.3f}', '-i', str(src)])
             d = b - a
-            fc.append(f'[{k}:v]fps=30,{vf},setsar=1,trim=duration={d:.4f},setpts=PTS-STARTPTS,format=yuv420p[v{k}];')
+            fc.append(f'[{k}:v]fps=30,{vf},setsar=1,setpts=PTS-STARTPTS,trim=end_frame={round(d * 30)},format=yuv420p[v{k}];')
             if audio:
                 fc.append(f'[{k}:a]aresample=48000,atrim=0:{d:.4f},asetpts=PTS-STARTPTS,apad=whole_dur={d:.4f},'
                           f'afade=t=in:d={FADE},afade=t=out:st={d - FADE:.3f}:d={FADE}[a{k}];')
@@ -92,7 +94,11 @@ def build(n):
         seg(*hook)
         span = hook[1] - first
         ins.extend(['-ss', f'{first:.3f}', '-t', f'{span:.3f}', '-i', str(src)])
-        fc.append(f'[{k}:v]fps={27 / span:.5f},{vf},setsar=1,reverse,setpts=N/(30*TB),fps=30,trim=duration={REW},format=yuv420p,'
+        # 27 frames spread over the span, played backwards at 30 fps (= REW s). Frame-exact with select/settb: the old
+        # fps=27/span + fps=30 chain gave ZERO frames -> every picture after the hook ran 0.93 s ahead of the voice
+        # (Aly 2026-10-21: "الصوت مش ماشي مع الصورة"; the end tpad hid it because the file length still matched)
+        step = max(1, round(span * 60 / 27))
+        fc.append(f"[{k}:v]select='not(mod(n\\,{step}))',{vf},setsar=1,reverse,settb=1/30,setpts=N,trim=end_frame={round(REW * 30)},format=yuv420p,"
                   f'eq=saturation=0.6:contrast=1.15[v{k}];')
         if audio:
             fc.append(f'anullsrc=r=48000:cl=stereo,atrim=duration={REW}[a{k}];')
@@ -199,8 +205,8 @@ def build(n):
 
     # ---- captions ----
     words = []
-    wj = json.load(open(OUT / f'words_{n:02d}.json', encoding='utf8'))
-    cap = CAPS.get(n) or [' '.join(w['w'] for w in p_['words']) for p_ in wj]
+    wj = json.load(open(OUT / f"words_{sh['idea']:02d}.json", encoding='utf8'))
+    cap = CAPS.get(sh['idea']) or [' '.join(w['w'] for w in p_['words']) for p_ in wj]
     for i, (pc, text) in enumerate(zip(wj, cap)):
         a, b, st = tl[i]
         src_words = pc['words']

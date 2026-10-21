@@ -67,7 +67,7 @@ for n, sh in SHORTS.items():
     v = OUT / f"{n:02d}_{sh['slug']}.mp4"
     if not v.exists():
         continue
-    titles, summary, tags, pin = META[n]
+    titles, summary, tags, pin = META[sh['idea']]
     txt = (f"العناوين (اختار واحد):\n" + '\n'.join(f'{i + 1}. {t}' for i, t in enumerate(titles)) +
            f"\n\nالوصف:\n{titles[0]}\n{summary}\n\nمن أول حلقة في نسخة حاسبات من برنامج انت بتشتغل ايه، مع أيمن إسماعيل (Senior Software QA Engineer).\n"
            f"الحلقة كاملة على يوتيوب: {LINK}\n\n{tags} #انت_بتشتغل_ايه #AlyShorosh\n\n"

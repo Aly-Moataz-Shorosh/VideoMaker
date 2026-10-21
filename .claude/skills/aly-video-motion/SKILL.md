@@ -105,7 +105,7 @@ question with the list. A newly approved look = a new numbered folder (sample.mp
 - Every term = card with a plain definition; boards > 5 s get the speaker circle (not a tight face crop) unless the board is busy.
 - Render: 30 fps proxy + PNG grain (full-frame SVG noise = 14 h render), 5-min muted chunks + ffmpeg audio.
 - LONG videos: never compress without asking him (shorts: always compress).
-- Shorts from an online episode (cs ep01 2026-10-21, docs/22): composition `meet-short` — tiles stacked (Aly top), speaker big,
+- Shorts from an online episode (cs ep01 2026-10-21, docs/22): ONLY the 3–5 strongest (Aly: 17 = too many). Composition `meet-short` — tiles stacked (Aly top), speaker big,
   the approved long edit's boards on top; hook + rewind + captions; END = episode thumbnail + QR only (no CTA clip). Waiting for review.
 
 ## Vertical reels from a long video (figmaMake reels 2026-10-08)
@@ -248,6 +248,10 @@ Add what he liked to section 2 and every mistake to section 3 (with the fix), pl
   others himself — my auto blur was "وحش"), and keep the crop on him. Old versions → output/v3/archive/.
 - LIP SYNC: concat video and audio SEPARATELY (a joint concat drifted the voice up to 0.28 s); check every short with qc_sync.py
   (constant offset = OK) and qc_cam.py (he stays in frame) BEFORE delivering — Aly: "متغلطش غلطات دي تاني".
+- PICTURE SYNC (cs ep01 shorts 2026-10-21, Aly: "الصوت مش ماشي مع الصورة… متحصلش تاني"): the rewind clip after the hook had ZERO
+  frames (fps=27/span → fps=30 chain) → every picture after it 0.93 s early; voice QC and file length both looked fine. Build every
+  piece frame-exact (select/settb/setpts=N, trim=end_frame, pieces rounded to whole frames) and run `qc_av.py` = frames of the short
+  vs the SOURCE frames (≤ 0.025 s) as a gate before any render. Never trust length or voice-only checks.
 - CAMERA LENGTH: never reuse a cached camera/footage render unless it was built from the SAME timeline (short 28: an old
   camera was reused → he froze while the voice went on). Check every short: camera length = short length.
 - More shorts from one source: list the parts no short used yet (gaps) and propose them; use his slides (proj_sheet.py) for motion.

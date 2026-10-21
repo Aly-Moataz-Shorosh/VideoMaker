@@ -125,7 +125,7 @@ the guest's job, terms and examples. Goal (Aly): fun, visualized, explain every 
   on the face, sides by GAZE (looks left -> placed right; here Aly left / guest right, meet.left = 'A' — usual, not a law), person+card on his side. Liked: cadre switching + background.
 - review_02 APPROVED (Aly 2026-10-20: "حلو جدا") -> **style 14 online-interview** (styles/14). Long videos: ask before compressing (shorts: always).
 
-## حاسبات ep01 -> 17 vertical SHORTS (2026-10-21) — `output/shorts/NN_slug.mp4` + `.txt`, composition `meet-short`
+## حاسبات ep01 -> vertical SHORTS (2026-10-21; 17 ideas, Aly picked: only the 5 strongest) — `output/shorts/NN_slug.mp4` + `.txt`, composition `meet-short`
 - Aly: "حولي الفيديو ده ل shorts" + full episode link (https://youtu.be/5xqomlWcKzE) + his thumbnail `input/e2.png`; END of every short =
   the episode itself + QR (like newstage19), NO CTA clip of his.
 - Ideas = every self-contained Q&A of the episode (17), posting order = strongest first (tester vs developer eyes, AI replace, boring?...).
@@ -141,3 +141,7 @@ the guest's job, terms and examples. Goal (Aly): fun, visualized, explain every 
   QC `qc_sync.py N…` (piece offsets 0, length = timeline); QR decoded from the rendered end frame with cv2. ~5 min render per short.
 - Edges: Meet audio has digital silence (-80 dB) between speakers -> easy cuts; but within one speaker check with `edges.py` profile
   (fit() walked into "اللي بعده" / "طبعا" / "معينة" -> exact `(a, b, 'x')` edges by hand).
+- ⚠ v1 (shorts 1-3) had the PICTURE 0.93 s ahead of the voice after the hook: the rewind clip produced 0 frames, tpad hid it.
+  Fixed (frame-exact select/settb, whole-frame pieces) + gate `qc_av.py strip N` in build_shorts.sh (0.5 s of frames slid over the
+  source at 60 fps, ≤ 0.025 s) and `qc_sync.py` after leveling (voice). Aly: "17 too many" -> `PICK = [1, 2, 5, 3, 4]` in shorts_data
+  (posting order; best 3 first): tester vs developer eyes, AI replace, no CS degree, boring?, production/refund. Others stay in IDEAS.

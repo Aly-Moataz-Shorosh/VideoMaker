@@ -1,7 +1,7 @@
 """Shorts from cs ep01 (Aly 2026-10-21: "حولي الفيديو ده ل shorts" — end = the full episode + QR, no CTA clip).
 Per short: slug, head (headline, *word* = boxed), hook (a, b) = cold-open sentence (source sec, rough word edges -> edges.fit),
 pieces [(a, b), ...] = the idea from its start. (a, b, 'x') = exact edges by hand. Order = posting order (strongest first)."""
-SHORTS = {
+IDEAS = {
     1: dict(slug='tester_eyes', head='ليه الشركة محتاجة *Tester* لو الـDeveloper شاطر؟', hook=(499.7, 507.6), pieces=[(469.9, 539.9)]),
     2: dict(slug='ai_replace', head='هل الـ*AI* هيستبدل الـTester؟', hook=(1603.8, 1613.58, 'x'), pieces=[(1549.4, 1634.1), (1644.7, 1652.2)]),
     3: dict(slug='boring', head='هل الـ*Testing* شغل ممل؟', hook=(240.8, 249.6), pieces=[(209.4, 283.4)]),
@@ -20,4 +20,8 @@ SHORTS = {
     16: dict(slug='requirements', head='إزاي تعرف الـ*صح* من الغلط؟', hook=(401.88, 411.93, 'x'), pieces=[(350.8, 415.9)]),
     17: dict(slug='predict_bug', head='الـTester بيعرف الـ*Bug* فين قبل ما يدوّر', hook=(1393.1, 1396.9), pieces=[(1373.42, 1403.3, 'x')]),
 }
+# Aly 2026-10-21: "مش مستاهلة عدد كتير… اهم و اقوى 5 شورتس مثلا او 3" -> the 5 strongest, best 3 first.
+# key = posting number, 'idea' = number in IDEAS (words_NN.json + CAPS are keyed by the idea)
+PICK = [1, 2, 5, 3, 4]
+SHORTS = {i + 1: dict(IDEAS[k], idea=k) for i, k in enumerate(PICK)}
 TOTAL = len(SHORTS)

@@ -10,7 +10,7 @@ HERE = Path(__file__).parent
 P = HERE.parents[1]
 sys.path.insert(0, str(P.parents[2] / 'tools'))
 from transcribe import load_audio
-from shorts_data import SHORTS
+from shorts_data import IDEAS as SHORTS  # transcriptions are per idea
 from edges import fit
 
 PROMPT = 'حلقة بودكاست باللهجة المصرية عن Software Testing و QA و QC و Automation و API و Postman و ISTQB و AI و Developer و Bugs و Requirements. علي شرش وأيمن إسماعيل.'
