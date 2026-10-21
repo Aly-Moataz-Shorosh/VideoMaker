@@ -56,6 +56,12 @@ const MODES: Record<string, R> = {
   // aftereffects-to-code 2026-10-16 (720p recording upscaled to 1080p): big webcam corner in his opening, then the small one
   lbig: {x: 160, y: 1110, w: 760, h: 570, sx: 1180, sw: 640, sy: 500, sh: 480, r: 50, o: 1, feather: 0},
   lmini: {x: 800, y: 1290, w: 240, h: 240, sx: 1670, sw: 200, sy: 850, sh: 200, r: 120, o: 1, feather: 0},
+  // graphictablet 2026-10-21: he sits right of centre (face x ~1030); during his picture-in-picture inserts the frame slides so he is at ~1280
+  tfull: {x: 0, y: 0, w: 1080, h: 1920, sx: 727, sw: 607.5, r: 0, o: 1, feather: 0},
+  tlow: {x: 0, y: 760, w: 1080, h: 1160, sx: 530, sw: 1005, r: 0, o: 1, feather: 0.16},
+  tlowr: {x: 0, y: 760, w: 1080, h: 1160, sx: 800, sw: 1005, r: 0, o: 1, feather: 0.16},
+  wbig: {x: 0, y: 560, w: 1080, h: 820, sx: 180, sw: 1560, r: 0, o: 1, feather: 0.08}, // his full-frame screen / board footage, bigger than 'wide'
+  tbig: {x: 0, y: 600, w: 1080, h: 1000, sx: 380, sw: 1160, r: 0, o: 1, feather: 0.1},
 };
 export const Cam: React.FC<{file: string; keys: {t: number; m: string}[]; len?: number}> = ({file, keys, len = 12}) => {
   const f = useCurrentFrame();

@@ -180,6 +180,11 @@ Done (2026-10-06):
   NEW composition `meet-short` (`src/enta/MeetShort.tsx`): stacked Meet tiles / speaker big / approved long-edit board on top, hook +
   rewind, captions, end card = episode thumbnail + QR (no CTA clip). Recipe docs/22 "17 vertical SHORTS", scripts `tools/recipes/enta_cs01_shorts/`.
   v1 picture was 0.93 s off (empty rewind clip) -> fixed + picture-sync gate qc_av.py; whoosh only on cadre moves; level.py limiter = same -16 LUFS. Waiting for review. Long-episode public (source30.mp4) parked in `_parked_public/2026-10-20 ep01 cs quality control/`.
+- 2026-10-21 `projects/2026-10-21 shorts graphictablet` (his 2022 "أهمية الجرافيك تابلت", style 10 + QR end like 11) → asked first, Aly picked
+  6/3/5/2/7 of 8 ideas → `output/short_{6,3,5,2,7}.mp4` (0:52–1:38) + .txt, sfx_only, voice_original. Scenes `src/glass/tablet.tsx`
+  (declarative `tb_free` items, his picture-in-picture inserts shown big `tb_clip`, checklist, tablet↔screen map, LaTeX vs pen, whiteboard
+  story map, QR end). Camera = ONE decode + trim per piece + concat in order (select reorders!). Recipe `docs/29-recipe-glass-face-talk-shorts.md`,
+  scripts `tools/recipes/graphictablet/`. Waiting for review. Unsure: he says "14" buttons (Huion page: 12 hard + 16 soft) — hidden in captions.
 - ⚠ Remotion copies public/ (~2 GB) into Temp on EVERY bundle/still → C: hit 0 bytes twice. Use `stills_cli.sh`
   (one bundle in out/bundle), set TEMP/TMP to `motion-library/out/tmp` for renders and DELETE that folder after (one render left 13 GB).
 - ⚠ E: ~17 GB free. Premiere 2020 alpha format still untested by Aly (`_tests/premiere-test`).

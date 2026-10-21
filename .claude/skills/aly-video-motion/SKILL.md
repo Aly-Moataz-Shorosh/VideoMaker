@@ -258,3 +258,9 @@ Add what he liked to section 2 and every mistake to section 3 (with the fix), pl
 - CAMERA LENGTH: never reuse a cached camera/footage render unless it was built from the SAME timeline (short 28: an old
   camera was reused → he froze while the voice went on). Check every short: camera length = short length.
 - More shorts from one source: list the parts no short used yet (gaps) and propose them; use his slides (proj_sheet.py) for motion.
+
+## Shorts from a TALKING video, style 10 (graphictablet 2026-10-21, docs/29) — waiting for review
+- His own picture-in-picture inserts (product clips, his screen) = real material: show them BIG on the stage (`tb_clip`), camera `tlowr`.
+- Full-frame footage → camera `wbig`/`tbig`; footage of someone else → `hide` + big cards (never an empty screen).
+- "CTA مش فيديو بوشي زي ستايل 11" = no face CTA clip; QR card of the full video in the middle at the end.
+- Camera mp4: split + trim per piece + concat in the short's order (select=between reorders a hook to source order).

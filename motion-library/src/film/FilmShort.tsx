@@ -18,6 +18,7 @@ import {glassScenes} from '../glass/scenes';
 import {auditionScenes} from '../glass/audition';
 import {Cam, GlassBg, GlassFx} from '../glass/kit';
 import {lottieScenes, LottieBg, LottieFx} from '../glass/lottie';
+import {tabletScenes} from '../glass/tablet';
 
 // Faceless-first vertical short (Aly 2026-10-08, theodesy): the whole short is motion graphics; Aly (cut out from the
 // raw HDR clips, tools via work/scripts/faces.py) appears only at a few moments (start / middle / end).
@@ -46,7 +47,7 @@ export const filmShortSchema = z.object({
   // lighting 2026-10-14 (look 'glass'): his camera ALWAYS on screen = one continuous mp4 of the kept pieces + layout keys
   cam: z.object({file: z.string(), keys: z.array(z.object({t: z.number(), m: z.string()}))}).nullable().default(null),
 });
-const allScenes: Record<string, React.FC<any>> = {...filmScenes, ...vhsScenes, ...cairoScenes, ...histScenes, ...popScenes, ...glassScenes, ...auditionScenes, ...lottieScenes};
+const allScenes: Record<string, React.FC<any>> = {...filmScenes, ...vhsScenes, ...cairoScenes, ...histScenes, ...popScenes, ...glassScenes, ...auditionScenes, ...lottieScenes, ...tabletScenes};
 
 // Aly cut-out (1080x1080 square webm). bottom = full width at the bottom with a halftone disc behind his head;
 // left/right = smaller presenter in a corner while a scene plays behind.
