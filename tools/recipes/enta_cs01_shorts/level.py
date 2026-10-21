@@ -21,8 +21,11 @@ for n in map(int, sys.argv[1:]):
     out = P / 'output' / 'shorts' / f"{n:02d}_{SHORTS[n]['slug']}.mp4"
     tmp = out.with_suffix('.tmp.mp4')
     L, trim = lufs(raw), 0.0
+    # one loud peak must not leave a whole short quieter than the others (roadmap came out -19 LUFS): reach -16 with a
+    # transparent peak limiter at -1.5 dBFS instead of trimming the gain (same voice level in every short)
     for _ in range(4):
-        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(raw), '-c:v', 'libx264', '-crf', '23', '-preset', 'medium', '-af', f'volume={-16 - L - trim:.2f}dB',
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(raw), '-c:v', 'libx264', '-crf', '23', '-preset', 'medium',
+                        '-af', f'volume={-16 - L - trim:.2f}dB,alimiter=limit=0.84:attack=2:release=50:level=disabled',
                         '-c:a', 'aac', '-movflags', '+faststart', str(tmp)], check=True)
         pk = peak(tmp)
         if pk <= -1.0: break
