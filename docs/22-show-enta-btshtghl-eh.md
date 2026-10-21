@@ -146,3 +146,4 @@ the guest's job, terms and examples. Goal (Aly): fun, visualized, explain every 
   source at 60 fps, ≤ 0.025 s) and `qc_sync.py` after leveling (voice). Aly: "17 too many" -> `PICK = [1, 2, 5, 3, 4]` in shorts_data
   (posting order; best 3 first): tester vs developer eyes, AI replace, no CS degree, boring?, production/refund. Others stay in IDEAS.
 - v2 (Aly on short 2): sfx on every zoom = over -> whoosh only when the cadre moves (two/one/board/card or other person), zoom-only changes silent. v1 in output/shorts/archive_v1/.
+- v3: my 5 rejected ("more motion graphics… give me the choice") -> table of 17 ideas with % motion/board -> Aly picked 14 API, 10 roadmap, 11 manual/automation, 4 production (PICK in shorts_data).

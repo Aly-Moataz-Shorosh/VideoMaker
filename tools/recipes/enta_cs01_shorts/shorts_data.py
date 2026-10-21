@@ -20,8 +20,8 @@ IDEAS = {
     16: dict(slug='requirements', head='إزاي تعرف الـ*صح* من الغلط؟', hook=(401.88, 411.93, 'x'), pieces=[(350.8, 415.9)]),
     17: dict(slug='predict_bug', head='الـTester بيعرف الـ*Bug* فين قبل ما يدوّر', hook=(1393.1, 1396.9), pieces=[(1373.42, 1403.3, 'x')]),
 }
-# Aly 2026-10-21: "مش مستاهلة عدد كتير… اهم و اقوى 5 شورتس مثلا او 3" -> the 5 strongest, best 3 first.
+# Aly 2026-10-21: "مش مستاهلة عدد كتير" + "اختار شورتس فيها موشن جرافيك اكتر… اديني الاختيار" -> HE picks from the list.
 # key = posting number, 'idea' = number in IDEAS (words_NN.json + CAPS are keyed by the idea)
-PICK = [1, 2, 5, 3, 4]
+PICK = [14, 10, 11, 4]   # Aly 2026-10-21 picked these (most motion graphics) after rejecting my 5
 SHORTS = {i + 1: dict(IDEAS[k], idea=k) for i, k in enumerate(PICK)}
 TOTAL = len(SHORTS)
