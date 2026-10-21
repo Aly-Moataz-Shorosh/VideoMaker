@@ -43,7 +43,7 @@ if __name__ == '__main__':
         if crop is None:
             print('final-video check needs a layout-aware crop; use strip'); continue
         o = offsets(vid, crop, tl['segs'])
-        out = max(map(abs, o)) > 0.025
+        out = max(map(abs, o)) > 0.04   # one 30 fps frame = 0.033 is the finest possible
         bad |= out
         print(f'short {n} [{mode}]: picture offset ' + ' '.join(f'{x:+.3f}' for x in o) + (' <-- OUT OF SYNC' if out else ' ok'), flush=True)
     sys.exit(1 if bad else 0)
