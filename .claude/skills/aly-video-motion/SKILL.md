@@ -267,24 +267,8 @@ Add what he liked to section 2 and every mistake to section 3 (with the fix), pl
 - Redo of delivered videos = new folder (output/v2), keep the old; if only the end changes, render the end frames only and splice (v2_end.sh).
 - Camera mp4: split + trim per piece + concat in the short's order (select=between reorders a hook to source order).
 
-## The .txt beside every video = Aly's EXACT notepad template (2026-10-21) — his posting script reads it by the header words
-```
-العناوين:
-1. أقوى عنوان (سؤال أو جملة فيها ! وبين 15 و 60 حرف)
-2. عنوان تاني
-3. عنوان تالت
-
-الوصف:
-سطر أو اتنين وصف.
-لينك لو فيه.
-
-#هاشتاج1 #هاشتاج2 #هاشتاج3
-
-الكومنت المثبت:
-نص الكومنت
-
-ترتيب النشر: 1 من 30
-```
-Header words character-exact ("اهم حاجة كلمة العناوين"), UTF-8 without BOM, 
- line ends; check every file before delivering
-(writer: tools/recipes/graphictablet/write_meta.py).
+## The .txt beside every video (Aly 2026-10-21) — his posting script reads the word "العناوين:"
+Usual layout: `العناوين:` (exact header, first line) + 1) 2) 3) titles / `الوصف:` free length / #tags / `كومنت مثبت:`.
+NO YouTube link in the txt, NO "ترتيب النشر" line (he tried a strict template and took it back). UTF-8 without BOM, 
+ line ends.
+Writer: tools/recipes/graphictablet/write_meta.py.
