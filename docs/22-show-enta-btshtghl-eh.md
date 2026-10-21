@@ -145,3 +145,4 @@ the guest's job, terms and examples. Goal (Aly): fun, visualized, explain every 
   Fixed (frame-exact select/settb, whole-frame pieces) + gate `qc_av.py strip N` in build_shorts.sh (0.5 s of frames slid over the
   source at 60 fps, ≤ 0.025 s) and `qc_sync.py` after leveling (voice). Aly: "17 too many" -> `PICK = [1, 2, 5, 3, 4]` in shorts_data
   (posting order; best 3 first): tester vs developer eyes, AI replace, no CS degree, boring?, production/refund. Others stay in IDEAS.
+- v2 (Aly on short 2): sfx on every zoom = over -> whoosh only when the cadre moves (two/one/board/card or other person), zoom-only changes silent. v1 in output/shorts/archive_v1/.

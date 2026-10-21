@@ -235,10 +235,13 @@ def build(n):
             s0, s1 = max(a, min(b, s0)), max(a, min(b, s1))
             words.append({'w': w, 'start': round(st + s0 - a, 2), 'end': round(st + max(s1, s0 + 0.12) - a, 2), **({'hl': True} if hl else {})})
 
-    # ---- sfx: tape on the rewind, soft whoosh on every cadre change, pop on notes, riser before the end card ----
+    # ---- sfx: tape on the rewind, whoosh ONLY when the cadre itself moves (two / one / board / card, or another person),
+    # NEVER on a zoom inside the same cadre (Aly 2026-10-21: "sfx على كل زوم ان و زوم اوت over… خليها لما الكدر نفسه بنحركه
+    # مش زوم"), pop on notes, riser before the end card ----
     sfx = [{'t': round(rew_t - 0.05, 2), 'file': 'sfx/tape.wav', 'vol': 0.5}]
-    for s in shots[2:]:
-        sfx.append({'t': max(0, round(s['t'] - 0.06, 2)), 'file': f"sfx/whoosh_{1 + int(s['t'] * 10) % 3}.wav", 'vol': 0.12 if s['m'] in ('two', 'one') else 0.2})
+    for a_, b_ in zip(shots[1:], shots[2:]):
+        if (a_['m'], a_['who'] if a_['m'] != 'two' else '') != (b_['m'], b_['who'] if b_['m'] != 'two' else ''):
+            sfx.append({'t': max(0, round(b_['t'] - 0.06, 2)), 'file': f"sfx/whoosh_{1 + int(b_['t'] * 10) % 3}.wav", 'vol': 0.12 if b_['m'] in ('two', 'one') else 0.2})
     for nt in notes:
         sfx.append({'t': nt['t'], 'file': f"sfx/pop_{1 + int(nt['t'] * 10) % 3}.wav", 'vol': 0.22})
     sfx.append({'t': round(dur - 3.4, 2), 'file': 'sfx/riser.wav', 'vol': 0.2})
