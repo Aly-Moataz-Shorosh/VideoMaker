@@ -49,3 +49,15 @@ Liked: the opening and the end ("البداية و النهاية"), the colours
   scene (`face_pos`). Field drawings shrink to make room for the real card on top.
 - Nothing may be cut by a canvas edge ("الكورة كانت بتتقص… الفيديو اكنه وحدة واحدة"): three.js objects stay inside their canvas
   (ball range + height limited, canvas = full stage width). The stage scale ×1.1 widens canvases by 54 px per side — keep margins.
+
+## Review of v2 (Aly 2026-10-22) -> v3 (`output/v3/`)
+- هو ايه: HIS OWN episode motion is better ("بيعبر اكتر") -> `jy_clip` = his episode playing in sync, cropped to where his animation
+  is (`content_boxes.py`: diff vs the episode's own grey background, 0.25 s steps), scaled ≤ ×1.6 and ≤ 860 px wide (stage ×1.1 ->
+  never wider than the screen). My scenes only where they explain more (pixels added/removed, billboard + t-shirt, file size).
+- Pixels: show the REAL photo first, then ZOOM into it until the squares show (`jy_zoom`, nearest-neighbour + pixel grid) — not separate
+  crops. A drawn landscape is NOT a raster photo; a manipulation is NOT a photograph.
+- Behance: a small QR (be.net/shorosh) only next to his strongest works, never a text chip under every picture.
+- Nothing may leave the frame (labels of side circles were cut).
+- Oz: NO roto — his ORIGINAL frame inside the circle, centred on his face (center 960,690 r 230 of the 1920 frame). Examples = his WHOLE
+  chapter frame while he scrolls (not zoomed crops); the field's own motion sits right under that frame, above the captions, never covered.
+- Programs: fewer examples, no overlaps (Big Buck Bunny replaces the Blender ball inside the scene).

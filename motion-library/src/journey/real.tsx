@@ -1,12 +1,13 @@
 import React from 'react';
 import {Easing, Img, OffthreadVideo, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {AR, JY, lin, Sec, spr} from './kit';
+import {BehanceQR} from './clip';
 
 // REAL examples on top of the motion (Aly 2026-10-22 review: "موشن بس من غير صور مش نافع" — the viewer must SEE the real thing).
 // Pictures: his own work first, then crops of his own video, then free Commons pictures (credits in the .txt).
 const REAL = 'projects/2026-10-22 shorts Journey to the center of computer graphics/real/';
 export type RealItem = {src: string; at: number; out?: number; x: number; y: number; w: number; h?: number; shape?: 'circle' | 'card';
-  label?: string; pos?: string; zoom?: number; pix?: [number, number, number, number]; rot?: number; fit?: 'cover' | 'contain'; bg?: string};
+  label?: string; pos?: string; zoom?: number; pix?: [number, number, number, number]; rot?: number; fit?: 'cover' | 'contain'; bg?: string; be?: boolean};
 
 // pix = [x, y, w, h] in % of the picture: that small part shown big with hard pixels (the REAL pixels of a real photo)
 const Pic: React.FC<{it: RealItem; f: number}> = ({it, f}) => {
@@ -44,11 +45,7 @@ export const JyReal: React.FC<{items: RealItem[]; sec?: Sec}> = ({items, sec = '
               boxShadow: `0 0 0 5px ${ring}, 0 22px 44px rgba(0,0,0,0.35)`, background: '#fff'}}>
               <Pic it={it} f={f} />
             </div>
-            {it.src.startsWith('his_') ? (
-              // his own work -> his Behance (Aly 2026-10-22: "لو هتستخدم حاجة من شغلي حط لينك بيهانس بتاعتي")
-              <div style={{position: 'absolute', left: '50%', top: h + (it.label ? 44 : -8), transform: 'translateX(-50%)', whiteSpace: 'nowrap', fontFamily: 'Montserrat',
-                fontWeight: 800, fontSize: 24, color: '#fff', background: '#1769FF', padding: '3px 14px', borderRadius: 16, direction: 'ltr'}}>Bē be.net/shorosh</div>
-            ) : null}
+            {it.be ? <div style={{position: 'absolute', right: -40, top: -30}}><BehanceQR size={96} /></div> : null}
             {it.label ? (
               <div style={{position: 'absolute', left: '50%', top: h - 8, transform: 'translateX(-50%)', whiteSpace: 'nowrap', fontFamily: AR, fontWeight: 900, fontSize: 30,
                 color: '#fff', background: '#1E1E24', padding: '4px 16px', borderRadius: 20, direction: 'rtl'}}>{it.label}</div>
@@ -62,22 +59,23 @@ export const JyReal: React.FC<{items: RealItem[]; sec?: Sec}> = ({items, sec = '
 
 // Aly himself in a circle telling the story (Oz chapters): his matted face from the published chapter (same timeline as the voice),
 // on a calm disc. src = transparent webm of the crop around his head; box = which part of the crop fills the circle.
-export const FaceCircle: React.FC<{file: string; keys?: {t: number; x: number; y: number; d: number}[]; box?: [number, number, number]; ring?: string}> = ({file, keys = [{t: 0, x: 900, y: 1390, d: 220}], box = [360, 330, 420], ring = '#F2C230'}) => {
+export const FaceCircle: React.FC<{file: string; from?: number; center?: [number, number]; r?: number; keys?: {t: number; x: number; y: number; d: number; hide?: number}[]; ring?: string}> = ({file, from = 0, center = [960, 560], r = 250, keys = [{t: 0, x: 900, y: 1390, d: 220}], ring = '#F2C230'}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const p = spr(f, fps, 0, 150, 15);
-  // where it is now: last key passed, gliding 12 frames from the previous one
   let k = 0;
   keys.forEach((q, i) => { if (f >= q.t * fps) k = i; });
   const cur = keys[k], prev = keys[Math.max(0, k - 1)];
   const u = k === 0 ? 1 : lin(f, cur.t * fps, cur.t * fps + 12, 0, 1, Easing.inOut(Easing.cubic));
   const x = prev.x + (cur.x - prev.x) * u, y = prev.y + (cur.y - prev.y) * u, d = prev.d + (cur.d - prev.d) * u;
-  const s = d / box[2];
+  const vis = (prev.hide ? 1 - u : 1) * (cur.hide ? 1 - u : 1) + (prev.hide && !cur.hide ? u : 0);
+  const p = spr(f, fps, 0, 150, 15) * Math.max(0, Math.min(1, vis));
+  if (p <= 0.01) return null;
+  const s = d / (2 * r);
   return (
     <div style={{position: 'absolute', left: x - d / 2, top: y - d / 2, width: d, height: d, borderRadius: '50%', overflow: 'hidden', transform: `scale(${p})`,
-      background: 'radial-gradient(circle at 50% 40%, #FFF6DF 0%, #F2D58A 100%)', border: '8px solid #fff', boxShadow: `0 0 0 6px ${ring}, 0 22px 44px rgba(0,0,0,0.3)`}}>
-      <OffthreadVideo transparent muted src={staticFile(file)} style={{position: 'absolute', width: 720 * s, height: 720 * s,
-        left: d / 2 - box[0] * s, top: d / 2 - box[1] * s}} />
+      border: '8px solid #fff', boxShadow: `0 0 0 6px ${ring}, 0 22px 44px rgba(0,0,0,0.3)`, background: '#222'}}>
+      <OffthreadVideo muted src={staticFile(file)} startFrom={Math.round(from * fps)} style={{position: 'absolute', width: 1920 * s, height: 1080 * s,
+        left: d / 2 - center[0] * s, top: d / 2 - center[1] * s, maxWidth: 'none'}} />
     </div>
   );
 };

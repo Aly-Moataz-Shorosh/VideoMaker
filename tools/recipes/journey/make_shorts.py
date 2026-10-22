@@ -65,6 +65,10 @@ def build(n):
     for k, sc in enumerate(S['scenes']):
         a = starts[k]; b = starts[k + 1] if k + 1 < len(starts) else main
         props = {kk: v for kk, v in sc.items() if kk not in ('t', 'at', 'b')}
+        if sc['t'] == 'jy_clip' or 'clip' in sc:  # his own video plays in sync: source second at the scene start
+            props['from'] = round(sc['at'] if k else segs[0]['src'], 3)
+            if 'clip' in sc: props['clip'] = PJ + sc['clip']
+            if sc['t'] == 'jy_clip': props['src'] = sc['src']
         if 'b' in sc:
             props['b'] = {kk: max(0, round((to_tl(v, a) - a) * FPS)) for kk, v in sc['b'].items()}
         scenes.append({'t': sc['t'], 'at': round(a, 3), 'dur': round(b - a, 3), 'layer': 'front', 'props': props})
@@ -116,7 +120,7 @@ def build(n):
     shutil.copy(next((P / 'input').glob(f'{ep}_*.jpg')), PUB / f'thumb_{ep}.jpg')
     props = {'fps': FPS, 'duration': dur, 'voice': PJ + f'voice_{n}.wav', 'segs': [{'src': 0, 'tl': 0, 'len': dur}], 'words': words, 'aly': [],
              'scenes': scenes, 'sfx': sfx, 'look': 'journey', 'capBottom': 0.115, 'sfxGain': 1.0, 'series': {'sec': S['sec'], 'label': S['label']},
-             'face': {'file': PJ + S['face'], 'until': round(main, 3), 'keys': [dict(t=round(s['at'], 3), **dict(zip('xyd', S.get('face_pos', {}).get(s['t'], (900, 1390, 220))))) for s in scenes if s['t'] not in ('jy_real', 'jy_end')]} if S.get('face') else None}
+             'face': {'file': PJ + S['face'], 'from': segs[0]['src'], 'center': [960, 690], 'r': 230, 'until': round(main, 3), 'keys': [dict(t=round(s['at'], 3), **dict(zip(('x', 'y', 'd', 'hide'), S.get('face_pos', {}).get(s['t'], (900, 1390, 220, 0))))) for s in scenes if s['t'] not in ('jy_real', 'jy_end')]} if S.get('face') else None}
     json.dump(props, open(PUB / f'short_{n}.json', 'w', encoding='utf8'), ensure_ascii=False, indent=1)
     print(f'  short {n}: {main:.1f}s + end {TAIL}s = {dur:.1f}s | {len(segs)} pieces, {len(scenes)} scenes, {len(words)} words')
     for s in scenes:

@@ -52,7 +52,7 @@ export const filmShortSchema = z.object({
   // journey 2026-10-22 (look 'journey'): series bar on top = project name + route with 3 stations (huwa / oz / prog) + 'مصطلح 7 من 30'
   series: z.object({sec: z.string(), label: z.string()}).nullable().default(null),
   // journey Oz chapters (Aly review 2026-10-22): he tells the story from a circle (matted face of his published chapter)
-  face: z.object({file: z.string(), until: z.number(), keys: z.array(z.object({t: z.number(), x: z.number(), y: z.number(), d: z.number()})).default([])}).nullable().default(null),
+  face: z.object({file: z.string(), until: z.number(), from: z.number().default(0), center: z.array(z.number()).default([960, 560]), r: z.number().default(250), keys: z.array(z.object({t: z.number(), x: z.number(), y: z.number(), d: z.number(), hide: z.number().default(0)})).default([])}).nullable().default(null),
 });
 const allScenes: Record<string, React.FC<any>> = {...filmScenes, ...vhsScenes, ...cairoScenes, ...histScenes, ...popScenes, ...glassScenes, ...auditionScenes, ...lottieScenes, ...tabletScenes, ...journeyScenes};
 
@@ -187,7 +187,7 @@ export const FilmShort: React.FC<z.infer<typeof filmShortSchema>> = (p) => {
       ) : null}
       {p.series ? <SeriesBar sec={p.series.sec as any} label={p.series.label} /> : null}
       {p.series ? <ChannelFooter dark={p.series.sec === 'prog'} /> : null}
-      {p.face ? <Sequence durationInFrames={F(p.face.until)}><FaceCircle file={p.face.file} keys={p.face.keys.length ? p.face.keys : undefined} /></Sequence> : null}
+      {p.face ? <Sequence durationInFrames={F(p.face.until)}><FaceCircle file={p.face.file} from={p.face.from} center={p.face.center as [number, number]} r={p.face.r} keys={p.face.keys.length ? p.face.keys : undefined} /></Sequence> : null}
       <Captions words={p.words} maxWords={4} accent="gold" previewBg="" lift={0} bottomFrac={inCta ? 0.2 : p.capBottom} />
     </AbsoluteFill>
   );

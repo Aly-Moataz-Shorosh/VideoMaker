@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, Img, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Img, staticFile, useCurrentFrame} from 'remotion';
 import {AR, EN, HuwaLogo, In, JY, lin, logo, Pill, ProgBadge, Sc, spr} from './kit';
 import {BouncingBall3D, Building3D, Cloner3D, Principles3D, Room3D, Spinner3D} from './three';
 
@@ -206,7 +206,7 @@ export const P3Maya: React.FC<{b?: B}> = ({b = {}}) => {
 };
 
 // 8) Blender: open source + free, general purpose (3D + video editing + 2D animation + compositing)
-export const P3Blender: React.FC<{b?: B}> = ({b = {}}) => {
+export const P3Blender: React.FC<{b?: B; real?: string}> = ({b = {}, real}) => {
   const f = useCurrentFrame();
   const free = at(b, 'free', 60), gen = at(b, 'general', 110);
   const uses = [{e: '🧊', t: '3D', k: 'd3'}, {e: '🎞️', t: 'مونتاج', k: 'edit'}, {e: '✏️', t: '2D Animation', k: 'anim2d'}, {e: '🧩', t: 'كمبوزيتنج', k: 'comp'}];
@@ -214,7 +214,15 @@ export const P3Blender: React.FC<{b?: B}> = ({b = {}}) => {
     <Sc>
       <In at={0} x={540} y={420}><Row p={PROGS[2]} hi /></In>
       <In at={free} x={540} y={550}><Pill text="Open Source  +  Free" font={EN} dir="ltr" bg="#7DDB9A" ink={C.bg1} size={44} /></In>
-      <div style={{position: 'absolute', left: 290, top: 640}}><Spinner3D w={500} h={500} color="#E87D0D" /></div>
+      {/* the ball, then a REAL film made with Blender in its place (Big Buck Bunny, CC BY Blender Foundation) */}
+      <div style={{position: 'absolute', left: 290, top: 640, opacity: real ? 1 - lin(f, at(b, 'd3', 999), at(b, 'd3', 999) + 10) : 1}}><Spinner3D w={500} h={500} color="#E87D0D" /></div>
+      {real && f >= at(b, 'd3', 999) ? (
+        <div style={{position: 'absolute', left: 340, top: 745, width: 400, height: 290, borderRadius: 22, overflow: 'hidden', border: '8px solid #fff', boxShadow: '0 0 0 5px #F7C531, 0 20px 40px rgba(0,0,0,0.35)',
+          transform: `scale(${spr(f, 30, at(b, 'd3', 999), 160, 13)})`}}>
+          <Img src={staticFile('projects/2026-10-22 shorts Journey to the center of computer graphics/real/' + real)} style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: '40% 50%'}} />
+          <div style={{position: 'absolute', left: 0, right: 0, bottom: 0, padding: '4px 0', textAlign: 'center', background: 'rgba(0,0,0,0.6)', color: '#fff', fontFamily: AR, fontWeight: 800, fontSize: 24, direction: 'rtl'}}>فيلم معمول بـ Blender</div>
+        </div>
+      ) : null}
       {f >= gen ? <In at={gen} x={540} y={1210}><Pill text="General Purpose" font={EN} dir="ltr" bg={YEL} ink={C.bg1} size={40} /></In> : null}
       {uses.map((u, i) => {
         const t0 = at(b, u.k, gen + 10 + i * 20);

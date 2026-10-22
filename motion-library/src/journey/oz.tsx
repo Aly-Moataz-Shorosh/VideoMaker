@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, OffthreadVideo, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Pack3D} from './three';
 import {AR, Bubble, BrickRoad, CornField, Dorothy, EmeraldCity, EN, grad, In, JY, lin, OzBadge, Pill, Sc, Scarecrow, spr} from './kit';
 
@@ -36,7 +36,7 @@ export const OzWalk: React.FC<{b?: B}> = ({b = {}}) => {
       <Land />
       <EmeraldCity x={540} y={860} s={0.9} glow={0.3 + 0.7 * lin(f, city, city + 12)} />
       <BrickRoad vx={540} vy={860} walk />
-      <Dorothy x={540} y={1180 - 20 * lin(f, 0, 200)} s={1.5 - 0.25 * lin(f, 0, 200)} walk />
+      <Dorothy x={540} y={1100 - 20 * lin(f, 0, 200)} s={1.4 - 0.25 * lin(f, 0, 200)} walk />
       <In at={2} x={540} y={420}>
         <div style={{display: 'flex', alignItems: 'center', gap: 20, direction: 'rtl', background: C.card, padding: '14px 30px', borderRadius: 60, boxShadow: '0 12px 30px rgba(0,0,0,0.2)'}}>
           <OzBadge d={90} />
@@ -57,7 +57,7 @@ export const OzFarm: React.FC<{b?: B}> = ({b = {}}) => {
     <Sc>
       <Land />
       <CornField y={1000} />
-      <Dorothy x={540} y={1320} s={1.25} look={0.3} />
+      <Dorothy x={460} y={1170} s={1.2} look={0.3} />
       <In at={4} x={540} y={760} rot={-3}>
         <div style={{background: '#9A6A3A', padding: '18px 40px', borderRadius: 12, border: '6px solid #6B4423', boxShadow: '0 14px 26px rgba(0,0,0,0.3)'}}>
           <div style={{fontFamily: AR, fontWeight: 900, fontSize: 64, color: '#FFF3D6'}}>مزرعة كبيرة قوي 🌽</div>
@@ -85,8 +85,8 @@ export const OzMeet: React.FC<{b?: B}> = ({b = {}}) => {
     <Sc>
       <Land />
       <CornField y={1080} sway={0.6} />
-      <Scarecrow x={560} y={1060} s={1.35} onPole talk={talkS} look={-0.6} />
-      <Dorothy x={200} y={1300} s={1.2} talk={f > ask && f < yes - 6} look={0.6} />
+      <Scarecrow x={560} y={980} s={1.3} onPole talk={talkS} look={-0.6} />
+      <Dorothy x={200} y={1170} s={1.15} talk={f > ask && f < yes - 6} look={0.6} />
       <In at={14} out={ask - 6} x={700} y={520}><Pill text="خيال مآتة.. بيتكلم! 😮" size={46} /></In>
       <In at={years} out={ask - 6} x={700} y={620}><Pill text="واقف هنا بقاله سنين ⏳" bg={C.a} ink="#fff" size={40} /></In>
       <In at={ask} out={yes - 4} x={360} y={560}><Bubble w={620} h={220} tail="left"><span style={{fontSize: 46}}>ممكن تكلّمني على مجالات الجرافيكس؟</span></Bubble></In>
@@ -134,7 +134,8 @@ const Track: React.FC<{i: number}> = ({i}) => (
     ))}
   </div>
 );
-const Field: React.FC<{i: number; title: string; en?: string; children: React.ReactNode}> = ({i, title, en, children}) => {
+const Field: React.FC<{i: number; title: string; en?: string; children: React.ReactNode; clip?: string; from?: number}> = ({i, title, en, children, clip, from = 0}) => {
+  const {fps} = useVideoConfig();
   const f = useCurrentFrame();
   return (
     <Sc>
@@ -146,8 +147,18 @@ const Field: React.FC<{i: number; title: string; en?: string; children: React.Re
           {en ? <span style={{fontFamily: EN, fontWeight: 800, fontSize: 36, color: C.a, whiteSpace: 'nowrap'}}>{en}</span> : null}
         </div>
       </In>
-      <AbsoluteFill style={{transform: 'translate(-60px, 150px) scale(0.7)', transformOrigin: '50% 62%'}}>{children}</AbsoluteFill>
-      <Scarecrow x={120} y={1290 + 6 * Math.sin(f / 10)} s={0.8} talk look={0.8} />
+      {clip ? (
+        // his WHOLE chapter frame while he scrolls the examples (Aly v2 review: "حطها كاملة… من الفيديو و انا بعمل سكرول")
+        <div style={{position: 'absolute', left: 150, top: 560, width: 780, height: 440, padding: 8, borderRadius: 26, background: grad('oz'), boxShadow: '0 22px 44px rgba(0,0,0,0.25)'}}>
+          <div style={{width: 764, height: 424, borderRadius: 18, overflow: 'hidden', position: 'relative'}}>
+            <OffthreadVideo muted src={staticFile(clip)} startFrom={Math.round(from * fps)} style={{width: 764, height: 430, maxWidth: 'none'}} />
+          </div>
+        </div>
+      ) : null}
+      {/* with his frame on top the small drawings only collided with the captions (v3) -> frame + scarecrow only */}
+      {/* his frame on top, the field's motion right under it (compact, never under the captions) */}
+      <AbsoluteFill style={{transform: clip ? 'translate(30px, 400px) scale(0.5)' : 'translate(-60px, 150px) scale(0.7)', transformOrigin: '540px 600px'}}>{children}</AbsoluteFill>
+      <Scarecrow x={110} y={(clip ? 1180 : 1300) + 6 * Math.sin(f / 10)} s={clip ? 0.55 : 0.62} talk look={0.8} />
     </Sc>
   );
 };
@@ -161,12 +172,12 @@ const Lbl: React.FC<{t: string; en?: boolean; size?: number}> = ({t, en, size = 
 const bars = (n: number, w: number, c = '#E3D9C2') => Array.from({length: n}, (_, i) => <div key={i} style={{height: 14, width: `${w - (i % 3) * 18}%`, background: c, borderRadius: 7, margin: '10px 16px'}} />);
 
 // 5) UI / UX: a phone app + a website being designed
-export const FUiux: React.FC<{b?: B}> = ({b = {}}) => {
+export const FUiux: React.FC<{b?: B; clip?: string; from?: number}> = ({b = {}, clip, from}) => {
   const f = useCurrentFrame();
   const ux = at(b, 'ux', 30), web = at(b, 'web', 200), app = at(b, 'android', 250);
   const tap = (f - ux) % 40;
   return (
-    <Field i={0} title="UI و UX">
+    <Field clip={clip} from={from} i={0} title="UI و UX">
       <In at={4} x={300} y={640}><Pill text="UI = شكل الواجهة" font={AR} size={36} /></In>
       <In at={ux} x={780} y={640}><Pill text="UX = تجربة المستخدم" bg={C.a} ink="#fff" size={36} /></In>
       <In at={Math.min(web, 20)} x={720} y={1020}>
@@ -193,13 +204,13 @@ export const FUiux: React.FC<{b?: B}> = ({b = {}}) => {
 };
 
 // 6) Branding: logo → its colours → its font → business card
-export const FBrand: React.FC<{b?: B}> = ({b = {}}) => {
+export const FBrand: React.FC<{b?: B; clip?: string; from?: number}> = ({b = {}, clip, from}) => {
   const col = at(b, 'colors', 120), font = at(b, 'font', 250), card = at(b, 'card', 360);
   const Mark = ({s = 1}: {s?: number}) => (
     <svg width={160 * s} height={160 * s} viewBox="0 0 160 160"><circle cx={80} cy={80} r={74} fill={C.a} /><path d="M40 104 L80 40 L120 104 Z" fill={C.b} /><circle cx={80} cy={96} r={14} fill="#fff" /></svg>
   );
   return (
-    <Field i={1} title="براندينج" en="Branding">
+    <Field clip={clip} from={from} i={1} title="براندينج" en="Branding">
       <In at={6} x={540} y={760}><div style={{display: 'flex', alignItems: 'center', gap: 20, direction: 'ltr'}}><Mark /><span style={{fontFamily: EN, fontWeight: 900, fontSize: 70, color: C.ink}}>OZ.co</span></div><Lbl t="اللوجو" /></In>
       {[C.a, C.b, C.ink, '#FFF6DF'].map((c, k) => (
         <In key={c} at={col + k * 4} x={300 + k * 160} y={1000}><div style={{width: 130, height: 130, borderRadius: 24, background: c, boxShadow: '0 10px 20px rgba(0,0,0,0.2)', border: '4px solid #fff'}} /></In>
@@ -212,12 +223,12 @@ export const FBrand: React.FC<{b?: B}> = ({b = {}}) => {
 };
 
 // 7) Print: roll-up, banners, street signs + layouts of books, flyers, brochures
-export const FPrint: React.FC<{b?: B}> = ({b = {}}) => {
+export const FPrint: React.FC<{b?: B; clip?: string; from?: number}> = ({b = {}, clip, from}) => {
   const f = useCurrentFrame();
   const roll = at(b, 'rollup', 120), ban = at(b, 'banner', 150), sign = at(b, 'sign', 170), lay = at(b, 'layout', 300), fly = at(b, 'flyer', 330), bro = at(b, 'brochure', 360);
   const second = f >= lay - 6;
   return (
-    <Field i={2} title="مطبوعات" en="Print">
+    <Field clip={clip} from={from} i={2} title="مطبوعات" en="Print">
       {!second ? <>
         <In at={roll} x={260} y={1000}><div style={{width: 200, height: 460, background: '#fff', borderTop: `20px solid ${C.ink}`, boxShadow: '0 14px 30px rgba(0,0,0,0.2)', position: 'relative'}}>
           <div style={{height: 160, margin: 14, background: grad('oz'), borderRadius: 8}} />{bars(4, 80)}<div style={{position: 'absolute', bottom: -30, left: -20, right: -20, height: 30, background: C.ink, borderRadius: 6}} /></div><Lbl t="رول أب" /></In>
@@ -234,10 +245,10 @@ export const FPrint: React.FC<{b?: B}> = ({b = {}}) => {
 };
 
 // 8) Packaging: juice box, chips bag, carton
-export const FPack: React.FC<{b?: B}> = ({b = {}}) => {
+export const FPack: React.FC<{b?: B; clip?: string; from?: number}> = ({b = {}, clip, from}) => {
   const j = at(b, 'juice', 100), c = at(b, 'chips', 120), k = at(b, 'carton', 140);
   return (
-    <Field i={3} title="باكدجنج" en="Packaging">
+    <Field clip={clip} from={from} i={3} title="باكدجنج" en="Packaging">
       <In at={4} x={540} y={640}><Pill text="أي حاجة متعلبة 📦" size={40} /></In>
       <div style={{position: 'absolute', left: 40, top: 700}}><Pack3D w={1000} h={560} at={[Math.min(j, 20), Math.min(c, 30), Math.min(k, 40)]} /></div>
       <In at={Math.min(j, 20)} x={240} y={1240}><Lbl t="عصير" /></In>
@@ -248,12 +259,12 @@ export const FPack: React.FC<{b?: B}> = ({b = {}}) => {
 };
 
 // 9) Social media designs + movie posters
-export const FSocial: React.FC<{b?: B}> = ({b = {}}) => {
+export const FSocial: React.FC<{b?: B; clip?: string; from?: number}> = ({b = {}, clip, from}) => {
   const f = useCurrentFrame();
   const poster = at(b, 'poster', 100);
   const scroll = (f * 3) % 300;
   return (
-    <Field i={4} title="سوشيال ميديا" en="Social Media">
+    <Field clip={clip} from={from} i={4} title="سوشيال ميديا" en="Social Media">
       <In at={4} x={400} y={1000}>
         <div style={{width: 300, height: 560, borderRadius: 44, background: '#2B1D14', padding: 12}}>
           <div style={{width: '100%', height: '100%', borderRadius: 34, background: '#fff', overflow: 'hidden'}}>
@@ -281,7 +292,7 @@ export const FSocial: React.FC<{b?: B}> = ({b = {}}) => {
 };
 
 // 10) Photographers + retouching: camera flash, then a before/after slider over a portrait
-export const FPhoto: React.FC<{b?: B}> = ({b = {}}) => {
+export const FPhoto: React.FC<{b?: B; clip?: string; from?: number}> = ({b = {}, clip, from}) => {
   const f = useCurrentFrame();
   const shot = at(b, 'shot', 60), ret = at(b, 'retouch', 200);
   const flash = f > shot && f < shot + 8 ? 1 - (f - shot) / 8 : 0;
@@ -298,7 +309,7 @@ export const FPhoto: React.FC<{b?: B}> = ({b = {}}) => {
     </svg>
   );
   return (
-    <Field i={5} title="تصوير وريتاتش" en="Retouching">
+    <Field clip={clip} from={from} i={5} title="تصوير وريتاتش" en="Retouching">
       {f < ret ? (
         <In at={4} x={600} y={1000}>
           <div style={{width: 420, height: 290, background: '#2B1D14', borderRadius: 50, position: 'relative', boxShadow: '0 20px 40px rgba(0,0,0,0.3)'}}>
@@ -325,7 +336,7 @@ export const FPhoto: React.FC<{b?: B}> = ({b = {}}) => {
 };
 
 // 11) Illustration: a vector character drawn, then used in a magazine, a newspaper, a video, a design
-export const FIllus: React.FC<{b?: B}> = ({b = {}}) => {
+export const FIllus: React.FC<{b?: B; clip?: string; from?: number}> = ({b = {}, clip, from}) => {
   const f = useCurrentFrame();
   const use = at(b, 'mag', 150);
   const d = lin(f, 6, 90);
@@ -338,7 +349,7 @@ export const FIllus: React.FC<{b?: B}> = ({b = {}}) => {
   );
   const uses = [{t: 'مجلة', x: 250, y: 1230}, {t: 'جريدة', x: 540, y: 1260}, {t: 'فيديو', x: 830, y: 1230}];
   return (
-    <Field i={6} title="إليستريشن" en="Illustration">
+    <Field clip={clip} from={from} i={6} title="إليستريشن" en="Illustration">
       <In at={2} x={540} y={850}>
         <div style={{position: 'relative', width: 340, height: 340}}>
           <svg width={340} height={340} viewBox="0 0 220 220" style={{position: 'absolute'}}>
@@ -364,7 +375,7 @@ export const FIllus: React.FC<{b?: B}> = ({b = {}}) => {
 };
 
 // 12) Digital painting: painting on a tablet (Photoshop) vs on paper with a pen — a different feeling
-export const FPaint: React.FC<{b?: B}> = ({b = {}}) => {
+export const FPaint: React.FC<{b?: B; clip?: string; from?: number}> = ({b = {}, clip, from}) => {
   const f = useCurrentFrame();
   const paper = at(b, 'paper', 250);
   const strokes = [
@@ -372,7 +383,7 @@ export const FPaint: React.FC<{b?: B}> = ({b = {}}) => {
     {d: 'M30 360 L 400 360', c: '#5EA43E', t: 80}, {d: 'M120 340 L 160 200 L 200 340', c: '#14804A', t: 100},
   ];
   return (
-    <Field i={7} title="ديجيتال بينتنج" en="Digital Painting">
+    <Field clip={clip} from={from} i={7} title="ديجيتال بينتنج" en="Digital Painting">
       <In at={4} x={540} y={940}>
         <div style={{width: 560, height: 420, borderRadius: 34, background: '#2B1D14', padding: 18, boxShadow: '0 20px 40px rgba(0,0,0,0.3)'}}>
           <svg width={524} height={384} viewBox="0 0 430 400" style={{background: '#FFF6DF', borderRadius: 18}}>
@@ -400,8 +411,8 @@ export const OzWish: React.FC<{b?: B}> = ({b = {}}) => {
     <Sc>
       <Land />
       <CornField y={1080} sway={0.4} />
-      <Scarecrow x={560} y={1060} s={1.35} onPole talk sad={f < brain} look={-0.6} />
-      <Dorothy x={200} y={1300} s={1.2} look={0.6} />
+      <Scarecrow x={560} y={980} s={1.3} onPole talk sad={f < brain} look={-0.6} />
+      <Dorothy x={200} y={1170} s={1.15} look={0.6} />
       <In at={6} out={years - 4} x={600} y={520}><Bubble w={620} h={200} tail="right"><span style={{fontSize: 46}}>ممكن تاخديني معاكي للساحر؟</span></Bubble></In>
       <In at={years} out={brain - 4} x={600} y={520}><Bubble w={680} h={220} tail="right"><span style={{fontSize: 42}}>بقالي سنين واقف.. مش بتعلّم ومش بطوّر نفسي ⏳</span></Bubble></In>
       <In at={brain} x={600} y={520}><Bubble w={560} h={200} tail="right"><span style={{fontSize: 52}}>يديني عقل 🧠</span></Bubble></In>
@@ -419,8 +430,8 @@ export const OzTogether: React.FC<{b?: B}> = ({b = {}}) => {
       <Land />
       <EmeraldCity x={540} y={860} s={0.9} glow={0.6} />
       <BrickRoad vx={540} vy={860} walk />
-      <Dorothy x={420} y={1210} s={1.3} walk />
-      <Scarecrow x={680} y={1200} s={1.2} walk />
+      <Dorothy x={420} y={1120} s={1.2} walk />
+      <Scarecrow x={660} y={1110} s={1.12} walk />
       <In at={6} out={road - 6} x={540} y={520}><Pill text="وكمّلوا الرحلة سوا 🤝" bg={C.a} ink="#fff" size={46} /></In>
       <In at={road} x={540} y={470}>
         <div style={{background: C.card, borderRadius: 30, padding: '20px 36px', textAlign: 'center', boxShadow: '0 14px 30px rgba(0,0,0,0.2)'}}>
