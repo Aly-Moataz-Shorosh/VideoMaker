@@ -179,11 +179,11 @@ export const Room3D: React.FC<{w: number; h: number}> = ({w, h}) => {
 export const BouncingBall3D: React.FC<{w: number; h: number}> = ({w, h}) => {
   const f = useCurrentFrame();
   const T = 26, ph = (f % T) / T;
-  const yv = 2.6 * 4 * ph * (1 - ph);
+  const yv = 1.5 * 4 * ph * (1 - ph);
   const squash = ph < 0.08 || ph > 0.92 ? 0.7 : 1 + 0.18 * Math.abs(1 - 2 * ph) * (ph > 0.15 && ph < 0.85 ? 1 : 0);
-  const x = -1.8 + ((f / T) % 4) * 1.2;
+  const x = -1.8 + ((f / T) % 3) * 1.2; // stays inside the frame (max 1.8 + radius)
   return (
-    <Canvas w={w} h={h} z={6.2} y={1.0}>
+    <Canvas w={w} h={h} z={6.4} y={0.1}>
       <Lights />
       <mesh position={[x, -1.5 + 0.75 * squash + yv, 0]} scale={[1 / Math.sqrt(squash), squash, 1 / Math.sqrt(squash)]}>
         <sphereGeometry args={[0.75, 48, 32]} /><meshPhysicalMaterial color="#F08A24" roughness={0.25} clearcoat={1} />

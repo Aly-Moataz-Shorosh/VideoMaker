@@ -178,7 +178,7 @@ export const P3Maya: React.FC<{b?: B}> = ({b = {}}) => {
       {!second ? (
         <>
           <In at={at(b, 'anim', 40)} x={540} y={540}><Pill text="التحريك (Animation)" bg={YEL} ink={C.bg1} size={40} /></In>
-          <div style={{position: 'absolute', left: 90, top: 600}}><BouncingBall3D w={900} h={580} /></div>
+          <div style={{position: 'absolute', left: 0, top: 560}}><BouncingBall3D w={1080} h={680} /></div>
           <In at={dis} x={540} y={1260}><Pill text="✨ بيستخدم في ديزني" bg="#fff" ink={C.bg1} size={48} /></In>
         </>
       ) : (

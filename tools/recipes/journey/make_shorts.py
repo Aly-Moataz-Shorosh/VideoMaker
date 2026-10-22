@@ -68,6 +68,16 @@ def build(n):
         if 'b' in sc:
             props['b'] = {kk: max(0, round((to_tl(v, a) - a) * FPS)) for kk, v in sc['b'].items()}
         scenes.append({'t': sc['t'], 'at': round(a, 3), 'dur': round(b - a, 3), 'layer': 'front', 'props': props})
+    # real example pictures (Aly review 2026-10-22): one overlay over the whole short; t / until = source seconds
+    if S.get('real'):
+        items = []
+        for it in S['real']:
+            d = {k: v for k, v in it.items() if k not in ('t', 'until')}
+            d['at'] = round(to_tl(it['t']) * FPS)
+            if 'until' in it:
+                d['out'] = round(to_tl(it['until']) * FPS)
+            items.append(d)
+        scenes.append({'t': 'jy_real', 'at': 0, 'dur': round(main, 3), 'layer': 'front', 'props': {'sec': S['sec'], 'items': items}})
     scenes.append({'t': 'jy_end', 'at': round(main - 0.3, 3), 'dur': round(TAIL + 0.3, 3), 'layer': 'front',
                    'props': {'sec': S['sec'], 'plThumb': PJ + 'thumb_playlist.jpg', 'plName': PL_NAME, 'qr': PJ + 'qr_playlist.png',
                              'vidThumb': PJ + f'thumb_{ep}.jpg', 'vidTitle': S['vid_title']}})
@@ -86,6 +96,10 @@ def build(n):
     # ---------- sound effects: whoosh per scene, pop per beat ----------
     sfx = []
     for i, s in enumerate(scenes):
+        if s['t'] == 'jy_real':
+            for it in s['props']['items']:
+                sfx.append({'file': 'sfx/pop_2.wav', 'at': round(it['at'] / FPS, 3), 'vol': 0.3})
+            continue
         if s['t'] == 'jy_end':
             sfx.append({'file': 'sfx/magic.wav', 'at': s['at'] + 0.2, 'vol': 0.4}); continue
         if s['at'] > 0.3:
@@ -101,7 +115,8 @@ def build(n):
     print('  voice gains:', log)
     shutil.copy(next((P / 'input').glob(f'{ep}_*.jpg')), PUB / f'thumb_{ep}.jpg')
     props = {'fps': FPS, 'duration': dur, 'voice': PJ + f'voice_{n}.wav', 'segs': [{'src': 0, 'tl': 0, 'len': dur}], 'words': words, 'aly': [],
-             'scenes': scenes, 'sfx': sfx, 'look': 'journey', 'capBottom': 0.115, 'sfxGain': 1.0, 'series': {'sec': S['sec'], 'label': S['label']}}
+             'scenes': scenes, 'sfx': sfx, 'look': 'journey', 'capBottom': 0.115, 'sfxGain': 1.0, 'series': {'sec': S['sec'], 'label': S['label']},
+             'face': {'file': PJ + S['face'], 'until': round(main, 3), 'keys': [dict(t=round(s['at'], 3), **dict(zip('xyd', S.get('face_pos', {}).get(s['t'], (900, 1390, 220))))) for s in scenes if s['t'] not in ('jy_real', 'jy_end')]} if S.get('face') else None}
     json.dump(props, open(PUB / f'short_{n}.json', 'w', encoding='utf8'), ensure_ascii=False, indent=1)
     print(f'  short {n}: {main:.1f}s + end {TAIL}s = {dur:.1f}s | {len(segs)} pieces, {len(scenes)} scenes, {len(words)} words')
     for s in scenes:

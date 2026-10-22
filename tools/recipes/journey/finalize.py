@@ -1,7 +1,7 @@
 """Final pass (gain only): -16 LUFS with a transparent peak limiter, compressed like Aly's `ffmpeg -i in out` (x264 CRF 23 + AAC),
 plus the .txt beside each video (starts with the exact header 'العناوين:' — his posting script reads it; no YouTube link).
 python work/scripts/finalize.py 8 33 44   (output/_raw/short_N.mp4 -> output/NN_slug.mp4 + .txt)"""
-import re, subprocess, sys
+import json, re, subprocess, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.stdout.reconfigure(encoding='utf-8')
@@ -48,6 +48,13 @@ for n in [int(a) for a in sys.argv[1:] if a.isdigit()]:
             break
         trim += got + 16
     titles, desc = META[n]
+    real = [it['src'] for it in SHORTS[n].get('real', [])]
+    if any(r.startswith('his_') for r in real):  # Aly 2026-10-22: his own work on screen -> his Behance
+        desc += '\n\nشغلي على Behance: be.net/shorosh'
+    cr = json.loads((P / 'assets' / 'commons' / 'credits.json').read_text(encoding='utf8'))
+    used = [cr[k] for k in dict.fromkeys(r[2:].rsplit('.', 1)[0] for r in real if r.startswith('c_')) if k in cr]
+    if used:  # free Commons pictures: author + license (CC BY / BY-SA need the credit)
+        desc += '\n\nصور من Wikimedia Commons:\n' + '\n'.join(f"- {c['artist'].strip()} ({c['license']})" for c in used)
     txt = 'العناوين:\n' + '\n'.join(f'{i + 1}) {t}' for i, t in enumerate(titles))
     txt += f'\n\nالوصف:\n{desc}\n\n{TAGS}\n\nكومنت مثبت:\n{PIN}\n'
     (P / 'output' / f'{name}.txt').write_text(txt, encoding='utf-8', newline='\n')

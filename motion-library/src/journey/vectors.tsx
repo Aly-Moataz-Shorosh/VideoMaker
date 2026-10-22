@@ -154,13 +154,6 @@ export const V8Sizes: React.FC<{b?: B}> = ({b = {}}) => {
           <div style={{position: 'absolute', bottom: -170, right: 200, width: 24, height: 160, background: '#2C2C34'}} />
         </div>
       </In>
-      <In at={lg} x={230} y={1180} rot={-6}><div style={{width: 280, height: 170, background: '#fff', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 14px 30px rgba(0,0,0,0.25)'}}>{heart(80)}</div><div style={{textAlign: 'center', fontFamily: AR, fontWeight: 800, fontSize: 32, marginTop: 8}}>كارت</div></In>
-      <In at={lg + 8} x={540} y={1190}>
-        <svg width={260} height={230} viewBox="0 0 260 230"><path d="M70 10 L20 40 L0 100 L50 110 L50 230 L210 230 L210 110 L260 100 L240 40 L190 10 Q130 50 70 10 Z" fill="#2C2C34" /></svg>
-        <div style={{position: 'absolute', left: 95, top: 80}}>{heart(70)}</div>
-        <div style={{textAlign: 'center', fontFamily: AR, fontWeight: 800, fontSize: 32}}>تيشيرت</div>
-      </In>
-      <In at={lg + 16} x={850} y={1180} rot={6}><div style={{width: 120, height: 220, background: '#fff', borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 14px 30px rgba(0,0,0,0.25)'}}>{heart(50)}</div><div style={{textAlign: 'center', fontFamily: AR, fontWeight: 800, fontSize: 32, marginTop: 8}}>قلم</div></In>
       <In at={lg + 24} x={540} y={330}><Pill text="نفس اللوجو.. مقاسات مختلفة" bg={grad('huwa')} ink="#fff" size={46} /></In>
     </Sc>
   );
@@ -290,7 +283,6 @@ export const V8Photo: React.FC<{b?: B}> = ({b = {}}) => {
         </GFrame>
       </In>
       <In at={at(b, 'det', 40)} x={300} y={1280} rot={-4}><Pill text="✓ فيها تفاصيل" bg="#2DBE60" ink="#fff" size={48} /></In>
-      <In at={at(b, 'photo', 100)} x={780} y={1280} rot={4}><Pill text="📷 الصور الفوتوغرافية" size={44} /></In>
     </Sc>
   );
 };

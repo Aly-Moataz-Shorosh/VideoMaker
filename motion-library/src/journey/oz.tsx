@@ -85,12 +85,12 @@ export const OzMeet: React.FC<{b?: B}> = ({b = {}}) => {
     <Sc>
       <Land />
       <CornField y={1080} sway={0.6} />
-      <Scarecrow x={700} y={1060} s={1.45} onPole talk={talkS} look={-0.6} />
-      <Dorothy x={250} y={1300} s={1.25} talk={f > ask && f < yes - 6} look={0.6} />
+      <Scarecrow x={560} y={1060} s={1.35} onPole talk={talkS} look={-0.6} />
+      <Dorothy x={200} y={1300} s={1.2} talk={f > ask && f < yes - 6} look={0.6} />
       <In at={14} out={ask - 6} x={700} y={520}><Pill text="خيال مآتة.. بيتكلم! 😮" size={46} /></In>
       <In at={years} out={ask - 6} x={700} y={620}><Pill text="واقف هنا بقاله سنين ⏳" bg={C.a} ink="#fff" size={40} /></In>
       <In at={ask} out={yes - 4} x={360} y={560}><Bubble w={620} h={220} tail="left"><span style={{fontSize: 46}}>ممكن تكلّمني على مجالات الجرافيكس؟</span></Bubble></In>
-      <In at={yes} x={640} y={520}><Bubble w={520} h={170} tail="right"><span style={{fontSize: 52}}>تعالي أقولك 😊</span></Bubble></In>
+      <In at={yes} x={600} y={520}><Bubble w={520} h={170} tail="right"><span style={{fontSize: 52}}>تعالي أقولك 😊</span></Bubble></In>
     </Sc>
   );
 };
@@ -146,7 +146,7 @@ const Field: React.FC<{i: number; title: string; en?: string; children: React.Re
           {en ? <span style={{fontFamily: EN, fontWeight: 800, fontSize: 36, color: C.a, whiteSpace: 'nowrap'}}>{en}</span> : null}
         </div>
       </In>
-      <AbsoluteFill style={{transform: 'scale(1.18)', transformOrigin: '50% 62%'}}>{children}</AbsoluteFill>
+      <AbsoluteFill style={{transform: 'translate(-60px, 150px) scale(0.7)', transformOrigin: '50% 62%'}}>{children}</AbsoluteFill>
       <Scarecrow x={120} y={1290 + 6 * Math.sin(f / 10)} s={0.8} talk look={0.8} />
     </Sc>
   );
@@ -400,8 +400,8 @@ export const OzWish: React.FC<{b?: B}> = ({b = {}}) => {
     <Sc>
       <Land />
       <CornField y={1080} sway={0.4} />
-      <Scarecrow x={700} y={1060} s={1.45} onPole talk sad={f < brain} look={-0.6} />
-      <Dorothy x={250} y={1300} s={1.25} look={0.6} />
+      <Scarecrow x={560} y={1060} s={1.35} onPole talk sad={f < brain} look={-0.6} />
+      <Dorothy x={200} y={1300} s={1.2} look={0.6} />
       <In at={6} out={years - 4} x={600} y={520}><Bubble w={620} h={200} tail="right"><span style={{fontSize: 46}}>ممكن تاخديني معاكي للساحر؟</span></Bubble></In>
       <In at={years} out={brain - 4} x={600} y={520}><Bubble w={680} h={220} tail="right"><span style={{fontSize: 42}}>بقالي سنين واقف.. مش بتعلّم ومش بطوّر نفسي ⏳</span></Bubble></In>
       <In at={brain} x={600} y={520}><Bubble w={560} h={200} tail="right"><span style={{fontSize: 52}}>يديني عقل 🧠</span></Bubble></In>

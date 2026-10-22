@@ -35,3 +35,17 @@ waveform, voice gain only, scenes chained, sfx, props) → `render.sh N…` (one
 `finalize.py N…` (−16 LUFS + limiter, CRF 23, `output/NN_slug.mp4` + `.txt`).
 Composition `film-short`, `look: 'journey'`, prop `series {sec, label}`; scenes `src/journey/` (kit, vectors, oz, prog, three, end).
 Stage is scaled ×1.1 and moved down 70 px for every journey scene (fills the space between the bar and the captions); captions 0.115.
+
+## Review of the pilot (Aly 2026-10-22) -> v2 (`output/v2/`, v1 kept in `output/v1/`)
+Liked: the opening and the end ("البداية و النهاية"), the colours. Notes (all fixed in v2):
+- Motion alone is not descriptive enough ("مش مفهوم كفاية"): REAL example pictures on top of the motion, in circles / cards
+  on the word (`jy_real` overlay, `src/journey/real.tsx`, data `REAL` in shorts_data.py). Source order he set:
+  1) HIS work (F:\_root\output\_portfolio, F:\_root\output\Designs — copies in assets/his/work), 2) crops of HIS video where the
+  example is visible around him (`real_images.py` FRAMES), 3) free Commons pictures (`commons.py`, credits -> .txt).
+  Never a crop that cuts a face; no alcohol products (dropped a soju box). Real pixels = nearest-neighbour zoom of his photo.
+- His work on screen -> "Bē be.net/shorosh" tag under it + "شغلي على Behance: be.net/shorosh" in the description.
+- Oz chapters: HE tells the story from a circle (`FaceCircle`): his face matted from the published chapter (crop 720x720 at
+  x600 y300 -> tools/matte.py, 6 fps), same timeline as the voice, keeps the drawn characters; circle moves to the free corner per
+  scene (`face_pos`). Field drawings shrink to make room for the real card on top.
+- Nothing may be cut by a canvas edge ("الكورة كانت بتتقص… الفيديو اكنه وحدة واحدة"): three.js objects stay inside their canvas
+  (ball range + height limited, canvas = full stage width). The stage scale ×1.1 widens canvases by 54 px per side — keep margins.

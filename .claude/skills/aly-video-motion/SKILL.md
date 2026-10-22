@@ -271,3 +271,11 @@ Add what he liked to section 2 and every mistake to section 3 (with the fix), pl
 Usual layout: `العناوين:` (exact header, first line) + 1) 2) 3) titles / `الوصف:` free length / #tags / `كومنت مثبت:`.
 NO YouTube link in the txt, NO "ترتيب النشر" line (he tried a strict template and took it back). UTF-8 without BOM, LF line ends.
 Writer: tools/recipes/graphictablet/write_meta.py.
+
+## Series shorts from a whole playlist (Journey, 2026-10-22, docs/30) — pilot liked: opening, end card, colours
+- Motion ALONE is not enough ("مش descriptive كفاية"): put REAL example pictures on the words (circles/cards) — his own work first,
+  then crops of his own video, then free Commons pictures (credit them). His work on screen = "be.net/shorosh" tag + link in the txt.
+- Use his EXACT logo files (F:\_root\output\Youtube\Aly Shorosh NEW\...), never redraw a logo. His channel logo + name at the bottom.
+- Story chapters he narrated: he stays in a circle telling the story (matted from his published video), drawn characters kept.
+- Nothing may be cut by a frame/canvas edge — the short must feel like ONE piece. Calm backgrounds.
+
