@@ -61,3 +61,15 @@ Liked: the opening and the end ("البداية و النهاية"), the colours
 - Oz: NO roto — his ORIGINAL frame inside the circle, centred on his face (center 960,690 r 230 of the 1920 frame). Examples = his WHOLE
   chapter frame while he scrolls (not zoomed crops); the field's own motion sits right under that frame, above the captions, never covered.
 - Programs: fewer examples, no overlaps (Big Buck Bunny replaces the Blender ball inside the scene).
+
+## Review of v3 (Aly 2026-10-23) -> v4 (`output/v4/`)
+- هو ايه: mix is right, but where MY motion explained better it comes back: "بيكسلاية بيكسلاية" list (v8_alt), lines & shapes pen
+  (v8_pen), file formats + program logos (v8_tools). Under each of his clips: light motion = key-word chips popping on his words
+  (`chips` on jy_clip, t = source seconds).
+- Oz: his picture a little higher in the circle (center y 740); the scarecrow presenter pops OUT of a circle that holds his farm
+  (`PopOutScarecrow`: inside clipped to the circle, everything above its middle may leave it); every speech bubble's tail points at
+  the one who talks (tail 'down' above the scarecrow). He liked the Oz motion a lot ("احسن بكتير").
+- Programs: each 3D principle must LOOK different (`Principles3D` arm of 5 segments): wireframe building up / clay -> gold + material
+  balls / dark scene + coloured moving spot + shadow / see-through body with white bones + orange joints / bones bending it.
+  Keep floor and balls inside the canvas (a canvas edge showed as a hard line).
+- Channel name at the bottom in the character's skin colour (208,160,112), no filter.

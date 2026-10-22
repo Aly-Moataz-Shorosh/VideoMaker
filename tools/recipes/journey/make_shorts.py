@@ -71,6 +71,8 @@ def build(n):
             if sc['t'] == 'jy_clip': props['src'] = sc['src']
         if 'b' in sc:
             props['b'] = {kk: max(0, round((to_tl(v, a) - a) * FPS)) for kk, v in sc['b'].items()}
+        if 'chips' in sc:  # light words under his clip, popping on his words (Aly v3 review)
+            props['chips'] = [{**c, 't': max(0, round((to_tl(c['t'], a) - a) * FPS))} for c in sc['chips']]
         scenes.append({'t': sc['t'], 'at': round(a, 3), 'dur': round(b - a, 3), 'layer': 'front', 'props': props})
     # real example pictures (Aly review 2026-10-22): one overlay over the whole short; t / until = source seconds
     if S.get('real'):
@@ -120,7 +122,7 @@ def build(n):
     shutil.copy(next((P / 'input').glob(f'{ep}_*.jpg')), PUB / f'thumb_{ep}.jpg')
     props = {'fps': FPS, 'duration': dur, 'voice': PJ + f'voice_{n}.wav', 'segs': [{'src': 0, 'tl': 0, 'len': dur}], 'words': words, 'aly': [],
              'scenes': scenes, 'sfx': sfx, 'look': 'journey', 'capBottom': 0.115, 'sfxGain': 1.0, 'series': {'sec': S['sec'], 'label': S['label']},
-             'face': {'file': PJ + S['face'], 'from': segs[0]['src'], 'center': [960, 690], 'r': 230, 'until': round(main, 3), 'keys': [dict(t=round(s['at'], 3), **dict(zip(('x', 'y', 'd', 'hide'), S.get('face_pos', {}).get(s['t'], (900, 1390, 220, 0))))) for s in scenes if s['t'] not in ('jy_real', 'jy_end')]} if S.get('face') else None}
+             'face': {'file': PJ + S['face'], 'from': segs[0]['src'], 'center': [960, 740], 'r': 230, 'until': round(main, 3), 'keys': [dict(t=round(s['at'], 3), **dict(zip(('x', 'y', 'd', 'hide'), S.get('face_pos', {}).get(s['t'], (900, 1390, 220, 0))))) for s in scenes if s['t'] not in ('jy_real', 'jy_end')]} if S.get('face') else None}
     json.dump(props, open(PUB / f'short_{n}.json', 'w', encoding='utf8'), ensure_ascii=False, indent=1)
     print(f'  short {n}: {main:.1f}s + end {TAIL}s = {dur:.1f}s | {len(segs)} pieces, {len(scenes)} scenes, {len(words)} words')
     for s in scenes:

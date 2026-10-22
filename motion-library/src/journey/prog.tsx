@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, Img, staticFile, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Img, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {AR, EN, HuwaLogo, In, JY, lin, logo, Pill, ProgBadge, Sc, spr} from './kit';
 import {BouncingBall3D, Building3D, Cloner3D, Principles3D, Room3D, Spinner3D} from './three';
 
@@ -76,14 +76,16 @@ export const P3Fields: React.FC<{b?: B}> = ({b = {}}) => {
 //    learn one program -> moving to another is easy
 export const P3Shared: React.FC<{b?: B}> = ({b = {}}) => {
   const f = useCurrentFrame();
+  const {durationInFrames: dur} = useVideoConfig();
+  const step = Math.max(8, (dur - 12) / 5); // the 5 steps share the whole scene (each one readable, ~1.3 s)
   const move = at(b, 'move', 60);
   const steps = ['Modeling', 'Materials', 'Lighting', 'Rigging', 'Animation'];
-  const stage = Math.min(4, Math.floor(Math.max(0, f - 6) / Math.max(8, (move - 6) / 5)));
+  const stage = Math.min(4, Math.floor(Math.max(0, f - 6) / step));
   const hop = lin(f, move, move + 26);
   return (
     <Sc>
       <In at={0} x={540} y={420}><H t="نفس المبادئ في أغلب البرامج" size={58} color="#fff" /></In>
-      <div style={{position: 'absolute', left: 190, top: 480}}><Principles3D w={700} h={560} stage={stage} /></div>
+      <div style={{position: 'absolute', left: 90, top: 470}}><Principles3D w={900} h={560} stage={stage} sf={Math.max(0, f - 6) - stage * step} /></div>
       <div style={{position: 'absolute', top: 1030, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 12, direction: 'ltr'}}>
         {steps.map((s, i) => (
           <div key={s} style={{fontFamily: EN, fontWeight: 700, fontSize: 30, padding: '8px 16px', borderRadius: 24, color: i <= stage ? C.bg1 : '#9CC3C0',

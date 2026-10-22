@@ -35,7 +35,7 @@ export const ProgBadge: React.FC<{d?: number}> = ({d = 120}) => <Img src={logo('
 export const ChannelFooter: React.FC<{dark?: boolean}> = ({dark}) => (
   <div style={{position: 'absolute', left: 0, right: 0, bottom: 26, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 16, direction: 'ltr'}}>
     <Img src={logo('ch_face.png')} style={{height: 84}} />
-    <Img src={logo('ch_name.png')} style={{height: 44, filter: dark ? 'brightness(1.6)' : undefined}} />
+    <Img src={logo('ch_name.png')} style={{height: 44}} />
   </div>
 );
 

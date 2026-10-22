@@ -99,27 +99,44 @@ export const VectorHeart3D: React.FC<{w: number; h: number; t0?: number; scale?:
 };
 
 // ---------- 3D programs short ----------
-// "same principles": ONE model goes wireframe (modeling) -> material -> lighting -> rig bones -> moves (animation)
-export const Principles3D: React.FC<{w: number; h: number; stage: number}> = ({w, h, stage}) => {
+// "same principles": ONE arm-like model (5 segments) goes through the 3D steps, each step LOOKS different:
+// 0 modeling = wireframe building up | 1 materials = grey clay -> glossy gold + material balls | 2 lighting = dark scene, a coloured
+// spot light sweeps and throws a shadow | 3 rigging = model see-through, bones + joints inside | 4 animation = the bones bend it (wave)
+export const Principles3D: React.FC<{w: number; h: number; stage: number; sf?: number}> = ({w, h, stage, sf = 0}) => {
   const f = useCurrentFrame();
-  const geo = useMemo(() => new THREE.TorusKnotGeometry(1.1, 0.36, 220, 32), []);
-  const wire = stage < 1;
+  const segs = 5, L = 0.62;
+  const bend = stage >= 4 ? (i: number) => 0.26 * Math.sin(sf / 7 - i * 0.8) : () => 0;
+  const mat = stage === 0 ? <meshBasicMaterial color="#CFE3E1" wireframe /> :
+    stage === 1 ? (sf < 12 ? <meshStandardMaterial color="#B9B3AA" roughness={0.95} /> : <meshPhysicalMaterial color="#F7C531" metalness={0.85} roughness={0.18} clearcoat={1} />) :
+    stage === 3 ? <meshStandardMaterial color="#F7C531" transparent opacity={0.16} depthWrite={false} /> : <meshPhysicalMaterial color="#F7C531" metalness={0.6} roughness={0.25} clearcoat={1} />;
+  const built = stage === 0 ? Math.min(segs, Math.floor(sf / 5) + 1) : segs;
+  const chain = (k: number): React.ReactNode => k >= built ? null : (
+    <group position={[0, k === 0 ? 0 : L, 0]} rotation={[0, 0, bend(k)]}>
+      <mesh position={[0, L / 2, 0]} castShadow><cylinderGeometry args={[0.2 - k * 0.022, 0.22 - k * 0.022, L, 32]} />{mat}</mesh>
+      <mesh castShadow><sphereGeometry args={[0.23 - k * 0.022, 32, 16]} />{mat}</mesh>
+      {stage === 3 || stage === 4 ? <>
+        <mesh position={[0, L / 2, 0]}><cylinderGeometry args={[0.045, 0.045, L * 0.86, 10]} /><meshBasicMaterial color="#FFFFFF" transparent opacity={stage === 4 ? 0.0 : 1} /></mesh>
+        <mesh><sphereGeometry args={[0.1, 20, 10]} /><meshBasicMaterial color="#F08A24" transparent opacity={stage === 4 ? 0 : 1} /></mesh>
+      </> : null}
+      {k === built - 1 ? <mesh position={[0, L, 0]} castShadow><sphereGeometry args={[0.2 - k * 0.022, 32, 16]} />{mat}</mesh> : null}
+      {chain(k + 1)}
+    </group>
+  );
+  const dark = stage === 2;
+  const spotX = 2.5 * Math.sin(sf / 18);
   return (
-    <Canvas w={w} h={h} z={7}>
-      {stage >= 2 ? <Lights /> : <ambientLight intensity={1.4} />}
-      {stage >= 2 ? <spotLight position={[0, 5, 3]} intensity={60} angle={0.5} penumbra={0.6} color="#FFE2B8" /> : null}
-      <group rotation={[0.3, f / 40, 0]} position={[0, stage >= 4 ? 0.3 * Math.sin(f / 6) : 0, 0]}>
-        <mesh geometry={geo}>
-          {wire ? <meshBasicMaterial color="#CFE3E1" wireframe /> : stage < 2 ? <meshStandardMaterial color="#B9B3AA" roughness={0.9} /> :
-            <meshPhysicalMaterial color="#F7C531" metalness={0.6} roughness={0.25} clearcoat={1} />}
-        </mesh>
-        {stage >= 3 ? [0, 1, 2, 3].map((i) => (
-          <mesh key={i} position={[Math.cos(i * 1.57) * 1.1, Math.sin(i * 1.57) * 1.1, 0]}>
-            <sphereGeometry args={[0.12, 16, 16]} /><meshBasicMaterial color="#F08A24" />
-          </mesh>
-        )) : null}
-      </group>
-    </Canvas>
+    <ThreeCanvas width={w} height={h} camera={{position: [0, 1.2, 4.8], fov: 46}} gl={{antialias: true, alpha: true}} shadows>
+      <Env />
+      <ambientLight intensity={dark ? 0.06 : stage === 0 ? 1.2 : 0.45} />
+      {dark ? <spotLight position={[spotX, 4.5, 2.5]} intensity={90} angle={0.45} penumbra={0.5} color="#FFB45A" castShadow /> : <directionalLight position={[3, 5, 4]} intensity={stage === 0 ? 0.2 : 2.0} castShadow />}
+      {dark ? <pointLight position={[-2.5, 1.5, 1.5]} intensity={6} color="#3BA9F5" /> : null}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.33, 0]} receiveShadow><circleGeometry args={[1.8, 64]} /><meshStandardMaterial color={dark ? '#1E4243' : '#2C5455'} roughness={0.9} /></mesh>
+      <group position={[0, -1.1, 0]} scale={0.85} rotation={[0, stage === 4 ? 0.3 : f / 60, 0]}>{chain(0)}</group>
+      {stage === 1 ? [['#B9B3AA', -1.3, 0.5], ['#F7C531', 1.3, 0.5], ['#9FD6F2', 0.95, 1.2]].map(([c, x, z], i) => (
+        <mesh key={i} position={[x as number, -1.08, z as number]} castShadow><sphereGeometry args={[0.24, 32, 16]} />
+          {i === 2 ? <meshPhysicalMaterial color={c as string} transmission={0.9} roughness={0.05} thickness={0.5} /> : <meshPhysicalMaterial color={c as string} metalness={i ? 0.85 : 0} roughness={i ? 0.18 : 0.95} />}</mesh>
+      )) : null}
+    </ThreeCanvas>
   );
 };
 

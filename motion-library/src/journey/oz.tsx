@@ -90,7 +90,7 @@ export const OzMeet: React.FC<{b?: B}> = ({b = {}}) => {
       <In at={14} out={ask - 6} x={700} y={520}><Pill text="خيال مآتة.. بيتكلم! 😮" size={46} /></In>
       <In at={years} out={ask - 6} x={700} y={620}><Pill text="واقف هنا بقاله سنين ⏳" bg={C.a} ink="#fff" size={40} /></In>
       <In at={ask} out={yes - 4} x={360} y={560}><Bubble w={620} h={220} tail="left"><span style={{fontSize: 46}}>ممكن تكلّمني على مجالات الجرافيكس؟</span></Bubble></In>
-      <In at={yes} x={600} y={520}><Bubble w={520} h={170} tail="right"><span style={{fontSize: 52}}>تعالي أقولك 😊</span></Bubble></In>
+      <In at={yes} x={560} y={540}><Bubble w={520} h={170} tail="down"><span style={{fontSize: 52}}>تعالي أقولك 😊</span></Bubble></In>
     </Sc>
   );
 };
@@ -158,8 +158,30 @@ const Field: React.FC<{i: number; title: string; en?: string; children: React.Re
       {/* with his frame on top the small drawings only collided with the captions (v3) -> frame + scarecrow only */}
       {/* his frame on top, the field's motion right under it (compact, never under the captions) */}
       <AbsoluteFill style={{transform: clip ? 'translate(30px, 400px) scale(0.5)' : 'translate(-60px, 150px) scale(0.7)', transformOrigin: '540px 600px'}}>{children}</AbsoluteFill>
-      <Scarecrow x={110} y={(clip ? 1180 : 1300) + 6 * Math.sin(f / 10)} s={clip ? 0.55 : 0.62} talk look={0.8} />
+      <PopOutScarecrow cx={205} cy={1250} r={115} />
     </Sc>
+  );
+};
+
+// the scarecrow talking from a circle that holds his farm; everything above the circle's middle may leave it (pop-out)
+const PopOutScarecrow: React.FC<{cx: number; cy: number; r: number}> = ({cx, cy, r}) => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const p = spr(f, fps, 2, 150, 14);
+  const body = <Scarecrow x={cx} y={cy - 25 + 4 * Math.sin(f / 10)} s={0.66} talk look={0.8} />;
+  return (
+    <div style={{position: 'absolute', inset: 0, transform: `scale(${p})`, transformOrigin: `${cx}px ${cy}px`}}>
+      <div style={{position: 'absolute', left: cx - r, top: cy - r, width: 2 * r, height: 2 * r, borderRadius: '50%', overflow: 'hidden',
+        border: '7px solid #fff', boxShadow: `0 0 0 5px ${C.b}, 0 16px 30px rgba(0,0,0,0.25)`, boxSizing: 'border-box',
+        background: 'linear-gradient(180deg, #CDEBF5 0%, #E8F4F8 45%, #7DBB55 46%, #5EA43E 100%)'}}>
+        {Array.from({length: 9}, (_, i) => (
+          <div key={i} style={{position: 'absolute', left: i * 28 - 6, top: 2 * r * 0.5 - 30 + (i % 2) * 8, width: 7, height: 90, background: '#6FA43A', borderRadius: 4,
+            transform: `rotate(${Math.sin(f / 20 + i) * 4}deg)`}}><div style={{position: 'absolute', left: -3, top: 10, width: 13, height: 26, borderRadius: 7, background: '#F2C230'}} /></div>
+        ))}
+      </div>
+      <div style={{position: 'absolute', inset: 0, clipPath: `circle(${r - 7}px at ${cx}px ${cy}px)`}}>{body}</div>
+      <div style={{position: 'absolute', inset: 0, clipPath: `polygon(0 0, 100% 0, 100% ${cy - 10}px, 0 ${cy - 10}px)`}}>{body}</div>
+    </div>
   );
 };
 
@@ -413,10 +435,10 @@ export const OzWish: React.FC<{b?: B}> = ({b = {}}) => {
       <CornField y={1080} sway={0.4} />
       <Scarecrow x={560} y={980} s={1.3} onPole talk sad={f < brain} look={-0.6} />
       <Dorothy x={200} y={1170} s={1.15} look={0.6} />
-      <In at={6} out={years - 4} x={600} y={520}><Bubble w={620} h={200} tail="right"><span style={{fontSize: 46}}>ممكن تاخديني معاكي للساحر؟</span></Bubble></In>
-      <In at={years} out={brain - 4} x={600} y={520}><Bubble w={680} h={220} tail="right"><span style={{fontSize: 42}}>بقالي سنين واقف.. مش بتعلّم ومش بطوّر نفسي ⏳</span></Bubble></In>
-      <In at={brain} x={600} y={520}><Bubble w={560} h={200} tail="right"><span style={{fontSize: 52}}>يديني عقل 🧠</span></Bubble></In>
-      <In at={brain + 8} x={700} y={780} from={0.1}><div style={{fontSize: 150, transform: `rotate(${Math.sin(f / 8) * 8}deg)`}}>🧠</div></In>
+      <In at={6} out={years - 4} x={560} y={540}><Bubble w={620} h={200} tail="down"><span style={{fontSize: 46}}>ممكن تاخديني معاكي للساحر؟</span></Bubble></In>
+      <In at={years} out={brain - 4} x={560} y={540}><Bubble w={680} h={220} tail="down"><span style={{fontSize: 42}}>بقالي سنين واقف.. مش بتعلّم ومش بطوّر نفسي ⏳</span></Bubble></In>
+      <In at={brain} x={560} y={540}><Bubble w={560} h={200} tail="down"><span style={{fontSize: 52}}>يديني عقل 🧠</span></Bubble></In>
+      <In at={brain + 8} x={800} y={760} from={0.1}><div style={{fontSize: 150, transform: `rotate(${Math.sin(f / 8) * 8}deg)`}}>🧠</div></In>
     </Sc>
   );
 };

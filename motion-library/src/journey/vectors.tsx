@@ -172,7 +172,7 @@ export const V8Alt: React.FC<{b?: B}> = ({b = {}}) => {
       {f >= list && f < shapes ? (
         <>
           <FlatGuy x={250} y={1260} s={1.6} pose="point" talk />
-          <div style={{position: 'absolute', left: 430, top: 560, width: 600, height: 620, background: '#1E1E24', borderRadius: 30, overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+          <div style={{position: 'absolute', left: 420, top: 560, width: 540, height: 620, background: '#1E1E24', borderRadius: 30, overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
             transform: `scale(${spr(f, fps, list)})`}}>
             <div style={{transform: `translateY(${-scroll}px)`, padding: 24, direction: 'rtl'}}>
               {lines.map((l, i) => <div key={i} style={{fontFamily: AR, fontWeight: 700, fontSize: 32, color: '#E9E9EE', lineHeight: 1.6, whiteSpace: 'nowrap'}}>{l}</div>)}

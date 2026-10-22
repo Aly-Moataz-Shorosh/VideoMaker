@@ -7,7 +7,8 @@ import {AR, grad, In, lin, Pill, Sc, Sec, spr} from './kit';
 // in the 9:16 stage (never more than ×1.6 so it does not get pixelated), inside his gradient frame.
 const PJ = 'projects/2026-10-22 shorts Journey to the center of computer graphics/';
 export const JyClip: React.FC<{src: string; from: number; box: [number, number, number, number]; sec?: Sec; cx?: number; cy?: number;
-  maxW?: number; maxH?: number; maxS?: number; title?: string; full?: boolean}> = ({src, from, box, sec = 'huwa', cx = 540, cy = 830, maxW = 860, maxH = 860, maxS = 1.6, title, full}) => {
+  maxW?: number; maxH?: number; maxS?: number; title?: string; full?: boolean; chips?: {t: number; text: string; bad?: boolean}[]}> = ({src, from, box, sec = 'huwa', cx = 540, cy = 830, maxW = 860, maxH = 860, maxS = 1.6, title, full, chips = []}) => {
+  const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const [x0, y0, x1, y1] = box;
   const bw = x1 - x0, bh = y1 - y0;
@@ -23,6 +24,17 @@ export const JyClip: React.FC<{src: string; from: number; box: [number, number, 
             style={{position: 'absolute', width: 1920 * s, height: 1080 * s, left: -x0 * s, top: -y0 * s, maxWidth: 'none'}} />
         </div>
       </div>
+      {chips.length ? (
+        // light motion under his own frame (Aly v3 review): the key words pop in on his words
+        <div style={{position: 'absolute', left: 60, right: 60, top: Math.min(cy + h / 2 + 50, 1240), display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 16, direction: 'rtl'}}>
+          {chips.filter((k) => f >= k.t).map((k, i) => {
+            const p = spr(f, fps, k.t, 190, 13);
+            return <div key={i} style={{transform: `scale(${0.4 + 0.6 * p}) translateY(${(1 - p) * 30}px)`, opacity: Math.min(1, p * 1.5)}}>
+              <Pill text={k.text} bg={k.bad ? '#E53935' : i % 2 ? '#fff' : grad(sec)} ink={k.bad || !(i % 2) ? '#fff' : '#1E1E24'} size={40} />
+            </div>;
+          })}
+        </div>
+      ) : null}
     </Sc>
   );
 };
