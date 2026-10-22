@@ -197,4 +197,7 @@ Done (2026-10-06):
   (`src/journey/`): series bar (3 stations = HIS logos), his channel logo + name at the bottom, end = playlist thumb + playlist QR + original
   video thumb (no QR), calm bg, Oz chapters DRAWN (no film), three.js scenes. HIS logo files + CLEAN voice files from
   `F:\_root\output\Youtube\Aly Shorosh NEW\` (copy only). Recipe `docs/30-recipe-journey-series-shorts.md`. v1 review (liked opening/end/colours) -> v2 `output/v2/` (v1 in output/v1): REAL
-  example pictures (his work -> his video -> Commons) + be.net/shorosh tag, his matted face in a circle in Oz chapters, nothing clipped. v2 review -> v3 `output/v3/` (his own episode motion jy_clip, photo zoom to pixels, Behance QR, Oz face from his frame + whole-frame examples). v3 review -> v4 `output/v4/` (my motion back at 3 spots + word chips under his clips, pop-out scarecrow, bubble tails, clear 3D principles, name colour). Waiting for review of v4.
+  example pictures (his work -> his video -> Commons) + be.net/shorosh tag, his matted face in a circle in Oz chapters, nothing clipped. v2 review -> v3 `output/v3/` (his own episode motion jy_clip, photo zoom to pixels, Behance QR, Oz face from his frame + whole-frame examples). v3 review -> v4 `output/v4/` (my motion back at 3 spots + word chips under his clips, pop-out scarecrow, bubble tails, clear 3D principles, name colour).
+  v4 APPROVED ("حلو اوي انت كدا فهمت زوقي") -> WHOLE series in playlist order `output/series/NN_slug.mp4` + .txt
+  (01 intro, 02–31 هو ايه, 32–40 Oz, 41–48 programs; 08/33/44 = v4 pilots). Data per section in project work/scripts (*_data.py, meta_all.py),
+  archived `tools/recipes/journey/`; recipe docs/30 "The whole series". Waiting for Aly's review.
