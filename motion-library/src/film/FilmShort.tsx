@@ -19,6 +19,8 @@ import {auditionScenes} from '../glass/audition';
 import {Cam, GlassBg, GlassFx} from '../glass/kit';
 import {lottieScenes, LottieBg, LottieFx} from '../glass/lottie';
 import {tabletScenes} from '../glass/tablet';
+import {journeyScenes} from '../journey/scenes';
+import {ChannelFooter, JourneyBg, SeriesBar} from '../journey/kit';
 
 // Faceless-first vertical short (Aly 2026-10-08, theodesy): the whole short is motion graphics; Aly (cut out from the
 // raw HDR clips, tools via work/scripts/faces.py) appears only at a few moments (start / middle / end).
@@ -46,8 +48,10 @@ export const filmShortSchema = z.object({
   music: z.object({file: z.string(), vol: z.number().default(0.12), from: z.number().default(0)}).nullable().default(null),
   // lighting 2026-10-14 (look 'glass'): his camera ALWAYS on screen = one continuous mp4 of the kept pieces + layout keys
   cam: z.object({file: z.string(), keys: z.array(z.object({t: z.number(), m: z.string()}))}).nullable().default(null),
+  // journey 2026-10-22 (look 'journey'): series bar on top = project name + route with 3 stations (huwa / oz / prog) + 'مصطلح 7 من 30'
+  series: z.object({sec: z.string(), label: z.string()}).nullable().default(null),
 });
-const allScenes: Record<string, React.FC<any>> = {...filmScenes, ...vhsScenes, ...cairoScenes, ...histScenes, ...popScenes, ...glassScenes, ...auditionScenes, ...lottieScenes, ...tabletScenes};
+const allScenes: Record<string, React.FC<any>> = {...filmScenes, ...vhsScenes, ...cairoScenes, ...histScenes, ...popScenes, ...glassScenes, ...auditionScenes, ...lottieScenes, ...tabletScenes, ...journeyScenes};
 
 // Aly cut-out (1080x1080 square webm). bottom = full width at the bottom with a halftone disc behind his head;
 // left/right = smaller presenter in a corner while a scene plays behind.
@@ -128,6 +132,9 @@ export const FilmShort: React.FC<z.infer<typeof filmShortSchema>> = (p) => {
           <AbsoluteFill style={{transform: 'translateY(34px) scale(0.72)', transformOrigin: '50% 0%'}}>
             <AbsoluteFill style={{borderRadius: 48, overflow: 'hidden', border: `6px solid ${K.paper2}`, boxShadow: '0 40px 80px rgba(0,0,0,0.7)'}}>{body}</AbsoluteFill>
           </AbsoluteFill>
+        ) : p.look === 'journey' && s.t !== 'jy_end' ? (
+          // journey: the stage fills the space between the series bar and the captions
+          <AbsoluteFill style={{transform: 'translateY(70px) scale(1.1)', transformOrigin: '50% 18%'}}>{body}</AbsoluteFill>
         ) : body}
       </Sequence>
     );
@@ -135,7 +142,7 @@ export const FilmShort: React.FC<z.infer<typeof filmShortSchema>> = (p) => {
   return (
     <AbsoluteFill style={{background: K.ink, direction: 'rtl', fontFamily: 'Cairo'}}>
       <style>{fontCss + popFontCss}</style>
-      {p.look === 'lottie' ? <LottieBg /> : p.look === 'glass' ? <GlassBg /> : p.look === 'pop' ? <PopBg /> : p.look === 'vhs' ? <VhsBg tint={p.tint} /> : p.look === 'cairo' || p.look === 'hist' ? <AbsoluteFill style={{background: '#E7D7B1'}} /> : <FilmBg tint={p.tint} />}
+      {p.look === 'journey' ? <JourneyBg sec={(p.series?.sec ?? 'huwa') as any} /> : p.look === 'lottie' ? <LottieBg /> : p.look === 'glass' ? <GlassBg /> : p.look === 'pop' ? <PopBg /> : p.look === 'vhs' ? <VhsBg tint={p.tint} /> : p.look === 'cairo' || p.look === 'hist' ? <AbsoluteFill style={{background: '#E7D7B1'}} /> : <FilmBg tint={p.tint} />}
       {scene('back')}
       {p.cam && !inCta ? <Cam file={p.cam.file} keys={p.cam.keys} /> : null}
       {!v4 && p.aly.map((a, i) => (
@@ -149,7 +156,7 @@ export const FilmShort: React.FC<z.infer<typeof filmShortSchema>> = (p) => {
           <AlyCut file={a.file} from={a.from} mode={a.mode} face={a.face} rate={a.rate ?? 1} disc={p.look === 'vhs' || p.look === 'hist' ? p.tint : K.red} clipL={a.clipL ?? 0} ain={a.ain ?? true} aout={a.aout ?? true} />
         </Sequence>
       )) : null}
-      {!inCta && p.look !== 'cairo' && p.look !== 'hist' ? (p.look === 'lottie' ? <LottieFx /> : p.look === 'glass' ? <GlassFx /> : p.look === 'pop' ? <PopFx /> : p.look === 'vhs' ? <VhsFx /> : <FilmFx />) : null}
+      {!inCta && p.look !== 'cairo' && p.look !== 'hist' && p.look !== 'journey' ? (p.look === 'lottie' ? <LottieFx /> : p.look === 'glass' ? <GlassFx /> : p.look === 'pop' ? <PopFx /> : p.look === 'vhs' ? <VhsFx /> : <FilmFx />) : null}
       {p.segs.map((s, i) => (
         <Sequence key={'v' + i} from={F(s.tl)} durationInFrames={Math.max(1, F(s.tl + s.len) - F(s.tl))}>
           <Audio src={staticFile(p.voice)} startFrom={F(s.src)} volume={(k) => Math.min(1, k / 3, (F(s.len) - k) / 3)} />
@@ -175,6 +182,8 @@ export const FilmShort: React.FC<z.infer<typeof filmShortSchema>> = (p) => {
           ) : null}
         </Sequence>
       ) : null}
+      {p.series ? <SeriesBar sec={p.series.sec as any} label={p.series.label} /> : null}
+      {p.series ? <ChannelFooter dark={p.series.sec === 'prog'} /> : null}
       <Captions words={p.words} maxWords={4} accent="gold" previewBg="" lift={0} bottomFrac={inCta ? 0.2 : p.capBottom} />
     </AbsoluteFill>
   );
