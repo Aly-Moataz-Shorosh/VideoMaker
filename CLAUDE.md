@@ -196,4 +196,5 @@ Done (2026-10-06):
   → plan of 48 shorts (`خطة_الشورتس.md`), PILOT 3: `output/08_vectors.mp4`, `33_scarecrow.mp4`, `44_3d_programs.mp4` (+ .txt). New look 'journey'
   (`src/journey/`): series bar (3 stations = HIS logos), his channel logo + name at the bottom, end = playlist thumb + playlist QR + original
   video thumb (no QR), calm bg, Oz chapters DRAWN (no film), three.js scenes. HIS logo files + CLEAN voice files from
-  `F:\_root\output\Youtube\Aly Shorosh NEW\` (copy only). Recipe `docs/30-recipe-journey-series-shorts.md`. Waiting for his review, then the other 45.
+  `F:\_root\output\Youtube\Aly Shorosh NEW\` (copy only). Recipe `docs/30-recipe-journey-series-shorts.md`. v1 review (liked opening/end/colours) -> v2 `output/v2/` (v1 in output/v1): REAL
+  example pictures (his work -> his video -> Commons) + be.net/shorosh tag, his matted face in a circle in Oz chapters, nothing clipped. Waiting for review of v2.
