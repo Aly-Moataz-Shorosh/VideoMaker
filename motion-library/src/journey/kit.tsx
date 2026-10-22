@@ -80,10 +80,10 @@ export const SeriesBar: React.FC<{sec: Sec; label: string}> = ({sec, label}) => 
         );
       })}
       <div style={{position: 'absolute', left: walkX - 12, top: Y - 12, width: 24, height: 24, borderRadius: '50%', background: JY[sec].b, border: '4px solid #fff', opacity: p < 1 ? 1 : 0}} />
-      <div style={{position: 'absolute', left: 30, right: 30, top: Y + 56, display: 'flex', justifyContent: idx === 2 ? 'flex-start' : idx === 0 ? 'flex-end' : 'center', // never outside the frame
+      <div style={{position: 'absolute', left: 30, right: 30, top: Y + 56, display: 'flex', direction: 'ltr', justifyContent: idx === 2 ? 'flex-start' : idx === 0 ? 'flex-end' : 'center', // never outside the frame, under its own station
         transformOrigin: idx === 2 ? '0% 50%' : idx === 0 ? '100% 50%' : '50% 50%', opacity: lin(f, 30, 40), transform: `scale(${0.8 + 0.2 * lin(f, 30, 40)})`}}>
         <span style={{fontFamily: AR, fontWeight: 900, fontSize: 32, color: dark ? JY.prog.bg1 : '#fff', background: grad(sec), padding: '4px 22px', borderRadius: 30,
-          whiteSpace: 'nowrap', boxShadow: '0 6px 14px rgba(0,0,0,0.2)', direction: 'rtl'}}>{STATIONS[idx].name} · {label}</span>
+          whiteSpace: 'nowrap', boxShadow: '0 6px 14px rgba(0,0,0,0.2)', direction: 'rtl'}}>{label.startsWith('=') ? label.slice(1) : `${STATIONS[idx].name} · ${label}`}</span>
       </div>
     </div>
   );
