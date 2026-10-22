@@ -73,3 +73,15 @@ Liked: the opening and the end ("البداية و النهاية"), the colours
   balls / dark scene + coloured moving spot + shadow / see-through body with white bones + orange joints / bones bending it.
   Keep floor and balls inside the canvas (a canvas edge showed as a hard line).
 - Channel name at the bottom in the character's skin colour (208,160,112), no filter.
+
+## The whole series (Aly 2026-10-23: v4 approved, "كل الحلقات بالترتيب زي الـ playlist") -> `output/series/`
+- File number = playlist position: 01 intro · 02–31 هو ايه terms 1–30 (08 = pilot) · 32–40 Oz (32 ch1, 33 ch2 pilot, 34 ch3,
+  35–36 ch4, 37–40 ch5 = the wizard's four lessons) · 41–48 programs (44 = 3D pilot).
+- Data files (project `work/scripts/`): `huwa_data.py` -> `work/huwa_shorts.json` (auto: content boxes + chips), `oz_data.py`,
+  `prog_data.py`, `intro_data.py`, titles/descriptions `meta_all.py` (finalize.py reads it). Archived in `tools/recipes/journey/`.
+- New scenes: `src/journey/cast.tsx` (TinMan, Lion, Wizard, Princess, Townie), `oz2.tsx` (chapters 1/3/4/5 + Field per chapter with
+  the chapter's presenter popping out), `intro.tsx` (maze of the "التطبيش" phase, planet + map, 3 stages with his 3 logos), `PMap`.
+- Checks that caught real mistakes: a piece edge in the middle of a sentence (42/43, 45/46 and the intro) — always print the
+  transcript words around every edge; the station label repeated the section name and left the frame (now anchored to its side);
+  drawn characters under his face circle (keep everything x < ~740 on the right side when the circle sits bottom-right).
+- Clean voice: هو ايه FIXED mp3s with one offset (edited episodes keep the video audio); Oz raw takes piecewise + `_patch`.

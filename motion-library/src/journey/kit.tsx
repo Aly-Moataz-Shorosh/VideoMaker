@@ -55,7 +55,6 @@ export const SeriesBar: React.FC<{sec: Sec; label: string}> = ({sec, label}) => 
   const walkX = X[0] + (X[idx] - X[0]) * p;
   const inA = spr(f, fps, 0, 140, 16);
   const road = `M ${X[0]} ${Y} C 760 ${Y - 40}, 640 ${Y + 40}, ${X[1]} ${Y} S 320 ${Y - 40}, ${X[2]} ${Y}`;
-  const lx = Math.max(180, Math.min(900, X[idx]));
   return (
     <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 300, transform: `translateY(${(1 - inA) * -80}px)`, opacity: inA}}>
       <div style={{position: 'absolute', left: 0, right: 0, top: 0, height: 300,
@@ -81,7 +80,8 @@ export const SeriesBar: React.FC<{sec: Sec; label: string}> = ({sec, label}) => 
         );
       })}
       <div style={{position: 'absolute', left: walkX - 12, top: Y - 12, width: 24, height: 24, borderRadius: '50%', background: JY[sec].b, border: '4px solid #fff', opacity: p < 1 ? 1 : 0}} />
-      <div style={{position: 'absolute', left: lx - 250, width: 500, top: Y + 56, textAlign: 'center', opacity: lin(f, 30, 40), transform: `scale(${0.8 + 0.2 * lin(f, 30, 40)})`}}>
+      <div style={{position: 'absolute', left: 30, right: 30, top: Y + 56, display: 'flex', justifyContent: idx === 2 ? 'flex-start' : idx === 0 ? 'flex-end' : 'center', // never outside the frame
+        transformOrigin: idx === 2 ? '0% 50%' : idx === 0 ? '100% 50%' : '50% 50%', opacity: lin(f, 30, 40), transform: `scale(${0.8 + 0.2 * lin(f, 30, 40)})`}}>
         <span style={{fontFamily: AR, fontWeight: 900, fontSize: 32, color: dark ? JY.prog.bg1 : '#fff', background: grad(sec), padding: '4px 22px', borderRadius: 30,
           whiteSpace: 'nowrap', boxShadow: '0 6px 14px rgba(0,0,0,0.2)', direction: 'rtl'}}>{STATIONS[idx].name} · {label}</span>
       </div>

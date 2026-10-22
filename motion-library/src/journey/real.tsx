@@ -59,7 +59,8 @@ export const JyReal: React.FC<{items: RealItem[]; sec?: Sec}> = ({items, sec = '
 
 // Aly himself in a circle telling the story (Oz chapters): his matted face from the published chapter (same timeline as the voice),
 // on a calm disc. src = transparent webm of the crop around his head; box = which part of the crop fills the circle.
-export const FaceCircle: React.FC<{file: string; from?: number; center?: [number, number]; r?: number; keys?: {t: number; x: number; y: number; d: number; hide?: number}[]; ring?: string}> = ({file, from = 0, center = [960, 560], r = 250, keys = [{t: 0, x: 900, y: 1390, d: 220}], ring = '#F2C230'}) => {
+export const FaceCircle: React.FC<{file: string; from?: number; center?: [number, number]; r?: number; keys?: {t: number; x: number; y: number; d: number; hide?: number}[]; ring?: string;
+  track?: {t: number; cx: number; cy: number; r: number}[]}> = ({file, from = 0, center = [960, 560], r: r0 = 250, keys = [{t: 0, x: 900, y: 1390, d: 220}], ring = '#F2C230', track = []}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   let k = 0;
@@ -70,12 +71,21 @@ export const FaceCircle: React.FC<{file: string; from?: number; center?: [number
   const vis = (prev.hide ? 1 - u : 1) * (cur.hide ? 1 - u : 1) + (prev.hide && !cur.hide ? u : 0);
   const p = spr(f, fps, 0, 150, 15) * Math.max(0, Math.min(1, vis));
   if (p <= 0.01) return null;
+  // his face moves in the room (chapter 1): follow the tracked centre, smoothly
+  let c = center, r = r0;
+  if (track.length) {
+    const t = f / fps; let j = 0;
+    while (j + 1 < track.length && track[j + 1].t <= t) j++;
+    const A = track[j], Bk = track[Math.min(track.length - 1, j + 1)];
+    const u2 = Bk.t > A.t ? Math.max(0, Math.min(1, (t - A.t) / (Bk.t - A.t))) : 0;
+    c = [A.cx + (Bk.cx - A.cx) * u2, A.cy + (Bk.cy - A.cy) * u2]; r = A.r + (Bk.r - A.r) * u2;
+  }
   const s = d / (2 * r);
   return (
     <div style={{position: 'absolute', left: x - d / 2, top: y - d / 2, width: d, height: d, borderRadius: '50%', overflow: 'hidden', transform: `scale(${p})`,
       border: '8px solid #fff', boxShadow: `0 0 0 6px ${ring}, 0 22px 44px rgba(0,0,0,0.3)`, background: '#222'}}>
       <OffthreadVideo muted src={staticFile(file)} startFrom={Math.round(from * fps)} style={{position: 'absolute', width: 1920 * s, height: 1080 * s,
-        left: d / 2 - center[0] * s, top: d / 2 - center[1] * s, maxWidth: 'none'}} />
+        left: d / 2 - c[0] * s, top: d / 2 - c[1] * s, maxWidth: 'none'}} />
     </div>
   );
 };

@@ -7,6 +7,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.stdout.reconfigure(encoding='utf-8')
 import jy_audio as A
 from shorts_data import SHORTS, PLAYLIST, PL_NAME
+from oz_data import OZ
+SHORTS.update(OZ)  # Oz chapters 1, 3, 4, 5 (shorts 32, 34-40)
+from prog_data import PROG
+SHORTS.update(PROG)  # programs (shorts 41-43, 45-48)
+from intro_data import INTRO
+SHORTS.update(INTRO)  # short 1 = the project intro
 
 W = Path(__file__).resolve().parents[1]; P = W.parent; ROOT = P.parents[1]
 CODE = P.name
@@ -57,6 +63,19 @@ def build(n):
             return best[1]
         raise ValueError(f'{t} outside the pieces of short {n}')
 
+    # ---------- several pieces -> one camera file of exactly those frames (picture stays in sync with the voice) ----------
+    CAM = None
+    if S.get('cam') or (len(segs) > 1 and (S.get('face') or any(sc['t'] == 'jy_clip' or 'clip' in sc for sc in S['scenes']))):
+        CAM = f'cam_{n}.mp4'; kk = len(segs)
+        fc = f'[0:v]fps={FPS},split={kk}' + ''.join(f'[i{j}]' for j in range(kk)) + ';'
+        fc += ''.join(f'[i{j}]trim=start_frame={round(sg["src"] * FPS)}:end_frame={round(sg["src"] * FPS) + round(sg["len"] * FPS)},setpts=PTS-STARTPTS[v{j}];' for j, sg in enumerate(segs))
+        fc += ''.join(f'[v{j}]' for j in range(kk)) + f'concat=n={kk}:v=1:a=0,settb=1/{FPS},setpts=N[v]'
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(A.src(ep)), '-filter_complex', fc, '-map', '[v]', '-an', '-r', str(FPS),
+                        '-c:v', 'libx264', '-crf', '18', '-preset', 'fast', '-g', '15', '-pix_fmt', 'yuv420p', str(PUB / CAM)], check=True)
+        nb = int(subprocess.run(['ffprobe', '-v', 'error', '-count_packets', '-select_streams', 'v:0', '-show_entries', 'stream=nb_read_packets', '-of', 'csv=p=0',
+                                 str(PUB / CAM)], capture_output=True, text=True).stdout.strip())
+        print(f'  {CAM}: {nb} frames (pieces {sum(round(sg["len"] * FPS) for sg in segs)})')
+
     # ---------- scenes (chained: each lasts until the next one) ----------
     starts, lo = [], 0.0
     for k, sc in enumerate(S['scenes']):
@@ -66,9 +85,14 @@ def build(n):
         a = starts[k]; b = starts[k + 1] if k + 1 < len(starts) else main
         props = {kk: v for kk, v in sc.items() if kk not in ('t', 'at', 'b')}
         if sc['t'] == 'jy_clip' or 'clip' in sc:  # his own video plays in sync: source second at the scene start
-            props['from'] = round(sc['at'] if k else segs[0]['src'], 3)
-            if 'clip' in sc: props['clip'] = PJ + sc['clip']
-            if sc['t'] == 'jy_clip': props['src'] = sc['src']
+            if CAM:  # several pieces: his frames of exactly the kept pieces (cam_N.mp4), so time = timeline time
+                props['from'] = round(a, 3)
+                if 'clip' in sc: props['clip'] = PJ + CAM
+                if sc['t'] == 'jy_clip': props['src'] = CAM
+            else:
+                props['from'] = round(sc['at'] if k else segs[0]['src'], 3)
+                if 'clip' in sc: props['clip'] = PJ + sc['clip']
+                if sc['t'] == 'jy_clip': props['src'] = sc['src']
         if 'b' in sc:
             props['b'] = {kk: max(0, round((to_tl(v, a) - a) * FPS)) for kk, v in sc['b'].items()}
         if 'chips' in sc:  # light words under his clip, popping on his words (Aly v3 review)
@@ -117,12 +141,17 @@ def build(n):
     sfx += [{'file': 'sfx/pop_1.wav', 'at': 1.0, 'vol': 0.3}]  # station lights up in the series bar
 
     PUB.mkdir(parents=True, exist_ok=True)
+    face_track = []  # his face moves (chapter 1 room): circle follows it; track times (source) -> timeline
+    if S.get('face_track'):
+        for o in json.load(open(W / S['face_track'])):
+            if any(sg['src'] <= o['t'] <= sg['src'] + sg['len'] for sg in segs):
+                face_track.append({**o, 't': round(to_tl(o['t']), 2)})
     log = A.voice(ep, segs, TAIL, PUB / f'voice_{n}.wav')
     print('  voice gains:', log)
     shutil.copy(next((P / 'input').glob(f'{ep}_*.jpg')), PUB / f'thumb_{ep}.jpg')
     props = {'fps': FPS, 'duration': dur, 'voice': PJ + f'voice_{n}.wav', 'segs': [{'src': 0, 'tl': 0, 'len': dur}], 'words': words, 'aly': [],
              'scenes': scenes, 'sfx': sfx, 'look': 'journey', 'capBottom': 0.115, 'sfxGain': 1.0, 'series': {'sec': S['sec'], 'label': S['label']},
-             'face': {'file': PJ + S['face'], 'from': segs[0]['src'], 'center': [960, 740], 'r': 230, 'until': round(main, 3), 'keys': [dict(t=round(s['at'], 3), **dict(zip(('x', 'y', 'd', 'hide'), S.get('face_pos', {}).get(s['t'], (900, 1390, 220, 0))))) for s in scenes if s['t'] not in ('jy_real', 'jy_end')]} if S.get('face') else None}
+             'face': {'file': PJ + (CAM or S['face']), 'from': 0 if CAM else segs[0]['src'], 'track': face_track, 'center': S.get('face_center', [960, 740]), 'r': S.get('face_r', 230), 'until': round(main, 3), 'keys': [dict(t=round(s['at'], 3), **dict(zip(('x', 'y', 'd', 'hide'), S.get('face_pos', {}).get(s['t'], (900, 1390, 220, 0))))) for s in scenes if s['t'] not in ('jy_real', 'jy_end')]} if S.get('face') else None}
     json.dump(props, open(PUB / f'short_{n}.json', 'w', encoding='utf8'), ensure_ascii=False, indent=1)
     print(f'  short {n}: {main:.1f}s + end {TAIL}s = {dur:.1f}s | {len(segs)} pieces, {len(scenes)} scenes, {len(words)} words')
     for s in scenes:

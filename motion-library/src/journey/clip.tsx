@@ -27,7 +27,7 @@ export const JyClip: React.FC<{src: string; from: number; box: [number, number, 
       {chips.length ? (
         // light motion under his own frame (Aly v3 review): the key words pop in on his words
         <div style={{position: 'absolute', left: 60, right: 60, top: Math.min(cy + h / 2 + 50, 1240), display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 16, direction: 'rtl'}}>
-          {chips.filter((k) => f >= k.t).map((k, i) => {
+          {chips.filter((k) => f >= k.t).slice(-2).map((k, i) => { // only the last two: never down to the captions
             const p = spr(f, fps, k.t, 190, 13);
             return <div key={i} style={{transform: `scale(${0.4 + 0.6 * p}) translateY(${(1 - p) * 30}px)`, opacity: Math.min(1, p * 1.5)}}>
               <Pill text={k.text} bg={k.bad ? '#E53935' : i % 2 ? '#fff' : grad(sec)} ink={k.bad || !(i % 2) ? '#fff' : '#1E1E24'} size={40} />

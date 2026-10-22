@@ -6,10 +6,16 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.stdout.reconfigure(encoding='utf-8')
 from shorts_data import SHORTS
+from oz_data import OZ
+from prog_data import PROG
+from intro_data import INTRO
+SHORTS.update(OZ); SHORTS.update(PROG); SHORTS.update(INTRO)
 
 P = Path(__file__).resolve().parents[2]
 TAGS = '#رحلة_إلى_مركز_الجرافيكس #جرافيكس #علي_شرش'
 PIN = 'السلسلة كاملة على القناة: بلايليست "رحلة إلى مركز الجرافيكس" 🗺️ امسح الـ QR اللي في آخر الفيديو 📲'
+from meta_all import meta  # every other short
+
 META = {
     8: (['يعني ايه Vector؟ ✏️', 'ليه اللوجو بيتعمل Vector مش صورة عادية؟', 'Raster ولا Vector؟ الفرق في دقيقة'],
         'الصور الـ Raster عبارة عن بيكسلز (مربعات صغيرة كل واحد ليه لونه)، فلو كبرتها أو صغرتها هتبوظ، لأن الكمبيوتر هيزوّد أو يشيل بيكسلز '
@@ -47,7 +53,7 @@ for n in [int(a) for a in sys.argv[1:] if a.isdigit()]:
         if abs(got + 16) <= 0.3:
             break
         trim += got + 16
-    titles, desc = META[n]
+    titles, desc = META[n] if n in META else meta(n)
     real = [it['src'] for it in SHORTS[n].get('real', [])]
     if any(r.startswith('his_') for r in real):  # Aly 2026-10-22: his own work on screen -> his Behance
         desc += '\n\nشغلي على Behance: be.net/shorosh'

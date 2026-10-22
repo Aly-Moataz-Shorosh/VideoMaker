@@ -101,3 +101,12 @@ for _n, _r in REAL.items():
     SHORTS[_n]['real'] = _r
 SHORTS[33]['face'] = 'src_33.mp4'  # he tells the story from a circle (Aly review 2026-10-22)
 SHORTS[33]['face_pos'] = {'oz_many': (935, 300, 170), **{k: (900, 1390, 220, 1) for k in ('f_uiux', 'f_brand', 'f_print', 'f_pack', 'f_social', 'f_photo', 'f_illus', 'f_paint')}}  # the 8 field tiles fill the stage -> small circle top-right
+
+# هو ايه terms 1..30 (playlist 02..31, short number = playlist position) — generated the approved way (huwa_data.py).
+# Short 8 (vectors) keeps its hand-made version above.
+import json as _json, os as _os
+_cache = _os.path.join(_os.path.dirname(__file__), '..', 'huwa_shorts.json')
+if _os.path.exists(_cache):
+    for _k, _v in _json.load(open(_cache, encoding='utf8')).items():
+        if int(_k) != 8:
+            SHORTS[int(_k)] = _v

@@ -13,8 +13,15 @@ _cache = {}
 # envelope cross-correlation: voice_t = video_t + off, piecewise where his edit cut the recording (list of (video_from, off)).
 VOICE = {
     '08': ('assets/his/6-vectors FIXED.mp3', [(0, -4.15)]),
+    '32': ('assets/his/oz_audio/e1 orginal v1.mp3', [(0.0, -30.16), (60.27, -29.87), (65.71, -29.17), (79.58, 24.5)]),
+    '34': ('assets/his/oz_audio/e3 orginal v1.mp3', [(0.0, 12.67), (12.29, 25.11), (42.66, 60.71), (74.21, 64.86), (87.14, 72.7), (111.84, 133.5), (124.72, 153.31), (130.65, 154.42), (145.77, 161.96)]),
+    '35': ('assets/his/oz_audio/e4 orginal v1.mp3', [(0.0, 277.13), (9.8, 0.03), (25.84, 0.91), (31.5, 27.28), (40.5, 39.55), (62.25, 58.61), (72.07, 75.21), (82.5, 91.23), (127.71, 129.23), (137.15, 150.74), (162.5, 188.86), (181.16, 193.47), (186.21, 242.23), (202.71, 248.66), (211.58, 260.0), (216.29, 295.66)]),
+    '36': ('assets/his/oz_audio/e5 orginal v1.mp3', [(0.0, 12.08), (28.65, 49.96), (44.52, 59.95), (49.7, 94.5), (82.55, 98.65), (96.69, 105.73), (106.75, 151.44), (123.04, 196.34), (127.85, 237.49), (138.35, 247.43), (152.09, 268.83), (159.92, 298.76), (171.17, 338.69), (184.54, 389.49), (208.72, 398.61), (213.04, 402.58), (218.97, 407.61), (225.21, 411.99), (231.1, 498.22), (241.62, 502.66), (250.7, 513.54), (256.71, 517.16), (261.0, 523.13), (267.05, 572.81)]),
     '33': ('assets/his/oz_audio/e2 orginal v1.mp3', [(0, -8.44), (42.39, 98.24), (87.24, 98.42), (108.30, 166.46), (117.60, 166.18), (139.15, 189.26), (153.34, 193.88)]),
 }
+# the other هو ايه episodes whose clean voice matches the episode with ONE offset (align_huwa.py); edited ones keep the video audio
+for _ep, _v in json.load(open(P / 'work' / 'huwa_voice.json', encoding='utf8')).items():
+    VOICE.setdefault(_ep, (_v['file'], [(0, _v['off'])]))
 
 
 def src(ep):
@@ -74,9 +81,43 @@ def take(ep, a, n):
         k = max(j for j, (t0, _) in enumerate(mp) if t0 <= t + 1e-6)
         nxt = mp[k + 1][0] if k + 1 < len(mp) else 1e9
         m = min(n - i, int(round((nxt - t) * SR)) or n - i)
-        s0 = int(round((t + mp[k][1]) * SR)); chunk = x[max(0, s0):s0 + m]
-        out[i:i + len(chunk)] = chunk; i += m
-    return out
+        s0 = int(round((t + mp[k][1]) * SR))
+        lo = max(0, -s0)  # this part of the video has no raw take before it (silence here; _patch fills it from the video)
+        chunk = x[max(0, s0):max(0, s0 + m)][:m - lo]
+        out[i + lo:i + lo + len(chunk)] = chunk; i += m
+    return _patch(ep, a, out)
+
+
+def _env(x):
+    h = SR // 100; k = len(x) // h
+    return np.log(np.sqrt((x[:k * h].reshape(k, h) ** 2).mean(1)) + 1e-4)
+
+
+def _patch(ep, a, v):
+    """Safety net (Oz chapters, many edit cuts): every 1.5 s window where the clean voice does NOT follow the published audio
+    (envelope correlation < 0.55 while something is said) is replaced by the published audio itself, at the same loudness,
+    with 40 ms fades -> never a wrong word from a wrong piece of the raw take."""
+    if not ep.startswith('3'):  # هو ايه episodes use one constant offset, checked by align_huwa.py
+        return v
+    vid = _pcm(src(ep))[int(a * SR):int(a * SR) + len(v)]
+    if len(vid) < len(v):
+        return v
+    ea, eb = _env(vid), _env(v)
+    bad = np.zeros(len(ea), bool)
+    for s in range(0, len(ea) - 150, 75):
+        x, y = ea[s:s + 150], eb[s:s + 150]
+        if max(x.std(), y.std()) < 0.3:
+            continue
+        if y.std() < 0.3 or np.corrcoef(x, y)[0, 1] < 0.55:
+            bad[s:s + 150] = True
+    if not bad.any():
+        return v
+    h = SR // 100
+    mask = np.repeat(bad.astype(np.float32), h)[:len(v)]
+    mask = np.concatenate([mask, np.zeros(len(v) - len(mask), np.float32)])
+    f = int(0.04 * SR); mask = np.convolve(mask, np.ones(f) / f, 'same')
+    good = v[mask < 0.01]; g = (np.sqrt((good ** 2).mean()) / max(1e-6, np.sqrt((vid[mask > 0.99] ** 2).mean()))) if len(good) and (mask > 0.99).any() else 1.0
+    return (v * (1 - mask) + vid * g * mask).astype(np.float32)
 
 
 def _speech_db(x):

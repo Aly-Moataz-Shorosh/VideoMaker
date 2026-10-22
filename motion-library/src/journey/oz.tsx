@@ -1,6 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, OffthreadVideo, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Pack3D} from './three';
+import {Lion, TinMan} from './cast';
 import {AR, Bubble, BrickRoad, CornField, Dorothy, EmeraldCity, EN, grad, In, JY, lin, OzBadge, Pill, Sc, Scarecrow, spr} from './kit';
 
 // "المجالات و ساحر مدينة أوز" — chapter 2 "صور" (ep 33): Dorothy meets the Scarecrow in the big farm where everyone
@@ -10,7 +11,7 @@ type B = Record<string, number>;
 const at = (b: B, k: string, d = 0) => b[k] ?? d;
 
 // sky + far hills (behind the road / the farm)
-const Land: React.FC<{hills?: boolean}> = ({hills = true}) => {
+export const Land: React.FC<{hills?: boolean}> = ({hills = true}) => {
   const f = useCurrentFrame();
   return (
     <svg width={1080} height={1920} style={{position: 'absolute'}}>
@@ -28,7 +29,7 @@ const Land: React.FC<{hills?: boolean}> = ({hills = true}) => {
 };
 
 // 1) Dorothy walks the yellow brick road toward the emerald city ("الفصل التاني: صور")
-export const OzWalk: React.FC<{b?: B}> = ({b = {}}) => {
+export const OzWalk: React.FC<{b?: B; chap?: string; chapB?: string; chars?: string[]}> = ({b = {}, chap = 'الفصل التاني:', chapB = 'صور', chars = []}) => {
   const f = useCurrentFrame();
   const city = at(b, 'city', 100);
   return (
@@ -36,11 +37,14 @@ export const OzWalk: React.FC<{b?: B}> = ({b = {}}) => {
       <Land />
       <EmeraldCity x={540} y={860} s={0.9} glow={0.3 + 0.7 * lin(f, city, city + 12)} />
       <BrickRoad vx={540} vy={860} walk />
-      <Dorothy x={540} y={1100 - 20 * lin(f, 0, 200)} s={1.4 - 0.25 * lin(f, 0, 200)} walk />
+      {chars.includes('lion') ? <Lion x={800} y={1150} s={1.0} walk /> : null}
+      {chars.includes('tin') ? <TinMan x={290} y={1130} s={1.0} walk /> : null}
+      {chars.includes('scarecrow') ? <Scarecrow x={chars.length > 1 ? 690 : 700} y={1110} s={1.05} walk /> : null}
+      <Dorothy x={chars.length ? 470 : 540} y={1100 - 20 * lin(f, 0, 200)} s={1.4 - 0.25 * lin(f, 0, 200)} walk />
       <In at={2} x={540} y={420}>
         <div style={{display: 'flex', alignItems: 'center', gap: 20, direction: 'rtl', background: C.card, padding: '14px 30px', borderRadius: 60, boxShadow: '0 12px 30px rgba(0,0,0,0.2)'}}>
           <OzBadge d={90} />
-          <div style={{fontFamily: AR, fontWeight: 900, fontSize: 48, color: C.ink, whiteSpace: 'nowrap'}}>الفصل التاني: <span style={{color: C.a}}>صور</span></div>
+          <div style={{fontFamily: AR, fontWeight: 900, fontSize: 48, color: C.ink, whiteSpace: 'nowrap'}}>{chap} <span style={{color: C.a}}>{chapB}</span></div>
         </div>
       </In>
       <In at={city} x={540} y={690}><Pill text="ساحر مدينة أوز ✨" bg={C.a} ink="#fff" size={42} /></In>
@@ -100,15 +104,15 @@ const FIELDS = [
   {e: '📱', ar: 'UI / UX'}, {e: '🏷️', ar: 'براندينج'}, {e: '🖨️', ar: 'مطبوعات'}, {e: '🧃', ar: 'باكدجنج'},
   {e: '📲', ar: 'سوشيال ميديا'}, {e: '📷', ar: 'تصوير وريتاتش'}, {e: '✒️', ar: 'إليستريشن'}, {e: '🖌️', ar: 'ديجيتال بينتنج'},
 ];
-export const OzMany: React.FC<{b?: B}> = ({b = {}}) => {
+export const OzMany: React.FC<{b?: B; list?: {e: string; ar: string}[]; title?: string; titleEn?: string; sub?: string; some?: string}> = ({b = {}, list = FIELDS, title = 'مجالات', titleEn = 'Graphic Design', sub = 'كتيرة قوي ومليانة تخصصات', some: someT = 'تعالي أقولك على شوية منهم 👇'}) => {
   const f = useCurrentFrame();
   const some = at(b, 'some', 80);
   return (
     <Sc>
       <AbsoluteFill style={{background: `radial-gradient(circle at 50% 45%, ${C.card} 0%, ${C.bg0} 55%, ${C.bg1} 100%)`}} />
-      <In at={0} x={540} y={400}><div style={{fontFamily: AR, fontWeight: 900, fontSize: 64, color: C.ink, direction: 'rtl', whiteSpace: 'nowrap'}}>مجالات <span style={{fontFamily: EN, color: C.a}}>Graphic Design</span></div></In>
-      <In at={8} x={540} y={490}><Pill text="كتيرة قوي ومليانة تخصصات" bg={C.ink} ink="#fff" size={38} /></In>
-      {FIELDS.map((x, i) => {
+      <In at={0} x={540} y={400}><div style={{fontFamily: AR, fontWeight: 900, fontSize: 64, color: C.ink, direction: 'rtl', whiteSpace: 'nowrap'}}>{title} <span style={{fontFamily: EN, color: C.a}}>{titleEn}</span></div></In>
+      <In at={8} x={540} y={490}><Pill text={sub} bg={C.ink} ink="#fff" size={38} /></In>
+      {list.map((x, i) => {
         const col = i % 2, row = Math.floor(i / 2);
         return (
           <In key={i} at={14 + i * 3} x={col ? 290 : 790} y={680 + row * 200} rot={(i % 3) - 1} slide={60}>
@@ -119,28 +123,28 @@ export const OzMany: React.FC<{b?: B}> = ({b = {}}) => {
           </In>
         );
       })}
-      <In at={some} x={540} y={1500}><Pill text="تعالي أقولك على شوية منهم 👇" bg={grad('oz')} ink={C.ink} size={40} /></In>
+      <In at={some} x={540} y={1500}><Pill text={someT} bg={grad('oz')} ink={C.ink} size={40} /></In>
     </Sc>
   );
 };
 
 // ---- field scenes: a cream "board" in the middle, the scarecrow presents from the bottom-left, a track of the 8 fields on top ----
-const Track: React.FC<{i: number}> = ({i}) => (
+const Track: React.FC<{i: number; list?: {e: string; ar: string}[]}> = ({i, list = FIELDS}) => (
   <div style={{position: 'absolute', top: 300, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 10, direction: 'rtl'}}>
-    {FIELDS.map((x, k) => (
+    {list.map((x, k) => (
       <div key={k} style={{width: 92, height: 92, borderRadius: 22, background: k === i ? C.b : k < i ? '#FFF6DF' : 'rgba(255,255,255,0.45)', display: 'flex',
         alignItems: 'center', justifyContent: 'center', fontSize: 50, border: k === i ? `5px solid ${C.ink}` : '5px solid transparent', boxSizing: 'border-box',
         transform: `scale(${k === i ? 1.12 : 0.92})`, opacity: k <= i ? 1 : 0.6}}>{x.e}</div>
     ))}
   </div>
 );
-const Field: React.FC<{i: number; title: string; en?: string; children: React.ReactNode; clip?: string; from?: number}> = ({i, title, en, children, clip, from = 0}) => {
+export const Field: React.FC<{i: number; title: string; en?: string; children: React.ReactNode; clip?: string; from?: number; list?: {e: string; ar: string}[]; who?: string}> = ({i, title, en, children, clip, from = 0, list, who = 'scarecrow'}) => {
   const {fps} = useVideoConfig();
   const f = useCurrentFrame();
   return (
     <Sc>
       <AbsoluteFill style={{background: `radial-gradient(circle at 50% 50%, ${C.card} 0%, ${C.bg0} 60%, ${C.bg1} 100%)`}} />
-      <Track i={i} />
+      <Track i={i} list={list} />
       <In at={0} x={540} y={470}>
         <div style={{display: 'flex', alignItems: 'baseline', gap: 18, direction: 'rtl'}}>
           <span style={{fontFamily: AR, fontWeight: 900, fontSize: 64, color: C.ink, whiteSpace: 'nowrap'}}>{title}</span>
@@ -158,23 +162,25 @@ const Field: React.FC<{i: number; title: string; en?: string; children: React.Re
       {/* with his frame on top the small drawings only collided with the captions (v3) -> frame + scarecrow only */}
       {/* his frame on top, the field's motion right under it (compact, never under the captions) */}
       <AbsoluteFill style={{transform: clip ? 'translate(30px, 400px) scale(0.5)' : 'translate(-60px, 150px) scale(0.7)', transformOrigin: '540px 600px'}}>{children}</AbsoluteFill>
-      <PopOutScarecrow cx={205} cy={1250} r={115} />
+      <PopOutScarecrow cx={205} cy={1250} r={115} who={who} />
     </Sc>
   );
 };
 
 // the scarecrow talking from a circle that holds his farm; everything above the circle's middle may leave it (pop-out)
-const PopOutScarecrow: React.FC<{cx: number; cy: number; r: number}> = ({cx, cy, r}) => {
+export const PopOutScarecrow: React.FC<{cx: number; cy: number; r: number; who?: string}> = ({cx, cy, r, who = 'scarecrow'}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const p = spr(f, fps, 2, 150, 14);
-  const body = <Scarecrow x={cx} y={cy - 25 + 4 * Math.sin(f / 10)} s={0.66} talk look={0.8} />;
+  const yy = cy - 25 + 4 * Math.sin(f / 10);
+  const body = who === 'tin' ? <TinMan x={cx} y={yy} s={0.62} talk look={0.8} /> : who === 'lion' ? <Lion x={cx} y={yy + 5} s={0.6} talk look={0.8} /> : <Scarecrow x={cx} y={yy} s={0.66} talk look={0.8} />;
+  const ground = who === 'tin' ? '#B9C4A4' : who === 'lion' ? '#3E6B3A' : '#7DBB55';
   return (
     <div style={{position: 'absolute', inset: 0, transform: `scale(${p})`, transformOrigin: `${cx}px ${cy}px`}}>
       <div style={{position: 'absolute', left: cx - r, top: cy - r, width: 2 * r, height: 2 * r, borderRadius: '50%', overflow: 'hidden',
         border: '7px solid #fff', boxShadow: `0 0 0 5px ${C.b}, 0 16px 30px rgba(0,0,0,0.25)`, boxSizing: 'border-box',
-        background: 'linear-gradient(180deg, #CDEBF5 0%, #E8F4F8 45%, #7DBB55 46%, #5EA43E 100%)'}}>
-        {Array.from({length: 9}, (_, i) => (
+        background: `linear-gradient(180deg, ${who === 'lion' ? '#2E4A30' : '#CDEBF5'} 0%, ${who === 'lion' ? '#3F6440' : '#E8F4F8'} 45%, ${ground} 46%, #5EA43E 100%)`}}>
+        {who !== 'scarecrow' ? null : Array.from({length: 9}, (_, i) => (
           <div key={i} style={{position: 'absolute', left: i * 28 - 6, top: 2 * r * 0.5 - 30 + (i % 2) * 8, width: 7, height: 90, background: '#6FA43A', borderRadius: 4,
             transform: `rotate(${Math.sin(f / 20 + i) * 4}deg)`}}><div style={{position: 'absolute', left: -3, top: 10, width: 13, height: 26, borderRadius: 7, background: '#F2C230'}} /></div>
         ))}

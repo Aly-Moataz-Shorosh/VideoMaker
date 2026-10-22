@@ -27,10 +27,10 @@ const Row: React.FC<{p: typeof PROGS[0]; hi?: boolean; dim?: boolean; tag?: stri
 );
 
 // 1) the tree: البرامج -> audio ✓, pictures ✓, 3D (now), video
-export const P3Branch: React.FC<{b?: B}> = ({b = {}}) => {
+export const P3Branch: React.FC<{b?: B; on?: number; say?: string}> = ({b = {}, on = 2, say = 'نتجه بقى للـ 3D 🧊'}) => {
   const f = useCurrentFrame();
   const d3 = at(b, 'd3', 30);
-  const cats = [{t: 'صوت', x: 860, done: true}, {t: 'صور', x: 640, done: true}, {t: '3D', x: 420, on: true}, {t: 'فيديو', x: 200}];
+  const cats = ['صوت', 'صور', '3D', 'فيديو'].map((t, i) => ({t, x: [860, 640, 420, 200][i], done: on >= 0 && i < on, on: i === on}));
   return (
     <Sc>
       <In at={0} x={540} y={460}><ProgBadge d={190} /></In>
@@ -48,7 +48,7 @@ export const P3Branch: React.FC<{b?: B}> = ({b = {}}) => {
           </div>
         </In>
       ))}
-      <In at={d3} x={540} y={1150}><Pill text="نتجه بقى للـ 3D 🧊" bg={YEL} ink={C.bg1} size={52} /></In>
+      <In at={d3} x={540} y={1150}><Pill text={say} bg={YEL} ink={C.bg1} size={52} /></In>
     </Sc>
   );
 };
@@ -268,7 +268,35 @@ export const P3C4d: React.FC<{b?: B}> = ({b = {}}) => {
   );
 };
 
+// the whole project as a map: 3 stations (his logos) light up on his words (short 48, the end of the journey)
+export const PMap: React.FC<{b?: B}> = ({b = {}}) => {
+  const f = useCurrentFrame();
+  const st = [{k: 'one', logo: 'huwa.png', t: 'المصطلحات', sub: '30 فيديو', h: 110}, {k: 'two', logo: 'oz.png', t: 'المجالات', sub: '5 فيديوهات', h: 150}, {k: 'three', logo: 'prog.png', t: 'البرامج', sub: 'فيديو واحد', h: 110}];
+  return (
+    <Sc>
+      <In at={0} x={540} y={420}><H t="رحلة إلى مركز الجرافيكس 🗺️" size={58} color="#fff" /></In>
+      <svg width={1080} height={1920} style={{position: 'absolute'}}>
+        <path d="M 860 580 C 760 700, 360 640, 540 830 S 280 1000, 230 1090" stroke="#9CC3C0" strokeWidth={10} fill="none" strokeDasharray="4 20" strokeLinecap="round" />
+      </svg>
+      {st.map((x, i) => {
+        const a = at(b, x.k, 30 + i * 60);
+        const on = f >= a;
+        const pos = [[820, 580], [540, 830], [260, 1080]][i]; // room for the share pill under station 3
+        return (
+          <div key={x.k} style={{position: 'absolute', left: pos[0] - 150, top: pos[1] - 110, width: 300, textAlign: 'center', opacity: on ? 1 : 0.35, transform: `scale(${on ? 0.8 + 0.2 * spr(f, 30, a) : 0.8})`}}>
+            <Img src={logo(x.logo)} style={{height: x.h, filter: on ? `drop-shadow(0 0 18px ${YEL})` : 'grayscale(1)'}} />
+            <div style={{fontFamily: AR, fontWeight: 900, fontSize: 40, color: '#fff', marginTop: 8}}>{i + 1}. {x.t}</div>
+            <div style={{fontFamily: AR, fontWeight: 800, fontSize: 28, color: YEL}}>{x.sub}</div>
+          </div>
+        );
+      })}
+      <In at={at(b, 'share', 9999)} x={540} y={1340}><Pill text="لو تعرف حد مهتم بالجرافيكس.. ابعتهوله 🤝" bg={YEL} ink={C.bg1} size={38} /></In>
+    </Sc>
+  );
+};
+
 export const progScenes: Record<string, React.FC<any>> = {
+  p_map: PMap,
   p3_branch: P3Branch, p3_fields: P3Fields, p3_shared: P3Shared, p3_huwa: P3Huwa, p3_list: P3List, p3_max: P3Max, p3_maya: P3Maya,
   p3_blender: P3Blender, p3_c4d: P3C4d,
 };
