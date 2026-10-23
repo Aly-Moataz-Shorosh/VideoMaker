@@ -12,7 +12,7 @@ OZ_FIX.update({'دورسي': 'دورثي', 'برشي': 'دورثي', 'قوس': '
                'زغال': 'وشغل', 'أجابة': '--', 'ويورروا': 'ويورّوا', 'لضاقة': 'الإضاءة', 'قلني': 'قولّي', 'احترد': 'محتار', 'بيجاتي': '--', 'مجالي': 'مجال',
                'كوحي': '--', 'الأبنيات': 'الأمنيات', 'تطلو': 'تطلب', 'هروح': '--', 'عشر': '--', 'وماية': '--', 'واجه': 'وآجي', 'دائم': '--', 'عليكم': 'على ايه',
                'مستدن': 'مستني', 'مقفك': 'موقّفك', 'تخيب': 'تجيب', 'وتوضع': 'واتواضع', 'نقل': 'لو', 'وبتبع': 'وبتطلع', 'مكسبك': 'مكسبك', 'الصغر': 'الصور',
-               'والسري': 'والـ3D', 'دي': 'دي', 'شداتك': 'شدّتك', 'بازن': 'بإذن', 'انككملت': 'إنك كمّلت', 'بيتولد': 'بيتولد', 'فاكة': 'فاكر'})
+               'والسري': 'والـ3D', 'دي': 'دي', 'شداتك': 'شدّتك', 'بازن': 'بإذن', 'انككملت': 'إنك كمّلت', 'بيتولد': 'بيتولد', 'فاكة': 'فاكر', 'أصر': 'قصر', 'الأصر': 'القصر', 'الحجر': 'الحجري'})
 F3 = ['f3_arch', 'f3_interior', 'f3_game', 'f3_pics', 'f3_cgi', 'f3_film', 'f3_ads']
 F4 = ['f4_edit', 'f4_film', 'f4_vfx', 'f4_trad', 'f4_2d', 'f4_3d', 'f4_mg', 'f4_stop', 'f4_jobs']
 HIDE = {k: (900, 1390, 220, 1) for k in F3 + F4 + ['jy_clip']}  # his whole frame is up: no circle (he is inside it)
@@ -63,7 +63,10 @@ OZ = dict([
         dict(t='c3_wish', at=130.6, b=dict(heart=143.3)),
         dict(t='oz_road', at=145.6, chars=['scarecrow', 'tin'], next='الفصل الجاي: الأسد 🦁 والفيديو', b=dict(road=160.4)),
     ]),
-    oz(35, '35', 'الفصل 4 من 5 · جزء 1', 'الفصل الرابع "فيديو"', 'lion_video', [(0.2, 1.6), (11.7, 139.3)], [
+    # Aly 2026-10-23: 35 + 36 merged into ONE short under 3:00 (whole chapter 4); only repeats/asides left out:
+    # extra VFX details 115.7-136.4, part of the motion-graphics uses 170.9-182.7, part of the roles 190.1-199.8, the sleep + joke 216.3-229.4
+    oz(35, '35', 'الفصل 4 من 5', 'الفصل الرابع "فيديو"', 'lion_video', [(0.2, 1.6), (11.7, 115.5), (136.4, 139.5), (139.8, 170.7), (182.7, 189.9),
+                                                                         (199.8, 204.0), (204.8, 215.5), (229.4, 233.2)], [
         dict(t='oz_walk', at=0.0, chap='الفصل الرابع:', chapB='فيديو', chars=['scarecrow', 'tin'], b=dict(city=1.0)),
         dict(t='c4_forest', at=12.9, b=dict(video=23.2)),
         dict(t='c4_lion', at=27.5, b=dict(roar=32.0, stop=39.0, scared=43.0)),
@@ -71,7 +74,11 @@ OZ = dict([
         dict(t='c4_invite', at=62.0, b=dict(yes=70.1)),
         dict(t='oz_many', at=77.7, list=F4L, title='مجالات', titleEn='Video', sub='الفيديو كبير جدًا وجميل', some='تعالي أقولك 👇', b=dict(some=80.0)),
         dict(t='f4_edit', at=81.0, clip='cam'), dict(t='f4_film', at=97.0, clip='cam'), dict(t='f4_vfx', at=107.3, clip='cam'),
-    ]),
+        dict(t='c4_intro2', at=139.6),
+        dict(t='f4_trad', at=143.8, clip='cam'), dict(t='f4_2d', at=149.3, clip='cam'), dict(t='f4_3d', at=156.8, clip='cam'), dict(t='f4_mg', at=161.3, clip='cam'),
+        dict(t='f4_stop', at=182.6, clip='cam'), dict(t='f4_jobs', at=186.0, clip='cam'),
+        dict(t='oz_road', at=204.7, chars=ALL4, next='الفصل الأخير: الساحر ✨', b=dict(road=229.5), room=True),
+    ], face_pos={**HIDE, 'oz_many': (935, 300, 170), 'c4_intro2': (920, 770, 200, 1)}),
     oz(36, '35', 'الفصل 4 من 5 · جزء 2', 'الفصل الرابع "فيديو"', 'lion_animation', [(139.8, 232.8)], [
         dict(t='c4_intro2', at=139.6),
         dict(t='f4_trad', at=143.8, clip='cam'), dict(t='f4_2d', at=149.3, clip='cam'), dict(t='f4_3d', at=156.8, clip='cam'), dict(t='f4_mg', at=161.3, clip='cam'),
