@@ -43,7 +43,7 @@ def lesson(at, who, head, lines, **beats):
 
 
 OZ = dict([
-    oz(32, '32', 'الفصل 1 من 5', 'الفصل الأول "المقدمة"', 'oz_intro', [(5.1, 11.8), (23.9, 91.3)], [
+    oz(32, '32', 'الفصل 1 من 5', 'الفصل الأول "المقدمة"', 'oz_intro', [(5.1, 11.8), (23.9, 91.3, 24.35)], [
         dict(t='jy_clip', at=5.0, src='cam', box=[0, 0, 1920, 1080], title='المجالات و ساحر أوز', chips=[dict(t=25.1, text='📺 خلّصت "هو ايه"'), dict(t=28.4, text='🤔 محتار تتخصص في ايه؟')]),
         dict(t='c1_book', at=32.2, b=dict(dorothy=35.8, oz=38.6)),
         dict(t='c1_lost', at=47.0, b=dict(signs=50.5)),

@@ -105,7 +105,7 @@ def _patch(ep, a, v):
         return v
     ea, eb = _env(vid), _env(v)
     bad = np.zeros(len(ea), bool)
-    for s in range(0, len(ea) - 150, 75):
+    for s in sorted(set(range(0, max(1, len(ea) - 150), 75)) | {max(0, len(ea) - 150)}):  # incl. the piece's last 1.5 s (its tail stayed silent: 32 at 0:06)
         x, y = ea[s:s + 150], eb[s:s + 150]
         if y.max() < np.log(1e-3) and x.mean() > np.log(3e-3):  # clean take has NOTHING here but the video speaks (quietly): ch1 opening, Aly 2026-10-23
             bad[s:s + 150] = True; continue
