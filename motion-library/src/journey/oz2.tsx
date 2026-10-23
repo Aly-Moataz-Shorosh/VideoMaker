@@ -116,19 +116,21 @@ export const C1Princess: React.FC<{b?: B}> = ({b = {}}) => {
 };
 
 // end of a chapter: keep walking the yellow brick road + what comes next (keeps them going to the playlist)
-export const OzRoad: React.FC<{b?: B; chars?: string[]; next?: string; line?: string}> = ({b = {}, chars = [], next = '', line = 'خليك ماشي على الطريق الأصفر 🟨'}) => {
+export const OzRoad: React.FC<{b?: B; chars?: string[]; next?: string; line?: string; room?: boolean}> = ({b = {}, chars = [], next = '', line = 'خليك ماشي على الطريق الأصفر 🟨', room}) => {
   const f = useCurrentFrame();
   const road = at(b, 'road', 60);
   const n = chars.length;
+  // room = his face rectangle sits bottom-right (Aly 2026-10-23): the 4 friends a little smaller, all on the left
+  const k = room ? 0.75 : 1, X = (a: number, r: number) => (room ? r : a);
   return (
     <Sc>
       <Land />
       <EmeraldCity x={540} y={860} s={0.9} glow={0.6} />
       <BrickRoad vx={540} vy={860} walk />
-      {chars.includes('lion') ? <Lion x={690} y={1130} s={0.95} walk /> : null}
-      {chars.includes('tin') ? <TinMan x={chars.includes('lion') ? 130 : 250} y={1110} s={0.95} walk /> : null}
-      {chars.includes('scarecrow') ? <Scarecrow x={chars.includes('lion') ? 510 : 660} y={1100} s={1.05} walk /> : null}
-      <Dorothy x={chars.includes('lion') ? 320 : n ? 450 : 540} y={1110} s={1.2} walk /> {/* 4 friends: all left of his face circle */}
+      {chars.includes('lion') ? <Lion x={X(690, 495)} y={1150} s={0.95 * k} walk /> : null}
+      {chars.includes('tin') ? <TinMan x={X(chars.includes('lion') ? 130 : 250, 130)} y={1130} s={0.95 * k} walk /> : null}
+      {chars.includes('scarecrow') ? <Scarecrow x={X(chars.includes('lion') ? 510 : 660, 375)} y={1120} s={1.05 * k} walk /> : null}
+      <Dorothy x={X(chars.includes('lion') ? 320 : n ? 450 : 540, 255)} y={1130} s={1.2 * k} walk /> {/* 4 friends: all left of his face circle */}
       <In at={road} x={540} y={470}>
         <Card><T t="خليك فاكر.." size={44} /><T t={line} size={50} color="#C99A1E" /></Card>
       </In>
