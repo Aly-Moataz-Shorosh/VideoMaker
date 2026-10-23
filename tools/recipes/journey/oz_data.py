@@ -30,9 +30,9 @@ def oz(n, ep, label, vt, slug, pieces, scenes, **kw):
         RECT = (810, 1360, 330, 0)
         d['face_pos'] = {**d['face_pos'], **{s['t']: RECT for s in scenes if s['t'] not in d['face_pos']}}
         # scenes whose characters fill the bottom right: above the wizard / in the sky, or hidden in the short title + castle shots
-        d['face_pos'].update({'oz_walk': (810, 1360, 330, 1), 'c5_castle': (810, 1360, 330, 1), 'c5_reveal': (540, 790, 300, 0), 'oz_road': (810, 1360, 330, 0)})
+        d['face_pos'].update({'oz_walk': (810, 1360, 330, 1), 'c5_castle': (810, 1360, 330, 1), 'c5_reveal': (540, 840, 220, 0), 'c5_search': (850, 975, 290, 0), 'oz_road': (810, 1360, 330, 0)})
         for s in scenes:
-            if s['t'] in ('c5_lesson', 'c5_sites', 'oz_road'):
+            if s['t'] in ('c5_lesson', 'c5_sites', 'oz_road', 'c5_search'):
                 s['room'] = True
     return n, d
 

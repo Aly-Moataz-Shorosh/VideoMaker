@@ -533,7 +533,7 @@ export const C5Lesson: React.FC<{b?: B; who: string; lines: [string, string, str
   );
 };
 // typing "What is graphic design" in a search bar -> a playlist of results
-export const C5Search: React.FC<{b?: B}> = ({b = {}}) => {
+export const C5Search: React.FC<{b?: B; room?: boolean}> = ({b = {}, room}) => { // room = his face rectangle beside the screenshot
   const f = useCurrentFrame();
   const q = 'What is graphic design';
   const n = Math.min(q.length, Math.max(0, Math.floor((f - 10) / 2)));
@@ -548,16 +548,13 @@ export const C5Search: React.FC<{b?: B}> = ({b = {}}) => {
           <span style={{fontFamily: EN, fontWeight: 600, fontSize: 40, color: '#1E1E24'}}>{q.slice(0, n)}<span style={{opacity: f % 20 < 10 ? 1 : 0}}>|</span></span>
         </div>
       </In>
-      {f >= res ? [0, 1, 2].map((i) => (
-        <In key={i} at={res + i * 6} x={540} y={720 + i * 150}>
-          <div style={{width: 860, height: 130, background: 'rgba(255,255,255,0.95)', borderRadius: 16, display: 'flex', gap: 20, alignItems: 'center', padding: 12, boxSizing: 'border-box', direction: 'ltr'}}>
-            <div style={{width: 180, height: 104, borderRadius: 10, background: ['#E8175D', '#5E95D1', '#F2C230'][i]}} />
-            <div><div style={{width: 420, height: 18, borderRadius: 9, background: '#555'}} /><div style={{width: 260, height: 14, borderRadius: 7, background: '#AAA', marginTop: 12}} /></div>
-          </div>
-        </In>
-      )) : null}
-      <In at={vis} out={sol - 4} x={540} y={1180}><Pill text="Graphics = خطوط • أشكال • ألوان • ملمس • فراغ" size={34} /></In>
-      <In at={sol} x={540} y={1180}><Pill text="Design = حل المشكلات 💡" bg={grad('oz')} ink={C.ink} size={40} /></In>
+      {/* the REAL playlist you find (Aly 2026-10-23: a screenshot of "Graphic Design" by LearnFree, not drawn results) */}
+      <In at={res} x={room ? 355 : 540} y={860}>
+        <Img src={staticFile('projects/2026-10-22 shorts Journey to the center of computer graphics/real/yt_graphic_design_playlist.png')}
+          style={{width: room ? 540 : 800, borderRadius: 18, border: '6px solid #fff', boxShadow: '0 18px 40px rgba(0,0,0,0.4)', display: 'block'}} />
+      </In>
+      <In at={vis} out={sol - 4} x={540} y={1150}><Pill text="Graphics = خطوط • أشكال • ألوان • ملمس • فراغ" size={34} /></In>
+      <In at={sol} x={540} y={1150}><Pill text="Design = حل المشكلات 💡" bg={grad('oz')} ink={C.ink} size={40} /></In>
     </Sc>
   );
 };
