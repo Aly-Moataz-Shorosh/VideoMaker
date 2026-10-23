@@ -359,15 +359,21 @@ export const HuwaOutro: React.FC<{term: string; next?: string; b?: B}> = ({term,
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const nx = at(b, 'next', 50);
+  // long terms ("Software Application", "Layer Based vs Node Based") must stay inside the frame (Aly 2026-10-23):
+  // Montserrat 900 uppercase is ~1 em per letter -> size from the longest word, one word per line at most
+  const L = Math.max(...term.split(' ').map((w) => w.length));
+  const fs = Math.min(92, Math.floor((860 - 6 * L) / (0.98 * L)));
+  const ns = next ? Math.min(52, Math.floor(760 / (0.66 * (next.length + 2)))) : 52;
   return (
     <Sc>
       <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 30, marginTop: -120}}>
         <div style={{transform: `scale(${spr(f, fps, 0, 160, 11)})`}}><HuwaLogo h={330} /></div>
-        <div style={{marginTop: 10, fontFamily: EN, fontWeight: 900, fontSize: 92, letterSpacing: 6, color: C.ink, opacity: lin(f, 10, 20), textTransform: 'uppercase'}}>{term}</div>
+        <div style={{marginTop: 10, fontFamily: EN, fontWeight: 900, fontSize: fs, letterSpacing: 6, color: C.ink, opacity: lin(f, 10, 20), textTransform: 'uppercase',
+          maxWidth: 900, textAlign: 'center', lineHeight: 1.1}}>{term}</div>
         {next ? (
           <div style={{opacity: lin(f, nx, nx + 10), transform: `translateY(${(1 - lin(f, nx, nx + 12)) * 40}px)`, marginTop: 40, direction: 'rtl', textAlign: 'center'}}>
             <div style={{fontFamily: AR, fontWeight: 800, fontSize: 38, color: C.soft}}>المصطلح الجاي في السلسلة</div>
-            <div style={{marginTop: 12}}><Pill text={`${next} ؟`} bg={grad('huwa')} ink="#fff" size={52} font={EN} dir="ltr" /></div>
+            <div style={{marginTop: 12}}><Pill text={`${next} ؟`} bg={grad('huwa')} ink="#fff" size={ns} font={EN} dir="ltr" /></div>
           </div>
         ) : null}
       </AbsoluteFill>

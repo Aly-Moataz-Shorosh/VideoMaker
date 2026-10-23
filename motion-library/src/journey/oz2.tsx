@@ -332,7 +332,7 @@ export const C4Invite: React.FC<{b?: B}> = ({b = {}}) => {
       <Lion x={760} y={1160} s={1.2} scared={f < yes} talk={f >= yes} look={-0.6} brave={lin(f, yes, yes + 15) * 0} />
       <Dorothy x={280} y={1170} s={1.15} look={0.6} talk={f < yes} />
       <In at={4} out={yes - 4} x={420} y={560}><Bubble w={700} h={200} tail="left"><span style={{fontSize: 40}}>تعالى معانا للساحر.. يمكن يحل مشكلتك ✨</span></Bubble></In>
-      <In at={yes} x={700} y={560}><Bubble w={520} h={170} tail="right"><span style={{fontSize: 48}}>شكرًا جدًا! 🥹</span></Bubble></In>
+      <In at={yes} x={700} y={560}><Bubble w={520} h={170} tail="right"><span style={{fontSize: 48}}>شكرًا جدًا! 🥺</span></Bubble></In>
     </Sc>
   );
 };

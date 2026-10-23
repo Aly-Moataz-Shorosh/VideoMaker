@@ -80,7 +80,7 @@ Liked: the opening and the end ("البداية و النهاية"), the colours
 - Data files (project `work/scripts/`): `huwa_data.py` -> `work/huwa_shorts.json` (auto: content boxes + chips), `oz_data.py`,
   `prog_data.py`, `intro_data.py`, titles/descriptions `meta_all.py` (finalize.py reads it). Archived in `tools/recipes/journey/`.
 - New scenes: `src/journey/cast.tsx` (TinMan, Lion, Wizard, Princess, Townie), `oz2.tsx` (chapters 1/3/4/5 + Field per chapter with
-  the chapter's presenter popping out), `intro.tsx` (maze of the "التطبيش" phase, planet + map, 3 stages with his 3 logos), `PMap`.
+  the chapter's presenter popping out), `intro.tsx` (maze of the "التضبيش" phase, planet + map, 3 stages with his 3 logos), `PMap`.
 - Checks that caught real mistakes: a piece edge in the middle of a sentence (42/43, 45/46 and the intro) — always print the
   transcript words around every edge; the station label repeated the section name and left the frame (now anchored to its side);
   drawn characters under his face circle (keep everything x < ~740 on the right side when the circle sits bottom-right).

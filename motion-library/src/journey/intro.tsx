@@ -20,7 +20,7 @@ export const IMaze: React.FC<{b?: B}> = ({b = {}}) => {
   const px = path[i][0] + (path[i + 1][0] - path[i][0]) * k, py = path[i][1] + (path[i + 1][1] - path[i][1]) * k;
   return (
     <Sc>
-      <In at={0} x={540} y={400}><Card t="مرحلة «التطبيش» 🌀" size={54} /></In>
+      <In at={0} x={540} y={400}><Card t="مرحلة «التضبيش» 🌀" size={54} /></In>
       <In at={4} x={540} y={830}>
         <svg width={620} height={620} viewBox="-10 -10 520 520" style={{background: '#fff', borderRadius: 30, boxShadow: '0 20px 40px rgba(0,0,0,0.15)'}}>
           <rect x={0} y={0} width={500} height={500} fill="none" stroke={C.ink} strokeWidth={10} />
