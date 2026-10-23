@@ -272,10 +272,23 @@ Usual layout: `العناوين:` (exact header, first line) + 1) 2) 3) titles /
 NO YouTube link in the txt, NO "ترتيب النشر" line (he tried a strict template and took it back). UTF-8 without BOM, LF line ends.
 Writer: tools/recipes/graphictablet/write_meta.py.
 
-## Series shorts from a whole playlist (Journey, 2026-10-22, docs/30) — pilot liked: opening, end card, colours
-- Motion ALONE is not enough ("مش descriptive كفاية"): put REAL example pictures on the words (circles/cards) — his own work first,
-  then crops of his own video, then free Commons pictures (credit them). His work on screen = "be.net/shorosh" tag + link in the txt.
-- Use his EXACT logo files (F:\_root\output\Youtube\Aly Shorosh NEW\...), never redraw a logo. His channel logo + name at the bottom.
-- Story chapters he narrated: he stays in a circle telling the story (matted from his published video), drawn characters kept.
-- Nothing may be cut by a frame/canvas edge — the short must feel like ONE piece. Calm backgrounds.
+## Series shorts from a whole playlist = style 16 journey-series (Journey 2026-10-22/23, docs/30) — v4 APPROVED "حلو اوي انت كدا فهمت زوقي"
+- Order = the PLAYLIST order (file number = playlist position). Series bar with his 3 EXACT stage logos + section label (never
+  outside the frame, under its own station); his channel logo + name (character skin colour) at the bottom; calm backgrounds.
+- His OWN episode motion is better than mine (jy_clip, his clip big + key-word chips on his words); my motion only where it explains
+  more (lists, before/after, formats + program logos) or to replace a THIRD-PARTY clip inside his episode (short 10 photo-edit scene).
+- Motion alone is not enough: REAL examples (his work -> his video -> Commons, credited). His strong works only: small Behance QR.
+  When he names a real search ("What is graphic design"), show a REAL screenshot of that page (headless Edge), credit it in the txt.
+- Use his EXACT logo files from F: (copy only), never redraw a logo.
+- Story chapters: drawn characters + HIM in a circle with his original background (no roto), centred on his face (clean the face
+  track: a hand/background jump = wrong). Ch5: bigger 4:3 RECTANGLE that shows his room; move the characters left to make room.
+- NOTHING overlaps, nothing outside the frame: check every scene type with stills (face circle vs characters/pills/screenshots).
+  Long English words: size from the longest word. Latin "?" after English, "؟" only in RTL text. Emoji only up to Emoji 12.
+- Voice: clean take only where it really matches (check every voice_N.wav for long silences; fill gaps from the video); when he
+  says the clean voice sounds bad -> his published sound WITH music, ONE gain per piece (per-sentence gain pumps the music).
+- Whole sentences at every edge — print the words around each edge; no edge on a dangling "بس"; force an edge into a real silence.
+- Merging two parts under 3:00: drop only repeats/asides/jokes, keep the story and every field.
+- REVIEW RULE (2026-10-23): redo ONLY the videos he names (a code fix may help all, but render only the named ones); move each
+  original to output/series/archive/ first (never overwrite an archived copy — use "v2/v3" names). Rebuild the bundle when public
+  or src changed (stale bundle = old voice / old code). After every render: voice sync vs voice_N.wav = 0.
 

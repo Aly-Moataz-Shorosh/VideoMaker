@@ -141,6 +141,16 @@
    "recipe": "docs/29-recipe-glass-face-talk-shorts.md",
    "scripts": "tools/recipes/graphictablet/ (shorts_data.py -> make_shorts.py -> qc_cam.py -> render.sh -> finalize.py; write_meta.py, export_sfx.py; v2_end.sh = re-render only the end and splice)",
    "rules": "ask one or many first, list ideas with motion %; original voice + sfx; any YouTube QR goes WITH that video's thumbnail; camera mp4 = split+trim+concat in order; never >= 3:00"
+  },
+  "16": {
+   "folder": "16 journey-series",
+   "name": "A SERIES of shorts from a whole PLAYLIST in playlist order: series bar with his 3 exact stage logos + section label, his channel logo + name at the bottom, calm backgrounds per stage; his own episode motion big (jy_clip) with key-word chips, my motion where it explains more; real examples (his work -> his videos -> Commons, Behance QR on strong works); story chapters drawn (Oz cast) with his face in a circle or a 4:3 rectangle showing his room; three.js for 3D; END = playlist thumb + name + QR, under it the episode thumb (no QR), no CTA clip",
+   "approved": "Journey pilot v4 (2026-10-23, 'حلو اوي انت كدا فهمت زوقي') -> 47 shorts in output/series; review notes applied to the named ones",
+   "input": "playlist link or the episodes in input/; his logos + clean voice files from F: (copy only)",
+   "build": "composition 'film-short' look 'journey', src/journey/ (kit, clip, real, oz/oz2/cast, prog, three, intro, pedit, end); props per short from work/scripts/*_data.py",
+   "recipe": "docs/30-recipe-journey-series-shorts.md",
+   "scripts": "tools/recipes/journey/ (shorts_data/huwa_data/oz_data/prog_data/intro_data -> make_shorts.py N.. -> render.sh N.. (rebundles when public or src changed) -> finalize.py N.. with meta_all.py)",
+   "rules": "file number = playlist position; his EXACT logos; clean voice only where it matches (else published audio with music, one gain); no overlaps / nothing outside the frame; emoji <= Emoji 12; whole sentences at every edge; never >= 3:00 (merge = drop repeats only); in reviews redo ONLY named videos, originals to archive/"
   }
  },
  "_always": "Every style: his ORIGINAL voice (only per-sentence gain to one level, no cleanup), edges fitted on the waveform, sfx, CTA clip + comment card at the end of shorts, <video>.txt beside every output, sfx + voice stems. Word script only on request. Shorts: ASK one short (whole goal of the video) or several (suggestions, he picks) first; no short ever reaches 3:00."

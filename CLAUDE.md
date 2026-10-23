@@ -200,4 +200,7 @@ Done (2026-10-06):
   example pictures (his work -> his video -> Commons) + be.net/shorosh tag, his matted face in a circle in Oz chapters, nothing clipped. v2 review -> v3 `output/v3/` (his own episode motion jy_clip, photo zoom to pixels, Behance QR, Oz face from his frame + whole-frame examples). v3 review -> v4 `output/v4/` (my motion back at 3 spots + word chips under his clips, pop-out scarecrow, bubble tails, clear 3D principles, name colour).
   v4 APPROVED ("حلو اوي انت كدا فهمت زوقي") -> WHOLE series in playlist order `output/series/NN_slug.mp4` + .txt
   (01 intro, 02–31 هو ايه, 32–40 Oz, 41–48 programs; 08/33/44 = v4 pilots). Data per section in project work/scripts (*_data.py, meta_all.py),
-  archived `tools/recipes/journey/`; recipe docs/30 "The whole series". Waiting for Aly's review.
+  archived `tools/recipes/journey/`; recipe docs/30 "The whole series". Aly's review 2026-10-23 (only named shorts redone, originals in
+  `output/series/archive/`): outro text sizes, 10 = my photo-edit motion instead of a third-party clip, 11 = video audio, 31 = series-end
+  text, 32 = opening sound + face track, 35 + 36 MERGED (2:54, no file 36), 37-40 = published audio with music + face 4:3 rectangle,
+  37 = real LearnFree playlist screenshot. APPROVED as **style 16 journey-series** (styles/16). Job done ("thanks").
