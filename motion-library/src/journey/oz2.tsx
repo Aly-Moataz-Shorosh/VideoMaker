@@ -109,7 +109,7 @@ export const C1Princess: React.FC<{b?: B}> = ({b = {}}) => {
       <Princess x={650} y={1110} s={1.2} talk={f < road + 60} point={lin(f, road - 10, road + 6)} look={-0.6} />
       <Dorothy x={230} y={1170} s={1.1} look={0.6} talk={f < 40} />
       <In at={4} out={road - 4} x={400} y={560}><Bubble w={560} h={170} tail="left"><span style={{fontSize: 42}}>قوليلي الطريق للساحر؟</span></Bubble></In>
-      <In at={road} x={620} y={500}><Bubble w={700} h={210} tail="right"><span style={{fontSize: 42}}>امشي على الطريق الحجر الأصفر 🟨</span></Bubble></In>
+      <In at={road} x={620} y={500}><Bubble w={700} h={210} tail="right"><span style={{fontSize: 42}}>امشي على الطريق الحجري الأصفر 🟨</span></Bubble></In>
       <In at={end} x={540} y={780}><Pill text="وفي آخره هتلاقي الساحر ✨" bg={C.a} ink="#fff" size={40} /></In>
     </Sc>
   );
@@ -509,15 +509,16 @@ export const C5Reveal: React.FC<{b?: B}> = ({b = {}}) => {
   );
 };
 // a lesson: the wizard talks to one of them; `lines` = [beat, text, kind] pop one after another
-export const C5Lesson: React.FC<{b?: B; who: string; lines: [string, string, string?][]; head: string}> = ({b = {}, who, lines, head}) => {
+export const C5Lesson: React.FC<{b?: B; who: string; lines: [string, string, string?][]; head: string; room?: boolean}> = ({b = {}, who, lines, head, room}) => {
+  const cx = room ? 430 : 640, wx = room ? 170 : 250; // room = his face rectangle sits on the right (Aly 2026-10-23)
   const f = useCurrentFrame();
   const shown = lines.filter(([k]) => f >= at(b, k, 9999)).slice(-3);
-  const node = who === 'scarecrow' ? <Scarecrow x={640} y={1120} s={1.05} look={-0.7} /> : who === 'lion' ? <Lion x={640} y={1130} s={1.05} look={-0.7} brave={lin(f, at(b, 'brave', 9999), at(b, 'brave', 9999) + 15)} />
-    : who === 'tin' ? <TinMan x={640} y={1120} s={1.05} look={-0.7} heart={lin(f, at(b, 'heart', 9999), at(b, 'heart', 9999) + 15)} /> : <Dorothy x={640} y={1130} s={1.05} look={-0.7} />;
+  const node = who === 'scarecrow' ? <Scarecrow x={cx} y={1120} s={1.05} look={-0.7} /> : who === 'lion' ? <Lion x={cx} y={1130} s={1.05} look={-0.7} brave={lin(f, at(b, 'brave', 9999), at(b, 'brave', 9999) + 15)} />
+    : who === 'tin' ? <TinMan x={cx} y={1120} s={1.05} look={-0.7} heart={lin(f, at(b, 'heart', 9999), at(b, 'heart', 9999) + 15)} /> : <Dorothy x={cx} y={1130} s={1.05} look={-0.7} />;
   return (
     <Sc>
       <Hall />
-      <Wizard x={250} y={1110} s={1.1} talk look={0.7} point={f % 120 < 60} />
+      <Wizard x={wx} y={1110} s={1.1} talk look={0.7} point={f % 120 < 60} />
       {node}
       <In at={0} x={540} y={410}><Card><T t={head} size={42} /></Card></In>
       <div style={{position: 'absolute', left: 60, right: 60, top: 520, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16}}>
@@ -559,13 +560,13 @@ export const C5Search: React.FC<{b?: B}> = ({b = {}}) => {
   );
 };
 // the sites where they watched a lot of work (logos he names)
-export const C5Sites: React.FC<{b?: B}> = ({b = {}}) => {
+export const C5Sites: React.FC<{b?: B; room?: boolean}> = ({b = {}, room}) => {
   const items = ['Behance', 'ArtStation', 'YouTube', 'Vimeo'];
   return (
     <Sc>
       <Hall />
-      <TinMan x={640} y={1120} s={1.0} heart={1} look={-0.7} />
-      <Wizard x={260} y={1110} s={1.05} talk look={0.7} />
+      <TinMan x={room ? 430 : 640} y={1120} s={1.0} heart={1} look={-0.7} />
+      <Wizard x={room ? 170 : 260} y={1110} s={1.05} talk look={0.7} />
       <In at={0} x={540} y={410}><Card><T t="كانوا بيتفرجوا على شغل كتير 👀" size={42} /></Card></In>
       {items.map((t, i) => (
         <In key={t} at={at(b, 'sites', 10) + i * 8} x={240 + (i % 2) * 600} y={600 + Math.floor(i / 2) * 140}>

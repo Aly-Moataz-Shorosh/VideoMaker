@@ -60,7 +60,7 @@ export const JyReal: React.FC<{items: RealItem[]; sec?: Sec}> = ({items, sec = '
 // Aly himself in a circle telling the story (Oz chapters): his matted face from the published chapter (same timeline as the voice),
 // on a calm disc. src = transparent webm of the crop around his head; box = which part of the crop fills the circle.
 export const FaceCircle: React.FC<{file: string; from?: number; center?: [number, number]; r?: number; keys?: {t: number; x: number; y: number; d: number; hide?: number}[]; ring?: string;
-  track?: {t: number; cx: number; cy: number; r: number}[]}> = ({file, from = 0, center = [960, 560], r: r0 = 250, keys = [{t: 0, x: 900, y: 1390, d: 220}], ring = '#F2C230', track = []}) => {
+  track?: {t: number; cx: number; cy: number; r: number}[]; shape?: string}> = ({file, from = 0, center = [960, 560], r: r0 = 250, keys = [{t: 0, x: 900, y: 1390, d: 220}], ring = '#F2C230', track = [], shape = 'circle'}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   let k = 0;
@@ -79,6 +79,18 @@ export const FaceCircle: React.FC<{file: string; from?: number; center?: [number
     const A = track[j], Bk = track[Math.min(track.length - 1, j + 1)];
     const u2 = Bk.t > A.t ? Math.max(0, Math.min(1, (t - A.t) / (Bk.t - A.t))) : 0;
     c = [A.cx + (Bk.cx - A.cx) * u2, A.cy + (Bk.cy - A.cy) * u2]; r = A.r + (Bk.r - A.r) * u2;
+  }
+  if (shape === 'rect') {
+    // Aly 2026-10-23 (chapter 5): bigger, a 4:3 rectangle that shows the room behind him, not a small circle
+    const w = d * 4 / 3, sr = d / (2 * r * 1.6), hw = w / 2 / sr, hh = d / 2 / sr;
+    const cx = Math.min(Math.max(c[0], hw), 1920 - hw), cy = Math.min(Math.max(c[1], hh), 1080 - hh);
+    return (
+      <div style={{position: 'absolute', left: x - w / 2, top: y - d / 2, width: w, height: d, borderRadius: 28, overflow: 'hidden', transform: `scale(${p})`,
+        border: '8px solid #fff', boxShadow: `0 0 0 6px ${ring}, 0 22px 44px rgba(0,0,0,0.3)`, background: '#222'}}>
+        <OffthreadVideo muted src={staticFile(file)} startFrom={Math.round(from * fps)} style={{position: 'absolute', width: 1920 * sr, height: 1080 * sr,
+          left: w / 2 - cx * sr, top: d / 2 - cy * sr, maxWidth: 'none'}} />
+      </div>
+    );
   }
   const s = d / (2 * r);
   return (

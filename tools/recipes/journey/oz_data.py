@@ -26,6 +26,14 @@ def oz(n, ep, label, vt, slug, pieces, scenes, **kw):
     d = dict(ep=ep, sec='oz', label=label, vid_title=f'المجالات و ساحر مدينة أوز | {vt}', slug=slug, pieces=pieces, scenes=scenes, WFIX=OZ_FIX, real=[],
              face=f'src_{ep}.mp4', face_pos={**HIDE, 'oz_many': (935, 300, 170)}, cam=True, **CENTER)
     d.update(kw)
+    if d.get('face_shape') == 'rect':  # Aly 2026-10-23 (37-40): his face bigger, a rectangle showing the room; lessons make room on the right
+        RECT = (810, 1360, 330, 0)
+        d['face_pos'] = {**d['face_pos'], **{s['t']: RECT for s in scenes if s['t'] not in d['face_pos']}}
+        # scenes whose characters fill the bottom right: above the wizard / in the sky, or hidden in the short title + castle shots
+        d['face_pos'].update({'oz_walk': (810, 1360, 330, 1), 'c5_castle': (810, 1360, 330, 1), 'c5_reveal': (540, 790, 300, 0), 'oz_road': (850, 880, 280, 0)})  # beside the city, under the closing card
+        for s in scenes:
+            if s['t'] in ('c5_lesson', 'c5_sites'):
+                s['room'] = True
     return n, d
 
 
@@ -80,20 +88,20 @@ OZ = dict([
         lesson(96.4, 'scarecrow', 'إزاي تكمّل؟', [('a', 98.4, 'اتعلم الأصول 📚'), ('b', 102.1, 'كورسات أونلاين وأوفلاين 🎓'), ('c', 104.4, 'مبادئ التصميم ✏️'),
                                                   ('d', 108.0, 'البرامج اللي محتاجها 🖥️'), ('e', 110.0, 'اسأل كتير 🙋'), ('f', 112.5, 'طبّق كتير جدًا 🔁', 'gold'),
                                                   ('g', 124.5, 'الصبر والاجتهاد ⏳💪', 'gold')]),
-    ]),
+    ], face_shape='rect'),
     oz(38, '36', 'الفصل 5 من 5 · جزء 2', 'الفصل الخامس و الأخير "الختام"', 'wizard_lion', [(127.8, 170.3)], [
         lesson(127.6, 'lion', 'الساحر للأسد 🦁', [('a', 130.0, 'ما تخافش.. ارفع شغلك ☁️'), ('b', 132.5, 'كلنا بنتعلم ونتطوّر 🌱'), ('c', 140.0, 'قلّد شغل معمول أو لشركة وهمية 🏢'),
                                                   ('d', 148.5, 'الرفض نفسه خبرة 👍', 'gold'), ('e', 152.0, 'بعد سنين هتشوف تطوّرك 📈'), ('f', 167.4, 'العزيمة والإصرار 🔥', 'gold')], brave=165.0),
-    ]),
+    ], face_shape='rect'),
     oz(39, '36', 'الفصل 5 من 5 · جزء 3', 'الفصل الخامس و الأخير "الختام"', 'wizard_tinman', [(171.4, 224.3)], [
         lesson(171.2, 'tin', 'الساحر للراجل الحديدي ❤️', [('a', 175.0, 'الناس مش بتتولد مبدعة', 'red'), ('b', 182.0, 'الإبداع صفة بتنمّيها 🌱', 'gold'), ('c', 194.3, 'شغف وحب للي بتعمله ❤️')], heart=194.3),
         dict(t='c5_sites', at=197.5, b=dict(sites=198.9, groups=207.7)),
         lesson(212.7, 'tin', 'الإبداع ييجي منين؟', [('a', 212.9, 'اتفرّج كتير 👀'), ('b', 218.0, 'مش إنك فنان..'), ('c', 221.3, 'إنك مجتهد 💪', 'gold')], heart=212.8),
-    ]),
-    oz(40, '36', 'الفصل 5 من 5 · جزء 4', 'الفصل الخامس و الأخير "الختام"', 'wizard_dorothy', [(224.7, 277.9)], [
+    ], face_shape='rect'),
+    oz(40, '36', 'الفصل 5 من 5 · جزء 4', 'الفصل الخامس و الأخير "الختام"', 'wizard_dorothy', [(224.7, 280.0)], [
         lesson(224.5, 'dorothy', 'الساحر لدورثي 👧', [('a', 231.5, 'مكسبك كان في الطريق الأصفر 🟨', 'gold'), ('b', 234.0, 'عرفتي مجالات كتير: صور • فيديو • 3D'),
                                                      ('c', 240.2, 'افتحي Behance وقلّبي 🔍'), ('d', 247.6, 'اعرفي اسم اللي شدّك ودوّري فيه'),
                                                      ('e', 251.2, 'تحت كل شغل مكتوب البرامج 🖥️'), ('f', 257.4, 'جرّبي مجالات كتير 🧪', 'gold')]),
         dict(t='oz_road', at=266.7, chars=ALL4, line='شكرًا إنك كمّلت الطريق لحد الآخر 🟨', next='شوف البلايليست كاملة 👇', b=dict(road=274.9)),
-    ]),
+    ], face_shape='rect'),
 ])

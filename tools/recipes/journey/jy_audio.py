@@ -15,8 +15,9 @@ VOICE = {
     '08': ('assets/his/6-vectors FIXED.mp3', [(0, -4.15)]),
     '32': ('assets/his/oz_audio/e1 orginal v1.mp3', [(0.0, -30.16), (60.27, -29.87), (65.71, -29.17), (79.58, 24.5)]),
     '34': ('assets/his/oz_audio/e3 orginal v1.mp3', [(0.0, 12.67), (12.29, 25.11), (42.66, 60.71), (74.21, 64.86), (87.14, 72.7), (111.84, 133.5), (124.72, 153.31), (130.65, 154.42), (145.77, 161.96)]),
-    '35': ('assets/his/oz_audio/e4 orginal v1.mp3', [(0.0, 277.13), (9.8, 0.03), (25.84, 0.91), (31.5, 27.28), (40.5, 39.55), (62.25, 58.61), (72.07, 75.21), (82.5, 91.23), (127.71, 129.23), (137.15, 150.74), (162.5, 188.86), (181.16, 193.47), (186.21, 242.23), (202.71, 248.66), (211.58, 260.0), (216.29, 295.66)]),
-    '36': ('assets/his/oz_audio/e5 orginal v1.mp3', [(0.0, 12.08), (28.65, 49.96), (44.52, 59.95), (49.7, 94.5), (82.55, 98.65), (96.69, 105.73), (106.75, 151.44), (123.04, 196.34), (127.85, 237.49), (138.35, 247.43), (152.09, 268.83), (159.92, 298.76), (171.17, 338.69), (184.54, 389.49), (208.72, 398.61), (213.04, 402.58), (218.97, 407.61), (225.21, 411.99), (231.1, 498.22), (241.62, 502.66), (250.7, 513.54), (256.71, 517.16), (261.0, 523.13), (267.05, 572.81)]),
+    # Aly 2026-10-23: chapters 4 and 5 (shorts 35-40) keep the PUBLISHED sound WITH its music (the cleaned voice sounded uneven/bad)
+    '_35': ('assets/his/oz_audio/e4 orginal v1.mp3', [(0.0, 277.13), (9.8, 0.03), (25.84, 0.91), (31.5, 27.28), (40.5, 39.55), (62.25, 58.61), (72.07, 75.21), (82.5, 91.23), (127.71, 129.23), (137.15, 150.74), (162.5, 188.86), (181.16, 193.47), (186.21, 242.23), (202.71, 248.66), (211.58, 260.0), (216.29, 295.66)]),
+    '_36': ('assets/his/oz_audio/e5 orginal v1.mp3', [(0.0, 12.08), (28.65, 49.96), (44.52, 59.95), (49.7, 94.5), (82.55, 98.65), (96.69, 105.73), (106.75, 151.44), (123.04, 196.34), (127.85, 237.49), (138.35, 247.43), (152.09, 268.83), (159.92, 298.76), (171.17, 338.69), (184.54, 389.49), (208.72, 398.61), (213.04, 402.58), (218.97, 407.61), (225.21, 411.99), (231.1, 498.22), (241.62, 502.66), (250.7, 513.54), (256.71, 517.16), (261.0, 523.13), (267.05, 572.81)]),
     '33': ('assets/his/oz_audio/e2 orginal v1.mp3', [(0, -8.44), (42.39, 98.24), (87.24, 98.42), (108.30, 166.46), (117.60, 166.18), (139.15, 189.26), (153.34, 193.88)]),
 }
 # the other هو ايه episodes whose clean voice matches the episode with ONE offset (align_huwa.py); edited ones keep the video audio
@@ -106,6 +107,8 @@ def _patch(ep, a, v):
     bad = np.zeros(len(ea), bool)
     for s in range(0, len(ea) - 150, 75):
         x, y = ea[s:s + 150], eb[s:s + 150]
+        if y.max() < np.log(1e-3) and x.mean() > np.log(3e-3):  # clean take has NOTHING here but the video speaks (quietly): ch1 opening, Aly 2026-10-23
+            bad[s:s + 150] = True; continue
         if max(x.std(), y.std()) < 0.3:
             continue
         if y.std() < 0.3 or np.corrcoef(x, y)[0, 1] < 0.55:
@@ -117,6 +120,8 @@ def _patch(ep, a, v):
     mask = np.concatenate([mask, np.zeros(len(v) - len(mask), np.float32)])
     f = int(0.04 * SR); mask = np.convolve(mask, np.ones(f) / f, 'same')
     good = v[mask < 0.01]; g = (np.sqrt((good ** 2).mean()) / max(1e-6, np.sqrt((vid[mask > 0.99] ** 2).mean()))) if len(good) and (mask > 0.99).any() else 1.0
+    if not np.isfinite(g) or g < 0.05:  # nothing usable around to match: the video sound as it is (level() evens it later)
+        g = 1.0
     return (v * (1 - mask) + vid * g * mask).astype(np.float32)
 
 
@@ -133,7 +138,7 @@ def level(x, cuts):
     edges = [0] + [c for c in cuts if 0.4 * SR < c < len(x) - 0.4 * SR] + [len(x)]
     g = np.ones(len(x), np.float32); gains = []
     for a, b in zip(edges[:-1], edges[1:]):
-        r = _speech_db(x[a:b]); gains.append(1.0 if r is None else 10 ** (np.clip(TARGET - r, -10, 10) / 20))
+        r = _speech_db(x[a:b]); gains.append(1.0 if r is None else 10 ** (np.clip(TARGET - r, -10, 16) / 20))
     for k, (a, b) in enumerate(zip(edges[:-1], edges[1:])):
         g[a:b] = gains[k]
     if len(edges) > 2:
@@ -148,7 +153,8 @@ def voice(ep, segs, tail, out):
     fade = int(0.012 * SR)
     for s in segs:
         a = s['src']; x = take(ep, a, int(round(s['len'] * SR)))
-        y, gs = level(x, [int((t - a) * SR) for t in bounds if a < t < a + s['len']])
+        # his published mix (music under the voice): ONE gain for the whole piece, never per sentence (the music would pump)
+        y, gs = level(x, [int((t - a) * SR) for t in bounds if a < t < a + s['len']] if ep in VOICE else [])
         y[:fade] *= np.linspace(0, 1, fade); y[-fade:] *= np.linspace(1, 0, fade)
         parts.append(y); log.append(gs)
     parts.append(np.zeros(int(tail * SR), np.float32))

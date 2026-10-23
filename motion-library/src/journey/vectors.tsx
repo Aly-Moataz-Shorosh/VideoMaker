@@ -372,10 +372,20 @@ export const HuwaOutro: React.FC<{term: string; next?: string; b?: B}> = ({term,
           maxWidth: 900, textAlign: 'center', lineHeight: 1.1}}>{term}</div>
         {next ? (
           <div style={{opacity: lin(f, nx, nx + 10), transform: `translateY(${(1 - lin(f, nx, nx + 12)) * 40}px)`, marginTop: 40, direction: 'rtl', textAlign: 'center'}}>
-            <div style={{fontFamily: AR, fontWeight: 800, fontSize: 38, color: C.soft}}>المصطلح الجاي في السلسلة</div>
-            <div style={{marginTop: 12}}>{/[A-Za-z]/.test(next[0]) // English name -> Latin "?" (the Arabic one shows mirrored in an LTR pill, Aly 2026-10-23)
-              ? <Pill text={`${next}?`} bg={grad('huwa')} ink="#fff" size={ns} font={EN} dir="ltr" />
-              : <Pill text={`${next}؟`} bg={grad('huwa')} ink="#fff" size={ns} />}</div>
+            {/[A-Za-z]/.test(next[0]) ? (
+              <>
+                <div style={{fontFamily: AR, fontWeight: 800, fontSize: 38, color: C.soft}}>المصطلح الجاي في السلسلة</div>
+                {/* English name -> Latin "?" (the Arabic one shows mirrored in an LTR pill, Aly 2026-10-23) */}
+                <div style={{marginTop: 12}}><Pill text={`${next}?`} bg={grad('huwa')} ink="#fff" size={ns} font={EN} dir="ltr" /></div>
+              </>
+            ) : (
+              // the last term (next = the Oz stage): Aly's own words for the end of the هو ايه series (2026-10-23)
+              <>
+                <div style={{fontFamily: AR, fontWeight: 900, fontSize: 40, color: C.ink, maxWidth: 900}}>السلسلة الأساسية بتاعت «هو ايه» خلصت ✅</div>
+                <div style={{fontFamily: AR, fontWeight: 800, fontSize: 34, color: C.soft, marginTop: 10, maxWidth: 900}}>استنّوا الأسبوع الجاي أول حلقة في تكملة الرحلة من خلال</div>
+                <div style={{marginTop: 14, display: 'flex', justifyContent: 'center'}}><Pill text={next} bg={grad('huwa')} ink="#fff" size={46} /></div>
+              </>
+            )}
           </div>
         ) : null}
       </AbsoluteFill>
