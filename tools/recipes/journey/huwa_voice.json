@@ -1,0 +1,86 @@
+{
+ "04": {
+  "file": "assets/his/huwa_voice/opensource.mp3",
+  "off": -3.61
+ },
+ "06": {
+  "file": "assets/his/huwa_voice/4- adobe FIXED.mp3",
+  "off": -5.58
+ },
+ "07": {
+  "file": "assets/his/huwa_voice/5-pixels FIXED.mp3",
+  "off": -5.62
+ },
+ "08": {
+  "file": "assets/his/huwa_voice/6-vectors FIXED.mp3",
+  "off": -4.15
+ },
+ "12": {
+  "file": "assets/his/huwa_voice/10-RGB & CYMK FIXED.mp3",
+  "off": -5.17
+ },
+ "13": {
+  "file": "assets/his/huwa_voice/12-resolution FIXED.mp3",
+  "off": -5.0
+ },
+ "14": {
+  "file": "assets/his/huwa_voice/13-modeling FIXED.mp3",
+  "off": -5.52
+ },
+ "15": {
+  "file": "assets/his/huwa_voice/14-materials FIXED.mp3",
+  "off": -5.39
+ },
+ "16": {
+  "file": "assets/his/huwa_voice/15-lighting FIXED.mp3",
+  "off": -5.98
+ },
+ "17": {
+  "file": "assets/his/huwa_voice/16- 3D sculpting FIXED.mp3",
+  "off": -5.86
+ },
+ "19": {
+  "file": "assets/his/huwa_voice/18-rigging FIXED.mp3",
+  "off": -5.41
+ },
+ "20": {
+  "file": "assets/his/huwa_voice/19-animating FIXED.mp3",
+  "off": -5.61
+ },
+ "21": {
+  "file": "assets/his/huwa_voice/20-physics FIXED.mp3",
+  "off": -5.78
+ },
+ "23": {
+  "file": "assets/his/huwa_voice/22-THIS - keying and rotoscoping FIXED.mp3",
+  "off": -5.56
+ },
+ "24": {
+  "file": "assets/his/huwa_voice/23-matte painting FIXED.mp3",
+  "off": -5.62
+ },
+ "25": {
+  "file": "assets/his/huwa_voice/24-cgi FIXED.mp3",
+  "off": -5.79
+ },
+ "27": {
+  "file": "assets/his/huwa_voice/26-SFX FIXED.mp3",
+  "off": -5.62
+ },
+ "28": {
+  "file": "assets/his/huwa_voice/27-motion tracking FIXED.mp3",
+  "off": -4.25
+ },
+ "29": {
+  "file": "assets/his/huwa_voice/28-video editing FIXED.mp3",
+  "off": -5.59
+ },
+ "30": {
+  "file": "assets/his/huwa_voice/29-video compositing FIXED.mp3",
+  "off": -5.82
+ },
+ "31": {
+  "file": "assets/his/huwa_voice/30-node based vs layer based FIXED.mp3",
+  "off": -5.81
+ }
+}

@@ -110,3 +110,10 @@ if _os.path.exists(_cache):
     for _k, _v in _json.load(open(_cache, encoding='utf8')).items():
         if int(_k) != 8:
             SHORTS[int(_k)] = _v
+
+# Aly review 2026-10-23: short 10 — the other channel's clip in his episode (9.75-21.75 s) is replaced by my photo-edit motion;
+# every edit on his word (source seconds).
+if 10 in SHORTS:
+    _s = SHORTS[10]['scenes']
+    _s[0]['chips'] = _s[0]['chips'][:1]
+    _s.insert(1, dict(t='pe_edit', at=9.75, b=dict(remove=12.37, light=14.17, colors=15.37, blur=16.6, freckles=19.47)))

@@ -373,7 +373,9 @@ export const HuwaOutro: React.FC<{term: string; next?: string; b?: B}> = ({term,
         {next ? (
           <div style={{opacity: lin(f, nx, nx + 10), transform: `translateY(${(1 - lin(f, nx, nx + 12)) * 40}px)`, marginTop: 40, direction: 'rtl', textAlign: 'center'}}>
             <div style={{fontFamily: AR, fontWeight: 800, fontSize: 38, color: C.soft}}>المصطلح الجاي في السلسلة</div>
-            <div style={{marginTop: 12}}><Pill text={`${next} ؟`} bg={grad('huwa')} ink="#fff" size={ns} font={EN} dir="ltr" /></div>
+            <div style={{marginTop: 12}}>{/[A-Za-z]/.test(next[0]) // English name -> Latin "?" (the Arabic one shows mirrored in an LTR pill, Aly 2026-10-23)
+              ? <Pill text={`${next}?`} bg={grad('huwa')} ink="#fff" size={ns} font={EN} dir="ltr" />
+              : <Pill text={`${next}؟`} bg={grad('huwa')} ink="#fff" size={ns} />}</div>
           </div>
         ) : null}
       </AbsoluteFill>
