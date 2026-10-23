@@ -85,3 +85,15 @@ Liked: the opening and the end ("البداية و النهاية"), the colours
   transcript words around every edge; the station label repeated the section name and left the frame (now anchored to its side);
   drawn characters under his face circle (keep everything x < ~740 on the right side when the circle sits bottom-right).
 - Clean voice: هو ايه FIXED mp3s with one offset (edited episodes keep the video audio); Oz raw takes piecewise + `_patch`.
+
+## Series review (Aly 2026-10-23) — only the shorts he named were redone (originals in `output/series/archive/`)
+- Outro term sized from its longest word (never outside the frame); "?" Latin for English names, Arabic "؟" in an RTL pill; the LAST
+  term (31) says the هو ايه series is over + next week = المجالات و ساحر أوز.
+- Emoji only up to Emoji 12 (Windows 10 draws 🪖 🪟 🥹 as a box).
+- Short 10: third-party clip inside his episode -> my motion (`pe_edit`: one photo, every edit on his word).
+- Voice: a clean-voice offset can be plain wrong (ep 11 -> silence) -> check every voice_N.wav for long silences; Oz ch4/5 keep the
+  PUBLISHED sound with its music and ONE gain per piece (per-sentence gain pumped the music = "الصوت مش منتظم").
+- Oz ch5 (37-40): his face as a bigger 4:3 RECTANGLE showing the room (`face.shape='rect'`); lessons/sites/closing road move the
+  characters left (`room`), title + castle shots hide it, the reveal puts it above the wizard.
+- Face track (ch1): replace one-off jumps (a hand) with measured positions; a quiet opening is filled from the video (`_patch`).
+- render.sh rebuilds the bundle whenever public files OR src/ are newer (a stale bundle rendered an old voice and old code twice).
