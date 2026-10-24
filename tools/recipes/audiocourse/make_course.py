@@ -16,7 +16,7 @@ SRC = PUB + 'course.mp4'
 FPS = 30
 SEP = 4.0
 SRC_LEN = 7385.93
-MUSIC = 'projects/premiere/music/lofi_coffee_shop.mp3'  # Pixabay, no Content ID (approved in the premiere course)
+MUSIC = PUB + 'music/lofi_coffee_shop.mp3'  # Pixabay, no Content ID (approved in the premiere course)
 AN = json.load(open(PROJ / 'work/analysis.json'))
 
 PARTS = [  # (title, sub, icon, colour)

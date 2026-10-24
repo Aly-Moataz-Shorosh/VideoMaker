@@ -204,3 +204,8 @@ Done (2026-10-06):
   `output/series/archive/`): outro text sizes, 10 = my photo-edit motion instead of a third-party clip, 11 = video audio, 31 = series-end
   text, 32 = opening sound + face track, 35 + 36 MERGED (2:54, no file 36), 37-40 = published audio with music + face 4:3 rectangle,
   37 = real LearnFree playlist screenshot. APPROVED as **style 16 journey-series** (styles/16). Job done ("thanks").
+- 2026-10-24 `projects/2026-10-20 youtube audioproduction` (his 2021 ONLINE Zoom session "الصوت للفيديو", 2:03 h, students' voices) → ONE
+  course video, composition `course` at 30 fps (`src/course/audio.tsx`: teaser "هتشوف في الكورس ده" from his own clips, 2021 proof from
+  the taskbar date, Claude's opinion + counted stats (vector Claude spark), parts map + grouped timestamps, FilmTag). Aly rules: nothing
+  cut / sped up, the session audio NEVER touched (mix_audio.py = pieces as-is, checked 0.01 dB / 0.7 ms), music only in opening/separators,
+  31 chapters in 7 PARTS, motion only where it explains. Scripts `tools/recipes/audiocourse/`. `output/review1.mp4` = opening + part 1, waiting for review.
