@@ -5,6 +5,7 @@ import {fontCss} from '../blocks/theme';
 import {Alt, Chip, CourseBg, Def, Fig, Hud, Key, Kw, New26, Screen, Sep} from './kit';
 import {courseScenes} from './scenes';
 import {courseAnims} from './anims';
+import {audioScenes, FilmTag, TeaserCap, TeaserHead} from './audio';
 
 // Long course video (premiere pro course, 2026-10-16): his screen recordings stay on screen the whole time (full / side
 // modes), motion beside or on top of empty areas; full-screen scenes only in the opening and between chapters.
@@ -23,7 +24,7 @@ export const courseSchema = z.object({
 });
 type Props = z.infer<typeof courseSchema>;
 
-const OVER: Record<string, React.FC<any>> = {Kw, Def, Fig, Chip, Key, Alt, New26, ...courseAnims};
+const OVER: Record<string, React.FC<any>> = {Kw, Def, Fig, Chip, Key, Alt, New26, FilmTag, TeaserCap, TeaserHead, ...courseAnims};
 
 export const Course: React.FC<Props> = ({parts, keys, cues, scenes, huds, music, sfx}) => {
   const {fps} = useVideoConfig();
@@ -40,13 +41,13 @@ export const Course: React.FC<Props> = ({parts, keys, cues, scenes, huds, music,
       ))}
       {cues.map((c, i) => {
         if (!live(c.t, c.d)) return null;
-        const C = OVER[c.k] ?? courseScenes[c.k];
+        const C = OVER[c.k] ?? courseScenes[c.k] ?? audioScenes[c.k];
         if (!C) return null;
         return <Sequence key={'c' + i} from={fr(c.t)} durationInFrames={Math.max(1, fr(c.d))} layout="none"><C {...c.p} dur={fr(c.d)} /></Sequence>;
       })}
       {scenes.map((c, i) => {
         if (!live(c.t, c.d)) return null;
-        const C = c.k === 'Sep' ? Sep : courseScenes[c.k];
+        const C = c.k === 'Sep' ? Sep : courseScenes[c.k] ?? audioScenes[c.k];
         if (!C) return null;
         return <Sequence key={'s' + i} from={fr(c.t)} durationInFrames={Math.max(1, fr(c.d))}><C {...c.p} dur={fr(c.d)} /></Sequence>;
       })}

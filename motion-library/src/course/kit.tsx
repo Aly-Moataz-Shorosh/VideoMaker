@@ -329,6 +329,13 @@ export const Ico: React.FC<{n: string; s?: number; c?: string; live?: boolean}> 
     green: <><rect x={10} y={16} width={76} height={64} rx={8} fill="#2BD15F" /><circle cx={48} cy={40} r={10} fill="#14181F" /><path d="M30 80 Q30 56 48 56 Q66 56 66 80" fill="#14181F" /></>,
     windows: <><rect x={10} y={14} width={34} height={30} rx={4} {...sf} /><rect x={52} y={14} width={34} height={30} rx={4} {...sf} opacity={0.6} /><rect x={10} y={52} width={76} height={30} rx={4} {...sf} opacity={0.8} /></>,
     flag: <><path d="M22 86 V12" {...st} /><path d={`M22 14 Q40 ${6 + 4 * Math.sin(t / 8)} 56 16 Q70 ${24 - 4 * Math.sin(t / 8)} 82 16 V46 Q70 54 56 46 Q40 38 22 46 Z`} {...sf} /></>,
+    ear: <><path d="M62 70 Q58 86 44 84 Q34 82 34 72 Q34 64 40 58 Q30 52 30 38 Q30 14 52 14 Q74 14 74 38 Q74 50 66 58" {...st} /><path d="M50 40 Q50 32 56 32 Q62 32 62 40 Q62 46 56 50" {...st} strokeWidth={5} />{[0, 1].map((i) => <path key={i} d={`M${80 + i * 8} ${30 - i * 4} Q${88 + i * 8} 48 ${80 + i * 8} ${66 + i * 4}`} {...st} strokeWidth={4} opacity={0.3 + 0.7 * ((Math.floor(t / 10) + i) % 2)} />)}</>,
+    sine: <><path d="M8 48 H88" {...st} strokeWidth={3} opacity={0.35} /><path d={Array.from({length: 41}).map((_, i) => `${i ? 'L' : 'M'}${8 + i * 2} ${48 - 26 * Math.sin(i / 40 * Math.PI * 4 + t / 6)}`).join(' ')} {...st} /></>,
+    bits: <>{Array.from({length: 8}).map((_, i) => { const hh = 8 + 8 * Math.round(4 * Math.abs(Math.sin(i * 0.9 + t / 14))); return <rect key={i} x={8 + i * 10.5} y={84 - hh} width={8} height={hh} rx={1} {...sf} />; })}{[20, 36, 52, 68].map((y) => <path key={y} d={`M6 ${y} H90`} {...st} strokeWidth={1.5} opacity={0.35} />)}</>,
+    clap: <><rect x={12} y={44} width={72} height={40} rx={5} {...sf} /><g transform={`rotate(${-18 * Math.max(0, Math.sin(t / 7))} 14 40)`}><rect x={12} y={28} width={72} height={12} rx={3} {...sf} />{[0, 1, 2, 3].map((i) => <path key={i} d={`M${22 + i * 18} 28 L${30 + i * 18} 40`} stroke="#14181F" strokeWidth={5} />)}</g></>,
+    ques: <><circle cx={48} cy={48} r={36} {...st} /><text x={48} y={64} textAnchor="middle" fontFamily="Montserrat" fontWeight={900} fontSize={46} fill={c}>?</text></>,
+    phones: <><path d="M18 60 V48 Q18 18 48 18 Q78 18 78 48 V60" {...st} /><rect x={12} y={54} width={18} height={30} rx={6} {...sf} /><rect x={66} y={54} width={18} height={30} rx={6} {...sf} /></>,
+    music: <><path d="M34 70 V22 L74 14 V60" {...st} /><circle cx={26} cy={70} r={10} {...sf} /><circle cx={66} cy={62} r={10} {...sf} /></>,
     cam: <><rect x={10} y={30} width={56} height={44} rx={8} {...sf} /><path d="M66 44 L88 32 V72 L66 60 Z" {...sf} /><circle cx={24} cy={20} r={10} {...st} strokeWidth={5} /><circle cx={50} cy={20} r={10} {...st} strokeWidth={5} /></>,
   };
   return (
@@ -340,7 +347,7 @@ export const Ico: React.FC<{n: string; s?: number; c?: string; live?: boolean}> 
 
 // ---------- chapter separator (between chapters): music + "next chapter" title; a still of the coming screen keeps the
 // recording visible (Aly: never a moment without the screen). ----------
-export const Sep: React.FC<{n: number; total: number; ep: number; title: string; en?: string; ico: string; thumb?: string; dur: number}> = ({n, total, ep, title, en, ico, thumb, dur}) => {
+export const Sep: React.FC<{n: number; total: number; ep: number; title: string; en?: string; ico: string; thumb?: string; dur: number; part?: string; partN?: number; partC?: string}> = ({n, total, ep, title, en, ico, thumb, dur, part, partN, partC = G.blue}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const p = spr(f, fps, 0, 120, 16), q = spr(f, fps, 6, 140, 16);
@@ -358,6 +365,7 @@ export const Sep: React.FC<{n: number; total: number; ep: number; title: string;
       <div style={{position: 'absolute', left: 120, top: 250, width: 880, direction: 'rtl', transform: `translateX(${(1 - p) * -80}px)`, opacity: Math.min(1, p * 1.4)}}>
         <div style={{display: 'flex', alignItems: 'center', gap: 22, justifyContent: 'flex-start'}}>
           <div style={{padding: '6px 22px', borderRadius: 30, background: G.gold, fontFamily: AR, fontWeight: 900, fontSize: 34, color: '#14181F'}}>الفصل {n} من {total}</div>
+          {part ? <div style={{padding: '4px 20px', borderRadius: 30, border: `2px solid ${partC}`, color: partC, fontFamily: AR, fontWeight: 900, fontSize: 30}}>{partN ? `الجزء ${partN}: ` : ''}{bi(part)}</div> : null}
         </div>
         <div style={{display: 'flex', alignItems: 'center', gap: 30, marginTop: 34}}>
           <div style={{width: 150, height: 150, borderRadius: 40, background: 'rgba(255,255,255,0.08)', border: '2px solid rgba(255,255,255,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0}}>
