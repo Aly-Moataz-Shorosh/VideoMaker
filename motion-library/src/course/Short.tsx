@@ -9,6 +9,8 @@ import {PopBg, PopFx, popFontCss} from '../pop/kit';
 import {LottieBg, LottieFx} from '../glass/lottie';
 import {AR, bi, CC, Def, EN, G, Glass, Ico, Key, Kw, lin, Pill, spr, Src} from './kit';
 import {courseAnims, HideNote} from './anims';
+import {audioAnims} from './audioAnims';
+import {sound3d} from './sound3d';
 import {courseScenes} from './scenes';
 import {Captions} from '../templates/Captions';
 
@@ -26,11 +28,15 @@ export const courseShortSchema = z.object({
     marks: z.array(z.object({t: z.number(), d: z.number(), x: z.number(), y: z.number(), r: z.number().default(46), label: z.string().default('')})).default([]), y: z.number().default(980),
     dual: z.object({top: z.object({sx: z.number(), sy: z.number(), sw: z.number()}), bottom: z.object({sx: z.number(), sy: z.number(), sw: z.number()})}).nullable().default(null), under: z.boolean().default(false)})).default([]),
   cues: z.array(cue).default([]),
-  cta: z.object({file: z.string(), at: z.number(), d: z.number(), qr: z.string(), vol: z.number().default(1)}).nullable().default(null),
+  cta: z.object({file: z.string(), at: z.number(), d: z.number(), qr: z.string(), vol: z.number().default(1), word: z.string().default('كورس'), thumb: z.string().nullable().default(null)}).nullable().default(null),
   music: z.array(z.object({t: z.number(), d: z.number(), file: z.string(), from: z.number().default(0), vol: z.number().default(0.06)})).default([]),
   sfx: z.array(z.object({t: z.number(), file: z.string(), vol: z.number().default(0.3)})).default([]),
   env: z.array(z.number()).default([]), // his voice level per frame (0..1) for the bars
   words: z.array(z.object({w: z.string(), start: z.number(), end: z.number()})).default([]), // captions (corrected per short)
+  // series identity (audio course 2026-10-26: same frame, its own name/logo) + recording size + end card (thumbnail + QR, never a QR alone)
+  brand: z.object({logo: z.string().default('Pr'), name: z.string().default('كورس Premiere')}).default({logo: 'Pr', name: 'كورس Premiere'}),
+  src: z.object({w: z.number(), h: z.number()}).default({w: 1276, h: 720}),
+  end: z.object({at: z.number(), d: z.number(), thumb: z.string(), qr: z.string(), title: z.string().default('الكورس الكامل على القناة')}).nullable().default(null),
 });
 type Props = z.infer<typeof courseShortSchema>;
 
@@ -40,13 +46,29 @@ const LOOK: Record<string, {Bg: React.FC<any>; Fx: React.FC<any>; acc: string; a
   vhs: {Bg: VhsBg, Fx: (p: any) => <VhsFx {...p} osd={false} />, acc: '#FFD23F', acc2: '#3FC7DA'},
   pop: {Bg: PopBg, Fx: () => null, acc: '#C6FF3D', acc2: '#8B5CF6'},
   lottie: {Bg: LottieBg, Fx: LottieFx, acc: G.gold, acc2: G.blue},
+  sound: {Bg: GlassBg, Fx: GlassFx, acc: '#2EE6B6', acc2: '#8B5CF6'}, // audio course: teal + violet of his thumbnail
 };
-const SRCW = 1276, SRCH = 720;
+// size of the screen recording (Premiere course 1276x720, audio course 1280x720)
+const SrcCtx = React.createContext({w: 1276, h: 720});
+const useSrc = () => React.useContext(SrcCtx);
+const SOUND = '#2EE6B6';
+// the series logo box: 'Pr' text, or 'wave' = sound bars (audio course)
+const Logo: React.FC<{logo: string}> = ({logo}) => {
+  const f = useCurrentFrame();
+  if (logo === 'wave') return (
+    <div style={{width: 84, height: 82, borderRadius: 18, background: '#101828', border: `4px solid ${SOUND}`, boxSizing: 'border-box', display: 'flex', alignItems: 'center',
+      justifyContent: 'center', gap: 5, flexShrink: 0}}>
+      {[0.45, 0.8, 1, 0.65, 0.35].map((h, i) => <div key={i} style={{width: 7, height: 50 * h * (0.75 + 0.25 * Math.sin(f / 5 + i * 1.7)), borderRadius: 4, background: i % 2 ? CC.violet : SOUND}} />)}
+    </div>);
+  return (
+    <div style={{width: 84, height: 82, borderRadius: 18, background: CC.prBg, border: `4px solid ${CC.violet}`, boxSizing: 'border-box', display: 'flex', alignItems: 'center',
+      justifyContent: 'center', flexShrink: 0}}><span style={{fontFamily: EN, fontWeight: 700, fontSize: 42, color: CC.violet}}>{logo}</span></div>);
+};
 export const CW = 1016, CH = 840, CTOP = 430; // the big screen card (Aly: the recording must be big in a short)
 
 // ---------- the series frame (same in every short). Aly 2026-10-18: the short's title INSIDE the band, "Reel 01", the chapter
 // number in the full video and the minute it starts at (no long phrase) ----------
-const SeriesFrame: React.FC<{no: number; total: number; title: string; at: string; chap: number; acc: string}> = ({no, total, title, at, chap, acc}) => {
+const SeriesFrame: React.FC<{no: number; total: number; title: string; at: string; chap: number; acc: string; logo: string; name: string}> = ({no, total, title, at, chap, acc, logo, name}) => {
   const f = useCurrentFrame();
   const p = lin(f, 0, 14);
   return (
@@ -54,12 +76,11 @@ const SeriesFrame: React.FC<{no: number; total: number; title: string; at: strin
       <div style={{position: 'absolute', inset: 14, borderRadius: 48, border: `6px solid ${CC.violet}`, boxShadow: `0 0 40px ${CC.violet}66, inset 0 0 40px ${CC.violet}33`}} />
       <div style={{position: 'absolute', left: 36, right: 36, top: 150, height: 150, borderRadius: 32, background: 'rgba(0,0,40,0.86)', border: `3px solid ${CC.violet}`,
         display: 'flex', alignItems: 'center', gap: 18, padding: '0 18px', direction: 'rtl', opacity: p, transform: `translateY(${(1 - p) * -30}px)`}}>
-        <div style={{width: 84, height: 82, borderRadius: 18, background: CC.prBg, border: `4px solid ${CC.violet}`, boxSizing: 'border-box', display: 'flex', alignItems: 'center',
-          justifyContent: 'center', flexShrink: 0}}><span style={{fontFamily: EN, fontWeight: 700, fontSize: 42, color: CC.violet}}>Pr</span></div>
+        <Logo logo={logo} />
         <div style={{flex: 1, minWidth: 0}}>
           <div style={{fontFamily: AR, fontWeight: 900, fontSize: 46, color: '#fff', lineHeight: 1.15, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>{bi(title)}</div>
           <div style={{fontFamily: AR, fontWeight: 700, fontSize: 26, color: G.soft, marginTop: 6, whiteSpace: 'nowrap'}}>
-            {bi(`كورس Premiere · الفصل ${chap} · الدقيقة ${at}`)}
+            {bi(`${name} · الفصل ${chap} · الدقيقة ${at}`)}
           </div>
         </div>
         <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '6px 16px', borderRadius: 22, background: acc, flexShrink: 0, direction: 'ltr'}}>
@@ -75,6 +96,7 @@ const SeriesFrame: React.FC<{no: number; total: number; title: string; at: strin
 type DMark = {t: number; d: number; x: number; y: number; r: number; label: string};
 const DualCard: React.FC<{file: string; from: number; d: number; top: {sx: number; sy: number; sw: number}; bottom: {sx: number; sy: number; sw: number}; acc: string; under?: boolean; marks?: DMark[]}> = (
   {file, from, d, top, bottom, acc, under = false, marks = []}) => {
+  const {w: SRCW, h: SRCH} = useSrc();
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const W = CW, H2 = (CH - 12) / 2;
@@ -147,6 +169,7 @@ const Fix: React.FC<{text: string; src: string; dur: number}> = ({text, src, dur
 // ---------- his screen recording, big, with zoom keys and gold click marks ----------
 const ScreenCard: React.FC<{file: string; from: number; d: number; keys: {t: number; sx: number; sy: number; sw: number}[]; marks: {t: number; d: number; x: number; y: number; r: number; label: string}[]; y: number; acc: string}> = (
   {file, from, d, keys, marks, y, acc}) => {
+  const {w: SRCW, h: SRCH} = useSrc();
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const W = CW, H = CH;
@@ -185,6 +208,7 @@ const ScreenCard: React.FC<{file: string; from: number; d: number; keys: {t: num
 // ---------- hook: the result itself, before -> after, with a wipe line that sweeps across (two moments of his recording) ----------
 const BeforeAfter: React.FC<{file: string; before: number; after: number; crop: {sx: number; sy: number; sw: number}; cropB?: {sx: number; sy: number; sw: number}; dur: number; acc: string; y?: number}> = (
   {file, before, after, crop, cropB, dur, acc, y = 760}) => {
+  const {w: SRCW, h: SRCH} = useSrc();
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const W = CW, H = CH, sc = W / crop.sw;
@@ -307,7 +331,7 @@ const New26V: React.FC<{title: string; how: string; thumb?: string; qr?: string;
 
 // concept animation (made for a 640 px column) scaled into the vertical stage
 const AnimV: React.FC<{name: string; dur: number; mini?: boolean; [k: string]: any}> = ({name, dur, mini = false, ...rest}) => {
-  const C = courseAnims[name] ?? courseScenes[name];
+  const C = courseAnims[name] ?? audioAnims[name] ?? courseScenes[name];
   if (!C) return null;
   // mini = the animation in the top half, his real screen under it (DualCard under)
   const k = mini ? 0.85 : 1.2;
@@ -321,7 +345,7 @@ const AnimV: React.FC<{name: string; dur: number; mini?: boolean; [k: string]: a
 };
 
 // ---------- CTA: his phone clip + QR of the full course at the top (never on his face) ----------
-const CtaV: React.FC<{file: string; dur: number; qr: string; vol: number; acc: string}> = ({file, dur, qr, vol, acc}) => {
+const CtaV: React.FC<{file: string; dur: number; qr: string; vol: number; acc: string; word: string; thumb: string | null}> = ({file, dur, qr, vol, acc, word, thumb}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const q = spr(f, fps, 12, 140, 16);
@@ -329,26 +353,47 @@ const CtaV: React.FC<{file: string; dur: number; qr: string; vol: number; acc: s
     <AbsoluteFill style={{opacity: lin(f, 0, 8)}}>
       <OffthreadVideo src={staticFile(file)} volume={vol} style={{position: 'absolute', inset: 0, width: 1080, height: 1920, objectFit: 'cover'}} />
       <div style={{position: 'absolute', right: 70, top: 300, opacity: q, transform: `scale(${0.8 + 0.2 * q})`, transformOrigin: 'top right', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10}}>
+        {thumb ? <Img src={staticFile(thumb)} style={{width: 400, height: 225, objectFit: 'cover', borderRadius: 16, border: '3px solid #fff', boxShadow: '0 20px 50px rgba(0,0,0,0.5)'}} /> : null}
         <div style={{background: '#fff', padding: 12, borderRadius: 18, boxShadow: '0 20px 50px rgba(0,0,0,0.5)'}}><Img src={staticFile(qr)} style={{width: 230, height: 230, display: 'block'}} /></div>
         <div style={{padding: '6px 16px', borderRadius: 20, background: 'rgba(10,14,22,0.85)', fontFamily: AR, fontWeight: 900, fontSize: 30, color: '#fff', direction: 'rtl'}}>الكورس الكامل</div>
       </div>
       <div style={{position: 'absolute', left: 60, right: 60, top: 1350, display: 'flex', justifyContent: 'center', opacity: lin(f, 40, 52)}}>
         <div style={{padding: '14px 30px', borderRadius: 40, background: 'rgba(10,14,22,0.88)', border: `3px solid ${acc}`, fontFamily: AR, fontWeight: 900, fontSize: 48, color: '#fff', direction: 'rtl'}}>
-          اكتب <span style={{color: acc}}>"كورس"</span> في كومنت 💬
+          اكتب <span style={{color: acc}}>"{word}"</span> في كومنت 💬
         </div>
       </div>
     </AbsoluteFill>
   );
 };
 
-export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues, cta, music, sfx, env, words}) => {
+// ---------- end card: course thumbnail + QR of the full video (a YouTube QR never without its thumbnail, Aly 2026-10-21) ----------
+const EndCard: React.FC<{thumb: string; qr: string; title: string; dur: number; acc: string}> = ({thumb, qr, title, dur, acc}) => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const p = spr(f, fps, 0, 140, 16), q = spr(f, fps, 10, 150, 14), o = 1 - lin(f, dur - 8, dur);
+  return (
+    <AbsoluteFill style={{opacity: o, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 34, paddingTop: 160}}>
+      <div style={{fontFamily: AR, fontWeight: 900, fontSize: 58, color: '#fff', direction: 'rtl', opacity: Math.min(1, p * 1.4), transform: `translateY(${(1 - p) * -30}px)`}}>{bi(title)}</div>
+      <Img src={staticFile(thumb)} style={{width: 940, height: 529, objectFit: 'cover', borderRadius: 28, border: `5px solid ${acc}`, boxShadow: `0 0 60px ${acc}66`,
+        transform: `scale(${0.85 + 0.15 * p})`, opacity: Math.min(1, p * 1.4)}} />
+      <div style={{display: 'flex', alignItems: 'center', gap: 30, direction: 'rtl', opacity: Math.min(1, q * 1.4), transform: `translateY(${(1 - q) * 40}px)`}}>
+        <div style={{background: '#fff', padding: 14, borderRadius: 20}}><Img src={staticFile(qr)} style={{width: 260, height: 260, display: 'block'}} /></div>
+        <div style={{fontFamily: AR, fontWeight: 800, fontSize: 40, color: G.soft, lineHeight: 1.5}}>امسح الـ QR<br />أو اللينك في الوصف</div>
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues, cta, music, sfx, env, words, brand, src, end}) => {
   const {fps} = useVideoConfig();
   const now = useCurrentFrame();
   const L = LOOK[look] ?? LOOK.glass;
   const fr = (s: number) => Math.round(s * fps);
   const inCta = cta ? now >= fr(cta.at) : false;
+  const inEnd = end ? now >= fr(end.at) : false;
   const live = (t: number, d: number) => now >= fr(t) - 2 && now < fr(t + d) + 2;
   return (
+    <SrcCtx.Provider value={src}>
     <AbsoluteFill style={{background: '#07090D'}}>
       <style>{fontCss + popFontCss}</style>
       <L.Bg />
@@ -372,13 +417,15 @@ export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues
         else if (c.k === 'Key') el = <Key {...(c.p as any)} dur={d} x={1000} y={CTOP + CH - 160} />;
         else if (c.k === 'Def') el = <Def {...(c.p as any)} dur={d} x={540} y={1000} w={940} color={L.acc} />;
         else if (c.k === 'New26') el = <New26V {...(c.p as any)} dur={d} />;
+        else if (sound3d[c.k]) { const S3 = sound3d[c.k]; el = <S3 {...(c.p as any)} dur={d} />; }
         else el = <AnimV name={c.k} {...(c.p as any)} dur={d} />;
         return <Sequence key={'c' + i} from={fr(c.t)} durationInFrames={d} layout="none">{el}</Sequence>;
       })}
-      {cta ? <Sequence from={fr(cta.at)} durationInFrames={fr(cta.d)}><CtaV file={cta.file} dur={fr(cta.d)} qr={cta.qr} vol={cta.vol} acc={L.acc} /></Sequence> : null}
+      {end ? <Sequence from={fr(end.at)} durationInFrames={fr(end.d)}><EndCard thumb={end.thumb} qr={end.qr} title={end.title} dur={fr(end.d)} acc={L.acc} /></Sequence> : null}
+      {cta ? <Sequence from={fr(cta.at)} durationInFrames={fr(cta.d)}><CtaV file={cta.file} dur={fr(cta.d)} qr={cta.qr} vol={cta.vol} acc={L.acc} word={cta.word} thumb={cta.thumb} /></Sequence> : null}
       {inCta ? null : <L.Fx />}
-      {inCta ? null : <Captions words={words} maxWords={4} accent="gold" previewBg="" lift={0} bottomFrac={0.225} />}
-      <SeriesFrame {...series} acc={L.acc} />
+      {inCta || inEnd ? null : <Captions words={words} maxWords={4} accent="gold" previewBg="" lift={0} bottomFrac={0.225} />}
+      <SeriesFrame {...series} acc={L.acc} logo={brand.logo} name={brand.name} />
       {voice.map((v, i) => (
         <Sequence key={'v' + i} from={fr(v.at)} durationInFrames={Math.max(1, fr(v.to - v.from))} layout="none">
           <Audio src={staticFile(v.file)} startFrom={fr(v.from)} volume={(f) => v.gain * Math.min(1, f / 2, (fr(v.to - v.from) - f) / 2)} />
@@ -391,5 +438,6 @@ export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues
       ))}
       {sfx.map((s, i) => <Sequence key={'x' + i} from={fr(s.t)} durationInFrames={fr(2)} layout="none"><Audio src={staticFile(s.file)} volume={s.vol} /></Sequence>)}
     </AbsoluteFill>
+    </SrcCtx.Provider>
   );
 };

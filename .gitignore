@@ -32,3 +32,6 @@ projects/_tests/
 *.pth
 *.onnx
 *.bin
+
+# third-party repos cloned for reference (blender-skills, MIT) - not part of VideoMaker
+tools/external/
