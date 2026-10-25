@@ -31,6 +31,8 @@ export const Screen: React.FC<{parts: Part[]; keys: LKey[]}> = ({parts, keys}) =
     const sw = k.sw ?? SRC_W;
     return {x: r.x, y: r.y, w: r.w, sx: k.sx ?? 0, sy: k.sy ?? 0, sw};
   };
+  // 'hide' = no screen at all (opening pages fade in/out over the background: the empty teaser card showed through, Aly review 4)
+  if (keys[i]?.m === 'hide') return null;
   const cur = get(keys[i] ?? {t: 0, m: 'full'});
   const prev = i > 0 ? get(keys[i - 1]) : cur;
   const k = i > 0 ? lin(f, Math.round(keys[i].t * fps), Math.round(keys[i].t * fps) + 16, 0, 1, Easing.inOut(Easing.cubic)) : 1;

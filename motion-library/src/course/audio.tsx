@@ -17,6 +17,10 @@ const Out: React.FC<{dur: number; children: React.ReactNode}> = ({dur, children}
     </AbsoluteFill>
   );
 };
+// Aly review 4: every opening page centred top-to-bottom (same space above and below) -> one centred column
+const VCol: React.FC<{gap: number; children: React.ReactNode}> = ({gap, children}) => (
+  <AbsoluteFill style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap}}>{children}</AbsoluteFill>
+);
 const Center: React.FC<{y: number; children: React.ReactNode}> = ({y, children}) => (
   <div style={{position: 'absolute', left: 0, right: 0, top: y, display: 'flex', justifyContent: 'center'}}>{children}</div>
 );
@@ -62,8 +66,9 @@ const OParts: React.FC<P> = ({dur, title, parts}) => {
   const cols = parts.length > 4 ? 4 : parts.length;
   return (
     <Out dur={dur}>
-      <Center y={70}><Type text={title} at={2} size={64} width={1600} /></Center>
-      <div style={{position: 'absolute', left: 90, right: 90, top: 210, display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: 28, direction: 'rtl'}}>
+      <VCol gap={60}>
+      <Type text={title} at={2} size={64} width={1600} />
+      <div style={{width: 1740, display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: 28, direction: 'rtl'}}>
         {parts.map((pt: any, i: number) => {
           const p = spr(f, fps, 10 + i * 5, 150, 17);
           return (
@@ -80,6 +85,7 @@ const OParts: React.FC<P> = ({dur, title, parts}) => {
           );
         })}
       </div>
+      </VCol>
     </Out>
   );
 };
@@ -100,7 +106,8 @@ const OStampsParts: React.FC<P> = ({dur, groups}) => {
   let idx = 0;
   return (
     <Out dur={dur}>
-      <div style={{position: 'absolute', right: 90, left: 90, top: 70, display: 'flex', gap: 60, direction: 'rtl'}}>
+      <VCol gap={0}>
+      <div style={{width: 1740, display: 'flex', gap: 60, direction: 'rtl'}}>
         {colsR.map((col, c) => (
           <div key={c} style={{flex: 1}}>
             {col.map((r: any, i: number) => {
@@ -123,6 +130,7 @@ const OStampsParts: React.FC<P> = ({dur, groups}) => {
           </div>
         ))}
       </div>
+      </VCol>
     </Out>
   );
 };
@@ -271,11 +279,12 @@ const ORecommend: React.FC<P> = ({dur, q, rows}) => {
   const m = spr(f, fps, 2, 120, 14);
   return (
     <Out dur={dur}>
-      <div style={{position: 'absolute', left: 0, right: 0, top: 120, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 22, direction: 'rtl'}}>
+      <VCol gap={50}>
+      <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 22, direction: 'rtl'}}>
         <div style={{transform: `scale(${m})`}}><ClaudeMark s={0.8} spin={f * 0.6} /></div>
         <Type text={q} at={6} size={56} width={1400} />
       </div>
-      <div style={{position: 'absolute', left: 0, right: 0, top: 270, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 22}}>
+      <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 22}}>
         {rows.map((r: any, i: number) => {
           const p = spr(f, fps, 10 + i * 9, 160, 16);
           return (
@@ -294,6 +303,7 @@ const ORecommend: React.FC<P> = ({dur, q, rows}) => {
           );
         })}
       </div>
+      </VCol>
     </Out>
   );
 };
@@ -306,11 +316,12 @@ const ONextA: React.FC<P> = ({dur, course, rows, foot}) => {
   const pc = spr(f, fps, 10, 130, 16);
   return (
     <Out dur={dur}>
-      <div style={{position: 'absolute', left: 0, right: 0, top: 70, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 20, direction: 'rtl'}}>
+      <VCol gap={40}>
+      <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 20, direction: 'rtl'}}>
         <ClaudeMark s={0.8} spin={f * 0.6} />
         <Type text="تتعلم إيه بعد الكورس ده؟" at={4} size={58} width={1300} />
       </div>
-      <div style={{position: 'absolute', left: 90, right: 90, top: 210, display: 'flex', gap: 40, direction: 'rtl', alignItems: 'flex-start'}}>
+      <div style={{width: 1740, display: 'flex', gap: 40, direction: 'rtl', alignItems: 'center'}}>
         <div style={{opacity: Math.min(1, pc * 1.4), transform: `translateY(${(1 - pc) * 50}px)`}}>
           <Glass w={760} pad={26} r={34} glow={CC.violet}>
             <div style={{fontFamily: AR, fontWeight: 900, fontSize: 40, color: G.ink, direction: 'rtl'}}>{bi(course.title)}</div>
@@ -321,16 +332,16 @@ const ONextA: React.FC<P> = ({dur, course, rows, foot}) => {
             </div>
           </Glass>
         </div>
-        <div style={{flex: 1, display: 'flex', flexDirection: 'column', gap: 18}}>
+        <div style={{flex: 1, display: 'flex', flexDirection: 'column', gap: 12}}>
           {rows.map((r: any, i: number) => {
             const p = spr(f, fps, 30 + i * 14, 150, 16);
             return (
               <div key={i} style={{opacity: Math.min(1, p * 1.4), transform: `translateX(${(1 - p) * -60}px)`}}>
-                <Glass w={890} pad={20} r={26} glow={G.blue}>
+                <Glass w={890} pad={14} r={24} glow={G.blue}>
                   <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, direction: 'rtl'}}>
                     <div>
-                      <div style={{fontFamily: AR, fontWeight: 900, fontSize: 34, color: G.ink}}>{bi(r.head)}</div>
-                      <div style={{fontFamily: AR, fontWeight: 700, fontSize: 25, color: G.soft, marginTop: 4}}>{bi(r.sub)}</div>
+                      <div style={{fontFamily: AR, fontWeight: 900, fontSize: 30, color: G.ink}}>{bi(r.head)}</div>
+                      <div style={{fontFamily: AR, fontWeight: 700, fontSize: 23, color: G.soft, marginTop: 2}}>{bi(r.sub)}</div>
                     </div>
                     <Src text={r.src} s={0.72} />
                   </div>
@@ -340,9 +351,43 @@ const ONextA: React.FC<P> = ({dur, course, rows, foot}) => {
           })}
         </div>
       </div>
-      {foot ? <Center y={960}><Type text={foot} at={110} size={34} width={1700} color={G.soft} /></Center> : null}
+      {foot ? <Type text={foot} at={110} size={34} width={1700} color={G.soft} /> : null}
+      </VCol>
     </Out>
   );
 };
 
-export const audioScenes: Record<string, React.FC<P>> = {OProofFrame, OParts, OStampsParts, OCoverage, ORecommend, ONextA};
+// Aly review 4: "ترشيحات أكتر وحط لينكات فيديوهات" -> his own videos that continue the course, each = thumbnail + QR (never a QR alone).
+const ONextVideos: React.FC<P> = ({dur, title, vids, foot}) => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  return (
+    <Out dur={dur}>
+      <VCol gap={44}>
+      <Type text={title} at={2} size={58} width={1500} />
+      <div style={{width: 1740, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 30, direction: 'rtl'}}>
+        {vids.map((v: any, i: number) => {
+          const p = spr(f, fps, 10 + i * 10, 150, 16);
+          return (
+            <div key={i} style={{opacity: Math.min(1, p * 1.4), transform: `translateY(${(1 - p) * 50}px)`}}>
+              <Glass w={855} pad={22} r={30} glow={v.c ?? G.blue}>
+                <div style={{display: 'flex', alignItems: 'center', gap: 22, direction: 'rtl'}}>
+                  <div style={{flex: 1, minWidth: 0}}>
+                    <div style={{fontFamily: AR, fontWeight: 900, fontSize: 34, color: G.ink, lineHeight: 1.3}}>{bi(v.title)}</div>
+                    <div style={{fontFamily: AR, fontWeight: 700, fontSize: 25, color: G.soft, marginTop: 8, lineHeight: 1.35}}>{bi(v.why)}</div>
+                  </div>
+                  <Img src={staticFile(v.thumb)} style={{width: 300, height: 169, objectFit: 'cover', borderRadius: 14, border: '2px solid rgba(255,255,255,0.25)', flexShrink: 0}} />
+                  <div style={{background: '#fff', padding: 7, borderRadius: 12, flexShrink: 0}}><Img src={staticFile(v.qr)} style={{width: 120, height: 120, display: 'block'}} /></div>
+                </div>
+              </Glass>
+            </div>
+          );
+        })}
+      </div>
+      {foot ? <Type text={foot} at={70} size={34} width={1700} color={G.soft} /> : null}
+      </VCol>
+    </Out>
+  );
+};
+
+export const audioScenes: Record<string, React.FC<P>> = {OProofFrame, OParts, OStampsParts, OCoverage, ORecommend, ONextA, ONextVideos};

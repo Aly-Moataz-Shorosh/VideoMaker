@@ -63,14 +63,24 @@ CH = [
     (6, 7123, 'أسئلة: البودكاست والسماعات', 'Q&A', 'phones'),
 ]
 EXTRA = ('تتعلم إيه بعد كده', 'What to learn next', 'flag')  # last chapter, made by Claude
-NEXT_SEC = 16.0
+NEXT_SEC = 14.0
+VIDS_SEC = 14.0
 NEXT = dict(  # Claude's picks; rows = the "ناقص" of the coverage cards, from the same official guides
     course=dict(title='كورس Premiere Pro الكامل', sub='كل الصوت في Premiere.. وكل البرنامج', thumb=PUB + 'pics/premiere_course_thumb.jpg', qr=PUB + 'qr/premiere_course.png'),
     rows=[dict(head='Multitrack في Audition', sub='تمكس كذا صوت مع بعض', src='Adobe Audition User Guide'),
           dict(head='Loudness', sub='الصوت كله بنفس العلو', src='Adobe Premiere User Guide'),
           dict(head='Audio Track Mixer', sub='تتحكم في كل التراكات من مكان واحد', src='Adobe Premiere User Guide'),
-          dict(head='مايك Figure-8', sub='بيسمع من قدام ومن ورا', src='Shure')],
+          dict(head='مايك Figure-8', sub='بيسمع من قدام ومن ورا', src='Shure'),
+          dict(head='Spectral display في Audition', sub='تشوف الصوت بالألوان وتمسح الدوشة بالفرشاة', src='Adobe Audition User Guide'),
+          dict(head='Audio transitions', sub='Fade و Crossfade بين الكليبات', src='Adobe Premiere User Guide')],
     foot='الترشيحات دي من Claude.. من المراجع الرسمية اللي قارنت بيها الكورس')
+VIDS = dict(title='فيديوهات من القناة تكمّل بيها', foot='امسح الـ QR بالموبايل.. أو اللينكات في الوصف', vids=[  # Aly review 4: his videos, links checked (oEmbed)
+    dict(title='طريقة سهلة وسريعة لتحسين صوت الفيديو', why='صوتك يبقى أنضف في دقايق', id='IjVlRDHEBSY', c='#19B5A5'),
+    dict(title='احذف الصمت بضغطة واحدة في DaVinci Resolve', why='توفّر ساعات مونتاج مجانًا', id='ZXQLSxYmLsw', c='#3BA9F5'),
+    dict(title='هو ايه | SFX & FX', why='المؤثرات الصوتية والبصرية ببساطة', id='oi9vWEbEwqI', c='#F5B83D'),
+    dict(title='تظبيط الإضاءة لفيديوهات اليوتيوب', why='بعد الصوت.. الصورة كمان تبقى احترافية', id='o7QYL5qIY84', c='#35D07F'),
+])
+for v in VIDS['vids']: v.update(thumb=PUB + f"pics/yt_{v['id']}.jpg", qr=PUB + f"qr/yt_{v['id']}.png")
 TOTAL = len(CH) + 1
 STAMP_SEC = 7.0
 PARTS_SEC = 6.0  # Aly: opening pages short, whoever wants the details pauses
@@ -101,9 +111,11 @@ def thumb(s, name):
 
 
 # Cold open (Aly): ~13 s of the course's own best moments, his audio as recorded (cut only on word gaps), calm music under it.
-TEASER = [  # (source from, to, caption, app, crop sx, sy, sw)
+TEASER = [  # (source from, to, caption, app, crop sx, sy, sw). Aly review 4: theory too (a film he played + a term) and one WOW scene
+    (685.85, 690.5, 'الصوت بيحكي في الأفلام', None, None, None, None),
+    (1620.69, 1627.8, 'المصطلحات ببساطة: Sample rate', None, 200, 0, 880),
     (2386.35, 2390.15, 'تختار المايك الصح', None, None, None, None),
-    (5284.05, 5287.05, 'صوتك يبقى تليفون', 'Premiere Pro', 240, 40, 960),
+    (5020.4, 5027.6, 'صوتك يبقى تليفون.. وانفجار', 'Premiere Pro', 300, 200, 900),
     (6027.0, 6031.05, 'تشوف الصوت نقطة نقطة', 'Audition', 280, 20, 760),
     (6323.3, 6325.55, 'تشيل الدوشة', 'Audition', 300, 60, 880),
 ]
@@ -161,6 +173,7 @@ def build(mode):
         cues.append(dict(t=round(tt, 3), d=round(b - a, 3), k='TeaserCap', p=dict(text=cap, app=app, n=i + 1, total=len(TEASER), at=fmt(c['t'] + a - c['src']))))
         tt += b - a
     music.append(dict(t=0, d=round(teaser_len, 3), file=MUSIC, from_=20, vol=0.06, fade=0.4))
+    keys.append(dict(t=round(tt, 3), m='hide'))  # no empty screen card behind the opening pages (Aly review 4)
     tt = teaser_len
     words = word_list()
     import coverage as CV
@@ -215,9 +228,10 @@ def build(mode):
         n = TOTAL
         scenes.append(dict(t=end_course, d=SEP, k='Sep', p=dict(n=n, total=TOTAL, ep=len(PARTS), title=EXTRA[0], en=EXTRA[1], ico=EXTRA[2],
             thumb=PUB + 'pics/premiere_course_thumb.jpg', part=PARTS[-1][0], partN=len(PARTS), partC=PARTS[-1][3])))
-        music.append(dict(t=end_course, d=SEP + NEXT_SEC + 0.3, file=MUSIC, from_=40, vol=0.12, fade=1.2))
+        music.append(dict(t=end_course, d=SEP + NEXT_SEC + VIDS_SEC + 0.3, file=MUSIC, from_=40, vol=0.12, fade=1.2))
         scenes.append(dict(t=end_course + SEP, d=NEXT_SEC, k='ONextA', p=NEXT))
-        duration = end_course + SEP + NEXT_SEC
+        scenes.append(dict(t=end_course + SEP + NEXT_SEC, d=VIDS_SEC, k='ONextVideos', p=VIDS))
+        duration = end_course + SEP + NEXT_SEC + VIDS_SEC
     else:
         nx = chs[len(sel)]
         sep(nx); chapter(nx, upto=1.5)
