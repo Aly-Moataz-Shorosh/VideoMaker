@@ -64,7 +64,8 @@ CH = [
 ]
 EXTRA = ('تتعلم إيه بعد كده', 'What to learn next', 'flag')  # last chapter, made by Claude
 TOTAL = len(CH) + 1
-STAMP_SEC = 11.0
+STAMP_SEC = 7.0
+PARTS_SEC = 6.0  # Aly: opening pages short, whoever wants the details pauses
 
 
 def fmt(t):
@@ -98,11 +99,11 @@ TEASER = [  # (source from, to, caption, app, crop sx, sy, sw)
     (6027.0, 6031.05, 'تشوف الصوت نقطة نقطة', 'Audition', 280, 20, 760),
     (6323.3, 6325.55, 'تشيل الدوشة', 'Audition', 300, 60, 880),
 ]
-OPEN = [  # (scene, seconds, props)
-    ('OProofFrame', 8.0, dict(img=PUB + 'pics/proof.png', box=[1203, 696, 40, 21],
-        line1='السيشن دي متسجلة *أونلاين* سنة 2021', line2='يوم 28 مارس 2021.. شرح لطلبة على Zoom')),
-    ('OLine', 7.0, dict(line1='الكورس ده عن *الصوت*.. فالصوت هنا', big='100% original', line2='زي ما اتسجل بالظبط: مفيش أي تعديل على الصوت')),
-    ('OClaude', 13.0, None),  # props filled in build() (numbers counted from the course)
+OPEN = [  # (scene, seconds, props). Aly review 1: no "100% original" screen; proof frame small (it was pixelated).
+    ('OProofFrame', 5.5, dict(img=PUB + 'pics/proof.png', box=[1203, 696, 40, 21],
+        line1='الكورس ده متسجل *أونلاين* سنة 2021', line2='يوم 28 مارس 2021.. شرح لطلبة على Zoom',
+        line3='بس المعلومات اللي فيه *لسه مفيدة جدا* لحد النهارده')),
+    ('OCoverage', 9.0, None),  # props from coverage.py (Claude's opinion = coverage %, each yardstick with its source)
 ]
 
 
@@ -124,7 +125,7 @@ def build(mode):
     chs = chapters()
     parts_len = 7.0 + 2 * STAMP_SEC
     teaser_len = sum(b - a for a, b, *_ in TEASER) + 0.6
-    t = teaser_len + sum(d for _, d, _ in OPEN) + 9.0 + 2 * STAMP_SEC
+    t = teaser_len + sum(d for _, d, _ in OPEN) + PARTS_SEC + 2 * STAMP_SEC
     for c in chs:
         c['sep'] = t; c['t'] = t + SEP; t = c['t'] + (c['end'] - c['src'])
     end_course = t
@@ -137,25 +138,23 @@ def build(mode):
     scenes, cues, keys, vids, huds, music = [], [], [], [], [], []
     import course_cards as K
     tt = 0.3
-    cues.append(dict(t=0, d=round(teaser_len, 3), k='TeaserHead', p=dict(text='هتشوف في الكورس ده')))
+    marks = [round(tt + sum(b - a for a, b, *_ in TEASER[:i]), 3) for i in range(len(TEASER) + 1)]
+    cues.append(dict(t=0, d=round(teaser_len, 3), k='TeaserHead', p=dict(text='هتشوف في الكورس ده', sub='لقطات من جوه الكورس', marks=marks)))
     for i, (a, b, cap, app, sx, sy, sw) in enumerate(TEASER):
         vids.append(dict(at=round(tt, 3), from_=a, to=b, rate=1, file=SRC))
-        keys.append(dict(t=round(tt, 3), m='wide', **(dict(sx=sx, sy=sy, sw=sw) if sw else {})))
-        cues.append(dict(t=round(tt, 3), d=round(b - a, 3), k='TeaserCap', p=dict(text=cap, app=app, n=i + 1, total=len(TEASER))))
+        keys.append(dict(t=round(tt, 3), m='teaser', **(dict(sx=sx, sy=sy, sw=sw) if sw else {})))
+        c = [c for c in chs if c['src'] <= a][-1]
+        cues.append(dict(t=round(tt, 3), d=round(b - a, 3), k='TeaserCap', p=dict(text=cap, app=app, n=i + 1, total=len(TEASER), at=fmt(c['t'] + a - c['src']))))
         tt += b - a
     music.append(dict(t=0, d=round(teaser_len, 3), file=MUSIC, from_=20, vol=0.06, fade=0.4))
     tt = teaser_len
     words = word_list()
-    terms = sorted({en for w, s in words for pat, en, ar in K.GLOSS if re.search(pat, w, re.I)})
-    claude = dict(q='رأيي ككلود بعد ما سمعت الكورس كله:', sign='— Claude', stats=[
-        dict(v=2, unit='h', ar='شرح متواصل (2:03)'), dict(v=len(CH), ar=f'فصل في {len(PARTS)} أجزاء'),
-        dict(v=len(terms), ar='مصطلح بيتشرح'), dict(v=2, ar='برنامج عملي')],
-        lines=['أحلى حاجة: بيشبّه الـ Sample_rate بالفريم.. والـ Bit_depth بالبيكسل.. فهتفهمهم بسهولة',
-               'وبيختار المايك مع الطلبة بأسئلة من مواقف حقيقية: حفلة، بودكاست، شارع',
-               'سيشن أونلاين.. فيه وقفات من النت، سبناها زي ما هي'])
+    import coverage as CV
+    cover = dict(q='رأيي ككلود: الكورس ده بيغطي كام في المية؟', sub='قارنته بمراجع رسمية النهارده (2026).. والأداة اللي اتشرحت بتتحسب كاملة',
+                 cards=CV.cards(), foot='هدف الكورس *الصوت للفيديو*.. مش إنك تتعلم البرنامجين كلهم')
     for k, d, p in OPEN:
-        scenes.append(dict(t=tt, d=d, k=k, p=claude if k == 'OClaude' else p)); tt += d
-    scenes.append(dict(t=tt, d=9.0, k='OParts', p=dict(title='الكورس *7 أجزاء*', parts=pr))); tt += 9.0
+        scenes.append(dict(t=tt, d=d, k=k, p=cover if k == 'OCoverage' else p)); tt += d
+    scenes.append(dict(t=tt, d=PARTS_SEC, k='OParts', p=dict(title='الكورس *7 أجزاء*', parts=pr))); tt += PARTS_SEC
     groups = []
     for pi, (title, sub, ico, col) in enumerate(PARTS):
         items = [dict(time=fmt(c['sep']), ar=c['ar'], ico=c['ico']) for c in chs if c['part'] == pi]

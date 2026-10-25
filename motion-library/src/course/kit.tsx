@@ -19,6 +19,7 @@ const RECT: Record<string, {x: number; y: number; w: number}> = {
   side: {x: 712, y: 150, w: 1160}, // graphics column on the left (0..680)
   sideR: {x: 48, y: 150, w: 1160}, // graphics column on the right
   wide: {x: 160, y: 96, w: 1600}, // a frame around it, bottom strip free for notes
+  teaser: {x: 420, y: 268, w: 1080}, // audio course cold open: a smaller card = clearly 'a clip from later in the course'
 };
 export const Screen: React.FC<{parts: Part[]; keys: LKey[]}> = ({parts, keys}) => {
   const f = useCurrentFrame();

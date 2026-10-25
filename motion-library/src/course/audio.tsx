@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Easing, Img, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Type} from '../glass/kit';
-import {AR, bi, CourseBg, EN, G, Glass, Ico, lin, spr} from './kit';
+import {AR, bi, CourseBg, EN, G, Glass, Ico, lin, spr, Src} from './kit';
 
 // Audio course (audioproduction, 2026-10-24): his 2021 online session, nothing cut, his audio untouched.
 // Opening scenes + small tags used over the screen. Chapters come in PARTS (Aly: one broad category per group of chapters).
@@ -20,33 +20,28 @@ const Center: React.FC<{y: number; children: React.ReactNode}> = ({y, children})
   <div style={{position: 'absolute', left: 0, right: 0, top: y, display: 'flex', justifyContent: 'center'}}>{children}</div>
 );
 
-// A frame of the session itself, then a zoom onto a box of it (box = source px of a 1280x720 frame): proof of the date.
-const OProofFrame: React.FC<P> = ({dur, img, box, line1, line2}) => {
+// A frame of the session itself, SMALL (Aly: the zoomed date was too pixelated), a gold box on the taskbar date; the date is
+// written as clean text; most of the screen stays empty.
+const OProofFrame: React.FC<P> = ({dur, img, box, line1, line2, line3}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const p = spr(f, fps, 8, 120, 18);
-  const k = lin(f, 45, 105, 0, 1, Easing.inOut(Easing.cubic));
-  const W = 1040, H = W * 9 / 16;
-  const s1 = Math.min(W / (box[2] * 1.6), H / (box[3] * 2.4)); // final scale (source px -> card px)
-  const s0 = W / 1280;
-  const s = s0 + (s1 - s0) * k;
-  const cx = box[0] + box[2] / 2, cy = box[1] + box[3] / 2;
-  const left = (-(cx * s) + W / 2) * k, top = (-(cy * s) + H / 2) * k;
-  const L = Math.min(0, Math.max(W - 1280 * s, left)), T = Math.min(0, Math.max(H - 720 * s, top));
-  const hl = lin(f, 100, 112);
+  const W = 560, s = W / 1280, H = 720 * s;
+  const hl = lin(f, 34, 46);
   return (
     <Out dur={dur}>
-      <Center y={80}><Type text={line1} at={4} size={66} width={1600} /></Center>
-      <div style={{position: 'absolute', left: 960, top: 590, transform: `translate(-50%,-50%) translateY(${(1 - p) * 60}px)`, opacity: Math.min(1, p * 1.3)}}>
-        <Glass w={W + 28} pad={14} r={30} glow={G.gold}>
-          <div style={{width: W, height: H, overflow: 'hidden', borderRadius: 20, position: 'relative', background: '#000'}}>
-            <Img src={staticFile(img)} style={{position: 'absolute', width: 1280 * s, left: L, top: T}} />
-            <div style={{position: 'absolute', left: L + (box[0] - 8) * s, top: T + (box[1] - 6) * s, width: (box[2] + 16) * s, height: (box[3] + 12) * s,
-              border: `${4}px solid ${G.gold}`, borderRadius: 10, opacity: hl, boxShadow: `0 0 30px ${G.gold}`}} />
+      <Center y={130}><Type text={line1} at={4} size={62} width={1600} /></Center>
+      <div style={{position: 'absolute', left: 960, top: 470, transform: `translate(-50%,-50%) translateY(${(1 - p) * 50}px)`, opacity: Math.min(1, p * 1.3)}}>
+        <Glass w={W + 20} pad={10} r={22} glow={G.gold}>
+          <div style={{width: W, height: H, overflow: 'hidden', borderRadius: 14, position: 'relative', background: '#000'}}>
+            <Img src={staticFile(img)} style={{position: 'absolute', width: W, left: 0, top: 0}} />
+            <div style={{position: 'absolute', left: (box[0] - 10) * s, top: (box[1] - 6) * s, width: (box[2] + 20) * s, height: (box[3] + 12) * s,
+              border: `3px solid ${G.gold}`, borderRadius: 6, opacity: hl, boxShadow: `0 0 18px ${G.gold}`, transform: `scale(${1 + 0.4 * (1 - hl)})`}} />
           </div>
         </Glass>
       </div>
-      <Center y={975}><Type text={line2} at={75} size={44} width={1600} color={G.soft} /></Center>
+      <Center y={700}><Type text={line2} at={44} size={46} width={1600} color={G.soft} /></Center>
+      {line3 ? <Center y={820}><Type text={line3} at={84} size={50} width={1600} pill={G.green} /></Center> : null}
     </Out>
   );
 };
@@ -142,34 +137,46 @@ export const FilmTag: React.FC<{dur: number; title: string; year?: string; note?
 };
 
 
-// Cold-open teaser ("هتشوف في الكورس ده"): his own clips play in wide mode; this is the header over all of them.
-export const TeaserHead: React.FC<{dur: number; text: string}> = ({dur, text}) => {
+// Cold-open teaser ("هتشوف في الكورس ده"): his clips play SMALLER in a card (layout 'teaser'), so it reads as a preview of
+// what comes later; header + one progress segment per clip on top.
+export const TeaserHead: React.FC<{dur: number; text: string; sub?: string; marks?: number[]}> = ({dur, text, sub, marks = []}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const p = spr(f, fps, 0, 140, 16);
-  const o = 1 - lin(f, dur - 8, dur, 0, 1);
+  const o = Math.min(1, p * 1.3) * (1 - lin(f, dur - 8, dur, 0, 1));
+  const t = f / fps;
   return (
-    <div style={{position: 'absolute', left: 0, right: 0, top: 18, display: 'flex', justifyContent: 'center', opacity: Math.min(1, p * 1.3) * o, transform: `translateY(${(1 - p) * -30}px)`}}>
-      <div style={{display: 'flex', alignItems: 'center', gap: 14, padding: '8px 26px 8px 12px', borderRadius: 40, background: 'rgba(12,16,26,0.88)', border: `2px solid ${G.gold}`, direction: 'rtl'}}>
-        <div style={{width: 18, height: 18, borderRadius: '50%', background: '#FF5A5F', opacity: 0.5 + 0.5 * Math.sin(f / 4)}} />
-        <span style={{fontFamily: AR, fontWeight: 900, fontSize: 38, color: G.ink}}>{bi(text)}</span>
+    <div style={{position: 'absolute', left: 0, right: 0, top: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, opacity: o,
+      transform: `translateY(${(1 - p) * -30}px)`, direction: 'rtl'}}>
+      <div style={{display: 'flex', alignItems: 'center', gap: 18}}>
+        <div style={{width: 22, height: 22, borderRadius: '50%', background: '#FF5A5F', opacity: 0.5 + 0.5 * Math.sin(f / 4), boxShadow: '0 0 16px #FF5A5F'}} />
+        <span style={{fontFamily: AR, fontWeight: 900, fontSize: 64, color: G.ink}}>{bi(text)}</span>
+      </div>
+      {sub ? <span style={{fontFamily: AR, fontWeight: 700, fontSize: 30, color: G.soft}}>{bi(sub)}</span> : null}
+      <div style={{display: 'flex', gap: 10, direction: 'ltr', marginTop: 4}}>
+        {marks.slice(0, -1).map((m, i) => {
+          const k = Math.max(0, Math.min(1, (t - m) / (marks[i + 1] - m)));
+          return <div key={i} style={{width: 150, height: 7, borderRadius: 4, background: 'rgba(255,255,255,0.18)', overflow: 'hidden'}}>
+            <div style={{width: `${k * 100}%`, height: '100%', background: G.gold}} /></div>;
+        })}
       </div>
     </div>
   );
 };
-// One teaser clip's promise (bottom): big words + the program it happens in.
-export const TeaserCap: React.FC<{dur: number; text: string; app?: string; n?: number; total?: number}> = ({dur, text, app, n, total}) => {
+// One teaser clip's promise (under the card): number, big words, the program, and WHERE in the course it comes.
+export const TeaserCap: React.FC<{dur: number; text: string; app?: string; n?: number; total?: number; at?: string}> = ({dur, text, app, n, total, at}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const p = spr(f, fps, 0, 180, 14);
   const o = 1 - lin(f, dur - 5, dur, 0, 1);
   return (
-    <div style={{position: 'absolute', left: 0, right: 0, top: 1000, display: 'flex', justifyContent: 'center', opacity: Math.min(1, p * 1.5) * o}}>
-      <div style={{transform: `translateY(-50%) scale(${0.8 + 0.2 * p})`, display: 'flex', alignItems: 'center', gap: 18, padding: '10px 30px 10px 14px', borderRadius: 60,
-        background: 'rgba(12,16,26,0.9)', border: '2px solid rgba(255,255,255,0.22)', boxShadow: `0 0 50px ${G.gold}44`, direction: 'rtl'}}>
-        {n ? <div style={{padding: '2px 14px', borderRadius: 24, background: G.gold, fontFamily: EN, fontWeight: 900, fontSize: 30, color: '#14181F', direction: 'ltr'}}>{n}/{total}</div> : null}
-        <span style={{fontFamily: AR, fontWeight: 900, fontSize: 50, color: G.ink}}>{bi(text)}</span>
-        {app ? <span style={{fontFamily: EN, fontWeight: 800, fontSize: 30, color: G.blue, direction: 'ltr'}}>{app}</span> : null}
+    <div style={{position: 'absolute', left: 0, right: 0, top: 965, display: 'flex', justifyContent: 'center', opacity: Math.min(1, p * 1.5) * o}}>
+      <div style={{transform: `translateY(-50%) scale(${0.85 + 0.15 * p})`, display: 'flex', alignItems: 'center', gap: 20, direction: 'rtl'}}>
+        {n ? <div style={{padding: '4px 16px', borderRadius: 24, background: G.gold, fontFamily: EN, fontWeight: 900, fontSize: 32, color: '#14181F', direction: 'ltr'}}>{n}/{total}</div> : null}
+        <span style={{fontFamily: AR, fontWeight: 900, fontSize: 62, color: G.ink, textShadow: '0 4px 20px rgba(0,0,0,0.6)'}}>{bi(text)}</span>
+        {app ? <span style={{fontFamily: EN, fontWeight: 800, fontSize: 32, color: G.blue, direction: 'ltr'}}>{app}</span> : null}
+        {at ? <span style={{padding: '4px 16px', borderRadius: 24, border: '2px solid rgba(255,255,255,0.3)', fontFamily: AR, fontWeight: 800, fontSize: 28, color: G.soft}}>
+          في الدقيقة <span style={{fontFamily: EN, direction: 'ltr', unicodeBidi: 'isolate'}}>{at}</span></span> : null}
       </div>
     </div>
   );
@@ -186,40 +193,52 @@ export const ClaudeMark: React.FC<{s?: number; spin?: number}> = ({s = 1, spin =
     </svg>
   );
 };
-// Claude's opinion of the course + real numbers from the course itself (counted by Claude).
-const OClaude: React.FC<P> = ({dur, q, stats, lines, sign}) => {
+// Claude's opinion AS NUMBERS (Aly 2026-10-25): how much of each yardstick the course covers, each with its source.
+// cards: [{head, v, n, of, unit, has, miss, src}] -> one ring per card.
+const OCoverage: React.FC<P> = ({dur, q, sub, cards, foot}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const m = spr(f, fps, 2, 120, 14);
+  const R = 96, C = 2 * Math.PI * R;
   return (
     <Out dur={dur}>
-      <div style={{position: 'absolute', left: 0, right: 0, top: 60, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 26, direction: 'rtl'}}>
-        <div style={{transform: `scale(${m})`}}><ClaudeMark s={1.05} spin={f * 0.6} /></div>
-        <Type text={q} at={8} size={58} width={1300} />
+      <div style={{position: 'absolute', left: 0, right: 0, top: 50, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 24, direction: 'rtl'}}>
+        <div style={{transform: `scale(${m})`}}><ClaudeMark s={0.9} spin={f * 0.6} /></div>
+        <Type text={q} at={8} size={56} width={1400} />
       </div>
-      <div style={{position: 'absolute', left: 120, right: 120, top: 230, display: 'grid', gridTemplateColumns: `repeat(${stats.length}, 1fr)`, gap: 26, direction: 'rtl'}}>
-        {stats.map((st: any, i: number) => {
-          const p = spr(f, fps, 24 + i * 6, 150, 16);
-          const k = lin(f, 26 + i * 6, 60 + i * 6, 0, 1, Easing.out(Easing.cubic));
-          const v = typeof st.v === 'number' ? Math.round(st.v * k) : st.v;
+      <div style={{position: 'absolute', left: 0, right: 0, top: 150, textAlign: 'center', direction: 'rtl', fontFamily: AR, fontWeight: 700, fontSize: 30, color: G.soft, opacity: lin(f, 14, 28)}}>{bi(sub)}</div>
+      <div style={{position: 'absolute', left: 70, right: 70, top: 225, display: 'flex', justifyContent: 'center', gap: 28, direction: 'rtl'}}>
+        {cards.map((r: any, i: number) => {
+          const at = 22 + i * 18;
+          const p = spr(f, fps, at, 140, 16);
+          const v = lin(f, at + 6, at + 46, 0, r.v, Easing.out(Easing.cubic));
+          const col = r.v >= 0.75 ? G.green : r.v >= 0.5 ? G.gold : G.blue;
           return (
-            <div key={i} style={{opacity: Math.min(1, p * 1.4), transform: `translateY(${(1 - p) * 40}px)`, padding: '24px 18px', borderRadius: 28, textAlign: 'center',
-              background: 'rgba(255,255,255,0.07)', border: '2px solid rgba(217,119,87,0.45)'}}>
-              <div style={{fontFamily: EN, fontWeight: 900, fontSize: 76, color: '#F0A27E', direction: 'ltr'}}>{v}{st.unit ?? ''}</div>
-              <div style={{fontFamily: AR, fontWeight: 800, fontSize: 30, color: G.ink, marginTop: 6}}>{bi(st.ar)}</div>
+            <div key={i} style={{transform: `translateY(${(1 - p) * 60}px)`, opacity: Math.min(1, p * 1.4)}}>
+              <Glass w={410} h={720} pad={24} r={36} glow={col}>
+                <div style={{display: 'flex', justifyContent: 'center'}}>
+                  <svg width={230} height={230} viewBox="0 0 230 230">
+                    <circle cx={115} cy={115} r={R} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth={20} />
+                    <circle cx={115} cy={115} r={R} fill="none" stroke={col} strokeWidth={20} strokeLinecap="round" strokeDasharray={`${C * v} ${C}`} transform="rotate(-90 115 115)" />
+                    <text x={115} y={133} textAnchor="middle" fontFamily="Montserrat" fontWeight={900} fontSize={54} fill="#fff">{Math.round(v * 100)}%</text>
+                  </svg>
+                </div>
+                <div style={{fontFamily: AR, fontWeight: 900, fontSize: 36, color: G.ink, textAlign: 'center', direction: 'rtl', lineHeight: 1.25, marginTop: 4}}>{bi(r.head)}</div>
+                <div style={{fontFamily: AR, fontWeight: 800, fontSize: 27, color: col, textAlign: 'center', direction: 'rtl', marginTop: 8}}>{bi(`${r.n} من ${r.of} ${r.unit ?? 'نقطة'}`)}</div>
+                {r.has ? <div style={{fontFamily: AR, fontWeight: 700, fontSize: 23, color: G.soft, textAlign: 'center', direction: 'rtl', lineHeight: 1.45, marginTop: 12}}>{bi(r.has)}</div> : null}
+                {r.miss ? <div style={{fontFamily: AR, fontWeight: 700, fontSize: 22, color: '#FF8A7A', textAlign: 'center', direction: 'rtl', lineHeight: 1.45, marginTop: 10,
+                  opacity: lin(f, at + 40, at + 52)}}>{bi('ناقص: ' + r.miss)}</div> : null}
+                {r.ex ? <div style={{fontFamily: AR, fontWeight: 600, fontSize: 20, color: G.dim, textAlign: 'center', direction: 'rtl', lineHeight: 1.45, marginTop: 10,
+                  opacity: lin(f, at + 46, at + 58)}}>{bi('اتشال من العدّ: ' + r.ex)}</div> : null}
+                <div style={{position: 'absolute', left: 0, right: 0, bottom: 22, display: 'flex', justifyContent: 'center'}}><Src text={r.src} s={0.72} /></div>
+              </Glass>
             </div>
           );
         })}
       </div>
-      {lines.map((l: string, i: number) => (
-        <Center key={i} y={540 + i * 108}><Type text={l} at={70 + i * 40} size={44} width={1640} pill={i === lines.length - 1 ? G.blue : G.gold} /></Center>
-      ))}
-      <div style={{position: 'absolute', left: 140, bottom: 70, display: 'flex', alignItems: 'center', gap: 14, opacity: lin(f, 70 + lines.length * 40, 86 + lines.length * 40)}}>
-        <ClaudeMark s={0.42} />
-        <span style={{fontFamily: EN, fontWeight: 800, fontSize: 38, color: '#F0A27E'}}>{sign}</span>
-      </div>
+      {foot ? <Center y={985}><Type text={foot} at={95} size={36} width={1700} color={G.soft} pill={G.gold} /></Center> : null}
     </Out>
   );
 };
 
-export const audioScenes: Record<string, React.FC<P>> = {OProofFrame, OParts, OStampsParts, OClaude};
+export const audioScenes: Record<string, React.FC<P>> = {OProofFrame, OParts, OStampsParts, OCoverage};
