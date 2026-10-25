@@ -209,8 +209,11 @@ const OCoverage: React.FC<P> = ({dur, q, sub, cards, foot}) => {
   const {fps} = useVideoConfig();
   const m = spr(f, fps, 2, 120, 14);
   const R = 96, C = 2 * Math.PI * R;
+  // Aly review 4: the whole block centred vertically (with the link the cards are taller -> lift everything 70 px)
+  const lift = cards.some((c: any) => c.link) ? -70 : 0;
   return (
     <Out dur={dur}>
+      <AbsoluteFill style={{transform: `translateY(${lift}px)`}}>
       <div style={{position: 'absolute', left: 0, right: 0, top: 50, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 24, direction: 'rtl'}}>
         <div style={{transform: `scale(${m})`}}><ClaudeMark s={0.9} spin={f * 0.6} /></div>
         <Type text={q} at={8} size={56} width={1400} />
@@ -256,6 +259,7 @@ const OCoverage: React.FC<P> = ({dur, q, sub, cards, foot}) => {
         })}
       </div>
       {foot ? <Center y={cards.some((c: any) => c.link) ? 1135 : 985}><Type text={foot} at={95} size={36} width={1700} color={G.soft} pill={G.gold} /></Center> : null}
+      </AbsoluteFill>
     </Out>
   );
 };
