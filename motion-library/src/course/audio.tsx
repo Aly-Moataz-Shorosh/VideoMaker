@@ -12,7 +12,8 @@ const Out: React.FC<{dur: number; children: React.ReactNode}> = ({dur, children}
   return (
     <AbsoluteFill style={{opacity: o, filter: o < 0.99 ? `blur(${(1 - o) * 12}px)` : undefined}}>
       <CourseBg />
-      {children}
+      {/* Aly review 2: screens + text were too big -> everything of the opening pages at 82 %, centred */}
+      <AbsoluteFill style={{transform: 'scale(0.82)'}}>{children}</AbsoluteFill>
     </AbsoluteFill>
   );
 };
@@ -26,22 +27,30 @@ const OProofFrame: React.FC<P> = ({dur, img, box, line1, line2, line3}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const p = spr(f, fps, 8, 120, 18);
-  const W = 560, s = W / 1280, H = 720 * s;
-  const hl = lin(f, 34, 46);
+  // Small card (Aly: "الشاشة نفسها تكون اصغر"), then a zoom INTO the date (source is 1280x720, so max ~2.2x of its own pixels: soft, not blocky).
+  const W = 440, s = W / 1280, H = 720 * s;
+  const hl = lin(f, 30, 40);
+  const zp = lin(f, 44, 76, 0, 1, Easing.inOut(Easing.cubic));
+  const Z = 2.2 / s, z = 1 + (Z - 1) * zp, k = s * z;
+  const cx = box[0] + box[2] / 2, cy = box[1] + box[3] / 2;
+  const tx = Math.min(0, Math.max(W - 1280 * k, W / 2 - cx * k)) * zp;
+  const ty = Math.min(0, Math.max(H - 720 * k, H / 2 - cy * k)) * zp;
   return (
     <Out dur={dur}>
       <Center y={130}><Type text={line1} at={4} size={62} width={1600} /></Center>
-      <div style={{position: 'absolute', left: 960, top: 470, transform: `translate(-50%,-50%) translateY(${(1 - p) * 50}px)`, opacity: Math.min(1, p * 1.3)}}>
+      <div style={{position: 'absolute', left: 960, top: 450, transform: `translate(-50%,-50%) translateY(${(1 - p) * 50}px)`, opacity: Math.min(1, p * 1.3)}}>
         <Glass w={W + 20} pad={10} r={22} glow={G.gold}>
           <div style={{width: W, height: H, overflow: 'hidden', borderRadius: 14, position: 'relative', background: '#000'}}>
-            <Img src={staticFile(img)} style={{position: 'absolute', width: W, left: 0, top: 0}} />
-            <div style={{position: 'absolute', left: (box[0] - 10) * s, top: (box[1] - 6) * s, width: (box[2] + 20) * s, height: (box[3] + 12) * s,
-              border: `3px solid ${G.gold}`, borderRadius: 6, opacity: hl, boxShadow: `0 0 18px ${G.gold}`, transform: `scale(${1 + 0.4 * (1 - hl)})`}} />
+            <div style={{position: 'absolute', left: 0, top: 0, width: 1280, height: 720, transformOrigin: '0 0', transform: `translate(${tx}px,${ty}px) scale(${k})`}}>
+              <Img src={staticFile(img)} style={{position: 'absolute', width: 1280, left: 0, top: 0}} />
+              <div style={{position: 'absolute', left: box[0] - 8, top: box[1] - 5, width: box[2] + 16, height: box[3] + 10,
+                border: `${3 / k}px solid ${G.gold}`, borderRadius: 6 / k, opacity: hl, boxShadow: `0 0 ${14 / k}px ${G.gold}`}} />
+            </div>
           </div>
         </Glass>
       </div>
-      <Center y={700}><Type text={line2} at={44} size={46} width={1600} color={G.soft} /></Center>
-      {line3 ? <Center y={820}><Type text={line3} at={84} size={50} width={1600} pill={G.green} /></Center> : null}
+      <Center y={700}><Type text={line2} at={50} size={46} width={1600} color={G.soft} /></Center>
+      {line3 ? <Center y={820}><Type text={line3} at={96} size={50} width={1600} pill={G.green} /></Center> : null}
     </Out>
   );
 };
@@ -241,4 +250,38 @@ const OCoverage: React.FC<P> = ({dur, q, sub, cards, foot}) => {
   );
 };
 
-export const audioScenes: Record<string, React.FC<P>> = {OProofFrame, OParts, OStampsParts, OCoverage};
+// Claude's honest reasons to watch (Aly review 2: "قول انت تنصح بالفيديو ليه"); every reason = something really in the session.
+const ORecommend: React.FC<P> = ({dur, q, rows}) => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const m = spr(f, fps, 2, 120, 14);
+  return (
+    <Out dur={dur}>
+      <div style={{position: 'absolute', left: 0, right: 0, top: 120, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 22, direction: 'rtl'}}>
+        <div style={{transform: `scale(${m})`}}><ClaudeMark s={0.8} spin={f * 0.6} /></div>
+        <Type text={q} at={6} size={56} width={1400} />
+      </div>
+      <div style={{position: 'absolute', left: 0, right: 0, top: 270, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 22}}>
+        {rows.map((r: any, i: number) => {
+          const p = spr(f, fps, 20 + i * 16, 150, 16);
+          return (
+            <div key={i} style={{transform: `translateX(${(1 - p) * 80}px)`, opacity: Math.min(1, p * 1.4)}}>
+              <Glass w={1240} pad={22} r={28} glow={r.c}>
+                <div style={{display: 'flex', alignItems: 'center', gap: 26, direction: 'rtl'}}>
+                  <div style={{width: 84, height: 84, borderRadius: 24, background: `${r.c}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0}}>
+                    <Ico n={r.ico} s={0.62} c={r.c} /></div>
+                  <div style={{display: 'flex', flexDirection: 'column', gap: 6}}>
+                    <span style={{fontFamily: AR, fontWeight: 900, fontSize: 42, color: G.ink}}>{bi(r.head)}</span>
+                    <span style={{fontFamily: AR, fontWeight: 700, fontSize: 30, color: G.soft}}>{bi(r.sub)}</span>
+                  </div>
+                </div>
+              </Glass>
+            </div>
+          );
+        })}
+      </div>
+    </Out>
+  );
+};
+
+export const audioScenes: Record<string, React.FC<P>> = {OProofFrame, OParts, OStampsParts, OCoverage, ORecommend};
