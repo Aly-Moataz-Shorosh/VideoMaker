@@ -34,6 +34,7 @@ Full context: `docs/01-about-aly.md`.
 - Never open/read video files as frames to "look" at them (exception: ONE frame when 06 says so). Work from text (transcripts, JSON, code).
   To check a motion visually, render ONE still frame (PNG), not a video.
 - Never put money-costing services in the flow.
+- NEVER delete a video file (full videos, render chunks, reviews, mixes) without asking Aly first (2026-10-25). If only the opening/ending changed, render those and splice the old middle.
 - Keep `motion-library/catalog.json` as the single source of truth for templates (see spec).
 - Git: repo https://github.com/Aly-Moataz-Shorosh/VideoMaker, branch `main` only. After EVERY code/docs change: commit + push right away (no asking). Never commit `projects/` (new jobs) or videos/audio — .gitignore handles it.
 
