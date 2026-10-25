@@ -263,7 +263,7 @@ const ORecommend: React.FC<P> = ({dur, q, rows}) => {
       </div>
       <div style={{position: 'absolute', left: 0, right: 0, top: 270, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 22}}>
         {rows.map((r: any, i: number) => {
-          const p = spr(f, fps, 20 + i * 16, 150, 16);
+          const p = spr(f, fps, 10 + i * 9, 160, 16);
           return (
             <div key={i} style={{transform: `translateX(${(1 - p) * 80}px)`, opacity: Math.min(1, p * 1.4)}}>
               <Glass w={1240} pad={22} r={28} glow={r.c}>

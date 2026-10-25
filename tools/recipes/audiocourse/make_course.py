@@ -104,7 +104,7 @@ OPEN = [  # (scene, seconds, props). Aly review 1: no "100% original" screen; pr
         line1='الكورس ده متسجل *أونلاين* سنة 2021', line2='يوم 28 مارس 2021.. شرح لطلبة على Zoom',
         line3='بس المعلومات اللي فيه *لسه مفيدة جدا* لحد النهارده')),
     ('OCoverage', 9.0, None),  # props from coverage.py (Claude's opinion = coverage %, each yardstick with its source)
-    ('ORecommend', 8.0, dict(q='ليه أنصحك بالكورس ده؟', rows=[  # Aly review 2: Claude's reasons, each one really in the session
+    ('ORecommend', 5.0, dict(q='ليه أنصحك بالكورس ده؟', rows=[  # Aly review 2: Claude's reasons, each one really in the session
         dict(head='بيبدأ من ليه الصوت مهم', sub='الصوت بيعمل إيه في الفيديو، بأمثلة من أفلام', ico='ear', c='#F5B83D'),
         dict(head='الصوت الديجيتال ببساطة', sub='الموجة، Hz، Sample rate، Bit depth', ico='sine', c='#3BA9F5'),
         dict(head='تختار المايك صح', sub='الأنواع، اتجاه المايك، Shotgun / Pop filter / Dead cat', ico='mic', c='#35D07F'),
