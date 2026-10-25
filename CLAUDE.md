@@ -208,4 +208,4 @@ Done (2026-10-06):
   course video, composition `course` at 30 fps (`src/course/audio.tsx`: teaser "هتشوف في الكورس ده" from his own clips, 2021 proof from
   the taskbar date, Claude's opinion + counted stats (vector Claude spark), parts map + grouped timestamps, FilmTag). Aly rules: nothing
   cut / sped up, the session audio NEVER touched (mix_audio.py = pieces as-is, checked 0.01 dB / 0.7 ms), music only in opening/separators,
-  31 chapters in 7 PARTS, motion only where it explains. Scripts `tools/recipes/audiocourse/`. `output/review1.mp4` = opening + part 1, waiting for review.
+  31 chapters in 7 PARTS, motion only where it explains. Scripts `tools/recipes/audiocourse/`. `output/review1.mp4` = opening + part 1. Review 1 (2026-10-25): teaser smaller card + course minute, small proof frame (no zoom) + "still useful", 100% screen removed, Claude opinion = COVERAGE rings (`coverage.py` -> work/coverage.xlsx: fundamentals 71, mics 83, Premiere 55, Audition 53 = per TOOL; what was left out written on the card), opening ~48 s -> `output/review2.mp4`, waiting for review.
