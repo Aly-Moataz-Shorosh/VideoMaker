@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Easing, Img, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Type} from '../glass/kit';
-import {AR, bi, CourseBg, EN, G, Glass, Ico, lin, spr, Src} from './kit';
+import {AR, bi, CC, CourseBg, EN, G, Glass, Ico, lin, spr, Src} from './kit';
 
 // Audio course (audioproduction, 2026-10-24): his 2021 online session, nothing cut, his audio untouched.
 // Opening scenes + small tags used over the screen. Chapters come in PARTS (Aly: one broad category per group of chapters).
@@ -224,7 +224,7 @@ const OCoverage: React.FC<P> = ({dur, q, sub, cards, foot}) => {
           const col = r.v >= 0.75 ? G.green : r.v >= 0.5 ? G.gold : G.blue;
           return (
             <div key={i} style={{transform: `translateY(${(1 - p) * 60}px)`, opacity: Math.min(1, p * 1.4)}}>
-              <Glass w={410} h={720} pad={24} r={36} glow={col}>
+              <Glass w={410} h={cards.some((c: any) => c.link) ? 880 : 720} pad={24} r={36} glow={col}>
                 <div style={{display: 'flex', justifyContent: 'center'}}>
                   <svg width={230} height={230} viewBox="0 0 230 230">
                     <circle cx={115} cy={115} r={R} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth={20} />
@@ -239,13 +239,23 @@ const OCoverage: React.FC<P> = ({dur, q, sub, cards, foot}) => {
                   opacity: lin(f, at + 40, at + 52)}}>{bi('ناقص: ' + r.miss)}</div> : null}
                 {r.ex ? <div style={{fontFamily: AR, fontWeight: 600, fontSize: 20, color: G.dim, textAlign: 'center', direction: 'rtl', lineHeight: 1.45, marginTop: 10,
                   opacity: lin(f, at + 46, at + 58)}}>{bi('اتشال من العدّ: ' + r.ex)}</div> : null}
+                {r.link ? (  // Aly review 3: the full course of this program = its thumbnail + QR (a QR NEVER without the thumbnail)
+                  <div style={{position: 'absolute', left: 20, right: 20, bottom: 76, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10,
+                    opacity: lin(f, at + 56, at + 70), direction: 'rtl'}}>
+                    <span style={{fontFamily: AR, fontWeight: 800, fontSize: 24, color: G.gold, textAlign: 'center'}}>{bi(r.link.text)}</span>
+                    <div style={{display: 'flex', alignItems: 'center', gap: 12, direction: 'ltr'}}>
+                      <Img src={staticFile(r.link.thumb)} style={{width: 200, height: 112, objectFit: 'cover', borderRadius: 10, border: '2px solid rgba(255,255,255,0.25)'}} />
+                      <div style={{background: '#fff', padding: 6, borderRadius: 10}}><Img src={staticFile(r.link.qr)} style={{width: 100, height: 100, display: 'block'}} /></div>
+                    </div>
+                  </div>
+                ) : null}
                 <div style={{position: 'absolute', left: 0, right: 0, bottom: 22, display: 'flex', justifyContent: 'center'}}><Src text={r.src} s={0.72} /></div>
               </Glass>
             </div>
           );
         })}
       </div>
-      {foot ? <Center y={985}><Type text={foot} at={95} size={36} width={1700} color={G.soft} pill={G.gold} /></Center> : null}
+      {foot ? <Center y={cards.some((c: any) => c.link) ? 1135 : 985}><Type text={foot} at={95} size={36} width={1700} color={G.soft} pill={G.gold} /></Center> : null}
     </Out>
   );
 };
@@ -284,4 +294,51 @@ const ORecommend: React.FC<P> = ({dur, q, rows}) => {
   );
 };
 
-export const audioScenes: Record<string, React.FC<P>> = {OProofFrame, OParts, OStampsParts, OCoverage, ORecommend};
+// Last chapter "تتعلم إيه بعد كده" (Claude's picks): his own Premiere course (thumbnail + QR) + what the official guides have that
+// this session didn't cover (the "ناقص" of the coverage cards), each with its source.
+const ONextA: React.FC<P> = ({dur, course, rows, foot}) => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const pc = spr(f, fps, 10, 130, 16);
+  return (
+    <Out dur={dur}>
+      <div style={{position: 'absolute', left: 0, right: 0, top: 70, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 20, direction: 'rtl'}}>
+        <ClaudeMark s={0.8} spin={f * 0.6} />
+        <Type text="تتعلم إيه بعد الكورس ده؟" at={4} size={58} width={1300} />
+      </div>
+      <div style={{position: 'absolute', left: 90, right: 90, top: 210, display: 'flex', gap: 40, direction: 'rtl', alignItems: 'flex-start'}}>
+        <div style={{opacity: Math.min(1, pc * 1.4), transform: `translateY(${(1 - pc) * 50}px)`}}>
+          <Glass w={760} pad={26} r={34} glow={CC.violet}>
+            <div style={{fontFamily: AR, fontWeight: 900, fontSize: 40, color: G.ink, direction: 'rtl'}}>{bi(course.title)}</div>
+            <div style={{fontFamily: AR, fontWeight: 700, fontSize: 28, color: G.soft, direction: 'rtl', marginTop: 8}}>{bi(course.sub)}</div>
+            <div style={{display: 'flex', gap: 20, alignItems: 'center', marginTop: 22, direction: 'ltr'}}>
+              <Img src={staticFile(course.thumb)} style={{width: 500, height: 281, objectFit: 'cover', borderRadius: 16, border: '2px solid rgba(255,255,255,0.25)'}} />
+              <div style={{background: '#fff', padding: 10, borderRadius: 14}}><Img src={staticFile(course.qr)} style={{width: 170, height: 170, display: 'block'}} /></div>
+            </div>
+          </Glass>
+        </div>
+        <div style={{flex: 1, display: 'flex', flexDirection: 'column', gap: 18}}>
+          {rows.map((r: any, i: number) => {
+            const p = spr(f, fps, 30 + i * 14, 150, 16);
+            return (
+              <div key={i} style={{opacity: Math.min(1, p * 1.4), transform: `translateX(${(1 - p) * -60}px)`}}>
+                <Glass w={890} pad={20} r={26} glow={G.blue}>
+                  <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, direction: 'rtl'}}>
+                    <div>
+                      <div style={{fontFamily: AR, fontWeight: 900, fontSize: 34, color: G.ink}}>{bi(r.head)}</div>
+                      <div style={{fontFamily: AR, fontWeight: 700, fontSize: 25, color: G.soft, marginTop: 4}}>{bi(r.sub)}</div>
+                    </div>
+                    <Src text={r.src} s={0.72} />
+                  </div>
+                </Glass>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      {foot ? <Center y={960}><Type text={foot} at={110} size={34} width={1700} color={G.soft} /></Center> : null}
+    </Out>
+  );
+};
+
+export const audioScenes: Record<string, React.FC<P>> = {OProofFrame, OParts, OStampsParts, OCoverage, ORecommend, ONextA};

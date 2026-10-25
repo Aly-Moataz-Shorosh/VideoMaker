@@ -62,3 +62,21 @@ CARDS = {
         (888.0, 8.0, 'FilmTag', dict(title='Raging Bull', year='1980', note='بنسمع اللي هو سامعه بس')),
     ],
 }
+
+# Concept animations (left column; make_course puts the screen in 'side' while they play). Times = the second he says it.
+ANIMS = {'PixelNums', 'MolWave', 'MicChain', 'HzAnim', 'SampleAnim', 'BitAnim', 'MicTypes', 'PolarAnim', 'FourSounds', 'SyncAnim',
+         'NoisePrint', 'StereoAnim', 'HeadMonitor'}
+CARDS.update({
+    5: [(1142.0, 10.0, 'PixelNums', {})],                       # 19:02 "كل بيكسل رقم".. 3D array R G B
+    6: [(1351.0, 11.0, 'MolWave', {}), (1395.0, 12.0, 'MicChain', {})],  # 22:31 molecules, 23:15 diaphragm -> computer -> speaker
+    7: [(1481.0, 12.0, 'HzAnim', {})],                          # 24:41 cycles per second = Hz
+    8: [(1613.0, 14.0, 'SampleAnim', {}), (1653.0, 7.0, 'SampleAnim', dict(mode='min'))],  # 26:53 snapshots, 27:33 minimum 2
+    9: [(2042.0, 15.0, 'BitAnim', {})],                         # 34:02 0/1 vs many values
+    10: [(2368.0, 16.0, 'MicTypes', {})],                       # 39:28 dynamic / condenser / ribbon
+    11: [(2572.0, 15.0, 'PolarAnim', {})],                      # 42:52 omni / cardioid / shotgun
+    15: [(3630.0, 14.0, 'FourSounds', {})],                     # 60:30 dialogue, ambience, music, sfx
+    19: [(4159.0, 10.0, 'SyncAnim', {})],                       # 69:19 sync
+    28: [(6163.0, 7.0, 'NoisePrint', {})],                      # 102:43 capture noise print
+    30: [(6919.0, 10.0, 'StereoAnim', {})],                     # 115:19 stereo / mono
+    31: [(7199.0, 12.0, 'HeadMonitor', {})],                    # 119:59 headphones in podcasts
+})

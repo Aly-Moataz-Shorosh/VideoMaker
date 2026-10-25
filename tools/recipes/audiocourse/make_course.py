@@ -63,6 +63,14 @@ CH = [
     (6, 7123, 'أسئلة: البودكاست والسماعات', 'Q&A', 'phones'),
 ]
 EXTRA = ('تتعلم إيه بعد كده', 'What to learn next', 'flag')  # last chapter, made by Claude
+NEXT_SEC = 16.0
+NEXT = dict(  # Claude's picks; rows = the "ناقص" of the coverage cards, from the same official guides
+    course=dict(title='كورس Premiere Pro الكامل', sub='كل الصوت في Premiere.. وكل البرنامج', thumb=PUB + 'pics/premiere_course_thumb.jpg', qr=PUB + 'qr/premiere_course.png'),
+    rows=[dict(head='Multitrack في Audition', sub='تمكس كذا صوت مع بعض', src='Adobe Audition User Guide'),
+          dict(head='Loudness', sub='الصوت كله بنفس العلو', src='Adobe Premiere User Guide'),
+          dict(head='Audio Track Mixer', sub='تتحكم في كل التراكات من مكان واحد', src='Adobe Premiere User Guide'),
+          dict(head='مايك Figure-8', sub='بيسمع من قدام ومن ورا', src='Shure')],
+    foot='الترشيحات دي من Claude.. من المراجع الرسمية اللي قارنت بيها الكورس')
 TOTAL = len(CH) + 1
 STAMP_SEC = 7.0
 PARTS_SEC = 6.0  # Aly: opening pages short, whoever wants the details pauses
@@ -198,13 +206,23 @@ def build(mode):
                     break
         for s, d, k, p in K.CARDS.get(c['n'], []):
             if c['src'] <= s < c['end']:
-                cues.append(dict(t=round(c['t'] + s - c['src'], 3), d=d, k=k, p=p))
+                t0 = round(c['t'] + s - c['src'], 3)
+                cues.append(dict(t=t0, d=d, k=k, p=p))
+                if k in K.ANIMS:  # screen moves right while the animation explains on the left
+                    keys.append(dict(t=round(t0 - 0.3, 3), m='side')); keys.append(dict(t=round(t0 + d, 3), m='full'))
     if mode == 'full':
-        duration = end_course  # + extra chapter (added later)
+        # extra chapter by Claude: separator + "what to learn next" (his Premiere course + what the guides have that the session didn't)
+        n = TOTAL
+        scenes.append(dict(t=end_course, d=SEP, k='Sep', p=dict(n=n, total=TOTAL, ep=len(PARTS), title=EXTRA[0], en=EXTRA[1], ico=EXTRA[2],
+            thumb=PUB + 'pics/premiere_course_thumb.jpg', part=PARTS[-1][0], partN=len(PARTS), partC=PARTS[-1][3])))
+        music.append(dict(t=end_course, d=SEP + NEXT_SEC + 0.3, file=MUSIC, from_=40, vol=0.12, fade=1.2))
+        scenes.append(dict(t=end_course + SEP, d=NEXT_SEC, k='ONextA', p=NEXT))
+        duration = end_course + SEP + NEXT_SEC
     else:
         nx = chs[len(sel)]
         sep(nx); chapter(nx, upto=1.5)
         duration = nx['t'] + 1.5
+    keys.sort(key=lambda k: k['t'])
     for p in vids: p['from'] = p.pop('from_')
     for m in music: m['from'] = m.pop('from_')
     props = dict(fps=FPS, duration=round(duration, 3), parts=vids, keys=keys, cues=sorted(cues, key=lambda q: q['t']), scenes=scenes, huds=huds, music=music, sfx=[])

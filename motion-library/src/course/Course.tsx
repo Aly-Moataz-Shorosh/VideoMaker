@@ -6,6 +6,7 @@ import {Alt, Chip, CourseBg, Def, Fig, Hud, Key, Kw, New26, Screen, Sep} from '.
 import {courseScenes} from './scenes';
 import {courseAnims} from './anims';
 import {audioScenes, FilmTag, TeaserCap, TeaserHead} from './audio';
+import {audioAnims} from './audioAnims';
 
 // Long course video (premiere pro course, 2026-10-16): his screen recordings stay on screen the whole time (full / side
 // modes), motion beside or on top of empty areas; full-screen scenes only in the opening and between chapters.
@@ -24,7 +25,7 @@ export const courseSchema = z.object({
 });
 type Props = z.infer<typeof courseSchema>;
 
-const OVER: Record<string, React.FC<any>> = {Kw, Def, Fig, Chip, Key, Alt, New26, FilmTag, TeaserCap, TeaserHead, ...courseAnims};
+const OVER: Record<string, React.FC<any>> = {Kw, Def, Fig, Chip, Key, Alt, New26, FilmTag, TeaserCap, TeaserHead, ...courseAnims, ...audioAnims};
 
 export const Course: React.FC<Props> = ({parts, keys, cues, scenes, huds, music, sfx}) => {
   const {fps} = useVideoConfig();

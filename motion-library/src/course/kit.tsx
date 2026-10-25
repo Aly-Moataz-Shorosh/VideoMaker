@@ -8,7 +8,7 @@ import {AR, EN, G, Glass, lin, Pill, spr} from '../glass/kit';
 export const CC = {teal: '#19B5A5', coral: '#FF6B5B', paper: '#F4F1EA', ink: '#14181F', violet: '#9999FF', prBg: '#00005B'};
 export const SRC_W = 1276, SRC_H = 720;
 // Arabic line with English runs: isolate each Latin/number run (LRI..PDI) so "4K" never flips to "K4" inside RTL text.
-export const bi = (s: string) => (s ?? '').replace(/[A-Za-z0-9][A-Za-z0-9 .+:>&\/'-]*[A-Za-z0-9]|[A-Za-z0-9]/g, (m) => '⁦' + m + '⁩');
+export const bi = (s: string) => (s ?? '').replace(/[A-Za-z0-9][A-Za-z0-9 .,+:>&\/'-]*[A-Za-z0-9]|[A-Za-z0-9]/g, (m) => '⁦' + m + '⁩');
 
 // ---------- the screen recording ----------
 // keys: layout changes (timeline seconds). m = full | side | sideR. Optional crop (source px): sx, sy, sw (sh follows 16:9).

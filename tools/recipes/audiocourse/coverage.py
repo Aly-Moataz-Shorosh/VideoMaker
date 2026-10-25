@@ -28,7 +28,9 @@ COVER = [
          ]),
     dict(head='الصوت في Premiere Pro', en='Audio in Premiere Pro (User Guide chapter "Add audio effects", one row per tool)', src='Adobe Premiere User Guide',
          urls=['https://helpx.adobe.com/premiere/desktop.html  (chapter: Add audio effects)'], unit='أدوات',
-         has='Essential Sound بكل اللي جواه', miss='Transitions، Mixer، Loudness، Voice-over', ex='Adobe Stock، وحاجات صغيرة زي Bulk mute', items=[
+         has='Essential Sound بكل اللي جواه',
+         # Aly review 3: the full Premiere course (youtu.be/D4fqs2c0DfY) = thumbnail + QR; thumb = HIS thumbnail of that video
+         link=dict(text='كورس Premiere الكامل', thumb='projects/audio/pics/premiere_course_thumb.jpg', qr='projects/audio/qr/premiere_course.png'), miss='Transitions، Mixer، Loudness، Voice-over', ex='Adobe Stock، وحاجات صغيرة زي Bulk mute', items=[
              ('Camera audio vs mic audio on separate tracks', 1, '73:24'),
              ('Synchronize audio and video', 1, '75:22 clap sync'),
              ('Volume, gain and keyframes', 1, '77:40, 92:27'),
@@ -68,7 +70,7 @@ for c in COVER:
 
 
 def cards():
-    return [dict(head=c['head'], v=c['v'], n=c['n'], of=c['of'], unit=c.get('unit', 'أقسام'), has=c.get('has'), miss=c['miss'], ex=c['ex'], src=c['src']) for c in COVER]
+    return [dict(head=c['head'], v=c['v'], n=c['n'], of=c['of'], unit=c.get('unit', 'أقسام'), has=c.get('has'), miss=c['miss'], ex=c['ex'], src=c['src'], link=c.get('link')) for c in COVER]
 
 
 if __name__ == '__main__':

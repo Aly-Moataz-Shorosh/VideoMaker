@@ -6,7 +6,7 @@ import {AR, bi, CC, EN, G, lin, spr} from './kit';
 type P = {dur: number; [k: string]: any};
 // shorts: captions already carry the sentence, so the bottom note is hidden (it collided with captions/Kw)
 export const HideNote = createContext(false);
-const Col: React.FC<{dur: number; title: string; children: React.ReactNode; note?: string}> = ({dur, title, children, note}) => {
+export const Col: React.FC<{dur: number; title: string; children: React.ReactNode; note?: string}> = ({dur, title, children, note}) => {
   const f = useCurrentFrame();
   const o = Math.min(lin(f, 0, 10), 1 - lin(f, dur - 10, dur));
   if (useContext(HideNote)) note = undefined;
@@ -18,7 +18,7 @@ const Col: React.FC<{dur: number; title: string; children: React.ReactNode; note
     </div>
   );
 };
-const box = (x: number, y: number, w: number, h: number, c: string, extra: React.CSSProperties = {}): React.CSSProperties =>
+export const box = (x: number, y: number, w: number, h: number, c: string, extra: React.CSSProperties = {}): React.CSSProperties =>
   ({position: 'absolute', left: x, top: y, width: w, height: h, background: c, borderRadius: 8, ...extra});
 
 // Resolution: the same circle drawn with 10x10, 20x20, 40x40 pixels -> sharper.
