@@ -63,6 +63,20 @@ SHORTS[4] = dict(no=4, chapter=6, at='23:33', title='الصوت فعلا *موج
     dict(a=1441.35, b=1457.15, show='Speaker3D'),
 ])
 
+# 04b = the same short, every 3D scene rendered in BLENDER instead of three.js (Aly asked for both to compare, 2026-10-26)
+def _bc(name, *tags):
+    return dict(file=f'projects/audio/b3d/{name}.webm', tags=[dict(text=t, y=y, at=at, c=c) for t, y, at, c in tags])
+SHORTS[104] = dict(no=4, tag='04b', chapter=6, at='23:33', title='الصوت فعلا *موجة* (Blender)', pieces=[
+    dict(SHORTS[4]['pieces'][0], show='BlenderClip', anim=_bc('b_wave', ('الصوت = موجة', 790, 12, None))),
+    dict(SHORTS[4]['pieces'][1], show='BlenderClip', anim=_bc('b_ripple', ('الموجة مش حاجة بتمسكها.. دي حركة المية', 790, 50, None))),
+    dict(SHORTS[4]['pieces'][2], show='BlenderClip', anim=_bc('b_air', ('ذرات الهوا بتخبط في بعض.. لحد ما توصلك', 790, 14, None))),
+    dict(SHORTS[4]['pieces'][3], show='BlenderClip', anim=_bc('b_bar', ('الحديدة بتخبط الهوا.. والهوا يزق اللي جنبه', 790, 14, None))),
+    SHORTS[4]['pieces'][4],
+    dict(SHORTS[4]['pieces'][5], show='BlenderClip', anim=_bc('b_mic1', ('الدايفرام: حاجة هشة بتتهز مع الموجة', 60, 10, 'gold'), ('وحركته بتتسجل على الكمبيوتر', 880, 75, None))),
+    dict(SHORTS[4]['pieces'][6], show='BlenderClip', anim=_bc('b_mic2', ('الدايفرام: حاجة هشة بتتهز مع الموجة', 60, 10, 'gold'), ('وحركته بتتسجل على الكمبيوتر', 880, 75, None))),
+    dict(SHORTS[4]['pieces'][7], show='BlenderClip', anim=_bc('b_speaker', ('السماعة بتعمل نفس الاهتزازات في الهوا', 790, 12, None))),
+])
+
 # hand-corrected captions per piece (filled after caption_words.py; never words he didn't say)
 CAP = {
     1: ['الفويس العادي الخالص اللي أنا سجلته ده.. تعالوا بصوا حولته لإيه.. ما استخدمتش أي إفكت برا.. استخدمت الصوت بتاعي وجبت شوية أصوات تانية وظبطت حاجات.. تعالوا نسمعه بقى',

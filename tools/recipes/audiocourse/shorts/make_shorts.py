@@ -75,8 +75,8 @@ def build(n):
     plan = [(pc, *fit(pc['a'], pc['b'])) for pc in spec['pieces']]
     levels = [level(a, b) for _, a, b in plan]
     target = float(np.median(levels))
-    caps = SD.CAP.get(n, [])
-    wf = PROJ / f'work/shorts/words_{n:02d}.json'
+    caps = SD.CAP.get(n, SD.CAP.get(spec['no'], []))
+    wf = PROJ / f'work/shorts/words_{spec["no"]:02d}.json'
     AUTOW = [w for w in (json.load(open(wf, encoding='utf-8')) if wf.exists() else []) if not BAD.search(w['w'])]
     step, nsteps = 0, sum(1 for pc, _, _ in plan if pc.get('step'))
     for k, ((pc, a, b), lv) in enumerate(zip(plan, levels)):
@@ -139,7 +139,7 @@ def build(n):
     props = dict(fps=FPS, duration=round(dur, 3), look='sound', brand=dict(logo='wave', name='أسرار الصوت'), src=dict(w=1280, h=720),
                  series=dict(no=spec['no'], total=SD.TOTAL, title=spec['title'].replace('*', '').replace('_', ' '), at=spec.get('at', CH[spec['chapter']]['time']), chap=spec['chapter']),
                  voice=voice, screens=screens, cues=cues, cta=cta, end=end, music=[], sfx=sfx, env=[round(v, 2) for v in env], words=words)
-    out = PROJ / f'work/shorts/props_{spec["no"]:02d}.json'
+    out = PROJ / f'work/shorts/props_{spec.get("tag", "%02d" % spec["no"])}.json'
     out.parent.mkdir(exist_ok=True)
     json.dump(props, open(out, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     print(f'{spec["no"]:02d}', spec['title'], '| length', round(props['duration'], 1), 's | pieces', len(voice), '| voice level', round(target, 1), 'dB')

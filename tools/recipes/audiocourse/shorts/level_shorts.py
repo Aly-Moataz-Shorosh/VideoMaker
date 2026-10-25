@@ -20,7 +20,7 @@ def peak(f):
 
 
 for nm in sys.argv[1:]:
-    p = json.load(open(PROJ / f'work/shorts/props_{int(nm[:2]):02d}.json', encoding='utf-8'))
+    p = json.load(open(PROJ / f'work/shorts/props_{nm.split('_')[0]}.json', encoding='utf-8'))
     ea = p['end']['at']
     raw, out = O / '_raw' / f'{nm}.mp4', O / f'{nm}.mp4'
     body = lufs(['-t', str(ea), '-i', str(raw)])

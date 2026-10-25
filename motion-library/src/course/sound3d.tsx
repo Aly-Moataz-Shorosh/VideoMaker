@@ -1,5 +1,5 @@
 import React, {useLayoutEffect, useMemo, useRef} from 'react';
-import {useCurrentFrame, useVideoConfig} from 'remotion';
+import {OffthreadVideo, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {ThreeCanvas} from '@remotion/three';
 import {useThree} from '@react-three/fiber';
 import * as THREE from 'three';
@@ -233,4 +233,12 @@ export const Speaker3D: React.FC<{dur: number}> = ({dur}) => {
   );
 };
 
-export const sound3d: Record<string, React.FC<any>> = {Wave3D, Ripple3D, Molecules3D, Mic3D, Speaker3D};
+// ---------- the same scenes rendered in Blender 5.2 (tools/blender/sound_scenes.py): a transparent webm + the same tags ----------
+export const BlenderClip: React.FC<{dur: number; file: string; tags?: {text: string; y: number; at?: number; c?: string}[]}> = ({dur, file, tags = []}) => (
+  <Box dur={dur}>
+    <OffthreadVideo src={staticFile(file)} transparent muted style={{position: 'absolute', inset: 0, width: W, height: H}} />
+    {tags.map((g, i) => <Tag key={i} text={g.text} y={g.y} at={g.at ?? 12} c={g.c === 'gold' ? GOLD : g.c} />)}
+  </Box>
+);
+
+export const sound3d: Record<string, React.FC<any>> = {Wave3D, Ripple3D, Molecules3D, Mic3D, Speaker3D, BlenderClip};
