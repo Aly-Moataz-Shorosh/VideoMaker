@@ -12,7 +12,7 @@ ap.add_argument('--frames', type=int, default=90)
 ap.add_argument('--out', required=True)
 ap.add_argument('--still', type=int, default=-1)  # render only this frame (check)
 ap.add_argument('--bar', action='store_true')
-ap.add_argument('--res', type=int, nargs=2, default=[1040, 1000])
+ap.add_argument('--res', type=int, nargs=2, default=[1080, 1920])  # whole phone screen (Aly 2026-10-26); the first clips (short 07) were 1040 1000
 A = ap.parse_args(a)
 
 TEAL, VIOLET, GOLD = (0.18, 0.90, 0.71), (0.55, 0.36, 0.96), (0.97, 0.75, 0.25)
@@ -101,6 +101,8 @@ def torus(R, r, seg=48, ring=12):
 # camera + lights (Blender is Z-up: the scene's "up" = +Z, depth = +Y away from camera)
 cam = bpy.data.objects.new('Cam', bpy.data.cameras.new('Cam')); sc.collection.objects.link(cam); sc.camera = cam
 cam.data.sensor_fit = 'VERTICAL'; cam.data.angle = math.radians(38)
+if A.res[1] > A.res[0]:  # portrait: keep the same width of the scene as the 1040x1000 clips, the extra height = room above/below
+    cam.data.sensor_fit = 'HORIZONTAL'; cam.data.angle = math.radians(39)
 
 
 def look(cam_loc, target=(0, 0, 0)):
@@ -183,7 +185,7 @@ elif S == 'ripple':
         print('fade off', e)
 
     def upd(f):
-        t = f / 30; drop = 1.2
+        t = f / 30; drop = 1.4  # Aly review 1: the stone falls from FAR (high above), not from just over the water
         z = np.zeros_like(r)
         for k in range(8):  # a new stone every 3.5 s keeps rings on screen the whole piece
             tt = t - drop - 3.5 * k; front = tt * 3.2
@@ -194,7 +196,8 @@ elif S == 'ripple':
         me.vertices.foreach_set('co', co.ravel()); me.update()
         tl = (t - drop) % 3.5 if t >= drop else t - drop  # time since the last stone hit
         tn = 3.5 - tl if t >= drop else drop - t           # time until the next stone hits
-        sz = 5 * (1 - (1 - min(1, tn / drop)) ** 0) * (tn / drop) ** 2 if tn < drop else (-1.5 - tl * 0.6 if tl < 1 else 9)
+        H0 = 11 if A.res[1] > A.res[0] else 5  # portrait shows the whole fall
+        sz = H0 * (tn / drop) ** 2 if tn < drop else (-1.5 - tl * 0.6 if tl < 1 else H0 + 4)
         stone.location = (0, 0, sz); stone.hide_render = sz < -1.4
 
 elif S == 'molecules':

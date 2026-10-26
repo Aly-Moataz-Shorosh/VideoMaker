@@ -1,5 +1,5 @@
 # Shorts series from the audio course "أسرار الصوت" (Aly 2026-10-26: all of them, CTA like the Premiere series; pilot 3 first).
-# Key = posting number (most impressive first, plan: خطة_الشورتس.md). One source = the session recording (1280x720).
+# Key = posting number = course order (Aly review 1, plan: خطة_الشورتس.md). One source = the session recording (1280x720).
 # piece: a/b = his sentence (source seconds, fitted on the waveform later); show = 'screen' (his recording, 'crop' or zoom keys 'zoom'),
 # an animation name, or 'big:line|sub'; step = step chip text; kw = [(EN, AR, offset)]; key = (keys, AR, offset); labels = [(word, pill)];
 # clicks = [(abs src time, x, y)] gold click marks (read from frame_sheet.py, 1280x720 space); bars = his voice as bars (a sound demo plays).
@@ -21,38 +21,56 @@ AU_SEL = dict(sx=160, sy=40, sw=560)     # Audition: left part of the waveform (
 AU_MENU = dict(sx=80, sy=20, sw=560)     # Audition: Effects menu + Noise Reduction submenu
 AU_DLG = dict(sx=380, sy=110, sw=540)    # Audition: Noise Reduction (process) dialog
 
+# Aly review 1 (2026-10-26): numbers = COURSE ORDER (chapter order, not "most impressive first": "عايز الريلز بترتيب الكورس"),
+# no screen without motion while he talks (reel 2), Fluent pictures instead of emoji newer than Emoji 12 (the saw was an empty box),
+# click boxes the size of the clicked word, zoom follows the mouse through menus, short hook (before -> after first).
+AU_TOP = dict(sx=40, sy=0, sw=440)       # Audition: menu bar (Effects) + top of the Effects menu
+AU_MID = dict(sx=80, sy=150, sw=440)     # Audition: Effects menu around Noise Reduction / Restoration
+AU_SUB = dict(sx=200, sy=170, sw=420)    # Audition: Noise Reduction submenu (Capture / process)
+EFF = (115, 22, 44, 14)                  # menu bar "Effects" (x, y, w, h of the word)
+NRR = (188, 257, 106, 14)                # "Noise Reduction / Restoration"
+CNP = (361, 257, 74, 14)                 # "Capture Noise Print"
+NRP = (375, 272, 100, 14)                # "Noise Reduction (process)..."
 SHORTS = {
-    1: dict(no=1, chapter=25, at='1:25:55', title='صوتك يبقى *تليفون* في ثانية', pieces=[
-        dict(a=5003.2, b=5018.3, show='big:صوت عادي خالص|اتحول لمكالمة تليفون.. من غير أي برنامج تاني', ico='mic'),
-        dict(a=5018.3, b=5041.3, crop=PR_ALL, bars=True, labels=[('تليفون', '📞 تليفون')]),
-        dict(a=5150.45, b=5156.7, crop=PR_SRC, labels=[('آلو', '🎙 صوته الأصلي')]),
+    26: dict(no=26, chapter=25, at='1:25:55', title='صوتك يبقى *تليفون* في ثانية', pieces=[
+        dict(a=5003.2, b=5018.3, crop=PR_ALL, labels=[('الفويس', 'صوتي العادي', 'studio_microphone'), ('استخدمتش', 'من غير برامج تانية', 'cross_mark'), ('اسوات', 'أصوات تانية', 'speaker_high_volume')]),
+        # review 1: "الثانية 20 مش باين الصوت" -> the telephone demo itself was cut out by the edge fit; now raw from the demo start
+        dict(a=5019.9, b=5041.62, raw=True, crop=PR_ALL, bars=True, lab=[(0.2, 'اسمع النتيجة', 'speaker_high_volume', 2.2)], labels=[('تليفون', 'تليفون', 'telephone_receiver')]),
+        dict(a=5150.45, b=5156.7, crop=PR_SRC, labels=[('آلو', 'صوته الأصلي', 'studio_microphone')]),
         dict(a=5193.6, b=5211.7, step='Essential Sound ← Dialogue', crop=ESS, clicks=[(5209.4, 1065, 150)], kw=[('Dialogue', 'صوت بني آدم بيتكلم', 9.0)]),
-        dict(a=5217.4, b=5230.05, step='Preset ← From the Telephone', crop=ESS, clicks=[(5217.6, 1150, 162)], labels=[('التليفون', '📞 From the Telephone')]),
-        dict(a=5274.4, b=5296.05, step='جرّب Default و Podcast', crop=ESS, clicks=[(5276.8, 1150, 162)], labels=[('بودكاست', '🎙 Podcast')]),
-        dict(a=5296.1, b=5303.6, show='big:اختار شكل الصوت|والبرنامج يعمله لوحده', ico='mic'),
+        dict(a=5217.4, b=5230.05, step='Preset ← From the Telephone', crop=ESS, clicks=[(5217.6, 1150, 162)], labels=[('التليفون', 'From the Telephone', 'telephone_receiver')]),
+        dict(a=5274.4, b=5296.05, step='جرّب Default و Podcast', crop=ESS, clicks=[(5276.8, 1150, 162)], labels=[('بودكاست', 'Podcast', 'studio_microphone')]),
+        dict(a=5296.1, b=5303.6, crop=ESS_Z, lab=[(0.3, 'اختار.. والبرنامج يعمله', 'control_knobs', 3.0)]),
     ]),
-    2: dict(no=2, chapter=25, at='1:33:13', title='انفجار.. وصوتك *يتغير* معاه', pieces=[
+    27: dict(no=27, chapter=25, at='1:33:13', title='انفجار.. وصوتك *يتغير* معاه', pieces=[
         dict(a=5022.5, b=5029.8, crop=PR_ALL, bars=True),
-        dict(a=5045.3, b=5051.7, show='big:وفجأة حصل انفجار|وصوتي اتغير معاه', ico='mic'),
-        dict(a=5303.85, b=5309.9, show='big:أول ما يحصل الانفجار|صوتك يدوش ويتكتم', ico='mic'),
+        # review 1: 8-20 s was a still mic while he talks -> idea scenes of what he says
+        dict(a=5045.3, b=5051.7, show='BoomScene', anim=dict(mode='hear', boom=0.11)),
+        dict(a=5303.85, b=5309.9, show='BoomScene', anim=dict(mode='plan', boom=0.5)),
         dict(a=5327.25, b=5345.9, step='C = اقطع الصوت عند الكلمة', crop=PR_TL, key=(['C'], 'المقص', 4.0)),
         dict(a=5346.8, b=5370.5, step='Effects ← Special ← GuitarSuite', crop=dict(sx=0, sy=40, sw=700), zoom=[(5356.0, EFX)], kw=[('GuitarSuite', 'إفكت بيدوّش الصوت', 10.0)]),
         dict(a=5385.15, b=5404.9, step='حط صوت الانفجار على نفس اللحظة', crop=PR_TL),
         dict(a=5412.5, b=5441.5, step='Essential Sound ← SFX ← Explosion', crop=ESS, kw=[('SFX', 'مؤثر صوتي', 17.0)]),
-        dict(a=5453.0, b=5459.5, show='big:كأن الانفجار برّه|وأنا قافل الشبابيك', ico='mic'),
+        dict(a=5453.0, b=5459.5, show='BoomScene', anim=dict(mode='outside')),
     ]),
-    3: dict(no=3, chapter=28, at='1:44:04', title='شيل *الدوشة* بكليكة واحدة', pieces=[
-        dict(a=6338.3, b=6356.3, crop=AU_WAVE, bars=True, labels=[('منشار', '🪚 منشار'), ('عربيات', '🚗 عربيات'), ('هوا', '💨 هوا')]),
-        dict(a=6313.2, b=6325.8, crop=AU_WAVE, bars=True, labels=[('نويز', '✅ مفيش دوشة')]),
+    29: dict(no=29, chapter=28, at='1:44:04', title='شيل *الدوشة* بكليكة واحدة', pieces=[
+        # review 1: "الهوك محتاج يكون اقوى و اسرع" -> the noise itself first, then what it is, then the clean result, then "one click"
+        dict(a=6341.45, b=6345.6, raw=True, crop=AU_WAVE, bars=True, lab=[(0.1, 'قبل', 'loudspeaker', 3.6)]),
+        dict(a=6348.79, b=6354.1, crop=AU_WAVE, bars=True, labels=[('منشار', 'منشار', 'carpentry_saw'), ('عربيات', 'عربيات', 'automobile'), ('هوا', 'هوا', 'wind_face')]),
+        dict(a=6317.05, b=6319.4, raw=True, crop=AU_WAVE, bars=True, lab=[(0.1, 'بعد', 'muted_speaker', 2.1)]),
+        dict(a=6323.38, b=6325.68, crop=AU_WAVE, labels=[('نويز', 'مفيش دوشة', 'check_mark_button')]),
+        dict(a=6354.45, b=6356.33, crop=AU_WAVE, lab=[(0.2, 'بكليكة واحدة', 'sparkles', 1.7)]),
         dict(a=6143.5, b=6160.6, step='علّم على حتة دوشة بس (مش بتتكلم فيها)', crop=AU_SEL, clicks=[(6160.0, 370, 300)]),
-        dict(a=6161.1, b=6177.6, step='Effects ← Capture Noise Print', crop=AU_MENU, clicks=[(6170.5, 360, 256)], kw=[('Noise Print', 'بصمة الدوشة', 11.0)]),
+        dict(a=6161.1, b=6177.6, step='Effects ← Capture Noise Print', crop=AU_TOP, zoom=[(6165.2, AU_MID), (6168.6, AU_SUB)],
+             clicks=[(6163.7, *EFF), (6167.4, *NRR), (6170.5, *CNP)], kw=[('Noise Print', 'بصمة الدوشة', 11.0)]),
         dict(a=6267.3, b=6280.2, step='Ctrl + A = علّم على الصوت كله', crop=AU_WAVE, key=(['Ctrl', 'A'], 'تحديد الكل', 9.0)),
-        dict(a=6280.5, b=6305.3, step='Noise Reduction ← Apply', crop=AU_DLG, clicks=[(6293.5, 760, 536)]),
+        dict(a=6280.5, b=6305.3, step='Noise Reduction (process) ← Apply', crop=AU_TOP, zoom=[(6282.4, AU_MID), (6284.6, AU_SUB), (6287.4, AU_DLG)],
+             clicks=[(6281.0, *EFF), (6283.2, *NRR), (6286.3, *NRP), (6293.5, 760, 536, 40, 14)]),
         dict(a=6440.7, b=6450.7, show='NoisePrint'),
     ]),
 }
 
-SHORTS[4] = dict(no=4, chapter=6, at='23:33', title='الصوت فعلا *موجة*', pieces=[
+_P4 = [
     dict(a=1327.65, b=1332.8, show='Wave3D'),
     dict(a=1334.0, b=1351.8, show='Ripple3D'),
     dict(a=1351.8, b=1359.9, show='Molecules3D'),
@@ -61,32 +79,33 @@ SHORTS[4] = dict(no=4, chapter=6, at='23:33', title='الصوت فعلا *موج
     dict(a=1396.15, b=1418.4, show='Mic3D'),
     dict(a=1418.4, b=1430.9, show='Mic3D'),
     dict(a=1441.35, b=1457.15, show='Speaker3D'),
-])
+]
 
-# 04b = the same short, every 3D scene rendered in BLENDER instead of three.js (Aly asked for both to compare, 2026-10-26)
+# 07 = the BLENDER version (Aly review 1: "4b احسن بكتير"; not remade, only the series number/frame changes).
+# From now on: 3D in Blender, rendered at the whole phone size 1080x1920 (BlenderClip full=True).
 def _bc(name, *tags):
     return dict(file=f'projects/audio/b3d/{name}.webm', tags=[dict(text=t, y=y, at=at, c=c) for t, y, at, c in tags])
-SHORTS[104] = dict(no=4, tag='04b', chapter=6, at='23:33', title='الصوت فعلا *موجة* (Blender)', pieces=[
-    dict(SHORTS[4]['pieces'][0], show='BlenderClip', anim=_bc('b_wave', ('الصوت = موجة', 790, 12, None))),
-    dict(SHORTS[4]['pieces'][1], show='BlenderClip', anim=_bc('b_ripple', ('الموجة مش حاجة بتمسكها.. دي حركة المية', 790, 50, None))),
-    dict(SHORTS[4]['pieces'][2], show='BlenderClip', anim=_bc('b_air', ('ذرات الهوا بتخبط في بعض.. لحد ما توصلك', 790, 14, None))),
-    dict(SHORTS[4]['pieces'][3], show='BlenderClip', anim=_bc('b_bar', ('الحديدة بتخبط الهوا.. والهوا يزق اللي جنبه', 790, 14, None))),
-    SHORTS[4]['pieces'][4],
-    dict(SHORTS[4]['pieces'][5], show='BlenderClip', anim=_bc('b_mic1', ('الدايفرام: حاجة هشة بتتهز مع الموجة', 60, 10, 'gold'), ('وحركته بتتسجل على الكمبيوتر', 880, 75, None))),
-    dict(SHORTS[4]['pieces'][6], show='BlenderClip', anim=_bc('b_mic2', ('الدايفرام: حاجة هشة بتتهز مع الموجة', 60, 10, 'gold'), ('وحركته بتتسجل على الكمبيوتر', 880, 75, None))),
-    dict(SHORTS[4]['pieces'][7], show='BlenderClip', anim=_bc('b_speaker', ('السماعة بتعمل نفس الاهتزازات في الهوا', 790, 12, None))),
+SHORTS[7] = dict(no=7, chapter=6, at='23:33', title='الصوت فعلا *موجة*', pieces=[
+    dict(_P4[0], show='BlenderClip', anim=_bc('b_wave', ('الصوت = موجة', 790, 12, None))),
+    dict(_P4[1], show='BlenderClip', anim=_bc('b_ripple', ('الموجة مش حاجة بتمسكها.. دي حركة المية', 790, 50, None))),
+    dict(_P4[2], show='BlenderClip', anim=_bc('b_air', ('ذرات الهوا بتخبط في بعض.. لحد ما توصلك', 790, 14, None))),
+    dict(_P4[3], show='BlenderClip', anim=_bc('b_bar', ('الحديدة بتخبط الهوا.. والهوا يزق اللي جنبه', 790, 14, None))),
+    _P4[4],
+    dict(_P4[5], show='BlenderClip', anim=_bc('b_mic1', ('الدايفرام: حاجة هشة بتتهز مع الموجة', 60, 10, 'gold'), ('وحركته بتتسجل على الكمبيوتر', 880, 75, None))),
+    dict(_P4[6], show='BlenderClip', anim=_bc('b_mic2', ('الدايفرام: حاجة هشة بتتهز مع الموجة', 60, 10, 'gold'), ('وحركته بتتسجل على الكمبيوتر', 880, 75, None))),
+    dict(_P4[7], show='BlenderClip', anim=_bc('b_speaker', ('السماعة بتعمل نفس الاهتزازات في الهوا', 790, 12, None))),
 ])
 
 # hand-corrected captions per piece (filled after caption_words.py; never words he didn't say)
 CAP = {
-    1: ['الفويس العادي الخالص اللي أنا سجلته ده.. تعالوا بصوا حولته لإيه.. ما استخدمتش أي إفكت برا.. استخدمت الصوت بتاعي وجبت شوية أصوات تانية وظبطت حاجات.. تعالوا نسمعه بقى',
+    26: ['الفويس العادي الخالص اللي أنا سجلته ده.. تعالوا بصوا حولته لإيه.. ما استخدمتش أي إفكت برا.. استخدمت الصوت بتاعي وجبت شوية أصوات تانية وظبطت حاجات.. تعالوا نسمعه بقى',
         'الموضوع بقى كأني بتكلم.. هنا بقى الصوت كأني بتكلم في تليفون مع واحد.. صوتي كأني بتكلم في تليفون.. مش الصوت الطبيعي',
         'وسجلت الصوت بتاعي العادي خالص اللي هو ده.. آلو، سلام عليكم.. أنا اسمي علي معتز',
         'فهنخش على اللي اسمها Audio وهدوس عليها.. هيجيلي بقى: ده Dialogue ولا موسيقى ولا Sound_Effect ولا صوت محيط؟ فهقوله إن ده Dialogue.. يعني ده صوت بني آدم بيتكلم.. فهدوس على Dialogue وبعد كده هختار من الحاجات الجاهزة',
         'فهدوس على Preset وأقول له From_the_Telephone.. فأنا عايز كأني بكلم في التليفون.. فهدوس وأجرب.. فبقيت كأني بتكلم في التليفون',
         'بصوا الفرق.. أنا هدوس على Default.. وهدوس على Podcast.. بصوا الفرق في الصوت.. اتحول.. آلو، سلام عليكم.. ملحوظ يا جماعة؟ جدا.. حلو جدا',
         'فهو دلوقتي واضح جدا الفرق.. بس إني بدوس: أنا عايز الصوت يبقى عامل إزاي.. فخلاص أنا كده عملت الصوت بتاع إني بتكلم في تليفون'],
-    2: ['',
+    27: ['',
         'وفجأة حصل انفجار.. ولما الانفجار حصل أنا فجأة سمعت صوتي اتغير.. وفجأة سمعت صوت وش',
         'عايز بقى إن أنا أخلي الصوت فجأة يدوش.. كأن فيه انفجار حصل.. فالصوت بتاعي يبوظ',
         'نخلي الصوت يتدمر بقى.. نخلي مثلا هنا هقطع، دوست C.. الكلام القطع ده مونتاج خدناه.. فأنا عايز بقى أخلي الباقي ده لحد مثلا هنا.. إن الصوت بقى خلاص الخط فصل.. فأنا كده عايز الكلام ده',
@@ -94,14 +113,17 @@ CAP = {
         'ندخل بقى الأصوات اللي عندي.. فهدخل صوت الانفجار نفسه.. فآخد الأوديو بتاعه وأحطه.. وأقرب بقى شوية كده.. وأخلي صوت الانفجار ييجي بالظبط أول ما الصوت بتاعي يتغير.. حس إن أول ما صوت الانفجار جه.. الصوت اتغير',
         'حلو قوي.. الصوت بتاع الانفجار عالي قوي ومش طبيعي.. فأنا عايز أخليه كأنه جاي من بعيد.. كأن الانفجار حصل من بعيد.. فهدوس على الأوديو بتاعي وأخش في البانل تاني.. وأقوله ده إيه؟ Dialogue؟ لأ.. Music؟ لأ.. Sound_Effect؟ أه.. فهدوس على Sound_Effect.. وأختار بقى Explosion.. بس أنا عايزه From_outside.. عايزه يكون صوت جاي من برا.. كأني أنا جوا روم',
         'صوته بقى واطي جدا.. بس برضه عامل فيه صدى صوت.. فكأنه انفجار برا وأنا قافل الشبابيك'],
-    3: ['تعالوا بقى نسمع قبل الحوارات دي كلها.. كان شكله إيه؟ فيه صوت واحد بيعمل.. اللي هو منشار بيعمل صوت عالي قوي ده.. وفيه صوت عربيات وفيه صوت هوا.. فكل ده اتشال بكليكاية واحدة',
-        'تعالوا بقى نعمل زوم ونيجي للأول ونسمع الأوديو تاني.. مفيش أي نويز.. أنا مش سامع أي دوشة',
+    29: ['',
+        'فيه صوت واحد بيعمل.. اللي هو منشار بيعمل صوت عالي قوي ده.. وفيه صوت عربيات وفيه صوت هوا',
+        '',
+        'مفيش أي نويز.. أنا مش سامع أي دوشة',
+        'فكل ده اتشال بكليكاية واحدة',
         'فهاجي هنا.. فحلو، الحتة دي فاضية.. أنا ما بتكلمش فيها.. فإذن هو ده النويز.. هو ده الإزعاج.. هو ده الوش اللي وراه.. عايز أشيله من الخلفية خالص.. فهعمل إيه؟ علّمت عليها',
         'وهقوم عامل Effect.. وهاجي عند Noise_Reduction.. كل شغلنا بالـ Effect.. وهقوله Capture_Noise_Print.. القط البرينتة دي بتاعت النويز.. دي الباترن بتاعت النويز.. ده شكل النويز اللي بيجي لنا',
         'أنا عايز أشيل بقى النويز ده من الفيديو كله.. فعملت زوم آوت وهعلّم بقى على البتاع كله.. هدوس Ctrl_A.. فكده أنا علمت عليه كله.. أبيض يعني متعلم عليه.. فكده أنا علمت على الفيديو كله',
         'وبعد كده هدوس Effect.. بعد كده Noise_Reduction.. بعد كده Noise_Reduction_Process.. فهنا أنا ممكن نلعب بس احنا كده هنخش في تفاصيل قوي.. فدوس Apply على طول وهو هيظبط لك الحوار.. فكده هو شال صوت الخلفية من الأوديو بتاعي كله.. ولو خدتوا بالكم الويف شكلها اتغير',
         'فاللي بيحصل: أنا بسجل شوية صوت فاضي.. أنا ما بتكلمش فيه.. بس المايك شغال وبيسجل صوت.. فهو بيسجل كده صوت اللي في الخلفية بس'],
-    4: ['الصوت عبارة عن إيه؟ كلنا آخد نفسه يا جماعة.. هو عبارة عن Wave',
+    7: ['الصوت عبارة عن إيه؟ كلنا آخد نفسه يا جماعة.. هو عبارة عن Wave',
         'الصوت مش عبارة عن حاجة موجودة في الحقيقة.. قد ما هي تأثير الحاجة دي.. يعني انت لو جبت طوبة ورميتها في مية.. فهي بتعمل موجة.. الموجة دي مش حاجة فيزيكال بتمسكها.. بس هي تأثير إن المية لما بتتحرك بالشكل ده بتعمل موجة',
         'فهو الصوت عبارة عن إن الموليكيولز.. الذرات اللي في الهوا بتخبط في بعض وبتعمل موجة لحد ما توصل لك',
         'فلو أنا مسكت مثلا حديدة وخبطتها بعصاية.. هتعمل الصوت اللي هو "طين" ده.. فاللي هيحصل إنها هتقوم مخبطة الموليكيولز بالطريقة دي.. بدل ما هي كل واحدة جنب التانية عادي.. هيبعدوا عن بعض ويزقوا واحدة تانية.. ويبعدوا عن بعض ويزقوا واحدة تانية.. فده اللي اسمه Wave',

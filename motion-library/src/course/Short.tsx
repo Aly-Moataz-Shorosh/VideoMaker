@@ -11,6 +11,7 @@ import {AR, bi, CC, Def, EN, G, Glass, Ico, Key, Kw, lin, Pill, spr, Src} from '
 import {courseAnims, HideNote} from './anims';
 import {audioAnims} from './audioAnims';
 import {sound3d} from './sound3d';
+import {shortScenes} from './shortScenes';
 import {courseScenes} from './scenes';
 import {Captions} from '../templates/Captions';
 
@@ -25,7 +26,7 @@ export const courseShortSchema = z.object({
   series: z.object({no: z.number(), total: z.number(), title: z.string(), at: z.string(), chap: z.number().default(0)}).default({no: 1, total: 44, title: '', at: '', chap: 0}),
   voice: z.array(z.object({file: z.string(), from: z.number(), to: z.number(), at: z.number(), gain: z.number().default(1)})).default([]),
   screens: z.array(z.object({t: z.number(), d: z.number(), file: z.string(), from: z.number(), keys: z.array(z.object({t: z.number(), sx: z.number(), sy: z.number(), sw: z.number()})).default([]),
-    marks: z.array(z.object({t: z.number(), d: z.number(), x: z.number(), y: z.number(), r: z.number().default(46), label: z.string().default('')})).default([]), y: z.number().default(980),
+    marks: z.array(z.object({t: z.number(), d: z.number(), x: z.number(), y: z.number(), r: z.number().default(46), w: z.number().default(0), h: z.number().default(0), label: z.string().default('')})).default([]), y: z.number().default(980),
     dual: z.object({top: z.object({sx: z.number(), sy: z.number(), sw: z.number()}), bottom: z.object({sx: z.number(), sy: z.number(), sw: z.number()})}).nullable().default(null), under: z.boolean().default(false)})).default([]),
   cues: z.array(cue).default([]),
   cta: z.object({file: z.string(), at: z.number(), d: z.number(), qr: z.string(), vol: z.number().default(1), word: z.string().default('كورس'), thumb: z.string().nullable().default(null)}).nullable().default(null),
@@ -37,6 +38,7 @@ export const courseShortSchema = z.object({
   brand: z.object({logo: z.string().default('Pr'), name: z.string().default('كورس Premiere')}).default({logo: 'Pr', name: 'كورس Premiere'}),
   src: z.object({w: z.number(), h: z.number()}).default({w: 1276, h: 720}),
   end: z.object({at: z.number(), d: z.number(), thumb: z.string(), qr: z.string(), title: z.string().default('الكورس الكامل على القناة')}).nullable().default(null),
+  footer: z.object({face: z.string(), name: z.string()}).nullable().default(null), // channel logo + name at the very bottom (Aly 2026-10-26)
 });
 type Props = z.infer<typeof courseShortSchema>;
 
@@ -139,12 +141,14 @@ const DualCard: React.FC<{file: string; from: number; d: number; top: {sx: numbe
 };
 
 // big moment label over the card (e.g. "سريع ⏩" right when he says it in the demo)
-const Label: React.FC<{text: string; dur: number; acc: string}> = ({text, dur, acc}) => {
+const Label: React.FC<{text: string; dur: number; acc: string; img?: string}> = ({text, dur, acc, img}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const p = spr(f, fps, 0, 220, 11), o = 1 - lin(f, dur - 5, dur);
   return (
-    <div style={{position: 'absolute', left: 0, right: 0, top: CTOP + 40, display: 'flex', justifyContent: 'center', opacity: Math.min(1, p * 1.5) * o, transform: `scale(${0.4 + 0.6 * p})`}}>
+    <div style={{position: 'absolute', left: 0, right: 0, top: CTOP + 40, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10, direction: 'rtl',
+      opacity: Math.min(1, p * 1.5) * o, transform: `scale(${0.4 + 0.6 * p})`}}>
+      {img ? <Img src={staticFile(`fluent/${img}.png`)} style={{width: 150, height: 150, filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.5))'}} /> : null}
       <Pill text={text} size={96} color={acc} />
     </div>
   );
@@ -167,7 +171,7 @@ const Fix: React.FC<{text: string; src: string; dur: number}> = ({text, src, dur
 };
 
 // ---------- his screen recording, big, with zoom keys and gold click marks ----------
-const ScreenCard: React.FC<{file: string; from: number; d: number; keys: {t: number; sx: number; sy: number; sw: number}[]; marks: {t: number; d: number; x: number; y: number; r: number; label: string}[]; y: number; acc: string}> = (
+const ScreenCard: React.FC<{file: string; from: number; d: number; keys: {t: number; sx: number; sy: number; sw: number}[]; marks: {t: number; d: number; x: number; y: number; r: number; w?: number; h?: number; label: string}[]; y: number; acc: string}> = (
   {file, from, d, keys, marks, y, acc}) => {
   const {w: SRCW, h: SRCH} = useSrc();
   const f = useCurrentFrame();
@@ -190,11 +194,13 @@ const ScreenCard: React.FC<{file: string; from: number; d: number; keys: {t: num
             if (f < m.t * fps || f > (m.t + m.d) * fps) return null;
             const q = spr(f, fps, m.t * fps, 220, 14), oo = 1 - lin(f, (m.t + m.d) * fps - 6, (m.t + m.d) * fps);
             const r = m.r * sc;
+            // Aly 2026-10-26: the box must be the size of the clicked word (Capture Noise Print was a tall narrow box)
+            const bw = m.w ? (m.w + 14) * sc / 2 : r, bh = m.h ? (m.h + 10) * sc / 2 : r;
             return (
-              <div key={j} style={{position: 'absolute', left: (m.x - sx) * sc - r, top: (m.y - sy) * sc - r, width: 2 * r, height: 2 * r, borderRadius: 18, border: `6px solid ${acc}`,
+              <div key={j} style={{position: 'absolute', left: (m.x - sx) * sc - bw, top: (m.y - sy) * sc - bh, width: 2 * bw, height: 2 * bh, borderRadius: m.w ? 14 : 18, border: `6px solid ${acc}`,
                 opacity: oo, transform: `scale(${1.3 - 0.3 * q})`, boxShadow: `0 0 30px ${acc}AA`}}>
                 {m.label ? <div style={{position: 'absolute', left: '50%', top: -66, transform: 'translateX(-50%)'}}><Pill text={m.label} font={EN} dir="ltr" size={34} color={acc} /></div> : null}
-                <div style={{position: 'absolute', left: r - 50, top: r - 50, width: 100, height: 100, borderRadius: '50%', border: `5px solid ${acc}`,
+                <div style={{position: 'absolute', left: bw - 50, top: bh - 50, width: 100, height: 100, borderRadius: '50%', border: `5px solid ${acc}`,
                   transform: `scale(${0.3 + 1.2 * lin(f, m.t * fps, m.t * fps + 16)})`, opacity: 1 - lin(f, m.t * fps, m.t * fps + 16)}} />
               </div>
             );
@@ -384,7 +390,7 @@ const EndCard: React.FC<{thumb: string; qr: string; title: string; dur: number; 
   );
 };
 
-export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues, cta, music, sfx, env, words, brand, src, end}) => {
+export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues, cta, music, sfx, env, words, brand, src, end, footer}) => {
   const {fps} = useVideoConfig();
   const now = useCurrentFrame();
   const L = LOOK[look] ?? LOOK.glass;
@@ -417,6 +423,7 @@ export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues
         else if (c.k === 'Key') el = <Key {...(c.p as any)} dur={d} x={1000} y={CTOP + CH - 160} />;
         else if (c.k === 'Def') el = <Def {...(c.p as any)} dur={d} x={540} y={1000} w={940} color={L.acc} />;
         else if (c.k === 'New26') el = <New26V {...(c.p as any)} dur={d} />;
+        else if (shortScenes[c.k]) { const S2 = shortScenes[c.k]; el = <S2 {...(c.p as any)} dur={d} />; }
         else if (sound3d[c.k]) { const S3 = sound3d[c.k]; el = <S3 {...(c.p as any)} dur={d} />; }
         else el = <AnimV name={c.k} {...(c.p as any)} dur={d} />;
         return <Sequence key={'c' + i} from={fr(c.t)} durationInFrames={d} layout="none">{el}</Sequence>;
@@ -426,6 +433,11 @@ export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues
       {inCta ? null : <L.Fx />}
       {inCta || inEnd ? null : <Captions words={words} maxWords={4} accent="gold" previewBg="" lift={0} bottomFrac={0.225} />}
       <SeriesFrame {...series} acc={L.acc} logo={brand.logo} name={brand.name} />
+      {footer && !inCta ? (
+        <div style={{position: 'absolute', left: 0, right: 0, bottom: 34, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 14, direction: 'ltr', opacity: 0.92}}>
+          <Img src={staticFile(footer.face)} style={{height: 70}} />
+          <Img src={staticFile(footer.name)} style={{height: 36}} />
+        </div>) : null}
       {voice.map((v, i) => (
         <Sequence key={'v' + i} from={fr(v.at)} durationInFrames={Math.max(1, fr(v.to - v.from))} layout="none">
           <Audio src={staticFile(v.file)} startFrom={fr(v.from)} volume={(f) => v.gain * Math.min(1, f / 2, (fr(v.to - v.from) - f) / 2)} />

@@ -234,11 +234,20 @@ export const Speaker3D: React.FC<{dur: number}> = ({dur}) => {
 };
 
 // ---------- the same scenes rendered in Blender 5.2 (tools/blender/sound_scenes.py): a transparent webm + the same tags ----------
-export const BlenderClip: React.FC<{dur: number; file: string; tags?: {text: string; y: number; at?: number; c?: string}[]}> = ({dur, file, tags = []}) => (
+// full = a clip rendered at the whole phone size (1080x1920, Aly 2026-10-26: "يكون مالي الشاشة") -> fills the frame UNDER the band and captions
+export const BlenderClip: React.FC<{dur: number; file: string; full?: boolean; tags?: {text: string; y: number; at?: number; c?: string}[]}> = ({dur, file, full = false, tags = []}) => {
+  const f = useCurrentFrame();
+  return full ? (
+  <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, opacity: Math.min(lin(f, 0, 10), 1 - lin(f, dur - 8, dur))}}>
+    <OffthreadVideo src={staticFile(file)} transparent muted style={{position: 'absolute', inset: 0, width: 1080, height: 1920}} />
+    {tags.map((g, i) => <Tag key={i} text={g.text} y={g.y} at={g.at ?? 12} c={g.c === 'gold' ? GOLD : g.c} />)}
+  </div>
+) : (
   <Box dur={dur}>
     <OffthreadVideo src={staticFile(file)} transparent muted style={{position: 'absolute', inset: 0, width: W, height: H}} />
     {tags.map((g, i) => <Tag key={i} text={g.text} y={g.y} at={g.at ?? 12} c={g.c === 'gold' ? GOLD : g.c} />)}
   </Box>
 );
+};
 
 export const sound3d: Record<string, React.FC<any>> = {Wave3D, Ripple3D, Molecules3D, Mic3D, Speaker3D, BlenderClip};

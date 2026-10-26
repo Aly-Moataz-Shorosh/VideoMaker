@@ -292,3 +292,15 @@ Writer: tools/recipes/graphictablet/write_meta.py.
   original to output/series/archive/ first (never overwrite an archived copy — use "v2/v3" names). Rebuild the bundle when public
   or src changed (stale bundle = old voice / old code). After every render: voice sync vs voice_N.wav = 0.
 
+
+## Course shorts series — audio course review 1 (2026-10-26, style course-short, look 'sound')
+- ORDER: a course series is numbered in COURSE order (chapter order), not "most impressive first" (that stays for talks/lectures).
+- 3D = BLENDER (he compared three.js vs Blender: "4b احسن بكتير"), rendered at the WHOLE phone size 1080x1920, under the band and
+  captions (BlenderClip full=True) — never a small box. Stone in water falls from far above; mic and speaker = complete models.
+- Never a still icon card while he talks: idea scenes of his words (Fluent pictures + motion, src/course/shortScenes.tsx BoomScene).
+- Emoji newer than Emoji 12 render as an empty box (🪚) → use the Fluent PNG (public/fluent/<name>.png, Label img).
+- Click box = the size of the clicked word (marks w/h in source px); through menus the zoom follows the mouse with a mark on every
+  click (menu bar → submenu → item → dialog button).
+- Hook strong and fast: real "before" sound → what it is → real "after" → "بكليكة واحدة" (~17 s), then the steps.
+- A sound demo that plays BEFORE his words must stay (fit() cut one: "مش باين الصوت") → raw piece edges, demo at its own level.
+- Channel logo + name small at the very bottom of every short (his ch_face / ch_name).

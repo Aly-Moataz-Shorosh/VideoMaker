@@ -72,16 +72,16 @@ def build(n):
     spec = SD.SHORTS[n]
     voice, screens, cues, sfx, env, words = [], [], [], [], [], []
     t = 0.3
-    plan = [(pc, *fit(pc['a'], pc['b'])) for pc in spec['pieces']]
+    plan = [(pc, *((pc['a'], pc['b']) if pc.get('raw') else fit(pc['a'], pc['b']))) for pc in spec['pieces']]  # raw = exact edges (a sound demo before his words)
     levels = [level(a, b) for _, a, b in plan]
-    target = float(np.median(levels))
+    target = float(np.median([lv for (pc, _, _), lv in zip(plan, levels) if not pc.get('raw')] or levels))  # a raw demo (noise / silence) never sets the voice level
     caps = SD.CAP.get(n, SD.CAP.get(spec['no'], []))
     wf = PROJ / f'work/shorts/words_{spec["no"]:02d}.json'
     AUTOW = [w for w in (json.load(open(wf, encoding='utf-8')) if wf.exists() else []) if not BAD.search(w['w'])]
     step, nsteps = 0, sum(1 for pc, _, _ in plan if pc.get('step'))
     for k, ((pc, a, b), lv) in enumerate(zip(plan, levels)):
         d = b - a
-        gain = round(float(10 ** ((target - lv) / 20)), 3)
+        gain = 1.0 if pc.get('raw') else round(float(10 ** ((target - lv) / 20)), 3)  # the demo plays as it was in the session
         voice.append(dict(file=PUB + 'course.mp4', **{'from': a}, to=b, at=round(t, 3), gain=min(1.25, max(0.5, gain))))
         cap = caps[k] if k < len(caps) else None
         ew = [w for w in EPW if a - 0.05 <= w[1] < b]
@@ -107,7 +107,7 @@ def build(n):
         if show == 'screen':
             src = pc.get('src', a)
             keys = [dict(t=0, **pc['crop'])] + [dict(t=round(zt - src, 2), **zc) for zt, zc in pc.get('zoom', [])]
-            marks = sorted([dict(t=round(ts - src, 2), d=1.4, x=x, y=y, r=26, label='') for ts, x, y in pc.get('clicks', [])], key=lambda m: m['t'])
+            marks = sorted([dict(t=round(c[0] - src, 2), d=1.4, x=c[1], y=c[2], r=26, w=(c[3] if len(c) > 3 else 0), h=(c[4] if len(c) > 4 else 0), label='') for c in pc.get('clicks', [])], key=lambda m: m['t'])  # (t, x, y[, w, h]) w/h = size of the clicked word
             screens.append(dict(t=round(t, 3), d=round(d, 3), file=PUB + 'course.mp4', **{'from': src}, keys=keys, marks=marks, y=740, dual=None))
             for m in marks: sfx.append(dict(t=round(t + m['t'], 3), file='sfx/click.wav', vol=0.25))
         elif show.startswith('big:'):
@@ -120,9 +120,11 @@ def build(n):
         if pc.get('step'):
             step += 1
             cues.append(dict(t=round(t + 0.1, 3), d=round(d - 0.1, 3), k='Step', p=dict(n=step, total=nsteps, text=pc['step'])))
-        for pat, txt in pc.get('labels', []):
-            hit = [w for w in EPW if a <= w[1] < b and pat in w[0]]
-            if hit: cues.append(dict(t=round(t + hit[0][1] - a, 3), d=1.6, k='Label', p=dict(text=txt)))
+        for lb in pc.get('labels', []):  # (word, text[, fluent picture]) shown when he says the word
+            hit = [w for w in EPW if a <= w[1] < b and lb[0] in w[0]]
+            if hit: cues.append(dict(t=round(t + hit[0][1] - a, 3), d=1.6, k='Label', p=dict(text=lb[1], img=lb[2] if len(lb) > 2 else None)))
+        for off, txt, img, dd in pc.get('lab', []):  # (offset, text, fluent picture, seconds) at a fixed moment (a demo plays, no words)
+            cues.append(dict(t=round(t + off, 3), d=dd, k='Label', p=dict(text=txt, img=img)))
         for kw in pc.get('kw', []):
             cues.append(dict(t=round(t + kw[2], 3), d=3.0, k='Kw', p=dict(en=kw[0], ar=kw[1])))
         if pc.get('key'):
@@ -137,6 +139,7 @@ def build(n):
         cta = dict(file=PUB + SD.CTA_FILE, at=round(dur, 3), d=SD.CTA_DUR, qr=PUB + 'qr/audio_course.png', thumb=PUB + 'pics/audio_course_thumb.jpg', word=SD.CTA_WORD, vol=1.0)
         dur += SD.CTA_DUR
     props = dict(fps=FPS, duration=round(dur, 3), look='sound', brand=dict(logo='wave', name='أسرار الصوت'), src=dict(w=1280, h=720),
+                 footer=dict(face=PUB + 'pics/ch_face.png', name=PUB + 'pics/ch_name.png'),
                  series=dict(no=spec['no'], total=SD.TOTAL, title=spec['title'].replace('*', '').replace('_', ' '), at=spec.get('at', CH[spec['chapter']]['time']), chap=spec['chapter']),
                  voice=voice, screens=screens, cues=cues, cta=cta, end=end, music=[], sfx=sfx, env=[round(v, 2) for v in env], words=words)
     out = PROJ / f'work/shorts/props_{spec.get("tag", "%02d" % spec["no"])}.json'
