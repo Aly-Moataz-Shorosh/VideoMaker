@@ -26,16 +26,16 @@ for nm in sys.argv[1:]:
     raw, out = O / '_raw' / f'{nm}.mp4', O / f'{nm}.mp4'
     body = lufs(['-t', str(ea), '-i', str(raw)])
     cta = lufs(['-ss', str(p['cta']['at'] + 0.3), '-i', str(raw)]) if p.get('cta') else None
-    trim = 0.0
+    trim, lim = 0.0, 0.84
     for _ in range(4):
         chain = [f"volume={-16 - body - trim:.2f}dB" + (f":enable='lt(t,{p['cta']['at']})'" if cta is not None else '')]
         if cta is not None: chain.append(f"volume={-17.5 - cta - trim:.2f}dB:enable='gte(t,{p['cta']['at']})'")
-        chain.append('alimiter=limit=0.84:level=false:attack=2:release=60')  # only the few peaks (session claps, clicks): same -16 LUFS in every short (cs ep01 shorts)
+        chain.append(f'alimiter=limit={lim}:level=false:attack=2:release=60')  # only the few peaks (session claps, clicks): same -16 LUFS in every short (cs ep01 shorts)
         tmp = out.with_suffix('.part.mp4')
         subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(raw), '-c:v', 'libx264', '-crf', '23', '-preset', 'medium', '-af', ','.join(chain), '-c:a', 'aac', '-b:a', '192k',
                         '-movflags', '+faststart', str(tmp)], check=True)
         pk = peak(tmp)
         if pk <= -1.0: break
-        trim += pk + 1.0
+        lim = round(lim * 10 ** (-(pk + 1.0) / 20), 3)  # an AAC overshoot: lower the limiter, not the whole voice (26 v2 dropped to -18.3 LUFS)
     tmp.replace(out)  # written in one go (a half-written mp4 he might open = "broken file")
     print(nm, f'body {body:.1f} -> {-16 - trim:.1f} LUFS | peak {pk:.1f}' + (f' | cta {cta:.1f}' if cta is not None else ''))

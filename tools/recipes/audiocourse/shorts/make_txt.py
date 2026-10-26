@@ -6,13 +6,11 @@ import shorts_data as SD
 
 PROJ = Path(__file__).resolve().parents[2]
 T = {  # no: (3 titles, description lines, extra tags)
-    26: (['صوتك يبقى تليفون في ثانية 📞', 'From the Telephone في Premiere', 'إزاي تعمل صوت مكالمة تليفون؟'],
-        ['صوتك العادي يتحول لصوت مكالمة تليفون من جوه Premiere، من غير أي برنامج تاني.',
-         'Essential Sound ← Dialogue ← Preset ← From the Telephone.. وجرّب كمان Podcast وشوف الفرق.'], ['From the Telephone', 'Essential Sound']),
-    27: (['انفجار.. وصوتك يتغير معاه 💥', 'صوت مكتوم بعد الانفجار في Premiere', 'GuitarSuite و Explosion في Premiere'],
-        ['أول ما الانفجار يحصل الصوت يدوش ويتكتم: اقطع بـ C عند الكلمة، وحط GuitarSuite (Effects ← Special).',
-         'صوت الانفجار نفسه: Essential Sound ← SFX ← Explosion.. وخليه جاي من برا.'], ['GuitarSuite', 'SFX', 'Explosion']),
-    29: (['شيل الدوشة بكليكة واحدة 🔇', 'Noise Reduction في Adobe Audition', 'منشار وعربيات وهوا.. اتشالوا كلهم'],
+    26: (['صوتك تليفون.. وفجأة انفجار 💥', 'From the Telephone و GuitarSuite في Premiere', 'إزاي تعمل صوت مكالمة وانفجار من برّه؟'],
+        ['صوتك العادي يتحول لمكالمة تليفون من جوه Premiere: Essential Sound ← Dialogue ← Preset ← From the Telephone.',
+         'وبعدين انفجار: اقطع بـ C، حط GuitarSuite (Effects ← Special) على الجزء اللي بعد الانفجار، وصوت الانفجار من Essential Sound ← SFX ← Explosion وخليه جاي من برّه.'],
+        ['From the Telephone', 'GuitarSuite', 'Explosion', 'Essential Sound']),
+    28: (['شيل الدوشة بكليكة واحدة 🔇', 'Noise Reduction في Adobe Audition', 'منشار وعربيات وهوا.. اتشالوا كلهم'],
         ['علّم على حتة فيها دوشة بس ← Effects ← Noise Reduction ← Capture Noise Print.',
          'Ctrl + A ← Noise Reduction (process) ← Apply.. والبرنامج يشيل الدوشة من الصوت كله.'], ['Noise Reduction', 'Capture Noise Print', 'Adobe Audition']),
     7: (['الصوت فعلا موجة 🌊', 'المايك بيسمع إزاي؟ الدايفرام', 'الصوت بيوصل لودنك إزاي؟'],

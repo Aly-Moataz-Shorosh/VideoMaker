@@ -136,6 +136,9 @@ def build(n):
             cues.append(dict(t=round(t + pc['key'][2], 3), d=round(min(3.5, d - pc['key'][2]), 3), k='Key', p=dict(keys=pc['key'][0], ar=pc['key'][1])))
         if not (show == 'screen' and cin): sfx.append(dict(t=round(t, 3), file='sfx/whoosh_1.wav', vol=0.12))
         t += d + GAP
+    labs = sorted([c for c in cues if c['k'] == 'Label'], key=lambda c: c['t'])
+    for c, n_ in zip(labs, labs[1:]):  # big labels never on top of each other: each one is gone before the next one comes (reel 29 overlap)
+        c['d'] = round(max(0.5, min(c['d'], n_['t'] - c['t'] - 0.05)), 3)
     end_at = round(t + 0.1, 3)
     end = dict(at=end_at, d=SD.END_D, thumb=PUB + 'pics/audio_course_thumb.jpg', qr=PUB + 'qr/audio_course.png', title='الكورس الكامل على القناة')
     dur = end_at + SD.END_D

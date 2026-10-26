@@ -147,9 +147,10 @@ const Label: React.FC<{text: string; dur: number; acc: string; img?: string}> = 
   const {fps} = useVideoConfig();
   const p = spr(f, fps, 0, 220, 11), o = 1 - lin(f, dur - 5, dur);
   return (
-    <div style={{position: 'absolute', left: 0, right: 0, top: CTOP + 40, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10, direction: 'rtl',
+    <div style={{position: 'absolute', left: 0, right: 0, top: CTOP + 40, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 30, direction: 'rtl',
       opacity: Math.min(1, p * 1.5) * o, transform: `scale(${0.4 + 0.6 * p})`}}>
-      {img ? <Img src={staticFile(`fluent/${img}.png`)} style={{width: 150, height: 150, filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.5))'}} /> : null}
+      {/* own space next to the pill, never on it (Aly 2026-10-26: overlaps in reel 29) */}
+      {img ? <Img src={staticFile(`fluent/${img}.png`)} style={{width: 140, height: 140, flexShrink: 0, objectFit: 'contain', filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.5))'}} /> : null}
       <Pill text={text} size={96} color={acc} />
     </div>
   );
