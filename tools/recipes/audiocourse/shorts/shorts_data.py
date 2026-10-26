@@ -132,3 +132,23 @@ CAP = {
         'الموليكيولز تخبط في بعض ويبقى فيه موجة في الهوا.. تخبط في الدايفرام ده وتحركه بطريقة ما.. فلما بيتحرك بتتسجل الحركة بتاعته على الكمبيوتر',
         'لما تيجي انت عايز تسمع الصوت ده.. الكمبيوتر مش سامعه.. الكمبيوتر انت سيفت فيه الويف اللي دخلت له.. فاللي بيحصل إن السماعة بتعمل اهتزازات في الجو.. هتعمل نفس الويف اللي دخلت لها.. بتطلع نفس الويف اللي جات لها.. انت بقى تيجي تسمع الويف دي'],
 }
+
+# 07 v2 (Aly 2026-10-26 "حطها في الفيديو و اعمله نسخة"): the same short with the 3D re-rendered at the WHOLE phone size (full=True, under
+# the band and captions), the stone falling from far above, a complete mic on a stand + laptop and a complete speaker; the mic-icon card
+# while he talks became picture rows (camera -> computer -> screen / mic -> computer -> speaker). 07 v1 stays as it is.
+def _bf(name, *tags):
+    return dict(_bc(name, *tags), full=True)
+SHORTS[107] = dict(no=7, tag='07v2', chapter=6, at='23:33', title='الصوت فعلا *موجة*', pieces=[
+    dict(_P4[0], show='BlenderClip', anim=_bf('p_wave', ('الصوت = موجة', 1260, 12, None))),
+    dict(_P4[1], show='BlenderClip', anim=_bf('p_ripple', ('الموجة مش حاجة بتمسكها.. دي حركة المية', 1260, 70, None))),
+    dict(_P4[2], show='BlenderClip', anim=_bf('p_air', ('ذرات الهوا بتخبط في بعض.. لحد ما توصلك', 1260, 14, None))),
+    dict(_P4[3], show='BlenderClip', anim=_bf('p_bar', ('الحديدة بتخبط الهوا.. والهوا يزق اللي جنبه', 1260, 14, None))),
+    dict(_P4[4], show='IdeaRows', anim=dict(rows=[
+        dict(at=0.3, y=470, pics=['desktop_computer', 'red_question_mark'], tag='إزاي ندخّل الصوت الكمبيوتر؟', c='#8B5CF6'),
+        dict(at=4.4, y=770, pics=['video_camera', 'desktop_computer', 'television'], tag='الصورة: كاميرا ← شاشة'),
+        dict(at=11.4, y=1070, pics=['studio_microphone', 'desktop_computer', 'speaker_high_volume'], tag='الصوت: مايك ← سماعة')])),
+    dict(_P4[5], show='BlenderClip', anim=_bf('p_mic1', ('الدايفرام: حاجة هشة بتتهز مع الموجة', 330, 10, 'gold'), ('وحركته بتتسجل على الكمبيوتر', 1260, 75, None))),
+    dict(_P4[6], show='BlenderClip', anim=_bf('p_mic2', ('الدايفرام: حاجة هشة بتتهز مع الموجة', 330, 10, 'gold'), ('وحركته بتتسجل على الكمبيوتر', 1260, 75, None))),
+    dict(_P4[7], show='BlenderClip', anim=_bf('p_speaker', ('السماعة بتعمل نفس الاهتزازات في الهوا', 1260, 12, None))),
+])
+CAP[107] = CAP[7]

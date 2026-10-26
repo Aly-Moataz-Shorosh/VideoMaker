@@ -118,4 +118,28 @@ export const BoomScene: React.FC<{dur: number; mode?: string; boom?: number}> = 
   );
 };
 
-export const shortScenes: Record<string, React.FC<any>> = {BoomScene};
+// rows of pictures that build up with his words (e.g. picture: camera -> computer -> screen, sound: mic -> computer -> speaker);
+// each row comes in at its own second (at), pictures one after another with arrows between them
+type Row = {at: number; y: number; pics: string[]; tag?: string; c?: string};
+export const IdeaRows: React.FC<{dur: number; rows: Row[]}> = ({dur, rows}) => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const o = 1 - lin(f, dur - 8, dur);
+  return (
+    <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, opacity: o}}>
+      {rows.map((r, i) => {
+        const a = Math.round(r.at * fps), n = r.pics.length, S = n > 2 ? 190 : 230, gap = n > 2 ? 330 : 380;
+        const x0 = 540 + (gap * (n - 1)) / 2; // Arabic reading order: the first picture on the RIGHT, arrows point left
+        return (
+          <React.Fragment key={i}>
+            {r.pics.map((p, k) => <Pic key={k} n={p} x={x0 - gap * k} y={r.y} s={S} at={a + 6 * k} />)}
+            {r.pics.slice(1).map((_, k) => <Pic key={'a' + k} n="left_arrow" x={x0 - gap * k - gap / 2} y={r.y} s={70} at={a + 6 * k + 4} />)}
+            {r.tag ? <Tag text={r.tag} y={r.y + S / 2 + 6} at={a + 4} c={r.c ?? TEAL} size={42} /> : null}
+          </React.Fragment>
+        );
+      })}
+    </div>
+  );
+};
+
+export const shortScenes: Record<string, React.FC<any>> = {BoomScene, IdeaRows};

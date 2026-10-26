@@ -1,7 +1,7 @@
 #!/bin/bash
 # Render the Blender version of the audio-course 3D scenes as transparent webm clips for the shorts (Aly 2026-10-26).
 #   bash render_sound_clips.sh  "name scene seconds [--bar]" ...
-#   -> motion-library/public/projects/audio/b3d/<name>.webm  (VP9 + alpha; frames kept in work/blender/<name>/ until checked)
+#   -> motion-library/public/projects/audio/b3d/<name>.webm  (VP9 + alpha; frames kept in work/blender/<name>/ until checked, CLEAN=1 removes them)
 B="${BLENDER_EXE:-E:/root/_assets/programs/Blender Foundation/Blender 5.2/blender.exe}"
 H="$(cd "$(dirname "$0")/../.." && pwd)"
 W="$(cygpath -m "$H/projects/2026-10-20 youtube audioproduction/work/blender")"; mkdir -p "$W"
@@ -13,5 +13,5 @@ for x in "$@"; do
   "$B" -b --factory-startup --python-exit-code 1 -P "$(cygpath -m "$H/tools/blender/sound_scenes.py")" -- --scene $scn --frames $n --out "$W/$nm" $extra > "$W/$nm.log" 2>&1 \
     || { echo "$nm FAILED"; tail -5 "$W/$nm.log"; continue; }
   ffmpeg -v error -y -framerate 30 -i "$W/$nm/%04d.png" -c:v libvpx-vp9 -pix_fmt yuva420p -b:v 0 -crf 28 -row-mt 1 "$OUT/$nm.webm" \
-    && echo "$nm OK $n frames $(( $(date +%s) - st ))s"
+    && echo "$nm OK $n frames $(( $(date +%s) - st ))s"     && { [ -n "$CLEAN" ] && rm -rf "$W/$nm"; true; }  # CLEAN=1: drop this clip's PNG frames once its webm exists (1080x1920 frames ~3 MB each, E: is small)
 done

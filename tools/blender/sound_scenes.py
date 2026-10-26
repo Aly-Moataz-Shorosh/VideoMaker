@@ -146,9 +146,13 @@ class Air:
 
 S = A.scene
 upd = None
+# Whole phone screen (1080x1920, Aly review 1 2026-10-26): the band covers the top ~16 %, his captions sit at ~73-81 %, so the subject is
+# framed a little ABOVE the middle (shift_y) and the frame is filled top to bottom (taller air blocks, a full-height mic on a stand,
+# a tall speaker cabinet, water to the horizon). The 1040x1000 box version of these scenes is in git history (commit ae52a8e).
+cam.data.shift_y = -0.05
 if S == 'wave':
-    look((3.5, -15, 3.2), (0, 0, 0))
-    cu = bpy.data.curves.new('wave', 'CURVE'); cu.dimensions = '3D'; cu.bevel_depth = 0.16; cu.bevel_resolution = 6
+    look((4.2, -18.5, 3.0), (0, 0, 0))
+    cu = bpy.data.curves.new('wave', 'CURVE'); cu.dimensions = '3D'; cu.bevel_depth = 0.24; cu.bevel_resolution = 6
     sp = cu.splines.new('POLY'); sp.points.add(119)
     ob = bpy.data.objects.new('wave', cu); sc.collection.objects.link(ob); cu.materials.append(mat('Teal', TEAL, rough=0.25, emit=2.5, coat=1))
 
@@ -156,57 +160,56 @@ if S == 'wave':
         t = f / 30; grow = min(1, f / 30)
         for i, p in enumerate(sp.points):
             x = -5 + 10 * i / 119 * grow
-            p.co = (x, 0.6 * math.cos(x * 1.6 - t * 4), 1.3 * math.sin(x * 1.6 - t * 4) * math.exp(-(x + 5) * 0.04), 1)
+            p.co = (x, 0.9 * math.cos(x * 1.6 - t * 4), 2.1 * math.sin(x * 1.6 - t * 4) * math.exp(-(x + 5) * 0.04), 1)
         ob.rotation_euler = (0, 0, -0.3 + 0.1 * math.sin(t / 2))
 
 elif S == 'ripple':
-    look((0, -13, 9), (0, 0, -0.5))
-    N = 220
-    bm = bmesh.new(); bmesh.ops.create_grid(bm, x_segments=N, y_segments=N, size=20)
+    # looking down at the water (it fills the screen and fades away at the horizon); the stone falls from FAR above (Aly review 1)
+    look((0, -9, 15), (0, 2.5, -0.5))
+    N = 320
+    bm = bmesh.new(); bmesh.ops.create_grid(bm, x_segments=N, y_segments=N, size=36)
     water = mesh_obj('water', bm, mat('Water', (0.16, 0.56, 0.82), rough=0.12, coat=0.7, metal=0.0))
-    # the big area lights mirrored in the flat water looked like a pale blob (2026-10-26): key from the side, the rim far and low behind
-    # (a wide soft sky: the ripples catch it as bright rings, the flat water stays dark)
-    rim = bpy.data.objects['Rim']; rim.location = (0, 26, 2.5); rim.data.size = 30; rim.data.energy = 9000; rim.data.color = (0.55, 0.85, 1)
+    rim = bpy.data.objects['Rim']; rim.location = (0, 40, 3); rim.data.size = 40; rim.data.energy = 14000; rim.data.color = (0.55, 0.85, 1)
     rim.rotation_euler = (math.radians(95), 0, math.pi)
-    bpy.data.objects['Key'].location = (13, -3, 5); bpy.data.objects['Key'].data.energy = 1400
+    bpy.data.objects['Key'].location = (13, -3, 7); bpy.data.objects['Key'].data.energy = 1600
     me = water.data
     base = np.zeros(len(me.vertices) * 3, np.float32); me.vertices.foreach_get('co', base); base = base.reshape(-1, 3)
     r = np.hypot(base[:, 0], base[:, 1])
-    stone = mesh_obj('stone', sphere(0.5, 8, 6), mat('Stone', (0.54, 0.56, 0.6), rough=0.9, coat=0), smooth=False)
+    stone = mesh_obj('stone', sphere(0.55, 8, 6), mat('Stone', (0.54, 0.56, 0.6), rough=0.9, coat=0), smooth=False)
     w.node_tree.nodes['Background'].inputs['Strength'].default_value = 1.0
-    try:  # fog-like fade: mist is not in EEVEE alpha, so fade the water to transparent far away instead (alpha blend)
+    try:  # fade the water to transparent far away (alpha blend), centred a bit behind the splash so the near water stays solid
         mw = water.data.materials[0]; mw.surface_render_method = 'BLENDED'
         p = next(n for n in mw.node_tree.nodes if n.type == 'BSDF_PRINCIPLED')
         tc = mw.node_tree.nodes.new('ShaderNodeTexCoord'); gr = mw.node_tree.nodes.new('ShaderNodeTexGradient'); gr.gradient_type = 'SPHERICAL'
-        mp = mw.node_tree.nodes.new('ShaderNodeMapping'); mp.inputs['Scale'].default_value = (0.11, 0.11, 0.11)
+        mp = mw.node_tree.nodes.new('ShaderNodeMapping'); mp.inputs['Scale'].default_value = (0.055, 0.055, 0.055); mp.inputs['Location'].default_value = (0, -0.1, 0)
         mw.node_tree.links.new(tc.outputs['Object'], mp.inputs['Vector']); mw.node_tree.links.new(mp.outputs['Vector'], gr.inputs['Vector'])
         mw.node_tree.links.new(gr.outputs['Fac'], p.inputs['Alpha'])
     except Exception as e:
         print('fade off', e)
 
     def upd(f):
-        t = f / 30; drop = 1.4  # Aly review 1: the stone falls from FAR (high above), not from just over the water
+        t = f / 30; drop = 1.5; H0 = 12.0
         z = np.zeros_like(r)
         for k in range(8):  # a new stone every 3.5 s keeps rings on screen the whole piece
             tt = t - drop - 3.5 * k; front = tt * 3.2
             if tt > 0:
                 m_ = r < front
-                z[m_] += 0.45 * np.sin((r[m_] - front) * 2.4) * np.exp(-r[m_] * 0.18) * np.exp(-(front - r[m_]) * 0.25)
+                z[m_] += 0.5 * np.sin((r[m_] - front) * 2.4) * np.exp(-r[m_] * 0.14) * np.exp(-(front - r[m_]) * 0.22)
         co = base.copy(); co[:, 2] = z
         me.vertices.foreach_set('co', co.ravel()); me.update()
         tl = (t - drop) % 3.5 if t >= drop else t - drop  # time since the last stone hit
         tn = 3.5 - tl if t >= drop else drop - t           # time until the next stone hits
-        H0 = 11 if A.res[1] > A.res[0] else 5  # portrait shows the whole fall
-        sz = H0 * (tn / drop) ** 2 if tn < drop else (-1.5 - tl * 0.6 if tl < 1 else H0 + 4)
+        sz = H0 * (tn / drop) ** 2 if tn < drop else (-1.5 - tl * 0.6 if tl < 1 else H0 + 6)
         stone.location = (0, 0, sz); stone.hide_render = sz < -1.4
+        stone.rotation_euler = (t * 2.1, t * 1.3, 0)
 
 elif S == 'molecules':
-    look((4.5, -16.5, 4.5), (0, 0, 0))
+    look((2.4, -17.5, 1.6), (-0.6, 0, 0))
     bar = A.bar
-    air = Air(x0=-3.8 if bar else -4.6)
+    air = Air(nz=13, x0=-3.8 if bar else -4.6)
     if bar:
-        metal = mesh_obj('bar', cube(0.35, 2.4, 3.6), mat('Metal', (0.8, 0.83, 0.87), metal=1, rough=0.22))
-        stick = mesh_obj('stick', cyl(0.09, 0.09, 3, 12), mat('Wood', (0.55, 0.35, 0.17), rough=0.8, coat=0))
+        metal = mesh_obj('bar', cube(0.35, 2.6, 7.8), mat('Metal', (0.8, 0.83, 0.87), metal=1, rough=0.22))
+        stick = mesh_obj('stick', cyl(0.11, 0.11, 3.4, 12), mat('Wood', (0.55, 0.35, 0.17), rough=0.8, coat=0))
 
     def upd(f):
         t = f / 30; hit = 1.0 if bar else 0.3; front = max(0, (t - hit) * 3.5)
@@ -215,46 +218,76 @@ elif S == 'molecules':
             sh = 0.08 * math.sin(t * 60) * math.exp(-(t - hit) * 0.8) if t > hit else 0
             metal.location = (-4.9 + sh, 0, 0)
             st = min(1, t / hit)
-            stick.location = (-5.8 - 1.4 * (1 - st), 0, 1.0 + 1.2 * (1 - st)); stick.rotation_euler = (0, 0.9 - 0.9 * st, 0)
+            stick.location = (-5.9 - 1.4 * (1 - st), 0, 2.2 + 1.2 * (1 - st)); stick.rotation_euler = (0, 0.9 - 0.9 * st, 0)
 
 elif S == 'mic':
-    look((5.5, -17, 4.5), (-0.6, 0, -0.6))
-    air = Air(nx=14, x0=-4.4, x1=0.4, origin=(-1.6, 0, 0.6))
+    # a COMPLETE studio mic (Aly review 1): side-address capsule with a wire grille and the gold diaphragm inside, body, shock mount,
+    # stand + base, cable to a laptop that draws what the diaphragm records. The wave comes from the left at head height.
+    look((4.2, -16, 0.6), (-0.4, 0, -0.4))
+    HZ = 3.4  # head height
+    air = Air(nx=12, ny=4, nz=6, x0=-4.8, x1=-0.6, origin=(0, 0, HZ))
     metal = mat('Grille', (0.79, 0.82, 0.86), metal=1, rough=0.3)
-    # capsule: open grille (wire), ring, gold diaphragm, body; mic axis = +x (the wave comes from the left)
-    gr = mesh_obj('grille', sphere(1.45, 20, 12), metal, loc=(0.9, 0, 0.6), rot=(0, math.pi / 2, 0))
-    wm = gr.modifiers.new('wire', 'WIREFRAME'); wm.thickness = 0.03
-    ring = mesh_obj('ring', torus(1.35, 0.08), metal, loc=(0.9, 0, 0.6), rot=(0, math.pi / 2, 0))
-    dia = mesh_obj('dia', cyl(1.25, 1.25, 0.06), mat('Gold', GOLD, metal=0.7, rough=0.25, emit=1.2), loc=(0.9, 0, 0.6), rot=(0, math.pi / 2, 0))
-    body = mesh_obj('body', cyl(1.35, 0.9, 3.2, 40), mat('Body', (0.16, 0.2, 0.26), metal=0.6, rough=0.35), loc=(2.6, 0, 0.6), rot=(0, math.pi / 2, 0))
-    # computer screen facing the camera + the recorded line
-    scr = mesh_obj('screen', cube(3.4, 0.1, 1.8), mat('Screen', (0.05, 0.08, 0.15), rough=0.4, emit=0.3), loc=(3.0, -2.5, -2.4))
+    dark = mat('Body', (0.14, 0.17, 0.22), metal=0.6, rough=0.35)
+    gr = mesh_obj('grille', sphere(1.25, 22, 14), metal, loc=(1.1, 0, HZ)); gr.scale = (1, 1, 1.35)
+    wm = gr.modifiers.new('wire', 'WIREFRAME'); wm.thickness = 0.035
+    band = mesh_obj('band', torus(1.27, 0.09), metal, loc=(1.1, 0, HZ - 1.45))
+    dia = mesh_obj('dia', cyl(0.85, 0.85, 0.05), mat('Gold', GOLD, metal=0.7, rough=0.25, emit=1.3), loc=(1.1, 0, HZ), rot=(0, math.pi / 2, 0))
+    ring = mesh_obj('ring', torus(0.9, 0.05), mat('GoldR', GOLD, metal=0.8, rough=0.3), loc=(1.1, 0, HZ), rot=(0, math.pi / 2, 0))
+    body = mesh_obj('body', cyl(1.05, 0.85, 3.6, 40), dark, loc=(1.1, 0, HZ - 3.3))
+    dot = mesh_obj('logo', cyl(0.18, 0.18, 0.05, 24), mat('Dot', GOLD, metal=0.8, emit=0.8), loc=(1.1, -1.0, HZ - 2.3), rot=(math.pi / 2, 0, 0))
+    clip = mesh_obj('clip', cyl(0.95, 0.95, 0.35, 40), metal, loc=(1.1, 0, HZ - 3.2))
+    yoke = mesh_obj('yoke', cube(0.12, 0.12, 1.4), metal, loc=(1.1, 0, HZ - 3.75))
+    pole = mesh_obj('pole', cyl(0.12, 0.12, 4.6, 16), metal, loc=(1.1, 0, HZ - 6.7))
+    base_ = mesh_obj('base', cyl(1.7, 1.9, 0.25, 48), dark, loc=(1.1, 0, HZ - 9.1))
+    # laptop on the left at the bottom: screen facing the camera + the recorded line
+    lapz = HZ - 7.6
+    scr = mesh_obj('screen', cube(3.6, 0.1, 2.2), mat('Screen', (0.05, 0.08, 0.15), rough=0.4, emit=0.3), loc=(-2.6, 0, lapz + 1.1))
+    lid = mesh_obj('lid', cube(3.8, 0.08, 2.4), mat('Lid', (0.5, 0.53, 0.58), metal=0.8, rough=0.35), loc=(-2.6, 0.09, lapz + 1.1))
+    kb = mesh_obj('kb', cube(3.8, 2.4, 0.12), mat('Kb', (0.5, 0.53, 0.58), metal=0.8, rough=0.35), loc=(-2.6, -1.1, lapz - 0.05))
+    cab = bpy.data.curves.new('cable', 'CURVE'); cab.dimensions = '3D'; cab.bevel_depth = 0.06
+    sc_ = cab.splines.new('BEZIER'); sc_.bezier_points.add(1)
+    for bp, co_, hl, hr in [(sc_.bezier_points[0], (1.1, 0.3, HZ - 4.6), (1.1, 0.3, HZ - 4.0), (1.1, 0.4, HZ - 6.5)),
+                            (sc_.bezier_points[1], (-0.7, -0.6, lapz + 0.1), (0.2, -0.3, lapz - 0.5), (-1.0, -0.7, lapz + 0.2))]:
+        bp.co, bp.handle_left, bp.handle_right = co_, hl, hr
+    cob = bpy.data.objects.new('cable', cab); sc.collection.objects.link(cob); cab.materials.append(mat('CableM', (0.08, 0.08, 0.1), rough=0.6, coat=0))
     cu = bpy.data.curves.new('rec', 'CURVE'); cu.dimensions = '3D'; cu.bevel_depth = 0.05; sp = cu.splines.new('POLY'); sp.points.add(89)
     line = bpy.data.objects.new('rec', cu); sc.collection.objects.link(line); cu.materials.append(mat('Line', TEAL, emit=4))
 
     def upd(f):
         t = f / 30; front = t * 3.2
-        air.set(t, lambda x: 0.2 if (x + 6 < front and x < 0.6) else 0)
-        d = 0.28 * math.sin(2.2 * 1.3 - 5 * t) * (1 if front > 6.6 else 0)
-        dia.location = (0.9 + d, 0, 0.6)
+        air.set(t, lambda x: 0.2 if x + 6 < front else 0)
+        hit = front > 6.2
+        d = 0.22 * math.sin(2.2 * 1.3 - 5 * t) * (1 if hit else 0)
+        dia.location = (1.1 + d, 0, HZ); ring.location = (1.1 + d * 0.3, 0, HZ)
         rec = max(0, t - 2.1)
         for i, p in enumerate(sp.points):
             u = i / 89; age = u * min(rec, 3)
-            p.co = (1.6 + u * 2.8, -2.6, -2.4 + (0.4 * math.sin(1.3 * 2.2 - 5 * (t - age)) if rec > 0 else 0), 1)
+            p.co = (-4.1 + u * 3.0, -0.1, lapz + 1.1 + (0.45 * math.sin(1.3 * 2.2 - 5 * (t - age)) if rec > 0 else 0), 1)
         line.hide_render = rec <= 0
 
 elif S == 'speaker':
-    look((6.5, -16, 4.5), (0.8, 0, 0))
-    air = Air(nx=16, x0=0.6, x1=5.6, origin=(0.6, 0, 0.6))
-    box = mesh_obj('box', cube(2.2, 3, 4.4), mat('Box', (0.1, 0.13, 0.2), rough=0.5, coat=0.4), loc=(-2.6, 0, 0.6))
-    cone = mesh_obj('cone', cyl(1.5, 0.15, 0.9, 48, cap=False), mat('Cone', (0.42, 0.47, 0.56), rough=0.45), loc=(-1.45, 0, 0.6), rot=(0, -math.pi / 2, 0))
-    surround = mesh_obj('surr', torus(1.55, 0.1), mat('GoldR', GOLD, metal=0.8, rough=0.3), loc=(-1.5, 0, 0.6), rot=(0, math.pi / 2, 0))
-    dome = mesh_obj('dome', sphere(0.35), mat('Gold', GOLD, metal=0.8, rough=0.25, emit=0.6), loc=(-1.1, 0, 0.6))
+    # a COMPLETE speaker (Aly review 1): tall cabinet, woofer (cone + gold surround + dust cap), tweeter, port, feet; the woofer pushes
+    # the air to the right, the same wave again
+    look((6.5, -15.5, 1.2), (0.9, 0, 0))
+    air = Air(nx=15, ny=4, nz=12, x0=0.4, x1=5.2, origin=(0.5, 0, -0.4))
+    cabm = mat('Box', (0.1, 0.13, 0.2), rough=0.5, coat=0.4)
+    box = mesh_obj('box', cube(2.4, 3.2, 7.2), cabm, loc=(-2.4, 0, 0))
+    FX = -1.2  # front face
+    woofer_z, tw_z = -1.4, 2.2
+    cone = mesh_obj('cone', cyl(1.3, 0.15, 0.8, 48, cap=False), mat('Cone', (0.42, 0.47, 0.56), rough=0.45), loc=(FX - 0.3, 0, woofer_z), rot=(0, -math.pi / 2, 0))
+    surround = mesh_obj('surr', torus(1.36, 0.1), mat('GoldR', GOLD, metal=0.8, rough=0.3), loc=(FX - 0.02, 0, woofer_z), rot=(0, math.pi / 2, 0))
+    frame = mesh_obj('frame', torus(1.55, 0.07), mat('Frame', (0.3, 0.32, 0.36), metal=0.9, rough=0.3), loc=(FX + 0.02, 0, woofer_z), rot=(0, math.pi / 2, 0))
+    dome = mesh_obj('dome', sphere(0.32), mat('Gold', GOLD, metal=0.8, rough=0.25, emit=0.6), loc=(FX + 0.05, 0, woofer_z))
+    tw = mesh_obj('tw', sphere(0.42), mat('Tw', (0.75, 0.78, 0.82), metal=1, rough=0.2), loc=(FX - 0.15, 0, tw_z))
+    twr = mesh_obj('twr', torus(0.6, 0.07), mat('Frame2', (0.3, 0.32, 0.36), metal=0.9, rough=0.3), loc=(FX + 0.02, 0, tw_z), rot=(0, math.pi / 2, 0))
+    port = mesh_obj('port', torus(0.35, 0.08), mat('Port', (0.05, 0.05, 0.07), rough=0.6), loc=(FX + 0.02, 0, -3.2), rot=(0, math.pi / 2, 0))
+    for k, yy in enumerate((-1.2, 1.2)):
+        mesh_obj(f'foot{k}', cyl(0.25, 0.3, 0.3, 16), cabm, loc=(-2.4, yy, -3.75))
 
     def upd(f):
         t = f / 30; c = 0.18 * math.sin(5 * t); front = max(0, (t - 0.5) * 3.2)
-        cone.location = (-1.45 + c, 0, 0.6); dome.location = (-1.1 + c, 0, 0.6)
-        air.set(t, lambda x: 0.2 if (x - 0.6 < front and x > 0.6) else 0)
+        cone.location = (FX - 0.3 + c, 0, woofer_z); dome.location = (FX + 0.05 + c, 0, woofer_z)
+        air.set(t, lambda x: 0.2 if (x - 0.4 < front and x > 0.4) else 0)
 else:
     raise SystemExit('unknown scene ' + S)
 
