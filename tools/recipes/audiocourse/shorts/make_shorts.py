@@ -104,11 +104,16 @@ def build(n):
             env.append(float(np.clip(((np.max(seg) if len(seg) else -60) + 45) / 30, 0, 1)))
         env += [0.0] * int(round(GAP * FPS))
         show = pc.get('show', 'screen')
+        isscr = lambda q: 0 <= q < len(plan) and plan[q][0].get('show', 'screen') == 'screen'
+        cin, cout = isscr(k - 1), isscr(k + 1)  # one continuous card through screen pieces (Aly: one video, not separate shots)
         if show == 'screen':
             src = pc.get('src', a)
             keys = [dict(t=0, **pc['crop'])] + [dict(t=round(zt - src, 2), **zc) for zt, zc in pc.get('zoom', [])]
+            if cin:  # glide from where the last piece ended to this crop
+                prev = plan[k - 1][0]; pz = prev.get('zoom', [])
+                keys = [dict(t=0, **(pz[-1][1] if pz else prev['crop'])), dict(t=0.45, **pc['crop'])] + keys[1:]
             marks = sorted([dict(t=round(c[0] - src, 2), d=1.4, x=c[1], y=c[2], r=26, w=(c[3] if len(c) > 3 else 0), h=(c[4] if len(c) > 4 else 0), label='') for c in pc.get('clicks', [])], key=lambda m: m['t'])  # (t, x, y[, w, h]) w/h = size of the clicked word
-            screens.append(dict(t=round(t, 3), d=round(d, 3), file=PUB + 'course.mp4', **{'from': src}, keys=keys, marks=marks, y=740, dual=None))
+            screens.append(dict(t=round(t, 3), d=round(d + (GAP if cout else 0), 3), file=PUB + 'course.mp4', **{'from': src}, keys=keys, marks=marks, y=740, dual=None, cin=cin, cout=cout))
             for m in marks: sfx.append(dict(t=round(t + m['t'], 3), file='sfx/click.wav', vol=0.25))
         elif show.startswith('big:'):
             txt, _, sub = show[4:].partition('|')
@@ -129,7 +134,7 @@ def build(n):
             cues.append(dict(t=round(t + kw[2], 3), d=3.0, k='Kw', p=dict(en=kw[0], ar=kw[1])))
         if pc.get('key'):
             cues.append(dict(t=round(t + pc['key'][2], 3), d=round(min(3.5, d - pc['key'][2]), 3), k='Key', p=dict(keys=pc['key'][0], ar=pc['key'][1])))
-        sfx.append(dict(t=round(t, 3), file='sfx/whoosh_1.wav', vol=0.12))
+        if not (show == 'screen' and cin): sfx.append(dict(t=round(t, 3), file='sfx/whoosh_1.wav', vol=0.12))
         t += d + GAP
     end_at = round(t + 0.1, 3)
     end = dict(at=end_at, d=SD.END_D, thumb=PUB + 'pics/audio_course_thumb.jpg', qr=PUB + 'qr/audio_course.png', title='الكورس الكامل على القناة')

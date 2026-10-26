@@ -27,7 +27,8 @@ export const courseShortSchema = z.object({
   voice: z.array(z.object({file: z.string(), from: z.number(), to: z.number(), at: z.number(), gain: z.number().default(1)})).default([]),
   screens: z.array(z.object({t: z.number(), d: z.number(), file: z.string(), from: z.number(), keys: z.array(z.object({t: z.number(), sx: z.number(), sy: z.number(), sw: z.number()})).default([]),
     marks: z.array(z.object({t: z.number(), d: z.number(), x: z.number(), y: z.number(), r: z.number().default(46), w: z.number().default(0), h: z.number().default(0), label: z.string().default('')})).default([]), y: z.number().default(980),
-    dual: z.object({top: z.object({sx: z.number(), sy: z.number(), sw: z.number()}), bottom: z.object({sx: z.number(), sy: z.number(), sw: z.number()})}).nullable().default(null), under: z.boolean().default(false)})).default([]),
+    dual: z.object({top: z.object({sx: z.number(), sy: z.number(), sw: z.number()}), bottom: z.object({sx: z.number(), sy: z.number(), sw: z.number()})}).nullable().default(null), under: z.boolean().default(false),
+    cin: z.boolean().default(false), cout: z.boolean().default(false)})).default([]), // cin/cout: the card stays from the screen piece before/after (one video, not separate shots)
   cues: z.array(cue).default([]),
   cta: z.object({file: z.string(), at: z.number(), d: z.number(), qr: z.string(), vol: z.number().default(1), word: z.string().default('كورس'), thumb: z.string().nullable().default(null)}).nullable().default(null),
   music: z.array(z.object({t: z.number(), d: z.number(), file: z.string(), from: z.number().default(0), vol: z.number().default(0.06)})).default([]),
@@ -171,8 +172,8 @@ const Fix: React.FC<{text: string; src: string; dur: number}> = ({text, src, dur
 };
 
 // ---------- his screen recording, big, with zoom keys and gold click marks ----------
-const ScreenCard: React.FC<{file: string; from: number; d: number; keys: {t: number; sx: number; sy: number; sw: number}[]; marks: {t: number; d: number; x: number; y: number; r: number; w?: number; h?: number; label: string}[]; y: number; acc: string}> = (
-  {file, from, d, keys, marks, y, acc}) => {
+const ScreenCard: React.FC<{file: string; from: number; d: number; keys: {t: number; sx: number; sy: number; sw: number}[]; marks: {t: number; d: number; x: number; y: number; r: number; w?: number; h?: number; label: string}[]; y: number; acc: string; cin?: boolean; cout?: boolean}> = (
+  {file, from, d, keys, marks, y, acc, cin = false, cout = false}) => {
   const {w: SRCW, h: SRCH} = useSrc();
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
@@ -184,7 +185,8 @@ const ScreenCard: React.FC<{file: string; from: number; d: number; keys: {t: num
   const k = b === a ? 0 : lin(f, b.t * fps - 12, b.t * fps, 0, 1, Easing.inOut(Easing.cubic));
   const sx = a.sx + (b.sx - a.sx) * k, sy = a.sy + (b.sy - a.sy) * k, sw = a.sw + (b.sw - a.sw) * k;
   const sc = W / sw;
-  const pIn = spr(f, fps, 0, 140, 16), o = 1 - lin(f, d * fps - 8, d * fps);
+  // Aly 2026-10-26 (reel 26): "لقطات متفرقة مش فيديو على بعضه" -> between two screen pieces the card does not pop out and in again
+  const pIn = cin ? 1 : spr(f, fps, 0, 140, 16), o = cout ? 1 : 1 - lin(f, d * fps - 8, d * fps);
   return (
     <div style={{position: 'absolute', left: 520 - W / 2 + 8, top: CTOP, transform: `scale(${0.9 + 0.1 * pIn})`, opacity: Math.min(1, pIn * 1.4) * o}}>
       <Glass w={W + 24} pad={12} r={34} glow={acc}>
@@ -406,7 +408,7 @@ export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues
       {screens.map((s, i) => !live(s.t, s.d) ? null : (
         <Sequence key={'s' + i} from={fr(s.t)} durationInFrames={fr(s.d)} layout="none">
           {s.dual ? <DualCard file={s.file} from={s.from} d={s.d} top={s.dual.top} bottom={s.dual.bottom} acc={L.acc} under={s.under} marks={s.marks} />
-            : <ScreenCard file={s.file} from={s.from} d={s.d} keys={s.keys} marks={s.marks} y={s.y} acc={L.acc} />}
+            : <ScreenCard file={s.file} from={s.from} d={s.d} keys={s.keys} marks={s.marks} y={s.y} acc={L.acc} cin={s.cin} cout={s.cout} />}
         </Sequence>
       ))}
       {cues.map((c, i) => {

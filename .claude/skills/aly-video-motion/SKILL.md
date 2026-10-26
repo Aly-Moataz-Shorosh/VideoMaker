@@ -304,3 +304,6 @@ Writer: tools/recipes/graphictablet/write_meta.py.
 - Hook strong and fast: real "before" sound → what it is → real "after" → "بكليكة واحدة" (~17 s), then the steps.
 - A sound demo that plays BEFORE his words must stay (fit() cut one: "مش باين الصوت") → raw piece edges, demo at its own level.
 - Channel logo + name small at the very bottom of every short (his ch_face / ch_name).
+- Review 2 (same day): sessions with students → only HIS voice in a short (cut their questions/answers); the hook of a demo short =
+  just the demo he played; consecutive screen pieces = ONE continuous card (cin/cout) so it reads as one video; drags = the view follows
+  the mouse to the drop point with a box on grab and drop. On a talk without screen: picture rows (IdeaRows, RTL) instead of an icon card.

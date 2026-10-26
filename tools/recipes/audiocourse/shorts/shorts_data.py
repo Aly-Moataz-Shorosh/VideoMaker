@@ -33,13 +33,13 @@ CNP = (361, 257, 74, 14)                 # "Capture Noise Print"
 NRP = (375, 272, 100, 14)                # "Noise Reduction (process)..."
 SHORTS = {
     26: dict(no=26, chapter=25, at='1:25:55', title='صوتك يبقى *تليفون* في ثانية', pieces=[
-        dict(a=5003.2, b=5018.3, crop=PR_ALL, labels=[('الفويس', 'صوتي العادي', 'studio_microphone'), ('استخدمتش', 'من غير برامج تانية', 'cross_mark'), ('اسوات', 'أصوات تانية', 'speaker_high_volume')]),
-        # review 1: "الثانية 20 مش باين الصوت" -> the telephone demo itself was cut out by the edge fit; now raw from the demo start
-        dict(a=5019.9, b=5041.62, raw=True, crop=PR_ALL, bars=True, lab=[(0.2, 'اسمع النتيجة', 'speaker_high_volume', 2.2)], labels=[('تليفون', 'تليفون', 'telephone_receiver')]),
-        dict(a=5150.45, b=5156.7, crop=PR_SRC, labels=[('آلو', 'صوته الأصلي', 'studio_microphone')]),
+        # review 2: hook = ONLY his demo; never the students' voices ("هاتني انا بس"); one continuous screen (cin/cout), not separate shots
+        dict(a=5019.9, b=5029.7, raw=True, crop=PR_ALL, bars=True, lab=[(0.2, 'النتيجة', 'telephone_receiver', 2.6)]),
+        dict(a=5010.6, b=5016.6, crop=PR_ALL, labels=[('استخدمتش', 'من غير برامج تانية', 'cross_mark'), ('اسوات', 'أصوات تانية', 'speaker_high_volume')]),
+        dict(a=5150.45, b=5156.7, crop=PR_SRC, labels=[('آلو', 'صوتي الأصلي', 'studio_microphone')]),
         dict(a=5193.6, b=5211.7, step='Essential Sound ← Dialogue', crop=ESS, clicks=[(5209.4, 1065, 150)], kw=[('Dialogue', 'صوت بني آدم بيتكلم', 9.0)]),
         dict(a=5217.4, b=5230.05, step='Preset ← From the Telephone', crop=ESS, clicks=[(5217.6, 1150, 162)], labels=[('التليفون', 'From the Telephone', 'telephone_receiver')]),
-        dict(a=5274.4, b=5296.05, step='جرّب Default و Podcast', crop=ESS, clicks=[(5276.8, 1150, 162)], labels=[('بودكاست', 'Podcast', 'studio_microphone')]),
+        dict(a=5274.4, b=5291.3, step='جرّب Default و Podcast', crop=ESS, clicks=[(5276.8, 1150, 162)], labels=[('بودكاست', 'Podcast', 'studio_microphone')]),
         dict(a=5296.1, b=5303.6, crop=ESS_Z, lab=[(0.3, 'اختار.. والبرنامج يعمله', 'control_knobs', 3.0)]),
     ]),
     27: dict(no=27, chapter=25, at='1:33:13', title='انفجار.. وصوتك *يتغير* معاه', pieces=[
@@ -48,7 +48,10 @@ SHORTS = {
         dict(a=5045.3, b=5051.7, show='BoomScene', anim=dict(mode='hear', boom=0.11)),
         dict(a=5303.85, b=5309.9, show='BoomScene', anim=dict(mode='plan', boom=0.5)),
         dict(a=5327.25, b=5345.9, step='C = اقطع الصوت عند الكلمة', crop=PR_TL, key=(['C'], 'المقص', 4.0)),
-        dict(a=5346.8, b=5370.5, step='Effects ← Special ← GuitarSuite', crop=dict(sx=0, sy=40, sw=700), zoom=[(5356.0, EFX)], kw=[('GuitarSuite', 'إفكت بيدوّش الصوت', 10.0)]),
+        # review 2: "لما عملت drag لـ GuitarSuite الماوس اتحرك والشاشة متحركتش" -> the view follows the drag to the clip on the timeline
+        dict(a=5346.8, b=5370.5, step='Effects ← Special ← GuitarSuite', crop=dict(sx=0, sy=40, sw=700),
+             zoom=[(5356.0, EFX), (5363.3, dict(sx=0, sy=90, sw=760)), (5364.9, dict(sx=360, sy=380, sw=440))],
+             clicks=[(5363.25, 81, 328, 62, 12), (5364.0, 700, 553, 70, 16)], kw=[('GuitarSuite', 'إفكت بيدوّش الصوت', 10.0)]),
         dict(a=5385.15, b=5404.9, step='حط صوت الانفجار على نفس اللحظة', crop=PR_TL),
         dict(a=5412.5, b=5441.5, step='Essential Sound ← SFX ← Explosion', crop=ESS, kw=[('SFX', 'مؤثر صوتي', 17.0)]),
         dict(a=5453.0, b=5459.5, show='BoomScene', anim=dict(mode='outside')),
@@ -98,12 +101,12 @@ SHORTS[7] = dict(no=7, chapter=6, at='23:33', title='الصوت فعلا *موج
 
 # hand-corrected captions per piece (filled after caption_words.py; never words he didn't say)
 CAP = {
-    26: ['الفويس العادي الخالص اللي أنا سجلته ده.. تعالوا بصوا حولته لإيه.. ما استخدمتش أي إفكت برا.. استخدمت الصوت بتاعي وجبت شوية أصوات تانية وظبطت حاجات.. تعالوا نسمعه بقى',
-        'الموضوع بقى كأني بتكلم.. هنا بقى الصوت كأني بتكلم في تليفون مع واحد.. صوتي كأني بتكلم في تليفون.. مش الصوت الطبيعي',
+    26: ['',
+        'ما استخدمتش أي إفكت برا.. استخدمت الصوت بتاعي وجبت شوية أصوات تانية وظبطت حاجات',
         'وسجلت الصوت بتاعي العادي خالص اللي هو ده.. آلو، سلام عليكم.. أنا اسمي علي معتز',
         'فهنخش على اللي اسمها Audio وهدوس عليها.. هيجيلي بقى: ده Dialogue ولا موسيقى ولا Sound_Effect ولا صوت محيط؟ فهقوله إن ده Dialogue.. يعني ده صوت بني آدم بيتكلم.. فهدوس على Dialogue وبعد كده هختار من الحاجات الجاهزة',
         'فهدوس على Preset وأقول له From_the_Telephone.. فأنا عايز كأني بكلم في التليفون.. فهدوس وأجرب.. فبقيت كأني بتكلم في التليفون',
-        'بصوا الفرق.. أنا هدوس على Default.. وهدوس على Podcast.. بصوا الفرق في الصوت.. اتحول.. آلو، سلام عليكم.. ملحوظ يا جماعة؟ جدا.. حلو جدا',
+        'بصوا الفرق.. أنا هدوس على Default.. وهدوس على Podcast.. بصوا الفرق في الصوت.. اتحول.. آلو، سلام عليكم.. أنا اسمي علي.. وده هنا بنجرب شوية الفلاتر على الأوديو اللي على البريمير برو',
         'فهو دلوقتي واضح جدا الفرق.. بس إني بدوس: أنا عايز الصوت يبقى عامل إزاي.. فخلاص أنا كده عملت الصوت بتاع إني بتكلم في تليفون'],
     27: ['',
         'وفجأة حصل انفجار.. ولما الانفجار حصل أنا فجأة سمعت صوتي اتغير.. وفجأة سمعت صوت وش',
