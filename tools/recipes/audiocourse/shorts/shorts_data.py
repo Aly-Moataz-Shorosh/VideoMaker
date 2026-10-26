@@ -148,3 +148,7 @@ SHORTS[107] = dict(no=7, tag='07v2', chapter=6, at='23:33', title='الصوت ف
     dict(_P4[7], show='BlenderClip', anim=_bf('p_speaker', ('السماعة بتعمل نفس الاهتزازات في الهوا', 1170, 12, None))),
 ])
 CAP[107] = CAP[7]
+
+# the rest of the series (2026-10-27): series_data.py
+import series_data as _S
+SHORTS.update(_S.SHORTS); CAP.update(_S.CAP)

@@ -17,6 +17,8 @@ T = {  # no: (3 titles, description lines, extra tags)
         ['الصوت = ذرات الهوا بتخبط في بعض وبتعمل موجة لحد ما توصلك، زي الطوبة لما تقع في المية.',
          'المايك فيه Diaphragm بيتهز مع الموجة وحركته بتتسجل.. والسماعة بتعمل نفس الاهتزازات تاني.'], ['Diaphragm', 'Sound wave']),
 }
+import txt_series
+T.update(txt_series.T)
 BASE_TAGS = ['كورس الصوت', 'الصوت للفيديو', 'أسرار الصوت', 'مونتاج', 'Aly Shorosh']
 
 for n in map(int, sys.argv[1:]):
