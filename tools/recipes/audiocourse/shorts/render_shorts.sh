@@ -10,7 +10,7 @@ names=()
 for x in "$@"; do
   set -- $x; n=$(printf %02d $1); nm=$2
   T="$PWD/out/tmp_render"; mkdir -p "$T"; export TEMP="$(cygpath -w "$T")" TMP="$(cygpath -w "$T")"; st=$(date +%s)
-  npx remotion render out/bundle_s course-short "$P/output/shorts/_raw/$nm.mp4" --props="$P/work/shorts/props_$n.json" --concurrency=6 --timeout=240000 > "out/render_short_$n.log" 2>&1 \
+  npx remotion render out/bundle_s course-short "$P/output/shorts/_raw/$nm.mp4" --props="$P/work/shorts/props_${PROPS:-$n}.json" --concurrency=6 --timeout=240000 > "out/render_short_$n.log" 2>&1 \
     && echo "$nm OK $(( $(date +%s) - st ))s" || echo "$nm FAILED (out/render_short_$n.log)"
   rm -rf "$T"; names+=("$nm")
 done

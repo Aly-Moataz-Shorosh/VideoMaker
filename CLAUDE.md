@@ -220,4 +220,7 @@ Done (2026-10-06):
   COURSE order -> pilots are now 26 phone, 27 explosion (BoomScene idea scenes `src/course/shortScenes.tsx`), 29 noise (fast hook, word-size
   click boxes, mouse-follow zoom), 07 wave (= 04b, not remade); old pilots in output/shorts/archive/. Channel footer, Fluent label pictures.
   Next 3D: Blender at 1080x1920 full screen (sound_scenes.py default) — scenes must be RE-FRAMED for portrait (test: water edge, mic clipped),
-  stone from far, complete mic/speaker. Waiting for his review of 26/27/29/07 before the other 28.
+  stone from far, complete mic/speaker.
+  Reviews 2-4 (same day): only HIS voice (students cut), one continuous screen card (cin/cout), drag = view follows the mouse, NO two shorts
+  with the same hook/content (check_overlap.py) -> 26+27 MERGED = `26_phone_explosion.mp4` (2:58, explosion heard), series = 31, noise = 28.
+  07 v2 = full-screen Blender clips p_*.webm (sound_scenes.py portrait) + IdeaRows. Old versions in output/shorts/archive/. Waiting for review.
