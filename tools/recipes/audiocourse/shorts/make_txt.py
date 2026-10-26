@@ -1,5 +1,5 @@
 # Titles + description + tags + pinned comment beside every short (Aly's format: starts with 'العناوين:', no YouTube link line,
-# no posting order).  python make_txt.py 1 2 ...   -> output/shorts/<name>.txt (name = the mp4 next to it)
+# no posting order, Aly 2026-10-21).  python make_txt.py 1 2 ...   -> output/shorts/<name>.txt (name = the mp4 next to it)
 import sys
 from pathlib import Path
 import shorts_data as SD
@@ -8,7 +8,7 @@ PROJ = Path(__file__).resolve().parents[2]
 T = {  # no: (3 titles, description lines, extra tags)
     1: (['صوتك يبقى تليفون في ثانية 📞', 'From the Telephone في Premiere', 'إزاي تعمل صوت مكالمة تليفون؟'],
         ['صوتك العادي يتحول لصوت مكالمة تليفون من جوه Premiere، من غير أي برنامج تاني.',
-         'Essential Sound ← Dialogue ← Preset ← From the Telephone.. وجرّب Podcast و In a Large Room.'], ['From the Telephone', 'Essential Sound']),
+         'Essential Sound ← Dialogue ← Preset ← From the Telephone.. وجرّب كمان Podcast وشوف الفرق.'], ['From the Telephone', 'Essential Sound']),
     2: (['انفجار.. وصوتك يتغير معاه 💥', 'صوت مكتوم بعد الانفجار في Premiere', 'GuitarSuite و Explosion في Premiere'],
         ['أول ما الانفجار يحصل الصوت يدوش ويتكتم: اقطع بـ C عند الكلمة، وحط GuitarSuite (Effects ← Special).',
          'صوت الانفجار نفسه: Essential Sound ← SFX ← Explosion.. وخليه جاي من برا.'], ['GuitarSuite', 'SFX', 'Explosion']),
@@ -28,7 +28,7 @@ for n in map(int, sys.argv[1:]):
     name = mp4[0].stem if mp4 else f'{n:02d}'
     txt = ['العناوين:', *titles, '', 'الوصف:', *desc, '',
            f'ده جزء من كورس "أسرار الصوت" الكامل على القناة (نظري + عملي، Premiere و Audition).. الفصل {spec["chapter"]}.',
-           f'الكورس الكامل: {SD.URL}', '', 'الوسوم:', ', '.join(tags + BASE_TAGS), '', 'كومنت مثبت:',
-           f'الكورس الكامل في الوصف 👆 وده الفصل {spec["chapter"]} منه.. عايز شورت عن إيه بعد كده؟']
+           '', 'الوسوم:', ', '.join(tags + BASE_TAGS), '', 'كومنت مثبت:',
+           f'الكورس الكامل على القناة 👆 وده الفصل {spec["chapter"]} منه.. عايز شورت عن إيه بعد كده؟']
     (PROJ / f'output/shorts/{name}.txt').write_text('\n'.join(txt), encoding='utf-8')
     print(name)

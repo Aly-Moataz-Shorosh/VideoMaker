@@ -161,7 +161,12 @@ elif S == 'ripple':
     look((0, -13, 9), (0, 0, -0.5))
     N = 220
     bm = bmesh.new(); bmesh.ops.create_grid(bm, x_segments=N, y_segments=N, size=20)
-    water = mesh_obj('water', bm, mat('Water', (0.11, 0.44, 0.64), rough=0.08, coat=1, metal=0.1))
+    water = mesh_obj('water', bm, mat('Water', (0.16, 0.56, 0.82), rough=0.12, coat=0.7, metal=0.0))
+    # the big area lights mirrored in the flat water looked like a pale blob (2026-10-26): key from the side, the rim far and low behind
+    # (a wide soft sky: the ripples catch it as bright rings, the flat water stays dark)
+    rim = bpy.data.objects['Rim']; rim.location = (0, 26, 2.5); rim.data.size = 30; rim.data.energy = 9000; rim.data.color = (0.55, 0.85, 1)
+    rim.rotation_euler = (math.radians(95), 0, math.pi)
+    bpy.data.objects['Key'].location = (13, -3, 5); bpy.data.objects['Key'].data.energy = 1400
     me = water.data
     base = np.zeros(len(me.vertices) * 3, np.float32); me.vertices.foreach_get('co', base); base = base.reshape(-1, 3)
     r = np.hypot(base[:, 0], base[:, 1])
@@ -178,14 +183,18 @@ elif S == 'ripple':
         print('fade off', e)
 
     def upd(f):
-        t = f / 30; drop = 1.2; tt = t - drop; front = tt * 3.2
+        t = f / 30; drop = 1.2
         z = np.zeros_like(r)
-        if tt > 0:
-            m_ = r < front
-            z[m_] = 0.45 * np.sin((r[m_] - front) * 2.4) * np.exp(-r[m_] * 0.18) * np.exp(-(front - r[m_]) * 0.12)
+        for k in range(8):  # a new stone every 3.5 s keeps rings on screen the whole piece
+            tt = t - drop - 3.5 * k; front = tt * 3.2
+            if tt > 0:
+                m_ = r < front
+                z[m_] += 0.45 * np.sin((r[m_] - front) * 2.4) * np.exp(-r[m_] * 0.18) * np.exp(-(front - r[m_]) * 0.25)
         co = base.copy(); co[:, 2] = z
         me.vertices.foreach_set('co', co.ravel()); me.update()
-        sz = 5 - 5 * (t / drop) ** 2 if t < drop else -1.5 - (t - drop) * 0.6
+        tl = (t - drop) % 3.5 if t >= drop else t - drop  # time since the last stone hit
+        tn = 3.5 - tl if t >= drop else drop - t           # time until the next stone hits
+        sz = 5 * (1 - (1 - min(1, tn / drop)) ** 0) * (tn / drop) ** 2 if tn < drop else (-1.5 - tl * 0.6 if tl < 1 else 9)
         stone.location = (0, 0, sz); stone.hide_render = sz < -1.4
 
 elif S == 'molecules':

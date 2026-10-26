@@ -1,4 +1,5 @@
-# Final loudness of the rendered shorts (gain only, his voice is not processed): body (before the end card) -> -16 LUFS, peak <= -1 dB.
+# Final loudness of the rendered shorts: gain to -16 LUFS for the body (before the end card) + a peak limiter at -1 dB (touches only
+# the few peaks; without it the peak rule pulled some shorts down to -19 LUFS). His voice is not otherwise processed.
 # When his CTA clip is in (shorts_data.CTA_FILE), the CTA goes 1.5 dB UNDER the body (Aly 2026-10-18, Premiere series).
 # Video re-encoded like Aly's own `ffmpeg -i in out` (libx264 CRF 23 + AAC) to keep shorts small.
 #   python level_shorts.py 01_phone 02_explosion   (names in output/shorts/_raw)
@@ -29,6 +30,7 @@ for nm in sys.argv[1:]:
     for _ in range(4):
         chain = [f"volume={-16 - body - trim:.2f}dB" + (f":enable='lt(t,{p['cta']['at']})'" if cta is not None else '')]
         if cta is not None: chain.append(f"volume={-17.5 - cta - trim:.2f}dB:enable='gte(t,{p['cta']['at']})'")
+        chain.append('alimiter=limit=0.84:level=false:attack=2:release=60')  # only the few peaks (session claps, clicks): same -16 LUFS in every short (cs ep01 shorts)
         tmp = out.with_suffix('.part.mp4')
         subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(raw), '-c:v', 'libx264', '-crf', '23', '-preset', 'medium', '-af', ','.join(chain), '-c:a', 'aac', '-b:a', '192k',
                         '-movflags', '+faststart', str(tmp)], check=True)
