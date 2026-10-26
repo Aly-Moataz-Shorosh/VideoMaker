@@ -216,4 +216,8 @@ Done (2026-10-06):
   in BLENDER 5.2 (`tools/blender/sound_scenes.py` -> webm alpha clips `public/projects/audio/b3d/`, scene `BlenderClip`; Blender at
   `E:/root/_assets/programs/Blender Foundation/Blender 5.2`, GTX 1050 Ti, EEVEE ~1-3 s/frame). blender-skills repo in `tools/external/` (ignored).
   Scripts project work/scripts (archived `tools/recipes/audiocourse/shorts/`), level = -16 LUFS + peak limiter. Aly will record a NEW CTA for
-  this course (Premiere CTA says "بريمير") -> add it to the end later. Waiting for his review of the pilots (three.js vs Blender).
+  this course (Premiere CTA says "بريمير") -> add it to the end later. Review 1 (same day): Blender wins (04b), series numbered in
+  COURSE order -> pilots are now 26 phone, 27 explosion (BoomScene idea scenes `src/course/shortScenes.tsx`), 29 noise (fast hook, word-size
+  click boxes, mouse-follow zoom), 07 wave (= 04b, not remade); old pilots in output/shorts/archive/. Channel footer, Fluent label pictures.
+  Next 3D: Blender at 1080x1920 full screen (sound_scenes.py default) — scenes must be RE-FRAMED for portrait (test: water edge, mic clipped),
+  stone from far, complete mic/speaker. Waiting for his review of 26/27/29/07 before the other 28.
