@@ -226,4 +226,6 @@ Done (2026-10-06):
   07 v2 = full-screen Blender clips p_*.webm (sound_scenes.py portrait) + IdeaRows. Old versions in output/shorts/archive/. 
   2026-10-27 night (Aly 'كمل'): the rest of the series rendered = 29 shorts in output/shorts (all but 03/04 = film examples, held: Content ID)
   + .txt each. Data: project work/scripts series_data.py..series_data5.py + txt_series.py (archived tools/recipes/audiocourse/shorts/).
-  Band title <= ~27 Arabic chars. No new 3D yet (theory = course anims + Fluent IdeaRows). Waiting for his review.
+  Band title <= ~27 Arabic chars. No new 3D yet (theory = course anims + Fluent IdeaRows).
+  2026-10-27 Aly: "اعمل 03 و 04 بمقاطع الأفلام زي الكورس" -> 03_film_music_comedy (1:44, Mickey + King of Comedy) and 04_sound_in_his_head
+  (2:22, Wrestler hook + Raging Bull): films shown AND heard (raw pieces) + FilmTag cue (piece key `film`), series_data6.py. All 31 done. Waiting for review.
