@@ -18,7 +18,8 @@ SHORTS = {
         dict(a=5906.99, b=5930.1, show='IdeaRows', anim=dict(rows=[
             dict(at=0.3, y=520, pics=['level_slider', 'muted_speaker'], tag='نظبط صوت ونشيل الدوشة'),
             dict(at=10.0, y=880, pics=['studio_microphone', 'laptop'], tag='أو نسجل عليه على طول', c='#8B5CF6')])),
-        dict(a=5945.62, b=6009.2, crop=AU_FILES, zoom=[(6001.5, AU_W)], kw=[('Files', 'حط الفيديو هنا', 18.5)], lab=[(48.5, 'Left و Right', 'headphone', 2.4)]),
+        dict(a=5945.62, b=6009.2, crop=dict(sx=330, sy=40, sw=560), zoom=[(5956.6, dict(sx=0, sy=20, sw=700)), (5960.0, AU_FILES), (6001.5, AU_W)],  # Aly 2026-10-27 "جايب الصورة على المكتب مش عليا": open on HIM in his old video, then the drag + Files panel
+             kw=[('Files', 'حط الفيديو هنا', 18.5)], lab=[(48.5, 'Left و Right', 'headphone', 2.4)]),
         dict(a=6041.35, b=6061.9, crop=AU_DOTS, kw=[('Bit depth', 'كام قيمة ممكن تاخدها كل نقطة', 1.0)]),
     ]),
     29: dict(no=29, chapter=29, at='1:53:18', title='Presets والإفكتات في *Audition*', pieces=[

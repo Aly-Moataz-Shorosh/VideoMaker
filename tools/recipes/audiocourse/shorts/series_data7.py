@@ -37,7 +37,7 @@ R = {  # (short, piece start a) -> new piece(s)
     (22, 4155.27): [dict(a=4155.27, b=4171.1, crop=dict(sx=220, sy=60, sw=760))],
     (22, 4222.5): [dict(a=4222.5, b=4253.2, crop=dict(sx=230, sy=80, sw=600), labels=[('سيستمز', 'Single / Double system', 'video_camera')])],
     (27, 5906.99): [dict(a=5906.99, b=5916.4, src=6330.0, crop=AU_WAVE, labels=[('ازبطه', 'صوت عايز أظبطه', 'level_slider')]),
-                    dict(a=5916.4, b=5930.1, src=5946.0, crop=dict(sx=180, sy=40, sw=760), labels=[('بودكاست', 'أو أسجل عليه', 'studio_microphone')])],
+                    dict(a=5916.4, b=5930.1, src=2972.0, crop=dict(sx=230, sy=40, sw=760), labels=[('بودكاست', 'أو أسجل عليه', 'studio_microphone')])],
     (31, 7203.31): [dict(a=7203.31, b=7214.0, src=4253.5, crop=H5, labels=[('زوم', 'مسجل صوت Zoom', 'studio_microphone')]),
                     dict(a=7214.0, b=7221.0, src=7220.0, crop=AU_WAVE, labels=[('اوديشن', 'أو اللابتوب: Audition', 'laptop')])],
     (31, 7240.26): [dict(a=7240.26, b=7282.6, show='HeadMonitor'),
