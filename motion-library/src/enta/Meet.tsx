@@ -80,7 +80,7 @@ export const MeetStage: React.FC<{source: string; tiles: MeetTiles; cues: Cue[];
         ))}
         </div>
         {/* inner dark ring + soft inner shadow: the Meet tile's own corners and blue speaking border never show at our corners (Aly 2026-10-27) */}
-        <div style={{position: 'absolute', inset: 0, borderRadius: 28, boxShadow: 'inset 0 0 0 6px #121419, inset 0 0 22px 6px rgba(0,0,0,.55)', pointerEvents: 'none', zIndex: 2}} />
+        <div style={{position: 'absolute', inset: 0, borderRadius: 28, boxShadow: 'inset 0 0 0 6px #121419, inset 0 0 22px 6px rgba(0,0,0,.55)', pointerEvents: 'none'}} />  {/* no zIndex: it painted this ring ON TOP of the full-screen boards (review 2026-10-27) */}
         {(tiles.masks ?? []).filter((m) => m.who === who).map((m, i) => {
           const L = (m.box[0] - t[0]) * s, T = (m.box[1] - t[1]) * s, w = m.box[2] * s, h = m.box[3] * s;
           return m.tag ? (
