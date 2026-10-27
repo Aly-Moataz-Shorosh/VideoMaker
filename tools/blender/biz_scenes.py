@@ -485,9 +485,10 @@ def scene_three(N):
         cx = -5.2 + 5.2 * E2(f, 50, 72) + 5.2 * E2(f, 84, 106)
         k = E2(f, 116, 176)
         cx = cx * (1 - k)
-        orb = math.radians(-10 + 20 * E2(f, 20, 116)) * (1 - k) + math.radians(12) * math.sin(max(0, f - 176) / 70.0) * k  # slow arc after the pull back
-        dist = 7.5 + 6.0 * k
-        look((cx + 0.6 + dist * math.sin(orb) - 0.8 * k, -dist * math.cos(orb), 3.0 + 1.8 * k), (cx + 0.3 * k, 0, 2.1), lens=38 - 2 * k, focus=(cx, 0, 2.2), f=f)
+        orb = math.radians(-10 + 20 * E2(f, 20, 116)) * (1 - k) + math.radians(5) * math.sin(max(0, f - 176) / 70.0) * k  # slow arc after the pull back
+        dist = 7.5 + 12.5 * k  # wide enough for all three cards, the group sits right of Aly's frame
+        tx = cx + 0.9 * k
+        look((tx + 0.6 * (1 - k) + dist * math.sin(orb), -dist * math.cos(orb), 3.0 + 2.2 * k), (tx, 0, 2.1), lens=38 - 6 * k, focus=(cx, 0, 2.2), f=f)
     return at
 
 
