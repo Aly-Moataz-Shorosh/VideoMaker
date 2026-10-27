@@ -28,7 +28,7 @@ const layer = z.object({
 });
 export const bizOpenSchema = z.object({
   aly: z.string().default('projects/entabiz01/aly_open.mp4'),
-  alyW: z.number().default(446), alyH: z.number().default(334), // size of the pre-scaled clip = the biggest it is ever shown
+  alyW: z.number().default(480), alyH: z.number().default(306), // size of the pre-scaled clip = the biggest it is ever shown
   name: z.string().default('علي معتز شُرُش'),
   cam: z.array(pt).default([{at: 0, m: 'hero'}]),
   // the guest behind a theatre curtain (Aly 2026-10-27: "حط الكدر بتاع كريم في مكان بس عليه ستارة… والستارة تتفتح")
