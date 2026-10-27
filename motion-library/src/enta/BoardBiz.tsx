@@ -76,7 +76,7 @@ const Item: React.FC<{d: Record<string, any>; f: number}> = ({d, f}) => {
         <div style={{position: 'relative', width: d.w ?? 420}}>
           <div style={{position: 'relative', borderRadius: d.round ? '50%' : 10, overflow: 'hidden', ...(d.bare ? {} : stickerBorder(8)), background: d.bare ? 'transparent' : '#fff',
             height: d.h, aspectRatio: d.ar}}>
-            {vid ? <OffthreadVideo src={staticFile(d.src)} muted startFrom={d.from ?? 0} style={{width: '100%', height: d.h || d.ar ? '100%' : undefined, objectFit: 'cover', display: 'block'}} />
+            {vid ? <OffthreadVideo src={staticFile(d.src)} muted transparent={String(d.src).endsWith('.webm')} startFrom={d.from ?? 0} style={{width: '100%', height: d.h || d.ar ? '100%' : undefined, objectFit: 'cover', display: 'block'}} />
               : <Img src={staticFile(d.src)} style={{width: '100%', height: d.h || d.ar ? '100%' : undefined, objectFit: d.fit ?? 'cover', objectPosition: d.pos ?? '50% 50%', display: 'block'}} />}
           </div>
           {d.bare || d.tape === false ? null : <Tape w={Math.min(150, (d.w ?? 420) * 0.34)} rot={-6} style={{top: -22, left: (d.w ?? 420) / 2 - Math.min(75, (d.w ?? 420) * 0.17)}} />}
@@ -167,7 +167,7 @@ const Item: React.FC<{d: Record<string, any>; f: number}> = ({d, f}) => {
       const k = sm((f - at) / (d.dur ?? 30));
       const v = lerp(k, d.from ?? 0, d.to ?? 100);
       const txt = (d.prefix ?? '') + (d.dec ? v.toFixed(d.dec) : Math.round(v).toLocaleString('en-US')) + (d.suffix ?? '');
-      return wrap(<div style={{fontSize: d.size ?? 120, fontWeight: 900, color: accentOf(d.color ?? 'mustard'), textShadow: '0 8px 0 rgba(0,0,0,.35)', whiteSpace: 'nowrap', direction: 'ltr'}}>{txt}</div>, 0);
+      return wrap(<div style={{fontSize: d.size ?? 120, fontWeight: 900, color: accentOf(d.color ?? 'mustard'), textShadow: '0 8px 0 rgba(0,0,0,.35)', whiteSpace: 'nowrap', direction: /[\u0600-\u06FF]/.test(txt) ? 'rtl' : 'ltr'}}>{txt}</div>, 0);
     }
     case 'strike': {
       const k = sm((f - at) / 10);

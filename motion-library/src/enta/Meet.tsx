@@ -69,7 +69,7 @@ export const MeetStage: React.FC<{source: string; tiles: MeetTiles; cues: Cue[];
     const t = tiles[who], r = rectOf(who), s = r.w / t[2];
     if (r.o <= 0.01 && !withAudio) return null;
     return (
-      <div key={who} style={{position: 'absolute', left: r.x, top: r.y, width: r.w, height: r.h, opacity: r.o, borderRadius: 18,
+      <div key={who} style={{position: 'absolute', left: r.x, top: r.y, width: r.w, height: r.h, opacity: r.o, borderRadius: 28,
         overflow: 'hidden', boxShadow: '0 22px 50px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.06)'}}>
         <div style={{position: 'absolute', inset: 0, transform: `scale(${zoom.z})`, transformOrigin: `${zoom.x * 100}% ${zoom.y * 100}%`}}>
         {segments.map((sg, i) => (
@@ -79,6 +79,8 @@ export const MeetStage: React.FC<{source: string; tiles: MeetTiles; cues: Cue[];
           </Sequence>
         ))}
         </div>
+        {/* inner dark ring + soft inner shadow: the Meet tile's own corners and blue speaking border never show at our corners (Aly 2026-10-27) */}
+        <div style={{position: 'absolute', inset: 0, borderRadius: 28, boxShadow: 'inset 0 0 0 6px #121419, inset 0 0 22px 6px rgba(0,0,0,.55)', pointerEvents: 'none', zIndex: 2}} />
         {(tiles.masks ?? []).filter((m) => m.who === who).map((m, i) => {
           const L = (m.box[0] - t[0]) * s, T = (m.box[1] - t[1]) * s, w = m.box[2] * s, h = m.box[3] * s;
           return m.tag ? (
@@ -159,7 +161,7 @@ export const MeetPip: React.FC<{source: string; tiles: MeetTiles; cues: Cue[]}> 
   const S = 250;
   const face = (cc: Cue, op: number) => {
     const who = cc.props.who as 'G' | 'A', t = tiles[who];
-    const sc = (S * 1.15) / t[3]; // tile height ~1.15 circle: room around the head (Aly: "not so zoomed on the face")
+    const sc = ((S * 1.15) / t[3]) * (cc.props.zs ?? 1); // zs = extra zoom (a letterboxed side tile) // tile height ~1.15 circle: room around the head (Aly: "not so zoomed on the face")
     const fx = (cc.props.zx ?? 0.5) * t[2], fy = (cc.props.zy ?? 0.4) * t[3];
     return (
       <div key={who + cc.at} style={{position: 'absolute', inset: 0, opacity: op, overflow: 'hidden', borderRadius: '50%'}}>

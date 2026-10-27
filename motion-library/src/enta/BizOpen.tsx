@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, Img, OffthreadVideo, interpolate, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, Img, OffthreadVideo, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {z} from 'zod';
 import {enter, lerp} from '../blocks/anim';
 import {MeetBg} from './Meet';
@@ -18,13 +18,13 @@ import {E, Hi, Sticker, Tape, accentOf, stickerBorder} from './kit';
 
 const pt = z.object({at: z.number(), m: z.enum(['hero', 'left', 'mini', 'off'])});
 const layer = z.object({
-  k: z.enum(['clip', 'head', 'chips', 'pics', 'stk', 'xmark', 'big', 'phone', 'map']),
+  k: z.enum(['clip', 'head', 'chips', 'pics', 'stk', 'xmark', 'big', 'phone', 'map', 'flavours']),
   at: z.number(), dur: z.number(),
   file: z.string().optional(), rate: z.number().optional(),
   text: z.string().optional(), sub: z.string().optional(), x: z.number().optional(), y: z.number().optional(), size: z.number().optional(),
   accent: z.string().optional(), rot: z.number().optional(), name: z.string().optional(),
   items: z.array(z.record(z.string(), z.any())).optional(),
-  zoomAt: z.number().optional(), pinAt: z.number().optional(),
+  zoomAt: z.number().optional(), pinAt: z.number().optional(), sel: z.number().optional(), selAt: z.number().optional(),
 });
 export const bizOpenSchema = z.object({
   aly: z.string().default('projects/entabiz01/aly_open.mp4'),
@@ -182,7 +182,7 @@ const Pics: React.FC<{l: L; f: number}> = ({l, f}) => {
             opacity: Math.min(1, p * 1.6) * o}}>
             <div style={{position: 'relative', borderRadius: bare ? 0 : 10, overflow: 'hidden', ...(bare ? {} : stickerBorder(8)), background: bare ? 'transparent' : '#fff'}}>
               {String(it.src).endsWith('.mp4') || String(it.src).endsWith('.webm')
-                ? <OffthreadVideo src={staticFile(it.src)} muted startFrom={it.from ?? 0} style={{width: '100%', display: 'block'}} />
+                ? <Sequence from={at} layout="none"><OffthreadVideo src={staticFile(it.src)} muted startFrom={it.from ?? 0} style={{width: '100%', display: 'block'}} /></Sequence>
                 : <Img src={staticFile(it.src)} style={{width: '100%', display: 'block'}} />}
             </div>
             {bare ? null : <Tape w={Math.min(140, it.w * 0.35)} rot={-6} style={{top: -20, left: it.w / 2 - Math.min(70, it.w * 0.17)}} />}
@@ -293,6 +293,40 @@ const BizMap: React.FC<{l: L; f: number}> = ({l, f}) => {
   );
 };
 
+// The show's 3 departments ("flavours") = their real logos from the intros (a frame without the wink, Aly 2026-10-27); the department
+// name in each logo gets a drawn ring ("لو الناس مش واخدة بالها"), then this episode's one is selected: bigger, gold glow, ✓, the others dim.
+const Flavours: React.FC<{l: L; f: number}> = ({l, f}) => {
+  const items = l.items ?? [], sel = l.sel ?? 2, selAt = l.at + (l.selAt ?? 40), o = life(f, l, 10);
+  const ks = sm((f - selAt) / 14);
+  return (
+    <>
+      {items.map((it, i) => {
+        const at = l.at + i * 7, p = enter(f, 30, at);
+        if (f < at) return null;
+        const isSel = i === sel, w = 300 * (1 + (isSel ? 0.22 : -0.06) * ks), h = w * 1.066;
+        const x = (l.x ?? 1240) + (i - 1) * 360 + (isSel ? 0 : i < sel ? -20 : 20) * ks, y = (l.y ?? 520) - (isSel ? 26 : 0) * ks;
+        const hk = sm((f - at - 10) / 14), hs = isSel ? sm((f - selAt) / 16) : 0;
+        return (
+          <div key={i} style={{position: 'absolute', left: x - w / 2, top: y - h / 2, width: w, height: h, opacity: Math.min(1, p * 1.6) * o * (isSel ? 1 : 1 - 0.55 * ks),
+            transform: `translateY(${lerp(p, 60, 0)}px) rotate(${(i - 1) * 3 * (1 - ks)}deg)`, filter: isSel ? undefined : `grayscale(${ks})`}}>
+            <div style={{position: 'absolute', inset: 0, borderRadius: 16, overflow: 'hidden', ...stickerBorder(isSel ? 10 : 7),
+              boxShadow: isSel ? `0 0 ${50 * ks}px rgba(232,181,74,${0.75 * ks}), 0 14px 30px rgba(0,0,0,.5)` : '0 14px 30px rgba(0,0,0,.5)'}}>
+              <Img src={staticFile(it.src)} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+            </div>
+            {/* hand-drawn ring around the department name at the top of the logo's speech bubble */}
+            <svg viewBox="0 0 100 106.6" style={{position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible'}}>
+              <ellipse cx={48} cy={10.6} rx={isSel ? 21 + 3 * hs : 18} ry={isSel ? 6.4 + hs : 5.4} fill="none" stroke={isSel ? E.orange : E.mustard}
+                strokeWidth={isSel ? 1.6 + 1.2 * hs : 1.1} strokeDasharray="140" strokeDashoffset={140 * (1 - Math.max(hk * 0.85, hs))} strokeLinecap="round"
+                transform="rotate(-4 48 10.6)" />
+            </svg>
+            {isSel && ks > 0.05 ? <div style={{position: 'absolute', right: -40, top: -46, transform: `scale(${enter(f, 30, selAt + 6)}) rotate(10deg)`}}><Sticker name="check" size={110} /></div> : null}
+          </div>
+        );
+      })}
+    </>
+  );
+};
+
 export const BizOpen: React.FC<z.infer<typeof bizOpenSchema>> = ({aly, alyW, alyH, name, cam, guest, layers}) => {
   const f = useCurrentFrame();
   const {durationInFrames} = useVideoConfig();
@@ -304,8 +338,11 @@ export const BizOpen: React.FC<z.infer<typeof bizOpenSchema>> = ({aly, alyW, aly
       <MeetBg frame={f} />
       {layers.filter((l) => l.k === 'clip' && vis(l)).map((l, i) => (
         <AbsoluteFill key={'c' + i} style={{opacity: Math.min(1, (f - l.at) / 10, life(f, l, 10))}}>
-          <OffthreadVideo src={staticFile(l.file!)} transparent muted playbackRate={l.rate ?? 1} startFrom={0}
-            style={{position: 'absolute', left: l.x ?? 0, top: 0, width: 1920, height: 1080}} />
+          {/* each Blender clip starts at ITS frame 0 when the layer starts (v1 bug: played from the board start -> only its last frame showed) */}
+          <Sequence from={l.at} layout="none">
+            <OffthreadVideo src={staticFile(l.file!)} transparent muted playbackRate={l.rate ?? 1} startFrom={0}
+              style={{position: 'absolute', left: l.x ?? 0, top: 0, width: 1920, height: 1080}} />
+          </Sequence>
         </AbsoluteFill>
       ))}
       {guest ? <Guest g={guest} /> : null}
@@ -316,6 +353,7 @@ export const BizOpen: React.FC<z.infer<typeof bizOpenSchema>> = ({aly, alyW, aly
         if (l.k === 'pics') return <Pics key={i} l={l} f={f} />;
         if (l.k === 'phone') return <Phone key={i} l={l} f={f} />;
         if (l.k === 'map') return <BizMap key={i} l={l} f={f} />;
+        if (l.k === 'flavours') return <Flavours key={i} l={l} f={f} />;
         const p = enter(f, 30, l.at), o = life(f, l);
         if (l.k === 'stk') return (
           <div key={i} style={{position: 'absolute', left: l.x, top: l.y, transform: `translate(-50%, -50%) scale(${p}) rotate(${(l.rot ?? 0) + Math.sin((f - l.at) / 12) * 3}deg)`, opacity: o}}>

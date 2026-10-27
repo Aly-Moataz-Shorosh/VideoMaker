@@ -492,7 +492,55 @@ def scene_three(N):
     return at
 
 
-SCENES = {'tower': scene_tower, 'road': scene_road, 'crowd': scene_crowd, 'three': scene_three}
+def scene_podcast(N):
+    # "أغلب البودكاستات بتستضيف…" (Aly 2026-10-27: "اعملها 3d علشان تعرف تدمجها"): a podcast studio in the same pawn world as the crowd —
+    # the host (blue) and a FAMOUS guest (gold, crown, under a spotlight), mics, a desk, a LIVE sign and bokeh lights on the back wall.
+    # The camera glides in, then pushes hard onto the guest's crown (lens up, DOF) and the gold fills the frame -> cut to the gold tower.
+    lights(1.1, (0, 0, 1.2))
+    floor = mat('stf', (0.10, 0.10, 0.13), rough=0.25, coat=0.8)
+    mesh_obj('stfloor', cyl(6, 6, 0.2, 96, (0, 0, -0.1)), floor)
+    wall = mat('wall', (0.13, 0.12, 0.16), rough=0.6)
+    mesh_obj('wall', cube(9, 0.2, 4.5, (0, 3.2, 2.25)), wall, smooth=False)
+    for k in range(14):  # bokeh-ish lights on the wall
+        c = [ORANGE, BLUE, MUSTARD][k % 3]
+        mesh_obj(f'bk{k}', sphere(0.09 + 0.05 * (k % 3), 12, 8), mat(f'bkm{k}', c, emit=6), (-4 + k * 0.62, 3.05, 1.2 + 2.4 * ((k * 37) % 10) / 10))
+    live = text('LIVE', 0.42, 0.04, mat('live', (1, 0.15, 0.1), emit=7), (-2.4, 3.0, 3.1))
+    mesh_obj('livebox', cube(1.5, 0.08, 0.62, (0, 0, 0)), mat('lb', (0.2, 0.02, 0.02), emit=0.5), (-2.4, 3.08, 3.1), smooth=False)
+    desk = mat('desk', (0.42, 0.24, 0.13), rough=0.4, coat=0.6)
+    mesh_obj('desk', cube(3.2, 1.0, 0.12, (0, 0, 0.82), bevel=0.04), desk, smooth=False)
+    mesh_obj('deskleg', cube(2.6, 0.5, 0.8, (0, 0, 0.4), bevel=0.03), mat('dl', (0.25, 0.14, 0.09), rough=0.5), smooth=False)
+    # pawn people (same shape as the crowd) on chairs behind the desk
+    def pawn(name, m, loc, s=1.0):
+        b = mesh_obj(name + 'b', cyl(0.34 * s, 0.22 * s, 0.75 * s, 32, (0, 0, 0.37 * s)), m, loc)
+        h = mesh_obj(name + 'h', sphere(0.25 * s, 24, 16, (0, 0, 0.98 * s)), m, loc)
+        return [b, h]
+    host = pawn('host', mat('hostm', BLUE, rough=0.35, coat=0.6), (-1.0, 0.75, 0.45), 1.25)
+    gold = mat('gm', GOLD, metal=1.0, rough=0.18, emit=0.35)
+    guest = pawn('guest', gold, (1.0, 0.75, 0.45), 1.35)
+    crown_m = mat('crown', GOLD, metal=1.0, rough=0.12, emit=1.2)
+    crown = [mesh_obj('cring', cyl(0.24, 0.27, 0.12, 32, (0, 0, 0)), crown_m, (1.0, 0.75, 0.45 + 1.62))]
+    for k in range(5):
+        a = k * 2 * math.pi / 5
+        crown.append(mesh_obj(f'cp{k}', cyl(0.06, 0.0, 0.2, 12, (0, 0, 0)), crown_m, (1.0 + 0.23 * math.cos(a), 0.75 + 0.23 * math.sin(a), 0.45 + 1.76)))
+    for i, (x, rot) in enumerate([(-0.7, 0.4), (0.7, -0.4)]):  # mics on short stands
+        mesh_obj(f'ms{i}', cyl(0.025, 0.025, 0.45, 12, (0, 0, 0.22)), mat(f'msm{i}', (0.2, 0.2, 0.22), metal=0.8), (x, 0.35, 0.88))
+        mesh_obj(f'mh{i}', cyl(0.09, 0.09, 0.26, 24, (0, 0, 0)), mat(f'mhm{i}', (0.12, 0.12, 0.14), metal=0.6, rough=0.3), (x, 0.35, 1.42), (0.5, 0, rot))
+    sp = spot('gs', (1.0, -1.5, 6), (1.0, 0.75, 1.2), 3200, 16, (1, 0.85, 0.55), 0.3)
+    spot('hs', (-1.0, -1.5, 6), (-1.0, 0.75, 1.0), 700, 18, (0.6, 0.75, 1), 0.4)
+    CR = (1.0, 0.75, 0.45 + 1.7)
+
+    def at(f):
+        bsdf(crown_m).inputs['Emission Strength'].default_value = 1.2 + 10 * E2(f, N - 26, N)
+        sp.data.energy = 3200 + 9000 * E2(f, N - 26, N)
+        # 1) wide glide across the studio  2) push hard onto the crown (lens 30 -> 85), the gold fills the frame
+        k = E2(f, 0, N - 30); k2 = E2(f, N - 34, N)
+        cam_p = (lerp_(k, -3.4, -1.2) + 2.0 * k2, lerp_(k, -7.0, -5.2) + 4.6 * k2, lerp_(k, 2.6, 2.0) - 0.0 * k2)
+        tgt = (lerp_(k, 0.0, 0.6) + 0.4 * k2, 0.8, lerp_(k, 1.3, 1.6) + 0.6 * k2)
+        look(cam_p, tgt, lens=30 + 55 * k2, focus=CR if k > 0.4 else (0, 0.8, 1.2), f=f)
+    return at
+
+
+SCENES = {'podcast': scene_podcast, 'tower': scene_tower, 'road': scene_road, 'crowd': scene_crowd, 'three': scene_three}
 at = SCENES[A.scene](A.frames)
 os.makedirs(A.out, exist_ok=True)
 frames = [A.still] if A.still >= 0 else range(A.start, A.frames)
