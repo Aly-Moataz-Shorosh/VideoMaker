@@ -307,20 +307,23 @@ const Flavours: React.FC<{l: L; f: number}> = ({l, f}) => {
         const isSel = i === sel, w = 300 * (1 + (isSel ? 0.22 : -0.06) * ks), h = w * 1.066;
         const x = (l.x ?? 1240) + (i - 1) * 360 + (isSel ? 0 : i < sel ? -20 : 20) * ks, y = (l.y ?? 520) - (isSel ? 26 : 0) * ks;
         const hk = sm((f - at - 10) / 14), hs = isSel ? sm((f - selAt) / 16) : 0;
+        // hand-drawn ring around the department name, drawn INSIDE the picture (inside the card border) so it sits on the name
+        const ring = (
+            <svg viewBox="0 0 100 106.6" preserveAspectRatio="none" style={{position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible'}}>
+              {/* ring = the measured box of the department name in THIS logo (+ margin), so it never cuts the letters (Aly 2026-10-27) */}
+              <ellipse cx={it.ring?.[0] ?? 50} cy={it.ring?.[1] ?? 10.3} rx={(it.ring?.[2] ?? 17) + (isSel ? 1.5 * hs : 0)} ry={(it.ring?.[3] ?? 7) + (isSel ? 0.6 * hs : 0)}
+                fill="none" stroke={isSel ? E.orange : E.mustard} strokeWidth={isSel ? 1.4 + 1.0 * hs : 1.0} pathLength={100} strokeDasharray="100"
+                strokeDashoffset={100 * (1 - Math.max(hk * 0.85, hs))} strokeLinecap="round" transform={`rotate(-1.5 ${it.ring?.[0] ?? 50} ${it.ring?.[1] ?? 10.3})`} />
+            </svg>
+        );
         return (
           <div key={i} style={{position: 'absolute', left: x - w / 2, top: y - h / 2, width: w, height: h, opacity: Math.min(1, p * 1.6) * o * (isSel ? 1 : 1 - 0.55 * ks),
             transform: `translateY(${lerp(p, 60, 0)}px) rotate(${(i - 1) * 3 * (1 - ks)}deg)`, filter: isSel ? undefined : `grayscale(${ks})`}}>
             <div style={{position: 'absolute', inset: 0, borderRadius: 16, overflow: 'hidden', ...stickerBorder(isSel ? 10 : 7),
               boxShadow: isSel ? `0 0 ${50 * ks}px rgba(232,181,74,${0.75 * ks}), 0 14px 30px rgba(0,0,0,.5)` : '0 14px 30px rgba(0,0,0,.5)'}}>
               <Img src={staticFile(it.src)} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+              {ring}
             </div>
-            {/* hand-drawn ring around the department name at the top of the logo's speech bubble */}
-            <svg viewBox="0 0 100 106.6" style={{position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible'}}>
-              {/* ring = the measured box of the department name in THIS logo (+ margin), so it never cuts the letters (Aly 2026-10-27) */}
-              <ellipse cx={it.ring?.[0] ?? 50} cy={it.ring?.[1] ?? 10.3} rx={(it.ring?.[2] ?? 17) + (isSel ? 1.5 * hs : 0)} ry={(it.ring?.[3] ?? 7) + (isSel ? 0.6 * hs : 0)}
-                fill="none" stroke={isSel ? E.orange : E.mustard} strokeWidth={isSel ? 1.4 + 1.0 * hs : 1.0} pathLength={100} strokeDasharray="100"
-                strokeDashoffset={100 * (1 - Math.max(hk * 0.85, hs))} strokeLinecap="round" transform={`rotate(-1.5 ${it.ring?.[0] ?? 50} ${it.ring?.[1] ?? 10.3})`} />
-            </svg>
             {isSel && ks > 0.05 ? <div style={{position: 'absolute', right: -40, top: -46, transform: `scale(${enter(f, 30, selAt + 6)}) rotate(10deg)`}}><Sticker name="check" size={110} /></div> : null}
           </div>
         );
@@ -332,7 +335,7 @@ const Flavours: React.FC<{l: L; f: number}> = ({l, f}) => {
 export const BizOpen: React.FC<z.infer<typeof bizOpenSchema>> = ({aly, alyW, alyH, name, cam, guest, layers}) => {
   const f = useCurrentFrame();
   const {durationInFrames} = useVideoConfig();
-  const fadeIn = interpolate(f, [0, 8], [0, 1], {extrapolateRight: 'clamp'});
+  const fadeIn = 1; // no fade-in: a fade let the stage (Karim's tile) show through right after the intro (Aly 2026-10-28)
   const fadeOut = interpolate(f, [durationInFrames - 10, durationInFrames], [1, 0], {extrapolateLeft: 'clamp'});
   const vis = (l: L) => f >= l.at && f < l.at + l.dur;
   return (

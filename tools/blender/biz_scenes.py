@@ -117,6 +117,20 @@ def cube(x, y, z, at=(0, 0, 0), bevel=0.0):
     bmesh.ops.translate(bm, vec=at, verts=bm.verts); return bm
 
 
+def torus(R, r, seg=48, ring=12):
+    bm = bmesh.new(); vs = []
+    for i in range(seg):
+        a1 = 2 * math.pi * i / seg; row = []
+        for j in range(ring):
+            a2 = 2 * math.pi * j / ring
+            row.append(bm.verts.new(((R + r * math.cos(a2)) * math.cos(a1), (R + r * math.cos(a2)) * math.sin(a1), r * math.sin(a2))))
+        vs.append(row)
+    for i in range(seg):
+        for j in range(ring):
+            bm.faces.new((vs[i][j], vs[(i + 1) % seg][j], vs[(i + 1) % seg][(j + 1) % ring], vs[i][(j + 1) % ring]))
+    return bm
+
+
 def plane_uv(wd, ht):  # front-facing picture plane (normal -Y, towards the camera), UVs 0..1
     bm = bmesh.new(); uv = bm.loops.layers.uv.new()
     v = [bm.verts.new(p) for p in [(-wd / 2, 0, -ht / 2), (wd / 2, 0, -ht / 2), (wd / 2, 0, ht / 2), (-wd / 2, 0, ht / 2)]]
@@ -666,7 +680,7 @@ def scene_crowd(N):
             vs = [bm.verts.new((x0, y0, 0)), bm.verts.new((x0 + sq, y0, 0)), bm.verts.new((x0 + sq, y0 + sq, 0)), bm.verts.new((x0, y0 + sq, 0))]
             fc = bm.faces.new(vs); fc.material_index = (i + j) % 2
     me = bpy.data.meshes.new('board'); bm.to_mesh(me); bm.free()
-    board_o = bpy.data.objects.new('board', me); sc.collection.objects.link(board_o)
+    board_o = bpy.data.objects.new('board', me); sc.collection.objects.link(board_o); board_o.location.z = 0.004  # above the frame top (z-fight flicker)
     me.materials.append(pbr('bw', (0.8, 0.78, 0.74), rough=0.18, coat=0.8)); me.materials.append(pbr('bb', (0.05, 0.05, 0.06), rough=0.12, coat=1.0))
     mesh_obj('edge', cube(n * sq + 0.4, n * sq + 0.4, 0.25, (0, 0, -0.125)), WALNUT('edge'), smooth=False)
     pm_w, pm_b = pbr('pw', (0.93, 0.92, 0.89), rough=0.14, coat=0.9, sss=0.12, obj_glow=True), pbr('pb', (0.04, 0.04, 0.05), rough=0.08, coat=1.0, obj_glow=True)
@@ -726,8 +740,9 @@ def scene_three(N):
         mat_ = mesh_obj(f'mt{k}', cube(3.12, 0.02, 3.12, (0, 0, 0)), pbr(f'mtm{k}', (0.95, 0.94, 0.9), rough=0.8), (x, -0.005, 2.2), smooth=False)
         pic = mesh_obj(f'cp{k}', plane_uv(2.9, 2.9), mat(f'cpm{k}', (1, 1, 1), tex=os.path.join(T, img)), (x, -0.025, 2.2), smooth=False)
         for o in (mat_, pic): o.parent = frame; o.location = (0, -0.03 if o is mat_ else -0.045, 0)
-        disc = mesh_obj(f'bd{k}', coin_bm(0.42, 0.1), GOLD_M(f'bdm{k}'), (x - 1.55, -0.25, 3.75), (math.pi / 2, 0, 0))
-        num = text(str(k + 1), 0.55, 0.02, pbr(f'nm{k}', (0.12, 0.08, 0.04), metal=0.5, rough=0.3), (x - 1.55, -0.33, 3.73))
+        disc = mesh_obj(f'bd{k}', coin_bm(0.42, 0.1), ONYX(f'bdm{k}'), (x - 1.55, -0.25, 3.75), (math.pi / 2, 0, 0))
+        mesh_obj(f'bdr{k}', torus(0.42, 0.035, 64, 12), GOLD_M(f'bdrm{k}'), (x - 1.55, -0.25, 3.75), (math.pi / 2, 0, 0))
+        num = text(str(k + 1), 0.6, 0.02, pbr(f'nm{k}', (1, 0.95, 0.85), emit=3.5), (x - 1.55, -0.33, 3.73))  # bright numbers (Aly: "الارقام مضلمة")
         lab = text(nm, 0.36, 0.02, pbr(f'lb{k}', (0.92, 0.92, 0.9), rough=0.3, emit=0.4), (x, -0.3, 0.25))
         dot = mesh_obj(f'dot{k}', cyl(0.14, 0.14, 0.03, 32), pbr(f'dt{k}', (1, 0.8, 0.45), emit=4), (x, -1.6, 0.03))
         light = spot(f'cs{k}', (x + 0.4, -4.5, 7.5), (x, 0, 1.6), 0, 24, (1, 0.92, 0.8), 0.3)
@@ -936,11 +951,13 @@ def scene_podcity(N):
         mk = mic_pos + u * 0.08
         kelvin(spot(f'mick{i}', (mk[0] - toward * 0.15, mk[1] + 0.35, mk[2] + 0.3), tuple(mk), 6, 18, (1, 1, 1), 0.5), 4500)  # kicker from behind: a clean edge on the mic
     # light: warm keys from the front sides, a warm rim behind each to cut them out of the dark set, a soft top
-    kelvin(spot('qs', (QX - 0.2, BY - 0.6, ZR + RH - 0.05), (QX, DY, ZR + 0.4), 90, 26, (1, 1, 1), 0.4), 3000)
-    kelvin(spot('hs', (HX + 0.2, BY - 0.6, ZR + RH - 0.05), (HX, DY, ZR + 0.35), 70, 26, (1, 1, 1), 0.4), 3200)
+    kelvin(spot('qs', (QX - 0.2, BY - 0.6, ZR + RH - 0.05), (QX, DY, ZR + 0.4), 170, 28, (1, 1, 1), 0.4), 3000)
+    kelvin(spot('hs', (HX + 0.2, BY - 0.6, ZR + RH - 0.05), (HX, DY, ZR + 0.35), 140, 28, (1, 1, 1), 0.4), 3200)
     kelvin(spot('qrim', (QX + 0.25, BACK - 0.05, ZR + 0.7), (QX, DY, ZR + 0.42), 45, 30, (1, 1, 1), 0.5), 2400)
     kelvin(spot('hrim', (HX - 0.25, BACK - 0.05, ZR + 0.7), (HX, DY, ZR + 0.38), 40, 30, (1, 1, 1), 0.5), 2400)
-    kelvin(area('roomL', (BX, BY, ZR + RH - 0.04), (BX, BY + 0.2, ZR), 22, 1.4, (1, 1, 1)), 3000)
+    kelvin(area('roomL', (BX, BY, ZR + RH - 0.04), (BX, BY + 0.2, ZR), 55, 1.8, (1, 1, 1)), 3000)  # more light (Aly)
+    kelvin(area('shelfL', (BX - 0.6, BACK - 0.6, ZR + 0.7), (BX - 0.9, BACK, ZR + 0.45), 18, 0.6, (1, 1, 1)), 2800)
+    kelvin(area('fillF', (BX, FY + 0.3, ZR + 0.5), (BX, DY, ZR + 0.35), 25, 1.2, (1, 1, 1)), 4000)
     moon(0.35)
     qa(['desktop', 'host', 'guest', 'mic0', 'mic1', 'ws0', 'ws1'] + props)
     # --- the gold tower (centre) rises later, coin + small coins as in the tower scene
@@ -1000,7 +1017,7 @@ def scene_podcity(N):
         room_t = (BX + 0.08, DY, ZR + 0.45)
         city_t = (0, 0, 1.2 + 0.55 * top)
         tgt = [lerp_(k3, a_, b_) for a_, b_ in zip(room_t, city_t)]
-        lens = lerp_(k2, 30 + 3 * k1, 30) + 4 * k3
+        lens = lerp_(k2, 23 + 2.5 * k1, 30) + 4 * k3   # wider (Aly: "محتاج يبقى wide اكتر")
         foc = QT if k3 < 0.5 else (0, 0, max(1.0, tgt[2]))
         look(p3, tgt, lens=lens, focus=foc, f=f, shake=0.012 if k2 < 0.5 else 0.02)
         cam.data.shift_x = -0.17   # the subject always right of Aly's frame (inside too)
