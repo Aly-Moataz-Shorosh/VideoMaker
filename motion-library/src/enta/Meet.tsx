@@ -79,8 +79,7 @@ export const MeetStage: React.FC<{source: string; tiles: MeetTiles; cues: Cue[];
           </Sequence>
         ))}
         </div>
-        {/* inner dark ring + soft inner shadow: the Meet tile's own corners and blue speaking border never show at our corners (Aly 2026-10-27) */}
-        <div style={{position: 'absolute', inset: 0, borderRadius: 28, boxShadow: 'inset 0 0 0 6px #121419, inset 0 0 22px 6px rgba(0,0,0,.55)', pointerEvents: 'none'}} />  {/* no zIndex: it painted this ring ON TOP of the full-screen boards (review 2026-10-27) */}
+        {/* (inner shadow ring removed — Aly 2026-10-27: "من غير ال inner shadow افضل"; radius 28 alone hides Meet's corners) */}
         {(tiles.masks ?? []).filter((m) => m.who === who).map((m, i) => {
           const L = (m.box[0] - t[0]) * s, T = (m.box[1] - t[1]) * s, w = m.box[2] * s, h = m.box[3] * s;
           return m.tag ? (
@@ -91,16 +90,17 @@ export const MeetStage: React.FC<{source: string; tiles: MeetTiles; cues: Cue[];
           );
         })}
         {who === 'G' && tiles.self ? (() => {
-          // Meet drew Aly's self-view INSIDE the guest tile (biz ep01 0:17-3:07); no crop of the guest (Aly: "مش عايز كروب طول الفيديو")
-          // -> cover that corner with our own framed picture of Aly (his self-view itself, a bit bigger, sticker border)
-          const sv = tiles.self, a = tiles.A, k = 1.3;
-          const bw = sv[2] * s * k, bh = sv[3] * s * k;
-          const cx = (sv[0] - t[0] + sv[2] / 2) * s, cy = (sv[1] - t[1] + sv[3] / 2) * s;
-          const bx = Math.min(r.w - bw - 10, cx - bw / 2), by = Math.min(r.h - bh - 10, cy - bh / 2);
-          // Aly 2026-10-27: Karim ONLY here; the ON AIR badge box looked "وحش اوي" -> just a soft blur, feathered edges (no frame, no tint)
+          // Meet drew Aly's self-view INSIDE the guest tile corner (biz ep01 0:17-3:07). Karim only here, no crop: blur ONLY the part of
+          // the self-view that is inside the tile (Aly 2026-10-27: "مش محتاجين blur لكله… دي حتة صغيرة اوي"), soft edges, nothing else.
+          const sv = tiles.self;
+          const x0 = Math.max(sv[0], t[0]), x1 = Math.min(sv[0] + sv[2], t[0] + t[2]), y0 = Math.max(sv[1], t[1]), y1 = Math.min(sv[1] + sv[3], t[1] + t[3]);
+          if (x1 <= x0 || y1 <= y0) return null;
+          const pad = 6;
           return (
-            <div style={{position: 'absolute', left: bx - bw * 0.25, top: by - bh * 0.25, width: bw * 1.5, height: bh * 1.5, backdropFilter: 'blur(26px)', WebkitBackdropFilter: 'blur(26px)',
-              maskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, black 62%, transparent 100%)', WebkitMaskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, black 62%, transparent 100%)'}} />
+            <div style={{position: 'absolute', left: (x0 - t[0]) * s - pad, top: (y0 - t[1]) * s - pad, width: (x1 - x0) * s + 2 * pad, height: (y1 - y0) * s + 2 * pad,
+              backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', borderRadius: 10,
+              maskImage: 'linear-gradient(90deg, transparent, black 14px), linear-gradient(0deg, transparent, black 14px)', WebkitMaskImage: 'linear-gradient(90deg, transparent, black 14px)',
+              maskComposite: 'intersect'}} />
           );
         })() : null}
       </div>
@@ -159,6 +159,19 @@ export const MeetPip: React.FC<{source: string; tiles: MeetTiles; cues: Cue[]}> 
   const S = 250;
   const face = (cc: Cue, op: number) => {
     const who = cc.props.who as 'G' | 'A', t = tiles[who];
+    if (cc.props.track) {  // face track in source px [[sec, cx, cy, faceH], ...]: the circle follows the face through Meet layout changes
+      const tr = cc.props.track as number[][], sec = frame / fps;
+      let j = 0; while (j + 1 < tr.length && tr[j + 1][0] <= sec) j++;
+      const q = tr[Math.min(j + 1, tr.length - 1)], pq = tr[j], u = q[0] > pq[0] ? Math.min(1, Math.max(0, (sec - pq[0]) / (q[0] - pq[0]))) : 0;
+      const cx = pq[1] + (q[1] - pq[1]) * u, cy = pq[2] + (q[2] - pq[2]) * u, fh = pq[3] + (q[3] - pq[3]) * u;
+      const sc = (S * 0.4) / fh; // face = 40% of the circle, always the same size (no sudden zoom out)
+      return (
+        <div key={who + cc.at} style={{position: 'absolute', inset: 0, opacity: op, overflow: 'hidden', borderRadius: '50%'}}>
+          <OffthreadVideo src={staticFile(source)} muted startFrom={0}
+            style={{position: 'absolute', width: 1920 * sc, height: 1080 * sc, maxWidth: 'none', left: S / 2 - cx * sc, top: S * 0.5 - cy * sc}} />
+        </div>
+      );
+    }
     const sc = ((S * 1.15) / t[3]) * (cc.props.zs ?? 1); // zs = extra zoom (a letterboxed side tile) // tile height ~1.15 circle: room around the head (Aly: "not so zoomed on the face")
     const fx = (cc.props.zx ?? 0.5) * t[2], fy = (cc.props.zy ?? 0.4) * t[3];
     return (
