@@ -15,7 +15,8 @@ const Pic: React.FC<{n: string; x: number; y: number; s: number; at?: number; ro
   return <Img src={fl(n)} style={{position: 'absolute', left: x - s / 2, top: y - s / 2, width: s, height: s, opacity: Math.min(1, p * 1.5),
     transform: `scale(${p}) rotate(${rot + (1 - p) * -20}deg)`, filter: 'drop-shadow(0 18px 30px rgba(0,0,0,0.45))'}} />;
 };
-const Tag: React.FC<{text: string; y: number; at: number; c?: string; size?: number}> = ({text, y, at, c = TEAL, size = 52}) => {
+const Tag: React.FC<{text: string; y: number; at: number; c?: string; size?: number}> = ({text, y, at, c = TEAL, size: s0 = 52}) => {
+  const size = Math.min(s0, Math.floor(900 / (text.length * 0.62)));  // long tags shrink, never out of the frame (Aly 2026-10-27)
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const p = spr(f, fps, at, 180, 13);

@@ -146,12 +146,14 @@ const Label: React.FC<{text: string; dur: number; acc: string; img?: string}> = 
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const p = spr(f, fps, 0, 220, 11), o = 1 - lin(f, dur - 5, dur);
+  // long text shrinks to stay inside the frame (Aly 2026-10-27: reels 02/03 text went out of the frame); ~0.62 size per Arabic char
+  const size = Math.max(50, Math.min(96, Math.floor((img ? 800 : 960) / (text.length * 0.62 + 0.8))));
   return (
     <div style={{position: 'absolute', left: 0, right: 0, top: CTOP + 40, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 30, direction: 'rtl',
       opacity: Math.min(1, p * 1.5) * o, transform: `scale(${0.4 + 0.6 * p})`}}>
       {/* own space next to the pill, never on it (Aly 2026-10-26: overlaps in reel 29) */}
       {img ? <Img src={staticFile(`fluent/${img}.png`)} style={{width: 140, height: 140, flexShrink: 0, objectFit: 'contain', filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.5))'}} /> : null}
-      <Pill text={text} size={96} color={acc} />
+      <Pill text={text} size={size} color={acc} />
     </div>
   );
 };

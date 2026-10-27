@@ -39,7 +39,7 @@ const Tag: React.FC<{text: string; y: number; at?: number; c?: string}> = ({text
   const p = spr(f, fps, at, 160, 14);
   return (
     <div style={{position: 'absolute', left: 0, right: 0, top: y, display: 'flex', justifyContent: 'center', opacity: Math.min(1, p * 1.4), transform: `translateY(${(1 - p) * 20}px)`}}>
-      <div style={{padding: '10px 26px', borderRadius: 30, background: 'rgba(10,14,22,0.86)', border: `3px solid ${c}`, fontFamily: AR, fontWeight: 900, fontSize: 44,
+      <div style={{padding: '10px 26px', borderRadius: 30, background: 'rgba(10,14,22,0.86)', border: `3px solid ${c}`, fontFamily: AR, fontWeight: 900, fontSize: Math.min(44, Math.floor(900 / (text.length * 0.62))),
         color: '#fff', direction: 'rtl', boxShadow: `0 0 30px ${c}55`}}>{bi(text)}</div>
     </div>
   );
