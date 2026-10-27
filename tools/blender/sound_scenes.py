@@ -288,6 +288,259 @@ elif S == 'speaker':
         t = f / 30; c = 0.18 * math.sin(5 * t); front = max(0, (t - 0.5) * 3.2)
         cone.location = (FX - 0.3 + c, 0, woofer_z); dome.location = (FX + 0.05 + c, 0, woofer_z)
         air.set(t, lambda x: 0.2 if (x - 0.4 < front and x > 0.4) else 0)
+elif S.startswith('hz_') or S.startswith('sr_'):
+    # shorts 08 (Hz) + 09 (sample rate) (Aly 2026-10-27: "8 ممل و مش مفيد كفاية", "9 كان ممكن تعمل انيميشن يشرح بشكل احسن"): one clip
+    # per sentence, front view of the x-z plane, the wave = glowing tube, numbers/English as 3D text (Arabic = Remotion tags on top).
+    # Times = seconds from the start of his sentence (08: 1458.6 / 1482.0 / 1499.0 / 1543.7, 09: 1566.5 / 1604.1 / 1627.8 / 1653.6).
+    look((0, -22, -0.8), (0, 0, -0.8))  # content sits above the middle: Arabic tags (y 1260) and his captions stay below it
+    GOLDM = mat('GoldE', GOLD, metal=0.6, rough=0.3, emit=2.0)
+    TEALM = mat('TealE', TEAL, rough=0.25, emit=2.5, coat=1)
+    VIOM = mat('VioE', VIOLET, rough=0.3, emit=2.2, coat=1)
+    WHITEM = mat('WhiteE', (1, 1, 1), emit=1.6, coat=0)
+
+    def tube(name, n, m, bev=0.12):
+        cu = bpy.data.curves.new(name, 'CURVE'); cu.dimensions = '3D'; cu.bevel_depth = bev; cu.bevel_resolution = 4
+        sp_ = cu.splines.new('POLY'); sp_.points.add(n - 1)
+        ob_ = bpy.data.objects.new(name, cu); sc.collection.objects.link(ob_); cu.materials.append(m)
+        return ob_, sp_
+
+    def text(body, size, m, loc, align='CENTER'):
+        cu = bpy.data.curves.new('t', 'FONT'); cu.body = body; cu.size = size; cu.align_x = align; cu.align_y = 'CENTER'; cu.extrude = 0.04
+        ob_ = bpy.data.objects.new('t', cu); sc.collection.objects.link(ob_); cu.materials.append(m)
+        ob_.location = loc; ob_.rotation_euler = (math.pi / 2, 0, 0)
+        return ob_
+
+    def smooth(x): x = min(1, max(0, x)); return x * x * (3 - 2 * x)
+
+    def show(ob_, on, s=1.0):
+        ob_.hide_render = not on
+        if on: ob_.scale = (s, s, s)
+
+    def bar(name, m, r=0.09):
+        return mesh_obj(name, cyl(r, r, 1.0, 16), m)
+
+    def set_bar(b_, x, z0, z1):
+        h = z1 - z0
+        b_.hide_render = abs(h) < 0.02
+        b_.location = (x, 0, (z0 + z1) / 2); b_.scale = (1, 1, max(0.01, abs(h)))
+
+    if S == 'hz_a':  # molecules close + open = a wave; between two crests = one wave length
+        K, Wt = 2.2, 3.0
+        air = Air(nx=30, ny=2, nz=3, x0=-7, x1=7, origin=(0, 0, -3.6), k=K, w=Wt)
+        wv, sp = tube('wv', 160, TEALM)
+        brL, brR, arr = bar('brL', GOLDM, 0.07), bar('brR', GOLDM, 0.07), mesh_obj('arr', cyl(0.06, 0.06, 1, 12), GOLDM, rot=(0, math.pi / 2, 0))
+        t_wl = text('Wave length', 0.9, GOLDM, (0, 0, 6.6)); one = mesh_obj('one', torus(1.0, 0.05), GOLDM)
+        def upd(f):
+            t = f / 30
+            u = min(1.0, max(0.0, (t - 11.5) / 1.5))  # the wave slows down and stops so the wave length can be measured
+            ph0 = Wt * (min(t, 11.5) + 1.5 * (u - u ** 3 + u ** 4 / 2))
+            for ob_, bx, by, bz in air.obs:
+                ph = K * bx - ph0
+                ob_.location = (bx + 0.28 * math.sin(ph), by, bz)
+                dense = max(0.0, -math.cos(ph)); c = [VIOLET[q] + (TEAL[q] - VIOLET[q]) * dense for q in range(3)]; ob_.color = (*lin(c), 1)
+            g = smooth((t - 2.5) / 3)
+            for i, p in enumerate(sp.points):
+                x = -7 + 14 * i / 159
+                p.co = (x, 0, 2.0 + 1.7 * g * -math.cos(K * x - ph0 + math.pi), 1)
+            # crests = where the molecules are densest; measure between two of them
+            m_ = smooth((t - 13.5) / 1.2)
+            c0 = (ph0 % (2 * math.pi)) / K - 2 * math.pi / K  # a crest x near the centre
+            while c0 < -2.6: c0 += 2 * math.pi / K
+            c1 = c0 + 2 * math.pi / K
+            for b_, x in ((brL, c0), (brR, c1)): set_bar(b_, x, -1.6, 2.0 + 1.75 * m_) if m_ > 0 else set_bar(b_, x, 0, 0)
+            arr.hide_render = m_ <= 0; arr.location = ((c0 + c1) / 2, 0, 4.4); arr.scale = (1, 1, max(0.01, (c1 - c0) * m_))
+            show(t_wl, m_ > 0.5); t_wl.location = ((c0 + c1) / 2, 0, 5.4)
+            o = smooth((t - 18.0) / 1.0); show(one, o > 0, 0.01 + 1.4 * o); one.location = ((c0 + c1) / 2, 0, 2.0); one.rotation_euler = (math.pi / 2, 0, 0)
+
+    elif S == 'hz_b':  # count the waves that pass in ONE second: 1, 2, 3 -> 3 Hz
+        wv, sp = tube('wv', 200, TEALM)
+        ring, rsp = tube('ring', 90, GOLDM, 0.1)
+        frame = [bar(f'fr{k}', GOLDM, 0.05) for k in range(2)]
+        cnt = text('0', 2.6, WHITEM, (0, 0, 7.0)); hz = text('3 Hz', 2.0, GOLDM, (0, 0, -4.6)); sec = text('1 sec', 0.8, GOLDM, (4.2, 0, 7.0))
+        cps = text('cycles / second', 0.8, TEALM, (0, 0, -6.3))
+        K = 2.0; T0, T1 = 1.5, 6.5  # the "second" is played slowly over 5 s so each wave can be counted
+        def upd(f):
+            t = f / 30
+            run = min(max(t - T0, 0), T1 - T0) + max(0, t - 9.0) * 0.6
+            ph0 = run * (3 * 2 * math.pi) / (T1 - T0)  # 3 waves pass the line during the slow second
+            for i, p in enumerate(sp.points):
+                x = -7 + 14 * i / 199
+                p.co = (x, 0, 1.6 + 1.6 * math.sin(K * x + ph0), 1)
+            for k, b_ in enumerate(frame): set_bar(b_, 0.0, -1.0, 4.4)
+            u = min(1, max(0, (t - T0) / (T1 - T0)))  # clock ring around the counter
+            for i, p in enumerate(rsp.points):
+                a_ = math.pi / 2 - 2 * math.pi * u * i / 89
+                p.co = (4.2 + 1.1 * math.cos(a_), 0, 7.0 + 1.1 * math.sin(a_) - 1.4, 1)
+            n_ = int(min(3, max(0, (t - T0) / (T1 - T0) * 3 + 0.0001)))
+            cnt.data.body = str(n_); show(cnt, t >= T0)
+            show(sec, t >= T0 - 0.5); show(ring, t >= T0)
+            show(hz, t >= 11.0, smooth((t - 11.0) / 0.5)); show(cps, t >= 13.0, smooth((t - 13.0) / 0.5))
+
+    elif S == 'hz_c':  # video: frames per second (fps)  ==  sound: cycles per second (Hz)
+        strip = mesh_obj('strip', cube(30, 0.2, 2.6), mat('Film', (0.06, 0.06, 0.08), rough=0.6, coat=0))
+        holes = [mesh_obj('h', cube(0.25, 0.25, 0.22), WHITEM) for _ in range(2 * 40)]
+        frs = [mesh_obj('fr', cube(1.9, 0.25, 1.6), mat(f'Fr{k}', (0.32, 0.55, 0.95), emit=0.9, coat=0)) for k in range(12)]
+        balls = [mesh_obj('b', sphere(0.22, 12, 8), GOLDM) for _ in range(12)]
+        fps = text('24 fps', 1.5, WHITEM, (0, 0, 8.6)); fpsn = text('frames / second', 0.7, WHITEM, (0, 0, 7.6))
+        wv, sp = tube('wv', 200, TEALM); hzt = text('Hz', 2.0, TEALM, (0, 0, -3.8)); hzn = text('cycles / second', 0.8, TEALM, (0, 0, -5.2))
+        eq = text('=', 1.6, GOLDM, (0, 0, 3.0))
+        def upd(f):
+            t = f / 30; a = smooth(t / 1.0); off = -(t * 1.6) % 2.4
+            strip.location = (0, 0.15, 5.6); strip.scale = (1, 1, a)
+            for k, h in enumerate(holes):
+                h.location = (-24 + (k // 2) * 1.2 + off % 1.2, 0, 5.6 + (1.05 if k % 2 else -1.05)); h.hide_render = a < 0.5
+            for k, (fr_, b_) in enumerate(zip(frs, balls)):
+                x = -13.2 + k * 2.4 + off; fr_.location = (x, 0, 5.6); fr_.hide_render = a < 0.5
+                b_.location = (x - 0.6 + 1.2 * ((k * 0.37) % 1), -0.2, 5.2 + 0.7 * abs(math.sin(k * 0.9))); b_.hide_render = a < 0.5
+            show(fps, t > 1.0); show(fpsn, t > 1.5)
+            w_ = smooth((t - 10.4) / 1.5)
+            for i, p in enumerate(sp.points):
+                x = -7 + 14 * i / 199
+                p.co = (x, 0, 0.0 + 1.3 * w_ * math.sin(2.4 * x - t * 4), 1)
+            wv.hide_render = w_ <= 0; show(hzt, t > 11.2); show(hzn, t > 12.5); show(eq, t > 13.5)
+
+    elif S == 'hz_d':  # one close + one open = one cycle; how many per second; people hear only a range (slow .. fast)
+        K = 2.0
+        air = Air(nx=30, ny=2, nz=3, x0=-7, x1=7, origin=(0, 0, 6.8), k=K, w=3.0)
+        wv, sp = tube('wv', 200, TEALM)
+        cyc = mesh_obj('cyc', torus(1.0, 0.05), GOLDM); c1t = text('1 cycle', 0.8, GOLDM, (0, 0, 9.6))
+        low, lsp = tube('low', 160, VIOM, 0.1); high, hsp = tube('high', 260, TEALM, 0.07)
+        rng_ = mesh_obj('rng', cyl(0.12, 0.12, 1, 16), GOLDM, rot=(0, math.pi / 2, 0))
+        caps = [mesh_obj('cap', sphere(0.28, 16, 10), GOLDM) for _ in range(2)]
+        def upd(f):
+            t = f / 30; frz = smooth((t - 9.0) / 1.0)
+            ph0 = t * 3.0 * (1 - frz) + 9.0 * 3.0 * frz
+            for ob_, bx, by, bz in air.obs:
+                ph = K * bx - ph0
+                ob_.location = (bx + 0.26 * math.sin(ph), by, bz)
+                dense = max(0.0, -math.cos(ph)); c = [VIOLET[q] + (TEAL[q] - VIOLET[q]) * dense for q in range(3)]; ob_.color = (*lin(c), 1)
+            for i, p in enumerate(sp.points):
+                x = -7 + 14 * i / 199
+                p.co = (x, 0, 3.4 + 1.2 * -math.cos(K * x - ph0 + math.pi), 1)
+            hl = smooth((t - 2.5) / 0.8) * (1 - smooth((t - 9.5) / 0.6))
+            show(cyc, hl > 0.02, 0.01 + 1.55 * hl); cyc.location = (0, 0, 5.0); cyc.rotation_euler = (math.pi / 2, 0, 0); show(c1t, hl > 0.5)
+            g = smooth((t - 10.5) / 1.2)  # the hearing range: a slow wave on the left end, a fast one on the right end
+            for i, p in enumerate(lsp.points):
+                x = -7 + 6.4 * i / 159; p.co = (x, 0, -3.0 + 1.3 * g * math.sin(1.1 * x - t * 1.5), 1)
+            for i, p in enumerate(hsp.points):
+                x = 0.6 + 6.4 * i / 259; p.co = (x, 0, -3.0 + 0.8 * g * math.sin(9.0 * x - t * 9), 1)
+            low.hide_render = high.hide_render = g <= 0
+            r_ = smooth((t - 13.5) / 1.5)
+            rng_.hide_render = r_ <= 0; rng_.location = (0, 0, -5.4); rng_.scale = (1, 1, max(0.01, 12.4 * r_))
+            for k, c_ in enumerate(caps): c_.location = ((-6.2 if k == 0 else 6.2) * r_, 0, -5.4); c_.hide_render = r_ <= 0
+
+    elif S in ('sr_a', 'sr_c', 'sr_d'):
+        wv, sp = tube('wv', 220, TEALM)
+        stairs, ssp = tube('st', 2 * 64 + 2, VIOM, 0.07)
+        bars = [bar(f'b{k}', GOLDM, 0.1) for k in range(64)]
+        dots = [mesh_obj('d', sphere(0.2, 14, 10), GOLDM) for _ in range(64)]
+        nums = [text('0', 0.55, WHITEM, (0, 0, 0)) for _ in range(16)]
+        grid = []
+        if S == 'sr_a':
+            gm = mat('Grid', (0.35, 0.45, 0.7), emit=0.6, coat=0)
+            for k in range(15): grid.append(mesh_obj('gv', cube(0.03, 0.03, 10), gm, loc=(-7 + k, 0.3, 1.6)))
+            for k in range(11): grid.append(mesh_obj('gh', cube(14, 0.03, 0.03), gm, loc=(0, 0.3, -3.4 + k)))
+        cnt = text('', 1.6, GOLDM, (0, 0, 7.4)); lbl = text('', 0.8, GOLDM, (0, 0, 6.2))
+        K = 2 * math.pi / 6.5 if S != 'sr_d' else 2 * math.pi / 11  # sr_d = one big wave across the screen
+        X0, X1 = (-6.5, 6.5) if S != 'sr_d' else (-5.5, 5.5)
+        A_ = 2.6; Z = 1.6
+        wavef = lambda x: Z + A_ * math.sin(K * (x - X0))
+
+        def samples(n_per_cycle, upto=1.0):
+            """sample x positions (n per wave length) across the screen"""
+            step = (2 * math.pi / K) / n_per_cycle
+            xs = []; x = X0 + step / 2
+            while x <= X1 + 1e-6: xs.append(x); x += step
+            return xs[:max(0, int(round(len(xs) * upto)))], step
+
+        def draw(xs, step, grow, stair_on, num_on):
+            for k, b_ in enumerate(bars):
+                if k < len(xs): set_bar(b_, xs[k], Z, Z + (wavef(xs[k]) - Z) * grow); dots[k].location = (xs[k], 0, Z + (wavef(xs[k]) - Z) * grow); dots[k].hide_render = grow <= 0.05
+                else: set_bar(b_, 0, 0, 0); dots[k].hide_render = True
+            for k, n_ in enumerate(nums):
+                if k < len(xs) and num_on > 0:
+                    v = wavef(xs[k]) - Z; n_.data.body = str(int(round(v / A_ * 100))); n_.hide_render = False
+                    n_.location = (xs[k], -0.2, Z + v + (0.55 if v >= 0 else -0.55)); n_.scale = (num_on,) * 3
+                else: n_.hide_render = True
+            pts = []
+            for x in xs: pts += [(x - step / 2, wavef(x)), (x + step / 2, wavef(x))]
+            stairs.hide_render = not (stair_on > 0 and pts)
+            for i, p in enumerate(ssp.points):
+                q = pts[min(i, len(pts) - 1)] if pts else (0, Z)
+                p.co = (q[0], -0.05, Z + (q[1] - Z) * stair_on, 1)
+
+        def wave(vis, ph=0.0):
+            wv.hide_render = vis <= 0.01
+            for i, p in enumerate(sp.points):
+                x = X0 + (X1 - X0) * i / 219; p.co = (x, 0, Z + (wavef(x + ph) - Z) * max(vis, 0.01), 1)
+
+        if S == 'sr_a':  # a smooth (dynamic) wave -> squares (quantization) -> 4 lines per wave = 4 numbers
+            def upd(f):
+                t = f / 30
+                flow = (1 - smooth((t - 14.0) / 1.0)) * t * 1.2
+                wave(1.0 - 0.75 * smooth((t - 26.0) / 2.0), flow)
+                for g_ in grid: g_.hide_render = t < 9.8
+                xs, st = samples(4)
+                draw(xs, st, smooth((t - 16.5) / 2.0), smooth((t - 27.5) / 1.5), smooth((t - 20.0) / 1.0))
+                show(cnt, t > 17.0); cnt.data.body = '4'; show(lbl, t > 17.5); lbl.data.body = 'samples / wave'
+        elif S == 'sr_c':  # more samples = more accurate: 4 -> 8 -> 16 -> 32 per wave
+            def upd(f):
+                t = f / 30
+                n_ = 4 if t < 5 else 8 if t < 10 else 16 if t < 16 else 32
+                wave(0.35)
+                xs, st = samples(n_)
+                draw(xs, st, 1.0, 1.0, 0)
+                cnt.data.body = str(n_); lbl.data.body = 'samples / wave'; show(cnt, True); show(lbl, True)
+        else:  # the minimum: 2 points per wave, one on the top curve and one on the bottom curve
+            def upd(f):
+                t = f / 30
+                wave(1.0)
+                q = 2 * math.pi / K
+                top, bot = X0 + q / 4, X0 + 3 * q / 4
+                for k, b_ in enumerate(bars): set_bar(b_, 0, 0, 0)
+                for k, d_ in enumerate(dots):
+                    on = (k == 0 and t > 7.3) or (k == 1 and t > 9.4)
+                    d_.hide_render = not on
+                    if on: d_.location = (top if k == 0 else bot, -0.1, wavef(top if k == 0 else bot)); d_.scale = (2.2,) * 3
+                for n_ in nums: n_.hide_render = True
+                s_ = smooth((t - 11.5) / 1.0)
+                stairs.hide_render = s_ <= 0
+                pts = [(X0, Z), (top, wavef(top)), (bot, wavef(bot)), (X1, Z)]
+                for i, p in enumerate(ssp.points):
+                    j = min(len(pts) - 1, i * len(pts) // len(ssp.points)); p.co = (pts[j][0], -0.05, Z + (pts[j][1] - Z) * s_, 1)
+                cnt.data.body = '2'; lbl.data.body = 'minimum'; show(cnt, t > 12.0); show(lbl, t > 12.4)
+
+    elif S == 'sr_b':  # the camera takes shots of a moving ball = frame rate; the same shots of the wave = sample rate
+        body = mesh_obj('cam', cube(1.6, 1.1, 1.1), mat('CamB', (0.62, 0.66, 0.74), metal=0.5, rough=0.3, emit=0.4), loc=(-5.8, 0, 6.2))
+        lens = mesh_obj('lens', cyl(0.45, 0.5, 0.7, 24), GOLDM, loc=(-4.75, 0, 6.2), rot=(0, math.pi / 2, 0))
+        flash = mesh_obj('fl', sphere(0.35, 16, 10), mat('Flash', (1, 1, 1), emit=12, coat=0), loc=(-4.3, -0.3, 6.2))
+        ball = mesh_obj('ball', sphere(0.45, 20, 12), GOLDM)
+        ghosts = [mesh_obj('g', sphere(0.45, 16, 10), mat(f'Gh{k}', GOLD, emit=0.8, coat=0)) for k in range(10)]
+        wv, sp = tube('wv', 200, TEALM)
+        wdots = [mesh_obj('wd', sphere(0.2, 14, 10), GOLDM) for _ in range(14)]
+        fr_t = text('frame rate', 0.9, GOLDM, (1.0, 0, 9.0)); sr_t = text('sample rate', 0.9, TEALM, (1.0, 0, -3.4))
+        ballp = lambda tt: (-2.6 + 7.5 * ((tt * 0.35) % 1), 0, 5.6 + 1.6 * abs(math.sin(tt * 2.2)))
+        W0 = lambda x, tt: 0.6 + 1.6 * math.sin(1.4 * x - min(tt, 16.4) * 2.0)  # the wave holds still while it is sampled
+        def upd(f):
+            t = f / 30
+            ball.location = ballp(t)
+            shots = [9.6 + 0.55 * k for k in range(10)]
+            fl = 0
+            for k, g_ in enumerate(ghosts):
+                on = t >= shots[k] and t < 16.0; g_.hide_render = not on
+                if on: g_.location = ballp(shots[k])
+                fl = max(fl, max(0, 1 - abs(t - shots[k]) * 8))
+            for i, p in enumerate(sp.points):
+                x = -6.5 + 13 * i / 199; p.co = (x, 0, W0(x, t), 1)
+            wshots = [16.8 + 0.4 * k for k in range(14)]
+            for k, d_ in enumerate(wdots):
+                on = t >= wshots[k]; d_.hide_render = not on
+                if on:
+                    x = -6.0 + k * 0.92; d_.location = (x, -0.1, W0(x, wshots[k]))
+                fl = max(fl, max(0, 1 - abs(t - wshots[k]) * 8))
+            flash.scale = (0.2 + 1.6 * fl,) * 3; flash.hide_render = fl <= 0.02
+            show(fr_t, t > 13.3); show(sr_t, t > 20.5)
+
 elif S == 'street':
     # short 02 (Aly 2026-10-27: "المشهد بتاع العربية.. animation افضل علشان يتفهم اكتر ب sound effects بشكل سينمائي.. 3d ب blender"):
     # a WIDE street at dusk, people + cars all making sound (grey rings), then every other sound is isolated away (desaturate, rings

@@ -164,3 +164,7 @@ _S7.patch(SHORTS, CAP)
 # review 2026-10-27 (2): 19-23 rebuilt with the sound examples heard + his pointing
 import series_data8 as _S8
 SHORTS.update(_S8.SHORTS); CAP.update(_S8.CAP)
+
+# review 2026-10-27 (3): 08 + 09 = Blender explainers
+import series_data9 as _S9
+_S9.patch(SHORTS, CAP)
