@@ -228,4 +228,10 @@ Done (2026-10-06):
   + .txt each. Data: project work/scripts series_data.py..series_data5.py + txt_series.py (archived tools/recipes/audiocourse/shorts/).
   Band title <= ~27 Arabic chars. No new 3D yet (theory = course anims + Fluent IdeaRows).
   2026-10-27 Aly: "اعمل 03 و 04 بمقاطع الأفلام زي الكورس" -> 03_film_music_comedy (1:44, Mickey + King of Comedy) and 04_sound_in_his_head
-  (2:22, Wrestler hook + Raging Bull): films shown AND heard (raw pieces) + FilmTag cue (piece key `film`), series_data6.py. All 31 done. Waiting for review.
+  (2:22, Wrestler hook + Raging Bull): films shown AND heard (raw pieces) + FilmTag cue (piece key `film`), series_data6.py.
+  Review 2026-10-27 (big): "ال icons مش بتبقى كافية خالص" -> NO IdeaRows as explanation: series_data7.py replaces every icon-row piece with
+  what he showed on screen (pinned `src` + zoom on what he names); 19-23 rebuilt in series_data8.py (sound examples HEARD as raw pieces,
+  22 = his Single/Double drawing, 23 = camera vs mic + clap + SyncAnim); 12/13 pinned shotgun chart / event photo; 16 = Léon scene;
+  27 frames him not the desk; 01 + camera example; labels/tags shrink to fit. 02 = Blender street scene (sound_scenes.py 'street',
+  ~1600 frames, NOT rendered yet) + make_street_sfx.py. 07 v1 archived (07 = v2). OPEN: 05 (no useful info: drop?), 08/09 need real
+  explaining animations. Almost every short must be RE-RENDERED (overnight, after his 'كمل'). Only 01 re-rendered (before the icon patch).
