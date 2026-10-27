@@ -244,6 +244,8 @@ Done (2026-10-06):
   Snacks, FPL Champ; Meet recording 45:03, code `entabiz01`). Opening 0:17-2:04 (Aly's tiny self-view) = full board `biz_open` (Aly in an
   ON-AIR frame the whole time, Karim behind a curtain, Egypt->GUC map, 4 cinematic Blender clips `tools/blender/biz_scenes.py`, resume
   after EEVEE crashes with `render_resume.sh`); 28 `biz_free` boards + 117 cards; NO crop of tiles (Meet labels covered). Recipe docs/22.
-  `output/review_01_opening.mp4` (0:00-3:25) SENT, waiting for his review; full render (`work/scripts/render.sh review_01`, ~hours)
-  only after his 'كمل'. Pending from Aly: Karim's new app link. Audio-course public parked in `_parked_public/audio` during this job
+  Opening reviewed 4x (2026-10-27/28; lessons in docs/22 "biz ep01 — Aly's opening reviews"): realistic v3 Blender (RWA studio
+  replica inside a building -> city -> gold tower 'podcity', detailed store, chess board + gold queen, framed cards). Aly said
+  (2026-10-28 ~01:30) "at morning I want the full final video" -> overnight: opening5 -> stills check -> `work/scripts/render.sh
+  review_01` -> `output/review_01.mp4` + .txt (from work/episode.txt). Not compressed (long video). Pending from Aly: Karim's new app link. Audio-course public parked in `_parked_public/audio` during this job
   (move back to public/projects/audio before resume_1027.sh).

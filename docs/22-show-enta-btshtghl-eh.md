@@ -177,3 +177,28 @@ the guest's job, terms and examples. Goal (Aly): fun, visualized, explain every 
   how each project reached customers, AI wave surfer...). Pictures: Behance (Courzerve: 3 campaign videos via the CCV HLS 720p),
   Instagram (kikos.snacks, fpl.champ posts, 640 px), Breadfast site, Open Library cover (The Dip), Commons (GUC).
 - Scripts: project work/scripts (make_plan.py, build.sh, render.sh, mix_audio.py, voices.py + speakers.py, aly_open.sh).
+
+### biz ep01 — Aly's opening reviews (2026-10-27/28) — what he wants from a "wow" 3D opening
+- Blender clips inside a board MUST each sit in their own `<Sequence from={layer.at}>` (v1 bug: they played from the board start ->
+  only their last frame showed: "كل الحاجات ال 3d كانت صور"). Same for video items in picture layers.
+- "Less childish, more professional/realistic": no capsule pawns / candy colours. v3 = lathe-turned chess pieces (marble/onyx pawns,
+  a GOLD QUEEN for the rare/famous one — he preferred the queen to the king), night glass towers with per-window random lights
+  (brick node Bias, mortar size is in brick space), measured PBR, kelvin practicals, satin metal that catches light on dark sets.
+- Use the blender-skills repo (tools/external/blender-skills = EL4CTEO/blender-skills 1.1.0) for real, not only its tables:
+  `apply_stack` (Bevel arc miter + Weighted Normal) on furniture/props, `qa_check` on every build (it caught mics INSIDE the
+  characters), time-of-day light temperatures + moon. Helpers in biz_scenes.py: hs_stack(), qa(), kelvin(), moon().
+- Transitions must make sense: the podcast studio is an apartment INSIDE a building of the city -> the camera backs out through the
+  window into the city -> the gold tower (one continuous shot, scene 'podcity'). A push into a crown was "مش مفهوم".
+- Podcast set = a REPLICA of RWA "حوارات مع عباس" (refs references/style-sheets/rwa_podcast.jpg): black pleated curtain, big screen
+  with OUR show logo, studio monitors, bookshelf with books/trophies, posters, long PLAIN table (no wood grain), typewriter, props,
+  Edison bulb, office chairs, boom mics that stop 6-7 cm off the face; wide front-on two-shot (deep room, ~23-30 mm, no 14 mm
+  distortion), enough light. A real store needs details (lit shelves, OPEN/CLOSED neon, awning, sign, shutter).
+- Chess board flicker = z-fighting (board and frame top at the same height) -> lift the board 4 mm. Card numbers bright.
+- Overlays: no overlap ever (stickers vs his frame, heads vs the guest corner); department name rings drawn INSIDE the logo picture
+  (measured name box per logo); logos from the intros at a non-wink frame (11.0 s); his self-view crop centred on his FACE (the
+  Meet self-view is wider than it looks: 1658-1887); no inner-shadow ring on tiles (radius 28 only); the self-view inside the
+  guest tile = blur ONLY the visible part, no badge; speaker circle follows a FACE TRACK (karim_track.py) through layout changes;
+  no fade-in on the opening board (the guest tile flashed); "Full Time… وبيزنس خاص" = two parallel lanes, the 1-year stop = a 1/8 gap.
+- Blender renders: run ONE chain at a time; stopping the outer bash leaves child loops alive -> kill them (they wrote old-version
+  frames into the new folders). render_resume.sh resumes after EEVEE crashes.
+

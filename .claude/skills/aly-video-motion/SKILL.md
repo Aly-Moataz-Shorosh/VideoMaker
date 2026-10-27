@@ -316,3 +316,11 @@ Writer: tools/recipes/graphictablet/write_meta.py.
 - A short with no useful takeaway (05: general talk only) should not exist; theory shorts (Hz, sample rate) need an animation that
   SHOWS the concept step by step, else "ممل". Keep every example of a set (01: drawing + camera + sound).
 - Text never leaves the frame: Label / Tag font shrinks with the text length (Short.tsx, shortScenes.tsx, sound3d.tsx).
+
+## 3D opening for an episode (رواد الأعمال ep01, 2026-10-27/28) — Aly: "عايز المقدمة استثنائية… مش اي حد يعرف يعمل زيه"
+- Blender = realistic, not childish: lathe objects (chess pieces, coins, mics), measured PBR, kelvin practicals, real props; use the
+  blender-skills repo scripts (apply_stack bevels, qa_check) — he checks that I really use it.
+- Every 3D clip plays from its own start (Sequence per layer). Transitions must tell a story (studio inside a building -> out the
+  window -> the city). Replicate the reference he names (RWA podcast set) closely, wide normal-lens framing, enough light.
+- Nothing overlaps; his camera crop centred on his face; the guest never flashes; rings/highlights fitted to the real text box.
+
