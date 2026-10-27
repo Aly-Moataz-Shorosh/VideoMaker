@@ -124,7 +124,7 @@ Done (2026-10-06):
   Episodes via `projects/انت بتشتغل ايه/new-episode.bat` → `<date> epNN <dept> <guest>/`; brand copies in `brand/enta/`.
   Nothing rendered yet — waiting for his first edited episode.
   2026-10-27: 3rd department رواد الأعمال (`biz`): new-episode.bat option 3 (epNN per dept), vector stickers bulb/coin/chart_up/
-  briefcase/rocket/shop, his question sets بزنس + صاحب مشروعين (docs/22). No biz intro/logo yet.
+  briefcase/rocket/shop, his question sets بزنس + صاحب مشروعين (docs/22). Intro = `brand/enta/intro_biz.mp4` (1080p); no separate logo png.
 - 2026-10-10 EP01 `projects/انت بتشتغل ايه/2026-10-10 ep01 fnon Ahmed Moataz Shorosh` (guest = BIM architect, Technical Design dept;
   ONE wide couch camera, Aly LEFT) → `output/review_01.mp4` (+ .xml/.srt/.txt). Virtual camera on the speaker (voice clustering),
   enta kit (`src/enta/`: stickers from his sheet, term cards, taped photos, 5 full-screen boards), sfx cue. Recipe in docs/22

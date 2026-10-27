@@ -34,7 +34,8 @@ the guest's job, terms and examples. Goal (Aly): fun, visualized, explain every 
 - Department flavour: cs → code, circuits, floppy, bug, 0101; fnon → curtain, film reel, masks, paint drips, notes;
   biz → idea bulb, coins, rising chart, briefcase, rocket (startup), shop; boards = timeline of the project (idea → first client
   → profit → now), team split (his tasks vs hired), numbers only when the guest says them.
-- biz has NO intro/logo yet (only `intro_cs` / `intro_fnon`, `logo_cs` / `logo_fnon`) — ask Aly before the first biz episode.
+- biz intro = `brand/enta/intro_biz.mp4` (copy of Aly's `C:/_working pc/upsampling.mp4`, 2026-10-27; 17.12 s, 1920x1080 25 fps,
+  same length as the cs/fnon intros). No separate `logo_biz.png` yet — take the logo end from the intro's tail when needed.
 
 ## Motion recipe = mix of all approved styles
 - Pacing from the reference (Peace Cake "مرتبة الشرف", 5YLfxDi4tIs): ~70 shot changes in 2 min (one every ~1.7 s):
