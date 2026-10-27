@@ -155,3 +155,25 @@ the guest's job, terms and examples. Goal (Aly): fun, visualized, explain every 
   (posting order; best 3 first): tester vs developer eyes, AI replace, no CS degree, boring?, production/refund. Others stay in IDEAS.
 - v2 (Aly on short 2): sfx on every zoom = over -> whoosh only when the cadre moves (two/one/board/card or other person), zoom-only changes silent. v1 in output/shorts/archive_v1/.
 - v3: my 5 rejected ("more motion graphics… give me the choice") -> table of 17 ideas with % motion/board -> Aly picked 14 API, 10 roadmap, 11 manual/automation, 4 production (PICK in shorts_data).
+
+## رواد الأعمال ep01 (2026-10-27, guest Karim Tamer — Courzerve -> Kiko's Snacks -> FPL Champ) — ONLINE (Meet), code `entabiz01`
+- Input = his Premiere export (45:03, 1080p60) of an OBS Meet recording; biz intro 0-17.12 and again 2686.0-end (from the .prproj ticks:
+  254016000000 / s). The Meet LAYOUT CHANGES at his own cut 187.53: before = Karim big (169,151 1582x800) + Aly's tiny self-view
+  (1658,808 139x104) inside Karim's tile corner; after = side by side (Karim 18,288 / Aly 966,288, 936x526). `meet.phases` in the plan.
+- Aly's asks: 0:17-2:03 = his intro with a tiny camera -> "enlarge only enough + a lot of motion + Blender": ONE full-screen board
+  `biz_open` (src/enta/BizOpen.tsx): his self-view pre-cut + lanczos 3.2x (`work/scripts/aly_open.sh`, Meet label cut off) in an ON-AIR
+  TV frame the WHOLE opening (hero -> left -> hero), Karim behind a red curtain ("ضيف الحلقة؟") that opens on "كريم" (karim_open.mp4 =
+  his FULL tile, no crop), headlines/chips/stickers on his words, an Egypt -> Cairo (OSM Nile) -> GUC pin map (Wikidata Q691097
+  29.988N 31.442E) + the real New Cairo road sign "GUC" (Commons), and 4 Blender clips (tools/blender/biz_scenes.py, cinematic v2: DOF
+  on the subject, motion blur via frame handler, handheld drift, swoop/crane/dolly-zoom, teal-orange light): tower (big success),
+  road (starter / reached a level / closed / something new), crowd (dolly zoom on the golden 0.25%), three (the 3 projects timed to
+  "المشروع… التاني… التالت"). Render: `bash tools/blender/render_biz_clips.sh "b_tower tower 270" ...` (~2 s/frame on the 1050 Ti).
+- Aly: NO crop of the tiles the whole video (zoom ≤ 1.08 only for moments) -> Meet UI inside tiles is COVERED: our paper name tags
+  over the Meet labels, a soft blur over his crop button, and (phase 1) our framed picture of Aly over Meet's self-view (`self`, `masks`).
+- Aly LEFT / Karim RIGHT in the two-shot (he looks right) = meet.left 'A'. Then style 14 cadres + calm zoom.
+- Boards = ONE declarative `biz_free` (src/enta/BoardBiz.tsx): emo/pic(video)/logo/text/chip/mark/sticker/arrow/path/walker/bar/num/
+  panel/strike/poly/wave. 27 boards (Breadfast, Courzerve pivots, skills ✓✗, real Behance campaign videos, The Dip walker, McDonald's
+  example, a 4-panel comic of the 4-month system story, cinema snacks world, 4 h vs 14 h, price 90 -> 200, FPL, 5 pillars + AI, iceberg,
+  how each project reached customers, AI wave surfer...). Pictures: Behance (Courzerve: 3 campaign videos via the CCV HLS 720p),
+  Instagram (kikos.snacks, fpl.champ posts, 640 px), Breadfast site, Open Library cover (The Dip), Commons (GUC).
+- Scripts: project work/scripts (make_plan.py, build.sh, render.sh, mix_audio.py, voices.py + speakers.py, aly_open.sh).
