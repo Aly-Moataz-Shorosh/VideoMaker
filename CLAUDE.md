@@ -235,3 +235,6 @@ Done (2026-10-06):
   27 frames him not the desk; 01 + camera example; labels/tags shrink to fit. 02 = Blender street scene (sound_scenes.py 'street',
   ~1600 frames, NOT rendered yet) + make_street_sfx.py. 07 v1 archived (07 = v2). OPEN: 05 (no useful info: drop?), 08/09 need real
   explaining animations. Almost every short must be RE-RENDERED (overnight, after his 'كمل'). Only 01 re-rendered (before the icon patch).
+  08/09 = Blender explainers per sentence (series_data9.py, scenes hz_a-d / sr_a-d). Render started 12:05 after his 'كمل', STOPPED by Aly
+  at 14:20 (PC off): done = p_street + hz_a-d + sr_a/b clips, raw 01 03 04 06 10-18 (not levelled). Old versions in output/shorts/archive/before_1027.
+  On his next 'كمل': run project `work/scripts/resume_1027.sh` in the background (sr_c/sr_d, level, 19-31, 02/08/09, txt; log work/night_1027.log).
