@@ -773,8 +773,8 @@ def scene_podcity(N):
     for i in range(-4, 5):
         mesh_obj(f'sx{i}', cube(17.5, 0.035, 0.012, (0, i * 2.0 + 1.0, 0.006)), st, smooth=False)
         mesh_obj(f'sy{i}', cube(0.035, 17.5, 0.012, (i * 2.0 + 1.0, 0, 0.006)), st, smooth=False)
-    BX, BY, ZR, RH = 4.6, -5.0, 1.6, 0.9          # studio building centre, room floor height, room height
-    W2_, D2_ = 1.3, 1.1                            # half width / half depth of the building
+    BX, BY, ZR, RH = 4.6, -5.0, 1.6, 1.25         # studio building centre, room floor height, room height (taller: a calmer shot)
+    W2_, D2_ = 1.3, 1.6                            # half width / half depth (deeper: the camera stands back with a normal lens)
     FY = BY - D2_                                  # front face (towards the camera exit, -Y)
     mats = [facade(f'fc{i}', lit=[(1, 0.8, 0.5), (0.85, 0.9, 1), (1, 0.9, 0.7)][i % 3], seed=i) for i in range(3)]
     roof = pbr('roof', (0.12, 0.12, 0.13), rough=0.6)
@@ -865,8 +865,8 @@ def scene_podcity(N):
     # the long plain table + its props
     DY = BY + 0.3
     DZ = ZR + 0.17
-    mesh_obj('desktop', cube(1.3, 0.42, 0.03, (0, 0, DZ)), pbr('deskwood', (0.11, 0.065, 0.04), rough=0.3, coat=0.6), (BX, DY, 0), smooth=False)
-    mesh_obj('deskbase', cube(1.05, 0.2, DZ - ZR - 0.015, (0, 0, ZR + (DZ - ZR - 0.015) / 2), bevel=0.004), pbr('db', (0.05, 0.04, 0.035), rough=0.5), (BX, DY, 0), smooth=False)
+    mesh_obj('desktop', cube(1.0, 0.42, 0.03, (0, 0, DZ)), pbr('deskwood', (0.11, 0.065, 0.04), rough=0.3, coat=0.6), (BX, DY, 0), smooth=False)
+    mesh_obj('deskbase', cube(0.8, 0.2, DZ - ZR - 0.015, (0, 0, ZR + (DZ - ZR - 0.015) / 2), bevel=0.004), pbr('db', (0.05, 0.04, 0.035), rough=0.5), (BX, DY, 0), smooth=False)
     hs_stack(['desktop', 'deskbase'], width=0.006, segments=4)
     TZ = DZ + 0.015
     tw_m = pbr('twm', (0.07, 0.07, 0.075), metal=0.4, rough=0.35, coat=0.6)
@@ -880,13 +880,13 @@ def scene_podcity(N):
     hs_stack(['tw_body'], width=0.004, segments=3)
     props = ['tw_body']
     mesh_obj('helmet', lathe([(0, 0), (0.03, 0), (0.045, 0.02), (0.05, 0.06), (0.046, 0.09), (0.035, 0.11), (0.018, 0.12), (0, 0.122)], 40),
-             pbr('helm', (0.95, 0.38, 0.1), rough=0.25, coat=0.9), (BX + 0.33, DY + 0.08, TZ)); props.append('helmet')
+             pbr('helm', (0.95, 0.38, 0.1), rough=0.25, coat=0.9), (BX + 0.27, DY + 0.08, TZ)); props.append('helmet')
     for i, x in enumerate((-0.22, 0.2)):
         mesh_obj(f'budd{i}', lathe([(0, 0), (0.024, 0), (0.026, 0.01), (0.02, 0.025), (0.022, 0.04), (0.012, 0.05), (0.014, 0.06), (0, 0.068)], 32), GOLD_M(f'bd{i}'), (BX + x, DY + 0.1, TZ)); props.append(f'budd{i}')
-    for i, (mx, my) in enumerate([(-0.4, -0.08), (0.42, -0.06)]):
+    for i, (mx, my) in enumerate([(-0.3, -0.08), (0.32, -0.06)]):
         mesh_obj(f'mug{i}', lathe([(0, 0), (0.026, 0), (0.028, 0.005), (0.028, 0.066), (0.025, 0.068), (0.023, 0.012), (0, 0.012)], 32),
                  pbr(f'mugm{i}', (0.06, 0.06, 0.065) if i else (0.92, 0.9, 0.86), rough=0.15, coat=0.8), (BX + mx, DY + my, TZ)); props.append(f'mug{i}')
-    for i, (bx_, by_) in enumerate([(-0.3, 0.06), (0.28, 0.02)]):
+    for i, (bx_, by_) in enumerate([(-0.24, 0.06), (0.22, 0.02)]):
         mesh_obj(f'bottle{i}', lathe([(0, 0), (0.02, 0), (0.021, 0.004), (0.021, 0.075), (0.012, 0.095), (0.009, 0.1), (0.009, 0.11), (0, 0.11)], 32),
                  pbr(f'btm{i}', (0.9, 0.95, 1), rough=0.03, trans=0.95), (BX + bx_, DY + by_, TZ)); props.append(f'bottle{i}')
         mesh_obj(f'cap{i}', cyl(0.01, 0.01, 0.012, 16, (0, 0, 0.116)), pbr(f'capm{i}', (0.15, 0.3, 0.7), rough=0.4), (BX + bx_, DY + by_, TZ))
@@ -896,7 +896,7 @@ def scene_podcity(N):
     P = bpy.data.objects.new('bulbL', bpy.data.lights.new('bulbL', 'POINT')); P.data.energy = 6; P.data.shadow_soft_size = 0.01
     P.location = (BX - 0.12, DY, ZR + 0.34); sc.collection.objects.link(P); kelvin(P, 2200)
     # the two at the table ends (host = marble pawn, famous guest = gold queen), black office chairs behind them
-    HX, QX = BX - 0.78, BX + 0.78
+    HX, QX = BX - 0.62, BX + 0.62
     chair_m = pbr('chair', (0.025, 0.025, 0.028), rough=0.5, coat=0.3)
     for i, cx_ in enumerate((HX - 0.13, QX + 0.13)):
         sx = -1 if i == 0 else 1
@@ -919,7 +919,7 @@ def scene_podcity(N):
     for i, (px, hz, hr) in enumerate(faces_):
         toward = 1 if i == 0 else -1                           # the face looks at the table centre
         end = np.array((px + toward * (hr + 0.065), DY - 0.01, hz - 0.01))
-        cx, cy = px + toward * 0.24, DY - 0.16                  # clamp on the table, between the speaker and the centre
+        cx, cy = px + toward * 0.2, DY - 0.16                  # clamp on the table, between the speaker and the centre
         mesh_obj(f'clamp{i}', cube(0.03, 0.04, 0.03, (0, 0, 0), bevel=0.004), steel_d, (cx, cy, DZ + 0.03), smooth=False)
         riser_top = np.array((cx, cy, DZ + 0.2))
         mesh_obj(f'riser{i}', cyl(0.006, 0.006, 0.17, 12, (0, 0, 0.085)), steel_d, (cx, cy, DZ + 0.03))
@@ -984,7 +984,7 @@ def scene_podcity(N):
         # inside (Aly: "عايز الكدر احسن"): a calm two-shot at the pieces' eye level, both centred in the area right of Aly's frame,
         # ON AIR in view, desk in the lower third; a slow push in
         k1 = E2(f, 0, 64)
-        inside = (BX + 0.05, FY + 0.05 + 0.12 * k1, ZR + 0.33)  # the RWA wide: the long table front-on, both ends in frame
+        inside = (BX + 0.08, FY + 0.06 + 0.12 * k1, ZR + 0.42)  # the RWA wide: front-on, 30 mm, tight on the table + both of them
         k2 = E2(f, 64, 118)
         outside = (BX - 0.05, FY - 2.6, ZR + 0.55)
         k3 = E2(f, 118, 205)
@@ -994,14 +994,14 @@ def scene_podcity(N):
         p1 = [lerp_(k2, a_, b_) for a_, b_ in zip(inside, outside)]
         p2 = [lerp_(k3, a_, b_) for a_, b_ in zip(p1, over)]
         p3 = [lerp_(k4, a_, b_) for a_, b_ in zip(p2, (BX + 5.0, BY - 11.5, 4.2 + 0.4 * top))]
-        room_t = (BX + 0.05, DY + 0.25, ZR + 0.37)
+        room_t = (BX + 0.08, DY, ZR + 0.45)
         city_t = (0, 0, 1.2 + 0.55 * top)
         tgt = [lerp_(k3, a_, b_) for a_, b_ in zip(room_t, city_t)]
-        lens = lerp_(k2, 14.5 + 2.5 * k1, 30) + 4 * k3
+        lens = lerp_(k2, 30 + 3 * k1, 30) + 4 * k3
         foc = QT if k3 < 0.5 else (0, 0, max(1.0, tgt[2]))
         look(p3, tgt, lens=lens, focus=foc, f=f, shake=0.012 if k2 < 0.5 else 0.02)
         cam.data.shift_x = -0.17   # the subject always right of Aly's frame (inside too)
-        cam.data.shift_y = 0.04 * (1 - k3)  # inside: architectural lens shift up = less floor, verticals stay straight
+        cam.data.shift_y = 0.0
     return at
 
 
