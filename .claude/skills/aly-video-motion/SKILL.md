@@ -308,3 +308,11 @@ Writer: tools/recipes/graphictablet/write_meta.py.
   just the demo he played; consecutive screen pieces = ONE continuous card (cin/cout) so it reads as one video; drags = the view follows
   the mouse to the drop point with a box on grab and drop. On a talk without screen: picture rows (IdeaRows, RTL) instead of an icon card.
 - Series band title: at most ~27 Arabic characters (longer titles end in "..." in the band) — check one band still before rendering a batch.
+- REVIEW 2026-10-27 (overrides the IdeaRows lines above): "ال icons مش بتبقى كافية خالص للشرح نهائي" + "جيب انا بشرح بايه في الفيديو".
+  Icon/picture rows are NEVER the explanation. For every piece look at what HE showed at that moment (frame_sheet.py on start/mid/end)
+  and show THAT (slide, film scene, photo, demo video); if he scrolled to an unrelated slide mid-sentence, pin the right picture with `src`
+  and zoom on the part he names. A film scene he explains with = shown AND heard (raw piece) + FilmTag (03/04/16). Nothing on screen ->
+  a real explaining animation (course anim, Blender full screen with cinematic sfx like 02's street), never icons.
+- A short with no useful takeaway (05: general talk only) should not exist; theory shorts (Hz, sample rate) need an animation that
+  SHOWS the concept step by step, else "ممل". Keep every example of a set (01: drawing + camera + sound).
+- Text never leaves the frame: Label / Tag font shrinks with the text length (Short.tsx, shortScenes.tsx, sound3d.tsx).
