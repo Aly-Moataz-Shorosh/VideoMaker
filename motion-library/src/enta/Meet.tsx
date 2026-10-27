@@ -97,12 +97,10 @@ export const MeetStage: React.FC<{source: string; tiles: MeetTiles; cues: Cue[];
           const bw = sv[2] * s * k, bh = sv[3] * s * k;
           const cx = (sv[0] - t[0] + sv[2] / 2) * s, cy = (sv[1] - t[1] + sv[3] / 2) * s;
           const bx = Math.min(r.w - bw - 10, cx - bw / 2), by = Math.min(r.h - bh - 10, cy - bh / 2);
-          // Aly 2026-10-27: this part = Karim ONLY -> the corner is a soft blur with the ON AIR badge, not his picture
+          // Aly 2026-10-27: Karim ONLY here; the ON AIR badge box looked "وحش اوي" -> just a soft blur, feathered edges (no frame, no tint)
           return (
-            <div style={{position: 'absolute', left: bx, top: by, width: bw, height: bh, borderRadius: 16, overflow: 'hidden', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
-              background: 'rgba(18,20,25,.35)', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-              <Sticker name="onair" size={Math.min(bw, bh * 1.6) * 0.8} />
-            </div>
+            <div style={{position: 'absolute', left: bx - bw * 0.25, top: by - bh * 0.25, width: bw * 1.5, height: bh * 1.5, backdropFilter: 'blur(26px)', WebkitBackdropFilter: 'blur(26px)',
+              maskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, black 62%, transparent 100%)', WebkitMaskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, black 62%, transparent 100%)'}} />
           );
         })() : null}
       </div>

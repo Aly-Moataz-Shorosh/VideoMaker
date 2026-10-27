@@ -262,6 +262,20 @@ KING = [(0, 0), (0.5, 0), (0.5, 0.06), (0.46, 0.1), (0.475, 0.14), (0.4, 0.18), 
         (0.185, 1.05), (0.3, 1.1), (0.31, 1.14), (0.2, 1.18), (0.22, 1.3), (0.3, 1.47), (0.335, 1.54), (0.3, 1.585), (0.12, 1.62), (0, 1.64)]
 
 
+QUEEN = [(0, 0), (0.5, 0), (0.5, 0.06), (0.46, 0.1), (0.475, 0.14), (0.4, 0.18), (0.33, 0.25), (0.27, 0.34), (0.22, 0.56), (0.18, 0.86),
+         (0.17, 1.03), (0.29, 1.08), (0.30, 1.12), (0.19, 1.16), (0.2, 1.26), (0.27, 1.42), (0.33, 1.52), (0.31, 1.55), (0.22, 1.56),
+         (0.16, 1.6), (0.08, 1.63), (0, 1.64)]
+
+
+def queen(name, m, loc, s=1.0):  # Staunton queen: coronet of 9 small balls on the rim + a ball on top (Aly: "خليه الوزير")
+    obs = [mesh_obj(name, lathe([(r * s, z * s) for r, z in QUEEN]), m, loc)]
+    for k in range(9):
+        a = 2 * math.pi * k / 9
+        obs.append(mesh_obj(f'{name}p{k}', sphere(0.05 * s, 16, 10, (0.31 * s * math.cos(a), 0.31 * s * math.sin(a), 1.575 * s)), m, loc))
+    obs.append(mesh_obj(name + 'ball', sphere(0.085 * s, 24, 16, (0, 0, 1.72 * s)), m, loc))
+    return obs
+
+
 def king(name, m, loc, s=1.0):
     obs = [mesh_obj(name, lathe([(r * s, z * s) for r, z in KING]), m, loc)]
     obs.append(mesh_obj(name + 'cv', cube(0.07 * s, 0.07 * s, 0.32 * s, (0, 0, 1.78 * s), bevel=0.008), m, loc, smooth=False))
@@ -319,7 +333,7 @@ def facade(name, base=(0.05, 0.06, 0.075), lit=(1, 0.8, 0.5), scale=9.0, strengt
 GOLD_M = lambda n='gold': pbr(n, (1.0, 0.77, 0.36), metal=1.0, rough=0.13)
 MARBLE = lambda n='marble': pbr(n, (0.93, 0.92, 0.89), rough=0.14, coat=0.9, sss=0.12)
 ONYX = lambda n='onyx': pbr(n, (0.03, 0.032, 0.038), rough=0.08, coat=1.0)
-STEEL = lambda n='steel': pbr(n, (0.78, 0.79, 0.81), metal=1.0, rough=0.28)
+STEEL = lambda n='steel': pbr(n, (0.56, 0.57, 0.58), metal=1.0, rough=0.28)  # blender-skills pbr-values: iron/steel
 WALNUT = lambda n='walnut': pbr(n, (0.22, 0.12, 0.07), rough=0.32, coat=0.7)
 
 
@@ -342,14 +356,14 @@ def scene_podcast(N):
     mesh_obj('deskb', cube(3.0, 0.6, 0.78, (0, 0.15, 0.39), bevel=0.03), pbr('db', (0.05, 0.05, 0.06), rough=0.4), smooth=False)
     host = mesh_obj('host', lathe([(r * 1.55, z * 1.55) for r, z in PAWN]), MARBLE('hm'), (-1.05, 0.85, 0.02))
     gold = GOLD_M('gk')
-    guest = king('guest', gold, (1.05, 0.85, 0.02), 1.0)
+    guest = queen('guest', gold, (1.05, 0.85, 0.02), 1.0)
     grille = pbr('grille', (0.08, 0.08, 0.09), metal=0.7, rough=0.45)
     for i, (x, a) in enumerate([(-0.6, 0.35), (0.6, -0.35)]):
         mesh_obj(f'mb{i}', lathe([(0, 0), (0.07, 0), (0.07, 0.3), (0.085, 0.32), (0.085, 0.42), (0.07, 0.44), (0, 0.46)], 32), grille, (x, 0.45, 1.25), (0.7, 0, a))
         mesh_obj(f'arm{i}', cyl(0.018, 0.018, 0.9, 12, (0, 0, 0.45)), STEEL(f'st{i}'), (x + (0.35 if x > 0 else -0.35), 0.75, 0.85), (0.6, 0, -0.7 if x > 0 else 0.7))
     sp = spot('gs', (1.05, -0.8, 6.5), (1.05, 0.85, 1.0), 4200, 14, (1, 0.86, 0.6), 0.25)
     spot('hs', (-1.05, -0.8, 6.5), (-1.05, 0.85, 0.8), 1500, 16, (0.75, 0.82, 1), 0.35)
-    CR = (1.05, 0.85, 1.85)
+    CR = (1.05, 0.85, 1.7)
 
     def at(f):
         bsdf(onair.data.materials[0]).inputs['Emission Strength'].default_value = 2.6 + 0.6 * math.sin(f / 3)  # red stays red (AgX bleaches very bright red)
@@ -466,13 +480,56 @@ def scene_road(N):
     fl_light = bpy.data.objects.new('flL', bpy.data.lights.new('flL', 'POINT')); fl_light.data.color = (1, 0.6, 0.3); sc.collection.objects.link(fl_light)
     smoke_m = pbr('smoke', (0.7, 0.7, 0.72), rough=0.95)
     puffs = [mesh_obj(f'pf{i}', sphere(0.3, 20, 12), smoke_m, (RX, RY, -3)) for i in range(16)]
-    # stop 2: store (glass storefront + sign), glass bars = the level, steel shutter rolls down, lights die
-    store_glass = pbr('sg', (1, 0.85, 0.6), emit=3.0)
-    store = [mesh_obj('st', cube(2.3, 1.6, 2.5, (0, 0, 1.25), bevel=0.02), facade('stf', scale=4.0, strength=1.4), (7, 2.8, 0), smooth=False),
-             mesh_obj('stg', cube(1.7, 0.02, 1.1, (0, 0, 0.6)), store_glass, (7, 1.99, 0), smooth=False)]
-    sign_m = pbr('sgn', (0.95, 0.75, 0.4), emit=3.0)
-    sign = mesh_obj('sign', cube(1.8, 0.06, 0.28, (0, 0, 0), bevel=0.01), sign_m, (7, 1.96, 1.95), smooth=False)
-    slats = [mesh_obj(f'sl{i}', cyl(0.035, 0.035, 1.7, 12, (0, 0, 0)), STEEL(f'slm{i}'), (7, 1.94, 1.75 - i * 0.075), (0, math.pi / 2, 0)) for i in range(16)]
+    # stop 2: a real STORE (Aly 2026-10-27: "المحل اللي اتقفل مش باين انه محل حط تفاصيل اكتر") — brick ground floor with a lit display
+    # window (shelves + products), a glass door with a handle, striped fabric awning, a lit SHOP sign, an OPEN neon that turns into
+    # CLOSED; it grows with the glass bars (the level), then a ribbed steel shutter rolls down over the whole front and the lights die.
+    # PBR values from tools/external/blender-skills (blender-pbr-materials/references/pbr-values.md): brick, steel, glass, fabric.
+    root = bpy.data.objects.new('storeRoot', None); root.location = (7, 2.8, 0); sc.collection.objects.link(root)
+    def part(name, bm, m, loc, rot=(0, 0, 0), smooth=False):
+        o = mesh_obj(name, bm, m, loc, rot, smooth=smooth); o.parent = root; return o
+    FYs = -0.8                                   # store front (relative to root), faces -Y
+    brick = pbr('brick', (0.3, 0.085, 0.045), rough=0.85)
+    part('upper', cube(2.4, 1.6, 1.25, (0, 0, 1.3 + 0.625), bevel=0.02), facade('stf', scale=7.0, strength=1.3), (0, 0, 0))
+    part('cornice', cube(2.5, 1.7, 0.08, (0, 0, 1.3)), STEEL('corn'), (0, 0, 0))
+    for sx in (-1, 1):
+        part(f'pier{sx}', cube(0.22, 1.6, 1.3, (sx * 1.09, 0, 0.65)), brick, (0, 0, 0))
+    part('back', cube(2.0, 0.05, 1.3, (0, 0.75, 0.65)), pbr('inback', (0.85, 0.7, 0.5), emit=0.0), (0, 0, 0))
+    inside_l = pbr('inl', (1, 0.82, 0.55), emit=2.8)
+    part('inglow', cube(1.95, 0.02, 1.2, (0, 0.72, 0.65)), inside_l, (0, 0, 0))
+    frm = pbr('sfrm', (0.06, 0.06, 0.065), metal=0.8, rough=0.35)
+    glass = pbr('glass', (1, 1, 1), rough=0.02, trans=1.0, ior=1.5)
+    # display window (left 2/3) + door (right 1/3)
+    # (no glass pane: EEVEE transmission went dark and hid the lit shelves — the frames read as a window)
+    for x in (-0.95, 0.31, 0.98):
+        part(f'mul{x}', cube(0.05, 0.06, 1.12, (x, FYs, 0.6)), frm, (0, 0, 0))
+    part('wtop', cube(2.0, 0.06, 0.05, (0, FYs, 1.15)), frm, (0, 0, 0))
+    part('wsill', cube(1.3, 0.12, 0.12, (-0.32, FYs, 0.12)), frm, (0, 0, 0))
+    part('door', cube(0.62, 0.02, 1.05, (0.645, FYs + 0.6, 0.55)), pbr('dark', (0.03, 0.03, 0.035), rough=0.3), (0, 0, 0))  # dark shop depth behind the door frame
+    part('handle', cyl(0.012, 0.012, 0.35, 12, (0, 0, 0)), STEEL('hdl'), (0.42, FYs - 0.04, 0.6))
+    # shelves with products behind the glass
+    shelf_m = pbr('shelf', (0.35, 0.22, 0.12), rough=0.5)
+    prod = [pbr(f'pr{i}', c, rough=0.4, coat=0.4) for i, c in enumerate([(0.72, 0.18, 0.1), (0.9, 0.75, 0.3), (0.2, 0.4, 0.7), (0.85, 0.85, 0.82), (0.3, 0.55, 0.3)])]
+    for si, z in enumerate((0.3, 0.6, 0.9)):
+        part(f'sh{si}', cube(1.15, 0.22, 0.025, (-0.32, -0.5, z)), shelf_m, (0, 0, 0))
+        for k in range(7):
+            m_ = prod[(k + si * 2) % 5]; px = -0.82 + k * 0.165
+            if (k + si) % 3 == 0: part(f'can{si}{k}', cyl(0.04, 0.04, 0.12, 16, (px, -0.5, z + 0.072)), m_, (0, 0, 0), smooth=True)
+            else: part(f'box{si}{k}', cube(0.1, 0.07, 0.15 + 0.04 * (k % 2), (px, -0.5, z + 0.09 + 0.02 * (k % 2)), bevel=0.005), m_, (0, 0, 0))
+    open_m = pbr('open', (0.25, 1, 0.4), emit=3.0); closed_m = pbr('closed', (1, 0.12, 0.08), emit=0.0)
+    o_open = text('OPEN', 0.17, 0.01, open_m, (7 - 0.55, 2.8 + FYs + 0.04, 0.95)); o_open.parent = root; o_open.location = (-0.55, FYs + 0.04, 0.95)
+    o_closed = text('CLOSED', 0.15, 0.01, closed_m, (0, 0, 0)); o_closed.parent = root; o_closed.location = (-0.55, FYs + 0.04, 0.95)
+    # awning (striped fabric with sheen) + lit SHOP sign
+    for i in range(8):
+        aw = pbr(f'aw{i}', (0.62, 0.16, 0.08) if i % 2 else (0.88, 0.85, 0.78), rough=0.9)
+        try: bsdf(aw).inputs['Sheen Weight'].default_value = 0.4
+        except Exception: pass
+        part(f'aw{i}', cube(0.27, 0.55, 0.02, (0, 0, 0)), aw, (-0.945 + i * 0.27, FYs - 0.22, 1.24), (math.radians(-24), 0, 0))
+    sign_m = pbr('sgn', (1, 0.82, 0.5), emit=3.0)
+    part('signbox', cube(1.5, 0.08, 0.26, (0, 0, 0), bevel=0.01), pbr('sb', (0.08, 0.08, 0.09), metal=0.6, rough=0.3), (0, FYs - 0.06, 1.48))
+    sign = text('SHOP', 0.2, 0.015, sign_m, (0, 0, 0)); sign.parent = root; sign.location = (0, FYs - 0.11, 1.48)
+    slats = [part(f'sl{i}', cyl(0.03, 0.03, 2.05, 12, (0, 0, 0)), STEEL(f'slm{i}'), (0, FYs - 0.1, 1.14 - i * 0.066), (0, math.pi / 2, 0)) for i in range(17)]
+    shutter_box = part('shbox', cube(2.1, 0.14, 0.1, (0, FYs - 0.1, 1.19)), STEEL('shb'), (0, 0, 0))
+    store_glass = inside_l
     bars = [mesh_obj(f'bar{i}', cube(0.42, 0.42, 1.0, (0, 0, 0.5), bevel=0.02), pbr(f'barm{i}', (0.9, 0.95, 1), rough=0.03, trans=0.9, emit=0.6, emit_col=(1, 0.8, 0.5)),
                      (5.9 + i * 0.75, 4.6, 0), smooth=False) for i in range(4)]
     bh = [1.0, 1.9, 2.9, 3.6]
@@ -506,12 +563,15 @@ def scene_road(N):
             o.scale = (0.4 + 2.2 * t * (1 - 0.4 * t),) * 3
         pop(rocket, f, 18, 30)
         g = back(ease(f, 112, 134))
-        for o in store: o.scale = (1, 1, max(1e-3, g)); o.hide_render = g <= 1e-3
-        pop([sign], f, 128, 140)
+        root.scale = (1, 1, max(1e-3, g))
+        for o in root.children: o.hide_render = g <= 1e-3
+        cl = f >= 214  # OPEN -> CLOSED
+        o_open.hide_render = cl or g <= 1e-3; o_closed.hide_render = (not cl) or g <= 1e-3
+        bsdf(closed_m).inputs['Emission Strength'].default_value = 3.0 if cl else 0.0
         for i, b in enumerate(bars):
             p = back(ease(f, 122 + i * 7, 136 + i * 7)); b.scale = (1, 1, max(1e-3, bh[i] * p)); b.hide_render = p <= 1e-3
         c = ease(f, 198, 220)
-        for i, sl in enumerate(slats): sl.hide_render = c * 16 < i + 0.5
+        for i, sl in enumerate(slats): sl.hide_render = g <= 1e-3 or c * 17 < i + 0.5
         grey = ease(f, 208, 230)
         bsdf(store_glass).inputs['Emission Strength'].default_value = 3.0 * (1 - grey)
         bsdf(sign_m).inputs['Emission Strength'].default_value = 3.0 * (1 - grey) * (1 if f < 208 or (f // 3) % 4 else 0.2)
@@ -558,7 +618,7 @@ def scene_crowd(N):
     gold = GOLD_M('goldk')
     G = (0.0, 0.0)
     ped = mesh_obj('ped', lathe([(0.75, 0), (0.75, 0.08), (0.62, 0.14), (0.55, 0.2), (0.55, 1.0), (0.62, 1.06), (0.68, 1.12), (0, 1.12)], 64), MARBLE('pedm'), (0, 0, 0))
-    kg = king('king', gold, (0, 0, 0), 0.85)
+    kg = queen('queen', gold, (0, 0, 0), 0.85)
     sp = spot('Spot', (0.4, -0.6, 11), (0, 0, 2), 7000, 12, (1, 0.86, 0.6), 0.2)
 
     def at(f):
@@ -634,7 +694,138 @@ def scene_three(N):
     return at
 
 
-SCENES = {'podcast': scene_podcast, 'tower': scene_tower, 'road': scene_road, 'crowd': scene_crowd, 'three': scene_three}
+def scene_podcity(N):
+    # ONE continuous shot (Aly 2026-10-27: "البودكاست ده جوا شقة في عمارة و نخرج من العمارة نلاقي نفسنا في المدينة"):
+    # inside an apartment studio (host = marble pawn, famous guest = gold queen, mics, panels, ON AIR) -> the camera backs out through
+    # the window, out of the building, rises over the night city and turns to the gold tower that climbs floor by floor ("ملايين")
+    # and gets its coin. Clip starts at 31.4 s; floors from frame 140 (36.1 s), coin ~222 (38.8 s).
+    studio(1.0, (0, 0, 3))
+    mesh_obj('Ground', cyl(9, 9, 0.25, 128, (0, 0, -0.125)), pbr('asph', (0.035, 0.037, 0.045), rough=0.22, coat=0.7))
+    mesh_obj('Rim', cyl(9.06, 9.06, 0.08, 128, (0, 0, -0.06)), pbr('rim', (1, 0.6, 0.3), emit=1.6))
+    st = pbr('street', (1, 0.78, 0.5), emit=1.6)
+    for i in range(-4, 5):
+        mesh_obj(f'sx{i}', cube(17.5, 0.035, 0.012, (0, i * 2.0 + 1.0, 0.006)), st, smooth=False)
+        mesh_obj(f'sy{i}', cube(0.035, 17.5, 0.012, (i * 2.0 + 1.0, 0, 0.006)), st, smooth=False)
+    BX, BY, ZR, RH = 4.6, -5.0, 1.6, 0.9          # studio building centre, room floor height, room height
+    W2_, D2_ = 1.3, 1.1                            # half width / half depth of the building
+    FY = BY - D2_                                  # front face (towards the camera exit, -Y)
+    mats = [facade(f'fc{i}', lit=[(1, 0.8, 0.5), (0.85, 0.9, 1), (1, 0.9, 0.7)][i % 3], seed=i) for i in range(3)]
+    roof = pbr('roof', (0.12, 0.12, 0.13), rough=0.6)
+    blocks = []
+    for i in range(120):
+        ang = random.uniform(0, 2 * math.pi); r = random.uniform(1.9, 8.3)
+        x, y = r * math.cos(ang), r * math.sin(ang)
+        if any(math.hypot(x - b[0], y - b[1]) < 0.95 for b in blocks) or (abs(x - BX) < 2.2 and abs(y - BY) < 2.6) or (abs(x - BX) < 1.6 and y < BY): continue
+        h = random.uniform(0.6, 2.8) * (1.3 - r / 10)
+        wdt = random.choice([0.6, 0.7, 0.8])
+        mesh_obj(f'b{i}', cube(wdt, wdt, h, (0, 0, h / 2), bevel=0.012), mats[i % 3], (x, y, 0), smooth=False)
+        mesh_obj(f'r{i}', cube(wdt * 0.4, wdt * 0.3, 0.12, (0, 0, h + 0.06)), roof, (x, y, 0), smooth=False)
+        blocks.append((x, y))
+    # --- the studio building: solid floors below / above the apartment, a front wall with a big window opening
+    fm = facade('studiob', lit=(1, 0.82, 0.55), scale=6.0, seed=5)  # bigger windows: we fly right past this facade
+    mesh_obj('sb_low', cube(2 * W2_, 2 * D2_, ZR, (0, 0, ZR / 2), bevel=0.01), fm, (BX, BY, 0), smooth=False)
+    top_h = 4.2 - (ZR + RH)
+    mesh_obj('sb_top', cube(2 * W2_, 2 * D2_, top_h, (0, 0, ZR + RH + top_h / 2), bevel=0.01), fm, (BX, BY, 0), smooth=False)
+    wallm = pbr('wallm', (0.07, 0.07, 0.08), rough=0.7)
+    mesh_obj('sb_back', cube(2 * W2_, 0.08, RH, (0, D2_ - 0.04, ZR + RH / 2)), wallm, (BX, BY, 0), smooth=False)
+    for sx in (-1, 1):
+        mesh_obj(f'sb_side{sx}', cube(0.08, 2 * D2_, RH, (sx * (W2_ - 0.04), 0, ZR + RH / 2)), wallm, (BX, BY, 0), smooth=False)
+    win_w, win_h, sill = 1.7, 0.62, 0.12
+    frame_m = pbr('frame', (0.15, 0.15, 0.16), metal=0.8, rough=0.3)
+    side_w = (2 * W2_ - win_w) / 2
+    for sx in (-1, 1):
+        mesh_obj(f'fw{sx}', cube(side_w, 0.1, RH, (sx * (W2_ - side_w / 2), -D2_ + 0.05, ZR + RH / 2)), fm, (BX, BY, 0), smooth=False)
+    mesh_obj('fw_sill', cube(win_w, 0.1, sill, (0, -D2_ + 0.05, ZR + sill / 2)), fm, (BX, BY, 0), smooth=False)
+    mesh_obj('fw_lint', cube(win_w, 0.1, RH - sill - win_h, (0, -D2_ + 0.05, ZR + sill + win_h + (RH - sill - win_h) / 2)), fm, (BX, BY, 0), smooth=False)
+    for k, x in enumerate([-win_w / 2, -win_w / 6, win_w / 6, win_w / 2]):   # mullions
+        mesh_obj(f'mul{k}', cube(0.025, 0.04, win_h, (x, -D2_ + 0.02, ZR + sill + win_h / 2)), frame_m, (BX, BY, 0), smooth=False)
+    # --- inside: panels, LED strips, ON AIR, desk, host pawn, gold queen, mics (studio scaled 0.25 to fit the room)
+    S_ = 0.25
+    panel = pbr('panel', (0.09, 0.09, 0.11), rough=0.85)
+    for ix in range(10):
+        for iz in range(3):
+            mesh_obj(f'ap{ix}_{iz}', cube(0.2, 0.03, 0.24, (0, 0, 0), bevel=0.01), panel, (BX - 1.0 + ix * 0.222, BY + D2_ - 0.1, ZR + 0.18 + iz * 0.26), smooth=False)
+    mesh_obj('led1', cube(2.4, 0.015, 0.015, (0, 0, 0)), pbr('lo', (1, 0.55, 0.25), emit=8), (BX, BY + D2_ - 0.12, ZR + RH - 0.06), smooth=False)
+    mesh_obj('led2', cube(2.4, 0.015, 0.015, (0, 0, 0)), pbr('lb', (0.4, 0.6, 1), emit=6), (BX, BY + D2_ - 0.12, ZR + 0.03), smooth=False)
+    mesh_obj('oab', cube(0.42, 0.03, 0.15, (0, 0, 0), bevel=0.01), pbr('oabm', (0.06, 0.02, 0.02), rough=0.3), (BX - 0.6, BY + D2_ - 0.13, ZR + 0.7), smooth=False)
+    onair = text('ON AIR', 0.09, 0.008, pbr('oa', (1, 0.12, 0.08), emit=2.6), (BX - 0.6, BY + D2_ - 0.15, ZR + 0.7))
+    mesh_obj('floorin', cube(2 * W2_ - 0.16, 2 * D2_ - 0.12, 0.02, (0, 0, ZR + 0.01)), pbr('fl', (0.16, 0.1, 0.07), rough=0.35, coat=0.6), (BX, BY, 0), smooth=False)
+    DY = BY + 0.25
+    mesh_obj('desk', cube(0.9, 0.28, 0.025, (0, 0, ZR + 0.2), bevel=0.008), WALNUT(), (BX, DY, 0), smooth=False)
+    mesh_obj('deskb', cube(0.75, 0.15, 0.19, (0, 0.04, ZR + 0.1), bevel=0.008), pbr('db', (0.05, 0.05, 0.06), rough=0.4), (BX, DY, 0), smooth=False)
+    mesh_obj('host', lathe([(r * 1.55 * S_, z * 1.55 * S_) for r, z in PAWN]), MARBLE('hm'), (BX - 0.26, DY + 0.22, ZR + 0.01))
+    gold = GOLD_M('gq')
+    queen('guest', gold, (BX + 0.26, DY + 0.22, ZR + 0.01), S_)
+    grille = pbr('grille', (0.08, 0.08, 0.09), metal=0.7, rough=0.45)
+    for i, (x, a) in enumerate([(-0.15, 0.35), (0.15, -0.35)]):
+        mesh_obj(f'mb{i}', lathe([(0, 0), (0.018, 0), (0.018, 0.075), (0.021, 0.08), (0.021, 0.105), (0.018, 0.11), (0, 0.115)], 24), grille,
+                 (BX + x, DY + 0.1, ZR + 0.31), (0.7, 0, a))
+    room_l = area('roomL', (BX, BY - 0.2, ZR + RH - 0.05), (BX, BY + 0.2, ZR), 60, 1.2, (1, 0.9, 0.78))
+    q_spot = spot('qs', (BX + 0.26, BY - 0.6, ZR + RH - 0.05), (BX + 0.26, DY + 0.22, ZR + 0.3), 120, 22, (1, 0.86, 0.6), 0.3)
+    spot('hs', (BX - 0.26, BY - 0.6, ZR + RH - 0.05), (BX - 0.26, DY + 0.22, ZR + 0.25), 50, 24, (0.75, 0.82, 1), 0.35)
+    # --- the gold tower (centre) rises later, coin + small coins as in the tower scene
+    band = pbr('band', (1, 0.88, 0.62), emit=3.5); fin = pbr('fin', (0.95, 0.72, 0.35), metal=1.0, rough=0.25); tg = GOLD_M('tgold')
+    floors = []
+    for k in range(14):
+        wd = 1.5 - k * 0.045
+        obs = [mesh_obj(f'f{k}', cube(wd, wd, 0.62, (0, 0, 0.31), bevel=0.02), tg, (0, 0, k * 0.66), smooth=False),
+               mesh_obj(f'w{k}', cube(wd + 0.01, wd + 0.01, 0.05, (0, 0, 0.6)), band, (0, 0, k * 0.66), smooth=False)]
+        obs += [mesh_obj(f'fn{k}_{j}', cube(0.035, 0.035, 0.62, (0, 0, 0.31)), fin, ((wd / 2 + 0.01) * sx, (wd / 2 + 0.01) * sy, k * 0.66), smooth=False)
+                for j, (sx, sy) in enumerate([(1, 1), (1, -1), (-1, 1), (-1, -1), (0, 1.0), (0, -1.0), (1.0, 0), (-1.0, 0)])]
+        floors.append(obs)
+    spire = mesh_obj('spire', lathe([(0.2, 0), (0.12, 0.3), (0.04, 1.2), (0, 1.45)], 32), tg, (0, 0, 14 * 0.66))
+    coin = mesh_obj('coin', coin_bm(), pbr('coinm', (1, 0.79, 0.4), metal=1.0, rough=0.12), (0, 0, 0))
+    dol = text('$', 1.2, 0.03, pbr('dol', (1, 0.79, 0.4), metal=1.0, rough=0.22), (0, 0, 0))
+    dol.parent = coin; dol.location = (0, 0, 0.055); dol.rotation_euler = (0, 0, 0)
+    TOP = 14 * 0.66 + 1.4
+    ups = [spot(f'up{i}', (2.2 * math.cos(a), 2.2 * math.sin(a), 0.2), (0, 0, 6), 0, 20, (1, 0.8, 0.5), 0.3) for i, a in enumerate([0.6, 2.7, 4.8])]
+    coin_l = bpy.data.objects.new('coinL', bpy.data.lights.new('coinL', 'POINT')); coin_l.data.color = (1, 0.82, 0.5); sc.collection.objects.link(coin_l)
+    cm = pbr('smallc', (1, 0.79, 0.4), metal=1.0, rough=0.18)
+    small = [mesh_obj(f'sc{i}', coin_bm(0.22, 0.04), cm, (0, 0, -5)) for i in range(16)]
+    F0, CN = 140, 222
+    QT = (BX + 0.26, DY + 0.22, ZR + 0.32)       # the queen (focus inside)
+    cam.data.shift_x = -0.17
+
+    def at(f):
+        for k, obs in enumerate(floors):
+            p = back(ease(f, F0 + k * 5, F0 + 9 + k * 5))
+            for o in obs: o.scale = (1, 1, max(0.001, p)); o.hide_render = p <= 0.001
+        p = back(ease(f, F0 + 14 * 5, F0 + 11 + 14 * 5)); spire.scale = (1, 1, max(0.001, p)); spire.hide_render = p <= 0.001
+        for L in ups: L.data.energy = 3000 * ease(f, F0 - 2, F0 + 20)
+        c = back(ease(f, CN, CN + 22), 2.2)
+        coin.location = (0, 0, TOP + 1.4 * c + 0.12 * math.sin(f / 9)); coin.scale = (c + 1e-3,) * 3
+        coin.rotation_euler = (math.pi / 2, 0, f / 12); coin.hide_render = c <= 0.001
+        coin_l.location = (0, -1.2, TOP + 1.4); coin_l.data.energy = 700 * c
+        for i, o in enumerate(small):
+            t = (f - CN - 10 - i * 4) / 60.0
+            if t <= 0: o.hide_render = True; continue
+            o.hide_render = False
+            a = i * 2.4 + t * 5; r = 2.4 - 0.6 * min(1, t)
+            o.location = (r * math.cos(a), r * math.sin(a), 0.5 + t * 9); o.rotation_euler = (t * 7, t * 4, a)
+        # camera: 1) inside, slow push towards the guest  2) backs out through the window  3) rises over the city, turns to the tower
+        #         4) follows the tower up to the coin
+        k1 = E2(f, 0, 64)
+        inside = (BX - 0.12 + 0.05 * k1, FY + 0.45 + 0.12 * k1, ZR + 0.42)
+        k2 = E2(f, 64, 118)
+        outside = (BX - 0.05, FY - 2.6, ZR + 0.55)
+        k3 = E2(f, 118, 205)
+        over = (BX + 3.6, BY - 9.5, 5.6)
+        top = min(TOP, 0.66 * max(0.0, (f - F0) / 5.0))
+        k4 = E2(f, 205, N)
+        p1 = [lerp_(k2, a_, b_) for a_, b_ in zip(inside, outside)]
+        p2 = [lerp_(k3, a_, b_) for a_, b_ in zip(p1, over)]
+        p3 = [lerp_(k4, a_, b_) for a_, b_ in zip(p2, (BX + 5.0, BY - 11.5, 4.2 + 0.4 * top))]
+        room_t = (BX + 0.05, DY + 0.2, ZR + 0.3)
+        city_t = (0, 0, 1.2 + 0.55 * top)
+        tgt = [lerp_(k3, a_, b_) for a_, b_ in zip(room_t, city_t)]
+        lens = lerp_(k2, 26, 30) + 4 * k3
+        foc = QT if k3 < 0.5 else (0, 0, max(1.0, tgt[2]))
+        look(p3, tgt, lens=lens, focus=foc, f=f, shake=0.012 if k2 < 0.5 else 0.02)
+        cam.data.shift_x = lerp_(k3, 0.0, -0.17)   # inside the room: centred; over the city: subject right of Aly's frame
+    return at
+
+
+SCENES = {'podcity': scene_podcity, 'podcast': scene_podcast, 'tower': scene_tower, 'road': scene_road, 'crowd': scene_crowd, 'three': scene_three}
 at = SCENES[A.scene](A.frames)
 os.makedirs(A.out, exist_ok=True)
 frames = [A.still] if A.still >= 0 else range(A.start, A.frames)

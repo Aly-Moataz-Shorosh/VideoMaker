@@ -175,7 +175,8 @@ const Pics: React.FC<{l: L; f: number}> = ({l, f}) => {
       {(l.items ?? []).map((it, i) => {
         const at = l.at + (it.at ?? i * 8);
         if (f < at) return null;
-        const p = enter(f, 30, at);
+        if (it.out !== undefined && f >= l.at + it.out) return null; // an item can hand over to the next one at the same spot
+        const p = it.cut ? 1 : enter(f, 30, at);
         const bare = !!it.bare;
         return (
           <div key={i} style={{position: 'absolute', left: it.x, top: it.y, width: it.w, transform: `translate(-50%, -50%) translateY(${lerp(p, 60, 0)}px) rotate(${(it.rot ?? 0) * p + (1 - p) * 10}deg) scale(${lerp(p, 0.5, 1)})`,
@@ -315,9 +316,10 @@ const Flavours: React.FC<{l: L; f: number}> = ({l, f}) => {
             </div>
             {/* hand-drawn ring around the department name at the top of the logo's speech bubble */}
             <svg viewBox="0 0 100 106.6" style={{position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible'}}>
-              <ellipse cx={48} cy={10.6} rx={isSel ? 21 + 3 * hs : 18} ry={isSel ? 6.4 + hs : 5.4} fill="none" stroke={isSel ? E.orange : E.mustard}
-                strokeWidth={isSel ? 1.6 + 1.2 * hs : 1.1} strokeDasharray="140" strokeDashoffset={140 * (1 - Math.max(hk * 0.85, hs))} strokeLinecap="round"
-                transform="rotate(-4 48 10.6)" />
+              {/* ring = the measured box of the department name in THIS logo (+ margin), so it never cuts the letters (Aly 2026-10-27) */}
+              <ellipse cx={it.ring?.[0] ?? 50} cy={it.ring?.[1] ?? 10.3} rx={(it.ring?.[2] ?? 17) + (isSel ? 1.5 * hs : 0)} ry={(it.ring?.[3] ?? 7) + (isSel ? 0.6 * hs : 0)}
+                fill="none" stroke={isSel ? E.orange : E.mustard} strokeWidth={isSel ? 1.4 + 1.0 * hs : 1.0} pathLength={100} strokeDasharray="100"
+                strokeDashoffset={100 * (1 - Math.max(hk * 0.85, hs))} strokeLinecap="round" transform={`rotate(-1.5 ${it.ring?.[0] ?? 50} ${it.ring?.[1] ?? 10.3})`} />
             </svg>
             {isSel && ks > 0.05 ? <div style={{position: 'absolute', right: -40, top: -46, transform: `scale(${enter(f, 30, selAt + 6)}) rotate(10deg)`}}><Sticker name="check" size={110} /></div> : null}
           </div>
