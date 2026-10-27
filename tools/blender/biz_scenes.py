@@ -806,90 +806,140 @@ def scene_podcity(N):
     mesh_obj('fw_lint', cube(win_w, 0.1, RH - sill - win_h, (0, -D2_ + 0.05, ZR + sill + win_h + (RH - sill - win_h) / 2)), fm, (BX, BY, 0), smooth=False)
     for k, x in enumerate([-win_w / 2, -win_w / 6, win_w / 6, win_w / 2]):   # mullions
         mesh_obj(f'mul{k}', cube(0.025, 0.04, win_h, (x, -D2_ + 0.02, ZR + sill + win_h / 2)), frame_m, (BX, BY, 0), smooth=False)
-    # --- inside = a set in the spirit of RWA "حوارات مع عباس" (Aly 2026-10-27: "عايزه زي عباس ابو الحسن اوي"; refs
-    # references/style-sheets/rwa_podcast.jpg): black pleated curtain, a big screen in the middle with OUR show logo (رواد الأعمال,
-    # from the intro), studio monitors on stands, a long plain dark table with the two at its ENDS facing each other, an Edison bulb
-    # hanging over it, mugs / water bottles / a wooden box / a little orange statue, black boom-arm mics, warm orange practicals.
+    # --- inside = a REPLICA of the RWA "حوارات مع عباس" set (Aly 2026-10-27: "اعمل ال 3d replica منه"; refs
+    # references/style-sheets/rwa_podcast.jpg + their wide/single shots): pleated black curtain with the big screen (our show logo),
+    # studio monitors on stands, dark wood bookshelves with books / trophies / figurines on the left, posters on the right, a long
+    # plain dark table with a typewriter in the middle, an orange head sculpture, little gold statues, mugs, water bottles, an
+    # Edison bulb; black office chairs; boom-arm mics that STOP in front of each face (v1 went into the character).
     S_ = 0.25
     T = A.tex or '.'
-    # pleated black curtain on the back wall (a vertical sine-folded sheet, fabric with sheen)
-    bm = bmesh.new(); cols, rows_ = 120, 2; wdt = 2 * W2_ - 0.2
-    vs = [[bm.verts.new((-wdt / 2 + wdt * i / cols, 0.025 * math.sin(i * 0.9), ZR + RH * j / (rows_ - 1))) for j in range(rows_)] for i in range(cols + 1)]
-    for i in range(cols):
-        bm.faces.new((vs[i][0], vs[i + 1][0], vs[i + 1][1], vs[i][1]))
-    cur_m = pbr('curtain', (0.03, 0.03, 0.035), rough=0.8)
+    BACK = BY + D2_ - 0.12
+    rnd = random.Random(21)
+    # pleated black curtain (centre of the back wall)
+    bm = bmesh.new(); cols, cw = 110, 1.55
+    vs = [[bm.verts.new((-0.55 + cw * i / cols, 0.025 * math.sin(i * 0.9), ZR + RH * j)) for j in (0, 1)] for i in range(cols + 1)]
+    for i in range(cols): bm.faces.new((vs[i][0], vs[i + 1][0], vs[i + 1][1], vs[i][1]))
+    cur_m = pbr('curtain', (0.028, 0.028, 0.032), rough=0.8)
     try: bsdf(cur_m).inputs['Sheen Weight'].default_value = 0.6
     except Exception: pass
-    mesh_obj('curtain', bm, cur_m, (BX, BY + D2_ - 0.12, 0))
-    # the big screen with the show logo
-    mesh_obj('tvb', cube(0.62, 0.03, 0.37, (0, 0, 0), bevel=0.004), pbr('tvbm', (0.02, 0.02, 0.022), rough=0.2, coat=1), (BX, BY + D2_ - 0.17, ZR + 0.56), smooth=False)
+    mesh_obj('curtain', bm, cur_m, (BX, BACK, 0))
+    mesh_obj('tvb', cube(0.62, 0.03, 0.37, (0, 0, 0), bevel=0.004), pbr('tvbm', (0.02, 0.02, 0.022), rough=0.2, coat=1), (BX + 0.22, BACK - 0.05, ZR + 0.58), smooth=False)
     scr = mat('tvscreen', (1, 1, 1), tex=os.path.join(T, 'show_logo.jpg')); bsdf(scr).inputs['Emission Strength'].default_value = 0.9
-    mesh_obj('tvs', plane_uv(0.58, 0.33), scr, (BX, BY + D2_ - 0.186, ZR + 0.56), smooth=False)
-    # studio monitors on stands either side of the screen
+    mesh_obj('tvs', plane_uv(0.58, 0.33), scr, (BX + 0.22, BACK - 0.066, ZR + 0.58), smooth=False)
+    for i, sx in enumerate((-1, 1)):  # studio monitors on stands
+        x = BX + 0.22 + sx * 0.5
+        mesh_obj(f'spst{i}', cyl(0.007, 0.007, 0.36, 12, (0, 0, 0.18)), STEEL(f'sps{i}'), (x, BACK - 0.13, ZR))
+        mesh_obj(f'spk{i}', cube(0.09, 0.08, 0.13, (0, 0, 0), bevel=0.006), pbr(f'spkm{i}', (0.03, 0.03, 0.035), rough=0.4), (x, BACK - 0.13, ZR + 0.43), smooth=False)
+        mesh_obj(f'woof{i}', lathe([(0, 0), (0.032, 0), (0.035, -0.004), (0, -0.012)], 32), pbr(f'wf{i}', (0.85, 0.85, 0.82), metal=0.5, rough=0.3), (x, BACK - 0.171, ZR + 0.41), (math.pi / 2, 0, 0))
+        mesh_obj(f'tw{i}', sphere(0.012, 16, 10), pbr(f'twm{i}', (0.1, 0.1, 0.1), metal=0.8), (x, BACK - 0.17, ZR + 0.465))
+    # bookshelf (left of the curtain): dark wood frame, 4 shelves, books of many colours/heights, trophies, figurines
+    wood_d = pbr('shelfw', (0.09, 0.055, 0.035), rough=0.45, coat=0.3)
+    SX0, SX1 = BX - 1.18, BX - 0.6
+    mesh_obj('shback', cube(SX1 - SX0, 0.02, 0.84, (0, 0, 0)), wood_d, ((SX0 + SX1) / 2, BACK + 0.01, ZR + 0.43), smooth=False)
+    for k in range(5):
+        mesh_obj(f'shelf{k}', cube(SX1 - SX0, 0.16, 0.015, (0, 0, 0)), wood_d, ((SX0 + SX1) / 2, BACK - 0.07, ZR + 0.03 + k * 0.205), smooth=False)
+    for sx in (SX0, SX1): mesh_obj(f'shside{sx}', cube(0.02, 0.16, 0.84, (0, 0, 0)), wood_d, (sx, BACK - 0.07, ZR + 0.43), smooth=False)
+    book_cols = [(0.35, 0.08, 0.06), (0.08, 0.12, 0.25), (0.85, 0.8, 0.68), (0.05, 0.05, 0.05), (0.75, 0.55, 0.2), (0.2, 0.28, 0.18), (0.55, 0.25, 0.12)]
+    bmats = [pbr(f'bk{i}', c, rough=0.6) for i, c in enumerate(book_cols)]
+    tro = GOLD_M('trophy')
+    for k in range(4):
+        x = SX0 + 0.03; zb = ZR + 0.04 + k * 0.205
+        while x < SX1 - 0.04:
+            if rnd.random() < 0.12 and x < SX1 - 0.1:  # a trophy / figurine between books
+                mesh_obj(f'tr{k}_{x:.2f}', lathe([(0.02, 0), (0.02, 0.01), (0.008, 0.02), (0.008, 0.06), (0.03, 0.09), (0.03, 0.12), (0, 0.12)], 24), tro, (x + 0.03, BACK - 0.07, zb))
+                x += 0.07; continue
+            w = rnd.uniform(0.012, 0.03); h = rnd.uniform(0.11, 0.17)
+            b = mesh_obj(f'b{k}_{x:.3f}', cube(w, 0.11, h, (0, 0, h / 2), bevel=0.002), bmats[rnd.randrange(len(bmats))], (x + w / 2, BACK - 0.07, zb), smooth=False)
+            if rnd.random() < 0.08: b.rotation_euler = (0, math.radians(rnd.choice((-12, 12))), 0)
+            x += w + 0.002
+    # posters on the right (pop-art faces like theirs: framed prints, warm colours)
+    for i, (px, pc) in enumerate([(BX + 1.02, (0.85, 0.35, 0.12)), (BX + 1.02, (0.15, 0.35, 0.45))]):
+        z = ZR + 0.62 - i * 0.36
+        mesh_obj(f'pfr{i}', cube(0.02, 0.26, 0.32, (0, 0, 0), bevel=0.004), pbr(f'pfrm{i}', (0.03, 0.03, 0.03), rough=0.4), (BX + 1.21, BY + 0.4 - i * 0.05, z), smooth=False)
+        mesh_obj(f'pp{i}', cube(0.005, 0.22, 0.28, (0, 0, 0)), pbr(f'ppm{i}', pc, rough=0.7, emit=0.15), (BX + 1.199, BY + 0.4 - i * 0.05, z), smooth=False)
+    # warm orange practicals (their lamps) + floor + ceiling
     for i, sx in enumerate((-1, 1)):
-        x = BX + sx * 0.5
-        mesh_obj(f'spst{i}', cyl(0.007, 0.007, 0.36, 12, (0, 0, 0.18)), STEEL(f'sps{i}'), (x, BY + D2_ - 0.25, ZR))
-        mesh_obj(f'spk{i}', cube(0.09, 0.08, 0.13, (0, 0, 0), bevel=0.006), pbr(f'spkm{i}', (0.03, 0.03, 0.035), rough=0.4), (x, BY + D2_ - 0.25, ZR + 0.43), smooth=False)
-        mesh_obj(f'woof{i}', lathe([(0, 0), (0.032, 0), (0.035, -0.004), (0, -0.012)], 32), pbr(f'wf{i}', (0.85, 0.85, 0.82), metal=0.5, rough=0.3), (x, BY + D2_ - 0.291, ZR + 0.41), (math.pi / 2, 0, 0))
-        mesh_obj(f'tw{i}', sphere(0.012, 16, 10), pbr(f'twm{i}', (0.1, 0.1, 0.1), metal=0.8), (x, BY + D2_ - 0.29, ZR + 0.465))
-    # warm orange accent practicals on the back corners (like their orange lamps) — real colour temperature
-    for i, sx in enumerate((-1, 1)):
-        kelvin(area(f'acc{i}', (BX + sx * 1.15, BY + D2_ - 0.45, ZR + 0.1), (BX + sx * 1.0, BY + D2_ - 0.12, ZR + 0.6), 7, 0.25, (1, 0.55, 0.25)), 1900)
+        kelvin(area(f'acc{i}', (BX + sx * 1.15, BACK - 0.33, ZR + 0.1), (BX + sx * 1.0, BACK, ZR + 0.6), 6, 0.25, (1, 0.55, 0.25)), 1900)
     mesh_obj('floorin', cube(2 * W2_ - 0.16, 2 * D2_ - 0.12, 0.02, (0, 0, ZR + 0.01)), pbr('fl', (0.05, 0.045, 0.04), rough=0.5), (BX, BY, 0), smooth=False)
     mesh_obj('ceil', cube(2 * W2_ - 0.16, 2 * D2_ - 0.12, 0.02, (0, 0, ZR + RH - 0.012)), pbr('ceilm', (0.02, 0.02, 0.022), rough=0.9), (BX, BY, 0), smooth=False)
-    # the long plain table (Aly: "عايزها سادة"), the two at its ends facing each other
+    # the long plain table + its props
     DY = BY + 0.3
     DZ = ZR + 0.17
     mesh_obj('desktop', cube(1.3, 0.42, 0.03, (0, 0, DZ)), pbr('deskwood', (0.11, 0.065, 0.04), rough=0.3, coat=0.6), (BX, DY, 0), smooth=False)
     mesh_obj('deskbase', cube(1.05, 0.2, DZ - ZR - 0.015, (0, 0, ZR + (DZ - ZR - 0.015) / 2), bevel=0.004), pbr('db', (0.05, 0.04, 0.035), rough=0.5), (BX, DY, 0), smooth=False)
     hs_stack(['desktop', 'deskbase'], width=0.006, segments=4)
-    # props on the table
-    props = []
-    mesh_obj('box', cube(0.13, 0.07, 0.05, (0, 0, DZ + 0.04), bevel=0.004), pbr('boxm', (0.55, 0.38, 0.22), rough=0.5), (BX, DY - 0.05, 0), smooth=False); props.append('box')
-    for i, (mx, my) in enumerate([(-0.35, -0.08), (0.36, -0.06)]):
+    TZ = DZ + 0.015
+    tw_m = pbr('twm', (0.07, 0.07, 0.075), metal=0.4, rough=0.35, coat=0.6)
+    mesh_obj('tw_body', cube(0.17, 0.12, 0.05, (0, 0, TZ + 0.025), bevel=0.01), tw_m, (BX, DY + 0.03, 0), smooth=False)           # typewriter
+    mesh_obj('tw_roll', cyl(0.014, 0.014, 0.2, 24, (0, 0, 0)), pbr('roll', (0.02, 0.02, 0.02), rough=0.5), (BX, DY + 0.08, TZ + 0.065), (0, math.pi / 2, 0))
+    mesh_obj('tw_paper', cube(0.12, 0.002, 0.08, (0, 0, 0)), pbr('paper', (0.95, 0.94, 0.9), rough=0.8), (BX, DY + 0.085, TZ + 0.1), (math.radians(-12), 0, 0), smooth=False)
+    keym = pbr('keys', (0.85, 0.83, 0.78), rough=0.4)
+    for r_ in range(3):
+        for c_ in range(9):
+            mesh_obj(f'key{r_}{c_}', cyl(0.006, 0.006, 0.006, 12, (0, 0, 0)), keym, (BX - 0.064 + c_ * 0.016, DY - 0.005 - r_ * 0.017, TZ + 0.053 + r_ * 0.004))
+    hs_stack(['tw_body'], width=0.004, segments=3)
+    props = ['tw_body']
+    mesh_obj('helmet', lathe([(0, 0), (0.03, 0), (0.045, 0.02), (0.05, 0.06), (0.046, 0.09), (0.035, 0.11), (0.018, 0.12), (0, 0.122)], 40),
+             pbr('helm', (0.95, 0.38, 0.1), rough=0.25, coat=0.9), (BX + 0.33, DY + 0.08, TZ)); props.append('helmet')
+    for i, x in enumerate((-0.22, 0.2)):
+        mesh_obj(f'budd{i}', lathe([(0, 0), (0.024, 0), (0.026, 0.01), (0.02, 0.025), (0.022, 0.04), (0.012, 0.05), (0.014, 0.06), (0, 0.068)], 32), GOLD_M(f'bd{i}'), (BX + x, DY + 0.1, TZ)); props.append(f'budd{i}')
+    for i, (mx, my) in enumerate([(-0.4, -0.08), (0.42, -0.06)]):
         mesh_obj(f'mug{i}', lathe([(0, 0), (0.026, 0), (0.028, 0.005), (0.028, 0.066), (0.025, 0.068), (0.023, 0.012), (0, 0.012)], 32),
-                 pbr(f'mugm{i}', (0.06, 0.06, 0.065) if i else (0.92, 0.9, 0.86), rough=0.15, coat=0.8), (BX + mx, DY + my, DZ + 0.015)); props.append(f'mug{i}')
-    for i, (bx_, by_) in enumerate([(-0.2, 0.05), (0.22, 0.07)]):
+                 pbr(f'mugm{i}', (0.06, 0.06, 0.065) if i else (0.92, 0.9, 0.86), rough=0.15, coat=0.8), (BX + mx, DY + my, TZ)); props.append(f'mug{i}')
+    for i, (bx_, by_) in enumerate([(-0.3, 0.06), (0.28, 0.02)]):
         mesh_obj(f'bottle{i}', lathe([(0, 0), (0.02, 0), (0.021, 0.004), (0.021, 0.075), (0.012, 0.095), (0.009, 0.1), (0.009, 0.11), (0, 0.11)], 32),
-                 pbr(f'btm{i}', (0.9, 0.95, 1), rough=0.03, trans=0.95), (BX + bx_, DY + by_, DZ + 0.015)); props.append(f'bottle{i}')
-    mesh_obj('statue', lathe([(0, 0), (0.025, 0), (0.03, 0.02), (0.022, 0.04), (0.03, 0.06), (0.02, 0.08), (0.016, 0.09), (0, 0.095)], 32),
-             pbr('stm', (0.9, 0.42, 0.12), rough=0.35, coat=0.7), (BX + 0.12, DY + 0.1, DZ + 0.015)); props.append('statue')
-    # Edison bulb hanging over the middle of the table
-    mesh_obj('cord', cyl(0.002, 0.002, RH - 0.38, 8, (0, 0, (RH - 0.38) / 2)), pbr('cordm', (0.02, 0.02, 0.02), rough=0.6), (BX, DY, ZR + 0.38))
-    mesh_obj('bulb', lathe([(0, 0), (0.016, 0.004), (0.026, 0.03), (0.022, 0.06), (0.012, 0.075), (0.011, 0.09), (0, 0.09)], 32), pbr('bulbg', (1, 0.95, 0.85), rough=0.05, trans=0.9), (BX, DY, ZR + 0.29))
-    mesh_obj('fil', cyl(0.004, 0.004, 0.03, 8, (0, 0, 0.03)), pbr('film', (1, 0.6, 0.25), emit=25), (BX, DY, ZR + 0.29))
+                 pbr(f'btm{i}', (0.9, 0.95, 1), rough=0.03, trans=0.95), (BX + bx_, DY + by_, TZ)); props.append(f'bottle{i}')
+        mesh_obj(f'cap{i}', cyl(0.01, 0.01, 0.012, 16, (0, 0, 0.116)), pbr(f'capm{i}', (0.15, 0.3, 0.7), rough=0.4), (BX + bx_, DY + by_, TZ))
+    mesh_obj('cord', cyl(0.002, 0.002, RH - 0.4, 8, (0, 0, (RH - 0.4) / 2)), pbr('cordm', (0.02, 0.02, 0.02), rough=0.6), (BX - 0.12, DY, ZR + 0.4))
+    mesh_obj('bulb', lathe([(0, 0), (0.016, 0.004), (0.026, 0.03), (0.022, 0.06), (0.012, 0.075), (0.011, 0.09), (0, 0.09)], 32), pbr('bulbg', (1, 0.95, 0.85), rough=0.05, trans=0.9), (BX - 0.12, DY, ZR + 0.31))
+    mesh_obj('fil', cyl(0.004, 0.004, 0.03, 8, (0, 0, 0.03)), pbr('film', (1, 0.6, 0.25), emit=25), (BX - 0.12, DY, ZR + 0.31))
     P = bpy.data.objects.new('bulbL', bpy.data.lights.new('bulbL', 'POINT')); P.data.energy = 6; P.data.shadow_soft_size = 0.01
-    P.location = (BX, DY, ZR + 0.32); sc.collection.objects.link(P); kelvin(P, 2200)
-    # the two: marble pawn (host) at the left end, gold queen (famous guest) at the right end, facing each other
+    P.location = (BX - 0.12, DY, ZR + 0.34); sc.collection.objects.link(P); kelvin(P, 2200)
+    # the two at the table ends (host = marble pawn, famous guest = gold queen), black office chairs behind them
     HX, QX = BX - 0.78, BX + 0.78
-    mesh_obj('host', lathe([(r * 2.0 * S_, z * 2.0 * S_) for r, z in PAWN]), MARBLE('hm'), (HX, DY + 0.02, ZR + 0.01))
+    chair_m = pbr('chair', (0.025, 0.025, 0.028), rough=0.5, coat=0.3)
+    for i, cx_ in enumerate((HX - 0.13, QX + 0.13)):
+        sx = -1 if i == 0 else 1
+        mesh_obj(f'cseat{i}', cube(0.2, 0.2, 0.03, (0, 0, 0), bevel=0.01), chair_m, (cx_ - sx * 0.07, DY + 0.02, ZR + 0.15), smooth=False)
+        mesh_obj(f'cback{i}', cube(0.03, 0.2, 0.26, (0, 0, 0), bevel=0.012), chair_m, (cx_ + sx * 0.02, DY + 0.02, ZR + 0.32), (0, math.radians(sx * 10), 0), smooth=False)
+        mesh_obj(f'cpost{i}', cyl(0.01, 0.01, 0.13, 12, (0, 0, 0.065)), STEEL(f'cp{i}'), (cx_ - sx * 0.07, DY + 0.02, ZR + 0.01))
+        for a_ in range(5):
+            an = a_ * 2 * math.pi / 5
+            mesh_obj(f'cleg{i}{a_}', cube(0.11, 0.015, 0.01, (0.055, 0, 0)), chair_m, (cx_ - sx * 0.07, DY + 0.02, ZR + 0.025), (0, 0, an), smooth=False)
+        hs_stack([f'cseat{i}', f'cback{i}'], width=0.006, segments=3)
+    PAWN_S, QUEEN_S = 2.45 * S_, 1.5 * S_
+    mesh_obj('host', lathe([(r * PAWN_S, z * PAWN_S) for r, z in PAWN]), MARBLE('hm'), (HX, DY + 0.02, ZR + 0.01))
     gold = GOLD_M('gq')
-    queen('guest', gold, (QX, DY + 0.02, ZR + 0.01), S_ * 1.25)
-    # black boom-arm mics from the table toward each face
+    queen('guest', gold, (QX, DY + 0.02, ZR + 0.01), QUEEN_S)
+    # boom-arm mics that stop IN FRONT of each face: the windscreen ends 6-7 cm off the head surface, towards the table centre
     steel_d = pbr('armm', (0.03, 0.03, 0.035), metal=0.6, rough=0.35)
     foam = pbr('foam', (0.025, 0.025, 0.03), rough=0.95)
     body_m = pbr('micbody', (0.04, 0.04, 0.045), metal=0.5, rough=0.3)
-    for i, (px, head_z) in enumerate([(HX, ZR + 0.01 + 0.78 * 2.0 * S_), (QX, ZR + 0.01 + 1.35 * 1.25 * S_)]):
-        sx = -1 if i == 0 else 1
-        cx, cy = px - sx * (-0.2), DY - 0.15                    # clamp on the table, towards the middle
+    faces_ = [(HX, ZR + 0.01 + 0.78 * PAWN_S, 0.17 * PAWN_S), (QX, ZR + 0.01 + 1.36 * QUEEN_S, 0.3 * QUEEN_S)]
+    for i, (px, hz, hr) in enumerate(faces_):
+        toward = 1 if i == 0 else -1                           # the face looks at the table centre
+        end = np.array((px + toward * (hr + 0.065), DY - 0.01, hz - 0.01))
+        cx, cy = px + toward * 0.24, DY - 0.16                  # clamp on the table, between the speaker and the centre
         mesh_obj(f'clamp{i}', cube(0.03, 0.04, 0.03, (0, 0, 0), bevel=0.004), steel_d, (cx, cy, DZ + 0.03), smooth=False)
-        riser_top = (cx, cy, DZ + 0.2)
+        riser_top = np.array((cx, cy, DZ + 0.2))
         mesh_obj(f'riser{i}', cyl(0.006, 0.006, 0.17, 12, (0, 0, 0.085)), steel_d, (cx, cy, DZ + 0.03))
-        mesh_obj(f'joint{i}', sphere(0.012, 16, 10), steel_d, riser_top)
-        tip = np.array((px - sx * 0.07, DY + 0.0, head_z - 0.03))
-        base = np.array(riser_top); d = tip - base; L = float(np.linalg.norm(d))
-        yaw = math.atan2(d[1], d[0]); pitch = math.atan2(d[2], math.hypot(d[0], d[1]))
-        arm = mesh_obj(f'arm{i}', cyl(0.005, 0.005, L * 0.82, 12, (0, 0, L * 0.41)), steel_d, tuple(base)); arm.rotation_euler = (0, math.pi / 2 - pitch, yaw)
-        mic_pos = base + d * 0.84
+        mesh_obj(f'joint{i}', sphere(0.012, 16, 10), steel_d, tuple(riser_top))
+        u = end - riser_top; L = float(np.linalg.norm(u)); u = u / L
+        yaw = math.atan2(u[1], u[0]); pitch = math.atan2(u[2], math.hypot(u[0], u[1]))
+        rot = (0, math.pi / 2 - pitch, yaw)
+        mic_pos = end - u * 0.166                               # body 0.118 + windscreen 0.056 (overlap 0.008) ends exactly at `end`
+        arm = mesh_obj(f'arm{i}', cyl(0.005, 0.005, max(0.01, L - 0.166), 12, (0, 0, max(0.01, L - 0.166) / 2)), steel_d, tuple(riser_top)); arm.rotation_euler = rot
         mic = mesh_obj(f'mic{i}', lathe([(0, 0), (0.016, 0), (0.017, 0.004), (0.017, 0.06), (0.019, 0.064), (0.022, 0.07), (0.022, 0.1), (0.018, 0.112), (0, 0.118)], 32), body_m, tuple(mic_pos))
-        mic.rotation_euler = (0, math.pi / 2 - pitch, yaw)
-        ws = mesh_obj(f'ws{i}', lathe([(0, 0), (0.024, 0.0), (0.026, 0.03), (0.022, 0.05), (0, 0.056)], 32), foam, tuple(mic_pos + d / L * 0.07)); ws.rotation_euler = (0, math.pi / 2 - pitch, yaw)
-    # their warm key from the front sides + a soft top
+        mic.rotation_euler = rot
+        ws = mesh_obj(f'ws{i}', lathe([(0, 0), (0.024, 0.0), (0.026, 0.03), (0.022, 0.05), (0, 0.056)], 32), foam, tuple(mic_pos + u * 0.11)); ws.rotation_euler = rot
+    # light: warm keys from the front sides, a warm rim behind each to cut them out of the dark set, a soft top
     kelvin(spot('qs', (QX - 0.2, BY - 0.6, ZR + RH - 0.05), (QX, DY, ZR + 0.4), 90, 26, (1, 1, 1), 0.4), 3000)
     kelvin(spot('hs', (HX + 0.2, BY - 0.6, ZR + RH - 0.05), (HX, DY, ZR + 0.35), 70, 26, (1, 1, 1), 0.4), 3200)
-    kelvin(area('roomL', (BX, BY, ZR + RH - 0.04), (BX, BY + 0.2, ZR), 25, 1.4, (1, 1, 1)), 3000)
+    kelvin(spot('qrim', (QX + 0.25, BACK - 0.05, ZR + 0.7), (QX, DY, ZR + 0.42), 45, 30, (1, 1, 1), 0.5), 2400)
+    kelvin(spot('hrim', (HX - 0.25, BACK - 0.05, ZR + 0.7), (HX, DY, ZR + 0.38), 40, 30, (1, 1, 1), 0.5), 2400)
+    kelvin(area('roomL', (BX, BY, ZR + RH - 0.04), (BX, BY + 0.2, ZR), 22, 1.4, (1, 1, 1)), 3000)
     moon(0.35)
-    qa(['desktop', 'host', 'guest', 'mic0', 'mic1'] + props)
+    qa(['desktop', 'host', 'guest', 'mic0', 'mic1', 'ws0', 'ws1'] + props)
     # --- the gold tower (centre) rises later, coin + small coins as in the tower scene
     band = pbr('band', (1, 0.88, 0.62), emit=3.5); fin = pbr('fin', (0.95, 0.72, 0.35), metal=1.0, rough=0.25); tg = GOLD_M('tgold')
     floors = []
@@ -947,10 +997,11 @@ def scene_podcity(N):
         room_t = (BX + 0.05, DY + 0.25, ZR + 0.37)
         city_t = (0, 0, 1.2 + 0.55 * top)
         tgt = [lerp_(k3, a_, b_) for a_, b_ in zip(room_t, city_t)]
-        lens = lerp_(k2, 16 + 2.5 * k1, 30) + 4 * k3
+        lens = lerp_(k2, 14.5 + 2.5 * k1, 30) + 4 * k3
         foc = QT if k3 < 0.5 else (0, 0, max(1.0, tgt[2]))
         look(p3, tgt, lens=lens, focus=foc, f=f, shake=0.012 if k2 < 0.5 else 0.02)
         cam.data.shift_x = -0.17   # the subject always right of Aly's frame (inside too)
+        cam.data.shift_y = 0.04 * (1 - k3)  # inside: architectural lens shift up = less floor, verticals stay straight
     return at
 
 
