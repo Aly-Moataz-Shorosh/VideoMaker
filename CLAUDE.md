@@ -223,4 +223,7 @@ Done (2026-10-06):
   stone from far, complete mic/speaker.
   Reviews 2-4 (same day): only HIS voice (students cut), one continuous screen card (cin/cout), drag = view follows the mouse, NO two shorts
   with the same hook/content (check_overlap.py) -> 26+27 MERGED = `26_phone_explosion.mp4` (2:58, explosion heard), series = 31, noise = 28.
-  07 v2 = full-screen Blender clips p_*.webm (sound_scenes.py portrait) + IdeaRows. Old versions in output/shorts/archive/. Waiting for review.
+  07 v2 = full-screen Blender clips p_*.webm (sound_scenes.py portrait) + IdeaRows. Old versions in output/shorts/archive/. 
+  2026-10-27 night (Aly 'كمل'): the rest of the series rendered = 29 shorts in output/shorts (all but 03/04 = film examples, held: Content ID)
+  + .txt each. Data: project work/scripts series_data.py..series_data5.py + txt_series.py (archived tools/recipes/audiocourse/shorts/).
+  Band title <= ~27 Arabic chars. No new 3D yet (theory = course anims + Fluent IdeaRows). Waiting for his review.

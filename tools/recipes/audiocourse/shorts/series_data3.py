@@ -1,7 +1,7 @@
 # "أسرار الصوت" shorts, batch 3 (chapters 16-19). The films he played are never shown or heard here (only his own words over
 # picture rows), so no Content ID and no other voices. Merged into shorts_data via series_data.
 SHORTS = {
-    19: dict(no=19, chapter=16, at='1:04:41', title='الموسيقى *التصويرية* مش لازم موسيقى', pieces=[
+    19: dict(no=19, chapter=16, at='1:04:41', title='إحساس من غير *موسيقى*', pieces=[
         dict(a=3801.54, b=3813.4, show='IdeaRows', anim=dict(rows=[
             dict(at=0.3, y=500, pics=['musical_note', 'red_question_mark'], tag='لازم موسيقى عشان توصل إحساس؟'),
             dict(at=4.6, y=860, pics=['mosque', 'prayer_beads'], tag='ممكن أدان أو تواشيح', c='#8B5CF6')])),

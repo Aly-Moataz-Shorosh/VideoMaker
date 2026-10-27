@@ -11,7 +11,7 @@ ES_C = dict(sx=1000, sy=100, sw=300)         # Premiere: Essential Sound (Dialog
 PRESET_L = dict(sx=940, sy=120, sw=360)      # Premiere: Preset list (outside, elevator, large room...)
 
 SHORTS = {
-    23: dict(no=23, chapter=20, at='1:15:49', title='صوت الكاميرا ولا *المايك*؟ و Sync بالتسقيفة', pieces=[
+    23: dict(no=23, chapter=20, at='1:15:49', title='صوت الكاميرا ولا *المايك*؟', pieces=[
         dict(a=4443.9, b=4451.2, raw=True, crop=MONTL, bars=True, lab=[(0.2, 'صوت الكاميرا', 'video_camera', 2.6)]),
         dict(a=4496.2, b=4508.4, raw=True, crop=MONTL, bars=True, lab=[(0.2, 'صوت المايك', 'studio_microphone', 2.6)]),
         dict(a=4454.66, b=4463.1, crop=MONTL, lab=[(0.3, 'وش كتير والصوت واطي', 'speaker_low_volume', 2.6)]),
@@ -23,7 +23,7 @@ SHORTS = {
         dict(a=4660.86, b=4701.7, crop=EC, kw=[('Volume', 'علّي أو قلّل الصوت', 10.0), ('Keyframes', 'الصوت يتدرّج', 26.0)]),
         dict(a=4704.87, b=4756.8, crop=EC, zoom=[(4714.0, TH)], kw=[('Solo', 'اسمع التراك ده بس', 12.0), ('Mute', 'اكتم التراك', 31.0)]),
     ]),
-    25: dict(no=25, chapter=23, at='1:21:55', title='إفكتات الصوت و *Audio* workspace في Premiere', pieces=[
+    25: dict(no=25, chapter=23, at='1:21:55', title='إفكتات الصوت في *Premiere*', pieces=[
         dict(a=4762.94, b=4807.5, crop=FX, kw=[('Audio Effects', 'إفكتات كتير تلعب بيها', 9.0), ('Reverb', 'صدى', 17.0)]),
         dict(a=4819.82, b=4864.1, crop=WIN, zoom=[(4834.0, AUDIO_WS), (4852.0, ESS2)], kw=[('Workspace ← Audio', 'شاشة للصوت بس', 6.0)]),
         dict(a=4927.55, b=4963.0, crop=ES_C, zoom=[(4938.0, PRESET_L)], lab=[(12.0, 'برّه مبنى', 'office_building', 2.0), (17.0, 'أسانسير', 'elevator', 2.0), (21.5, 'أوضة واسعة', 'house', 2.0)]),

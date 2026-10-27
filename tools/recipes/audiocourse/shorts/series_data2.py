@@ -24,7 +24,7 @@ SHORTS = {
         dict(a=2442.94, b=2467.9, crop=DYN2, zoom=[(2460.5, CON_R)], lab=[(8.0, 'لازم تكون قريب', 'straight_ruler', 2.2), (22.5, 'اعزل الأوضة', 'door', 2.2)]),
         dict(a=2468.7, b=2504.1, crop=RIB, kw=[('Ribbon', 'غالي وهش.. الصوت العالي يبوّظه', 1.0)]),
     ]),
-    12: dict(no=12, chapter=11, at='43:38', title='اتجاه المايك: Omni و Cardioid و *Shotgun*', pieces=[
+    12: dict(no=12, chapter=11, at='43:38', title='اتجاه المايك: Omni و *Shotgun*', pieces=[
         dict(a=2512.76, b=2542.9, show='PolarAnim'),
         dict(a=2572.8, b=2580.9, crop=OMNI, kw=[('Omni', 'من كل الاتجاهات', 0.5)]),
         dict(a=2589.0, b=2594.0, crop=CARD, kw=[('Cardioid', 'من قدام وشوية من الجناب', 0.3)]),
@@ -39,7 +39,7 @@ SHORTS = {
             dict(at=0.3, y=520, pics=['microphone', 'check_mark_button'], tag='Dynamic كفاية'),
             dict(at=13.0, y=880, pics=['studio_microphone', 'sparkles'], tag='ولو Shotgun.. حل كويس برضو', c='#8B5CF6')])),
     ]),
-    14: dict(no=14, chapter=12, at='50:21', title='مايك لـ *بودكاست* اتنين في أوضة', pieces=[
+    14: dict(no=14, chapter=12, at='50:21', title='مايك *البودكاست*', pieces=[
         dict(a=2849.5, b=2865.3, crop=POD, lab=[(1.0, 'بودكاست', 'studio_microphone', 2.4)]),
         dict(a=2913.8, b=2969.4, crop=POD, kw=[('Condenser', 'نقي.. بس اعزل الأوضة', 33.0)], lab=[(43.0, 'بطاطين على الحيطة', 'door', 2.4)]),
         dict(a=2969.48, b=3008.5, show='IdeaRows', anim=dict(rows=[
@@ -53,7 +53,7 @@ SHORTS = {
         dict(a=3153.89, b=3210.0, crop=LAV, kw=[('Condenser + Omni', 'صغير.. فلازم حساس', 1.0)], lab=[(26.0, 'الدايفرام صغير', 'magnifying_glass_tilted_left', 2.4)]),
         dict(a=3285.77, b=3320.5, crop=STREET, lab=[(7.0, 'Dynamic', 'microphone', 2.0), (17.0, 'Condenser Shotgun', 'studio_microphone', 2.4)]),
     ]),
-    16: dict(no=16, chapter=13, at='59:38', title='أكتر من *مايك* في نفس التصوير', pieces=[
+    16: dict(no=16, chapter=13, at='59:38', title='أكتر من *مايك* في التصوير', pieces=[
         dict(a=3468.0, b=3477.0, show='IdeaRows', anim=dict(rows=[
             dict(at=0.2, y=560, pics=['studio_microphone', 'studio_microphone', 'microphone'], tag='أكتر من مايك في الأوضة')])),
         dict(a=3502.6, b=3511.0, show='IdeaRows', anim=dict(rows=[
@@ -68,7 +68,7 @@ SHORTS = {
         dict(a=3550.39, b=3576.2, crop=POPDRAW, zoom=[(3560.0, DEAD1), (3574.0, DEAD2)], kw=[('Dead cat', 'الفرو اللي بيصد الهوا', 14.0)]),
         dict(a=3616.64, b=3625.5, crop=DEAD2, lab=[(0.5, 'مش بيعزل الخلفية', 'cross_mark', 2.4)]),
     ]),
-    18: dict(no=18, chapter=15, at='1:02:33', title='أنواع الصوت *الأربعة* في أي فيديو', pieces=[
+    18: dict(no=18, chapter=15, at='1:02:33', title='أنواع الصوت *الأربعة*', pieces=[
         dict(a=3685.8, b=3707.8, show='FourSounds'),
         dict(a=3632.2, b=3685.7, crop=FOUR, zoom=[(3642.0, F_TALK), (3646.6, F_AMB), (3660.9, F_MUS), (3664.6, F_SFX), (3676.1, FOUR)]),
         dict(a=3708.82, b=3732.5, show='IdeaRows', anim=dict(rows=[

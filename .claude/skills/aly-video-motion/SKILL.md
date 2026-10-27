@@ -307,3 +307,4 @@ Writer: tools/recipes/graphictablet/write_meta.py.
 - Review 2 (same day): sessions with students → only HIS voice in a short (cut their questions/answers); the hook of a demo short =
   just the demo he played; consecutive screen pieces = ONE continuous card (cin/cout) so it reads as one video; drags = the view follows
   the mouse to the drop point with a box on grab and drop. On a talk without screen: picture rows (IdeaRows, RTL) instead of an icon card.
+- Series band title: at most ~27 Arabic characters (longer titles end in "..." in the band) — check one band still before rendering a batch.

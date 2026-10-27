@@ -32,7 +32,7 @@ SHORTS = {
         dict(a=6997.87, b=7019.5, crop=REC, clicks=[(7006.0, 633, 605, 30, 30)], lab=[(4.0, 'الزرار الأحمر = تسجيل', 'red_square', 2.4)]),
         dict(a=7051.22, b=7084.6, crop=AU_W, zoom=[(7070.0, EXP)], key=(['Ctrl', 'A'], 'علّم على كله', 4.0), kw=[('File ← Export ← File', 'زي البريمير بالظبط', 15.0)]),
     ]),
-    31: dict(no=31, chapter=31, at='2:01:53', title='ليه بيلبسوا *سماعات* وهما بيسجلوا؟', pieces=[
+    31: dict(no=31, chapter=31, at='2:01:53', title='ليه بيلبسوا *سماعات*؟', pieces=[
         dict(a=7203.31, b=7221.0, show='IdeaRows', anim=dict(rows=[
             dict(at=0.2, y=470, pics=['headphone', 'red_question_mark'], tag='ليه في البودكاست بيلبسوا سماعات؟', c='#8B5CF6'),
             dict(at=6.0, y=800, pics=['studio_microphone', 'laptop'], tag='المايك متوصل بمسجل أو لابتوب')])),
