@@ -912,9 +912,10 @@ def scene_podcity(N):
     gold = GOLD_M('gq')
     queen('guest', gold, (QX, DY + 0.02, ZR + 0.01), QUEEN_S)
     # boom-arm mics that stop IN FRONT of each face: the windscreen ends 6-7 cm off the head surface, towards the table centre
-    steel_d = pbr('armm', (0.03, 0.03, 0.035), metal=0.6, rough=0.35)
-    foam = pbr('foam', (0.025, 0.025, 0.03), rough=0.95)
-    body_m = pbr('micbody', (0.04, 0.04, 0.045), metal=0.5, rough=0.3)
+    # mics must read on the dark set (Aly: "الميكات مش باينة"): satin metal that catches highlights, dark-grey foam, a kicker light each
+    steel_d = pbr('armm', (0.25, 0.25, 0.27), metal=0.9, rough=0.25)
+    foam = pbr('foam', (0.11, 0.11, 0.12), rough=0.85)
+    body_m = pbr('micbody', (0.35, 0.35, 0.37), metal=0.9, rough=0.22)
     faces_ = [(HX, ZR + 0.01 + 0.78 * PAWN_S, 0.17 * PAWN_S), (QX, ZR + 0.01 + 1.36 * QUEEN_S, 0.3 * QUEEN_S)]
     for i, (px, hz, hr) in enumerate(faces_):
         toward = 1 if i == 0 else -1                           # the face looks at the table centre
@@ -932,6 +933,8 @@ def scene_podcity(N):
         mic = mesh_obj(f'mic{i}', lathe([(0, 0), (0.016, 0), (0.017, 0.004), (0.017, 0.06), (0.019, 0.064), (0.022, 0.07), (0.022, 0.1), (0.018, 0.112), (0, 0.118)], 32), body_m, tuple(mic_pos))
         mic.rotation_euler = rot
         ws = mesh_obj(f'ws{i}', lathe([(0, 0), (0.024, 0.0), (0.026, 0.03), (0.022, 0.05), (0, 0.056)], 32), foam, tuple(mic_pos + u * 0.11)); ws.rotation_euler = rot
+        mk = mic_pos + u * 0.08
+        kelvin(spot(f'mick{i}', (mk[0] - toward * 0.15, mk[1] + 0.35, mk[2] + 0.3), tuple(mk), 6, 18, (1, 1, 1), 0.5), 4500)  # kicker from behind: a clean edge on the mic
     # light: warm keys from the front sides, a warm rim behind each to cut them out of the dark set, a soft top
     kelvin(spot('qs', (QX - 0.2, BY - 0.6, ZR + RH - 0.05), (QX, DY, ZR + 0.4), 90, 26, (1, 1, 1), 0.4), 3000)
     kelvin(spot('hs', (HX + 0.2, BY - 0.6, ZR + RH - 0.05), (HX, DY, ZR + 0.35), 70, 26, (1, 1, 1), 0.4), 3200)
