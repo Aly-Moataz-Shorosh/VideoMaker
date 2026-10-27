@@ -22,7 +22,7 @@ ap.add_argument('--out', required=True)
 ap.add_argument('--still', type=int, default=-1)
 ap.add_argument('--tex', default='')
 ap.add_argument('--res', type=int, nargs=2, default=[1920, 1080])
-ap.add_argument('--samples', type=int, default=32)
+ap.add_argument('--samples', type=int, default=48)
 ap.add_argument('--start', type=int, default=0)  # resume a crashed render from this frame
 A = ap.parse_args(a)
 random.seed(7)
@@ -337,6 +337,73 @@ STEEL = lambda n='steel': pbr(n, (0.56, 0.57, 0.58), metal=1.0, rough=0.28)  # b
 WALNUT = lambda n='walnut': pbr(n, (0.22, 0.12, 0.07), rough=0.32, coat=0.7)
 
 
+# ---------------------------------------------------------------- tools from the blender-skills repo (tools/external/blender-skills,
+# Aly 2026-10-27: "استفيد بال github repo كويس"): hard-surface bevel stack, asset QA, night lighting values (temperatures, moon)
+SKILLS = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'external', 'blender-skills', 'skills')
+
+
+def _skill(mod, sub):
+    pth = os.path.join(SKILLS, sub, 'scripts')
+    if pth not in sys.path: sys.path.insert(0, pth)
+    return __import__(mod)
+
+
+def hs_stack(names, width=None, segments=4):  # blender-hardsurface-modeling/apply_stack 'render': Bevel(arc miter) + Weighted Normal
+    try:
+        r = _skill('apply_stack', 'blender-hardsurface-modeling').run(objects=names, preset='render', width=width, segments=segments)
+        print('hs_stack', {k: v['bevel_width'] for k, v in r['objects'].items()})
+    except Exception as e:
+        print('hs_stack failed:', e)
+
+
+def qa(names, profile='render'):  # blender-asset-qa/qa_check: z-fighting, floating parts, normals
+    try:
+        r = _skill('qa_check', 'blender-asset-qa').run(objects=names, profile=profile)
+        print('QA', 'PASS' if r.get('pass') else 'FAIL', r.get('errors', [])[:6], r.get('warnings', [])[:6])
+    except Exception as e:
+        print('qa failed:', e)
+
+
+def kelvin(L, k):  # practical lights at real colour temperatures (blender-time-of-day: tungsten 2700 K, warm LED 3000 K…)
+    try:
+        L.data.use_temperature = True; L.data.temperature = k
+    except Exception:
+        pass
+    return L
+
+
+def moon(strength=0.35):  # night key: cool moonlight sun (blender-time-of-day night preset: 35° high, [0.72, 0.82, 1.0])
+    s = bpy.data.objects.new('Moon', bpy.data.lights.new('Moon', 'SUN')); s.data.energy = strength; s.data.color = (0.72, 0.82, 1.0)
+    s.data.angle = math.radians(1.0); s.rotation_euler = (math.radians(55), 0, math.radians(-35)); sc.collection.objects.link(s)
+    return s
+
+
+def walnut_grain(name):  # walnut with real grain: wave bands distorted by noise -> two wood tones, varnish coat, roughness variation
+    m = pbr(name, (0.2, 0.11, 0.06), rough=0.32, coat=0.7)
+    nt = m.node_tree; p = bsdf(m)
+    tc = nt.nodes.new('ShaderNodeTexCoord'); mp = nt.nodes.new('ShaderNodeMapping'); mp.inputs['Scale'].default_value = (0.35, 1.0, 1.0)
+    wv = nt.nodes.new('ShaderNodeTexWave'); wv.inputs['Scale'].default_value = 14.0; wv.inputs['Distortion'].default_value = 2.5
+    wv.inputs['Detail'].default_value = 2.0; wv.inputs['Detail Scale'].default_value = 1.5
+    try: wv.bands_direction = 'Y'   # long grain lines running along the desk (X), varying across it
+    except Exception: pass
+    rp = nt.nodes.new('ShaderNodeValToRGB')
+    rp.color_ramp.elements[0].color = (*lin((0.13, 0.065, 0.035)), 1); rp.color_ramp.elements[1].color = (*lin((0.32, 0.18, 0.1)), 1)
+    nt.links.new(tc.outputs['Object'], mp.inputs['Vector']); nt.links.new(mp.outputs['Vector'], wv.inputs['Vector'])
+    nt.links.new(wv.outputs['Fac'], rp.inputs['Fac']); nt.links.new(rp.outputs['Color'], p.inputs['Base Color'])
+    return m
+
+
+def onair_sign(name, loc, w=0.42, h=0.15):  # a real ON AIR light box: dark steel frame, red glowing face, letters spaced, thin bevel
+    frame = mesh_obj(name + 'f', cube(w, 0.03, h, (0, 0, 0), bevel=0.008), pbr(name + 'fm', (0.05, 0.05, 0.055), metal=0.7, rough=0.3), loc, smooth=False)
+    face = mesh_obj(name + 'p', cube(w - 0.03, 0.005, h - 0.03, (0, 0, 0)), pbr(name + 'pm', (0.55, 0.03, 0.02), emit=2.2, emit_col=(1, 0.08, 0.04)),
+                    (loc[0], loc[1] - 0.016, loc[2]), smooth=False)
+    cu = bpy.data.curves.new(name + 't', 'FONT'); cu.body = 'ON AIR'; cu.size = h * 0.52; cu.extrude = 0.002; cu.bevel_depth = 0.0
+    cu.align_x = 'CENTER'; cu.align_y = 'CENTER'; cu.space_character = 1.18
+    t = bpy.data.objects.new(name + 'txt', cu); t.data.materials.append(pbr(name + 'tm', (1, 0.95, 0.9), emit=4.0)); t.location = (loc[0], loc[1] - 0.022, loc[2])
+    t.rotation_euler = (math.pi / 2, 0, 0); sc.collection.objects.link(t)
+    return [frame, face, t]
+
+
 def scene_podcast(N):
     # "أغلب البودكاستات بتستضيف… ضيف مشهور": a real-looking studio — acoustic panels, LED strips, an ON AIR neon, a walnut desk, two
     # broadcast mics on boom arms; the host = a marble pawn, the famous guest = a gold king under a spot (haze shows the beam).
@@ -451,7 +518,7 @@ def scene_tower(N):
 def scene_road(N):
     # night street, wet asphalt reflecting lamp posts; stop 1 = a small shop + a sleek rocket lifting off; stop 2 = a store reaches a
     # level (glass bars), then its steel shutter rolls down and the lights die; stop 3 = a new modern building, its door glows
-    studio(1.2, (7, 2, 1.5)); haze(0.014)
+    studio(1.0, (7, 2, 1.5)); haze(0.014); moon(0.3)
     mesh_obj('road', cube(30, 3.0, 0.12, (7, 0, -0.06)), pbr('asph', (0.025, 0.027, 0.032), rough=0.06, coat=1.0), smooth=False)
     mesh_obj('pave', cube(30, 6.0, 0.2, (7, 4.5, -0.1)), pbr('pave', (0.2, 0.2, 0.21), rough=0.7), smooth=False)
     mesh_obj('kerb', cube(30, 0.22, 0.2, (7, 1.6, 0.1)), pbr('kerb', (0.4, 0.4, 0.41), rough=0.6), smooth=False)
@@ -464,7 +531,7 @@ def scene_road(N):
         mesh_obj(f'la{i}', cube(0.05, 0.4, 0.04, (0, -0.2, 2.6)), steel, (x, 1.75, 0), smooth=False)
         mesh_obj(f'lh{i}', cube(0.22, 0.32, 0.06, (0, 0, 0), bevel=0.01), bulb, (x, 1.38, 2.56), smooth=False)
         P = bpy.data.objects.new(f'pl{i}', bpy.data.lights.new(f'pl{i}', 'SPOT')); P.data.energy = 600; P.data.spot_size = math.radians(70)
-        P.data.color = (1, 0.8, 0.55); P.location = (x, 1.38, 2.5); P.rotation_euler = (0, 0, 0); sc.collection.objects.link(P)
+        P.data.color = (1, 1, 1); kelvin(P, 2700); P.location = (x, 1.38, 2.5); P.rotation_euler = (0, 0, 0); sc.collection.objects.link(P)
     # stop 1: a small shop (dark frame, lit glass front, fabric awning) + a sleek rocket
     shop1 = [mesh_obj('k1', cube(1.7, 1.2, 1.4, (0, 0, 0.7), bevel=0.02), pbr('k1m', (0.1, 0.1, 0.11), rough=0.4), (0, 2.6, 0), smooth=False),
              mesh_obj('k1g', cube(1.4, 0.02, 0.9, (0, 0, 0.62)), pbr('k1g', (1, 0.82, 0.55), emit=1.3), (0, 1.99, 0), smooth=False)]
@@ -739,30 +806,90 @@ def scene_podcity(N):
     mesh_obj('fw_lint', cube(win_w, 0.1, RH - sill - win_h, (0, -D2_ + 0.05, ZR + sill + win_h + (RH - sill - win_h) / 2)), fm, (BX, BY, 0), smooth=False)
     for k, x in enumerate([-win_w / 2, -win_w / 6, win_w / 6, win_w / 2]):   # mullions
         mesh_obj(f'mul{k}', cube(0.025, 0.04, win_h, (x, -D2_ + 0.02, ZR + sill + win_h / 2)), frame_m, (BX, BY, 0), smooth=False)
-    # --- inside: panels, LED strips, ON AIR, desk, host pawn, gold queen, mics (studio scaled 0.25 to fit the room)
+    # --- inside = a set in the spirit of RWA "حوارات مع عباس" (Aly 2026-10-27: "عايزه زي عباس ابو الحسن اوي"; refs
+    # references/style-sheets/rwa_podcast.jpg): black pleated curtain, a big screen in the middle with OUR show logo (رواد الأعمال,
+    # from the intro), studio monitors on stands, a long plain dark table with the two at its ENDS facing each other, an Edison bulb
+    # hanging over it, mugs / water bottles / a wooden box / a little orange statue, black boom-arm mics, warm orange practicals.
     S_ = 0.25
-    panel = pbr('panel', (0.09, 0.09, 0.11), rough=0.85)
-    for ix in range(10):
-        for iz in range(3):
-            mesh_obj(f'ap{ix}_{iz}', cube(0.2, 0.03, 0.24, (0, 0, 0), bevel=0.01), panel, (BX - 1.0 + ix * 0.222, BY + D2_ - 0.1, ZR + 0.18 + iz * 0.26), smooth=False)
-    mesh_obj('led1', cube(2.4, 0.015, 0.015, (0, 0, 0)), pbr('lo', (1, 0.55, 0.25), emit=8), (BX, BY + D2_ - 0.12, ZR + RH - 0.06), smooth=False)
-    mesh_obj('led2', cube(2.4, 0.015, 0.015, (0, 0, 0)), pbr('lb', (0.4, 0.6, 1), emit=6), (BX, BY + D2_ - 0.12, ZR + 0.03), smooth=False)
-    mesh_obj('oab', cube(0.42, 0.03, 0.15, (0, 0, 0), bevel=0.01), pbr('oabm', (0.06, 0.02, 0.02), rough=0.3), (BX - 0.6, BY + D2_ - 0.13, ZR + 0.7), smooth=False)
-    onair = text('ON AIR', 0.09, 0.008, pbr('oa', (1, 0.12, 0.08), emit=2.6), (BX - 0.6, BY + D2_ - 0.15, ZR + 0.7))
-    mesh_obj('floorin', cube(2 * W2_ - 0.16, 2 * D2_ - 0.12, 0.02, (0, 0, ZR + 0.01)), pbr('fl', (0.16, 0.1, 0.07), rough=0.35, coat=0.6), (BX, BY, 0), smooth=False)
-    DY = BY + 0.25
-    mesh_obj('desk', cube(0.9, 0.28, 0.025, (0, 0, ZR + 0.2), bevel=0.008), WALNUT(), (BX, DY, 0), smooth=False)
-    mesh_obj('deskb', cube(0.75, 0.15, 0.19, (0, 0.04, ZR + 0.1), bevel=0.008), pbr('db', (0.05, 0.05, 0.06), rough=0.4), (BX, DY, 0), smooth=False)
-    mesh_obj('host', lathe([(r * 1.55 * S_, z * 1.55 * S_) for r, z in PAWN]), MARBLE('hm'), (BX - 0.26, DY + 0.22, ZR + 0.01))
+    T = A.tex or '.'
+    # pleated black curtain on the back wall (a vertical sine-folded sheet, fabric with sheen)
+    bm = bmesh.new(); cols, rows_ = 120, 2; wdt = 2 * W2_ - 0.2
+    vs = [[bm.verts.new((-wdt / 2 + wdt * i / cols, 0.025 * math.sin(i * 0.9), ZR + RH * j / (rows_ - 1))) for j in range(rows_)] for i in range(cols + 1)]
+    for i in range(cols):
+        bm.faces.new((vs[i][0], vs[i + 1][0], vs[i + 1][1], vs[i][1]))
+    cur_m = pbr('curtain', (0.03, 0.03, 0.035), rough=0.8)
+    try: bsdf(cur_m).inputs['Sheen Weight'].default_value = 0.6
+    except Exception: pass
+    mesh_obj('curtain', bm, cur_m, (BX, BY + D2_ - 0.12, 0))
+    # the big screen with the show logo
+    mesh_obj('tvb', cube(0.62, 0.03, 0.37, (0, 0, 0), bevel=0.004), pbr('tvbm', (0.02, 0.02, 0.022), rough=0.2, coat=1), (BX, BY + D2_ - 0.17, ZR + 0.56), smooth=False)
+    scr = mat('tvscreen', (1, 1, 1), tex=os.path.join(T, 'show_logo.jpg')); bsdf(scr).inputs['Emission Strength'].default_value = 0.9
+    mesh_obj('tvs', plane_uv(0.58, 0.33), scr, (BX, BY + D2_ - 0.186, ZR + 0.56), smooth=False)
+    # studio monitors on stands either side of the screen
+    for i, sx in enumerate((-1, 1)):
+        x = BX + sx * 0.5
+        mesh_obj(f'spst{i}', cyl(0.007, 0.007, 0.36, 12, (0, 0, 0.18)), STEEL(f'sps{i}'), (x, BY + D2_ - 0.25, ZR))
+        mesh_obj(f'spk{i}', cube(0.09, 0.08, 0.13, (0, 0, 0), bevel=0.006), pbr(f'spkm{i}', (0.03, 0.03, 0.035), rough=0.4), (x, BY + D2_ - 0.25, ZR + 0.43), smooth=False)
+        mesh_obj(f'woof{i}', lathe([(0, 0), (0.032, 0), (0.035, -0.004), (0, -0.012)], 32), pbr(f'wf{i}', (0.85, 0.85, 0.82), metal=0.5, rough=0.3), (x, BY + D2_ - 0.291, ZR + 0.41), (math.pi / 2, 0, 0))
+        mesh_obj(f'tw{i}', sphere(0.012, 16, 10), pbr(f'twm{i}', (0.1, 0.1, 0.1), metal=0.8), (x, BY + D2_ - 0.29, ZR + 0.465))
+    # warm orange accent practicals on the back corners (like their orange lamps) — real colour temperature
+    for i, sx in enumerate((-1, 1)):
+        kelvin(area(f'acc{i}', (BX + sx * 1.15, BY + D2_ - 0.45, ZR + 0.1), (BX + sx * 1.0, BY + D2_ - 0.12, ZR + 0.6), 7, 0.25, (1, 0.55, 0.25)), 1900)
+    mesh_obj('floorin', cube(2 * W2_ - 0.16, 2 * D2_ - 0.12, 0.02, (0, 0, ZR + 0.01)), pbr('fl', (0.05, 0.045, 0.04), rough=0.5), (BX, BY, 0), smooth=False)
+    mesh_obj('ceil', cube(2 * W2_ - 0.16, 2 * D2_ - 0.12, 0.02, (0, 0, ZR + RH - 0.012)), pbr('ceilm', (0.02, 0.02, 0.022), rough=0.9), (BX, BY, 0), smooth=False)
+    # the long plain table (Aly: "عايزها سادة"), the two at its ends facing each other
+    DY = BY + 0.3
+    DZ = ZR + 0.17
+    mesh_obj('desktop', cube(1.3, 0.42, 0.03, (0, 0, DZ)), pbr('deskwood', (0.11, 0.065, 0.04), rough=0.3, coat=0.6), (BX, DY, 0), smooth=False)
+    mesh_obj('deskbase', cube(1.05, 0.2, DZ - ZR - 0.015, (0, 0, ZR + (DZ - ZR - 0.015) / 2), bevel=0.004), pbr('db', (0.05, 0.04, 0.035), rough=0.5), (BX, DY, 0), smooth=False)
+    hs_stack(['desktop', 'deskbase'], width=0.006, segments=4)
+    # props on the table
+    props = []
+    mesh_obj('box', cube(0.13, 0.07, 0.05, (0, 0, DZ + 0.04), bevel=0.004), pbr('boxm', (0.55, 0.38, 0.22), rough=0.5), (BX, DY - 0.05, 0), smooth=False); props.append('box')
+    for i, (mx, my) in enumerate([(-0.35, -0.08), (0.36, -0.06)]):
+        mesh_obj(f'mug{i}', lathe([(0, 0), (0.026, 0), (0.028, 0.005), (0.028, 0.066), (0.025, 0.068), (0.023, 0.012), (0, 0.012)], 32),
+                 pbr(f'mugm{i}', (0.06, 0.06, 0.065) if i else (0.92, 0.9, 0.86), rough=0.15, coat=0.8), (BX + mx, DY + my, DZ + 0.015)); props.append(f'mug{i}')
+    for i, (bx_, by_) in enumerate([(-0.2, 0.05), (0.22, 0.07)]):
+        mesh_obj(f'bottle{i}', lathe([(0, 0), (0.02, 0), (0.021, 0.004), (0.021, 0.075), (0.012, 0.095), (0.009, 0.1), (0.009, 0.11), (0, 0.11)], 32),
+                 pbr(f'btm{i}', (0.9, 0.95, 1), rough=0.03, trans=0.95), (BX + bx_, DY + by_, DZ + 0.015)); props.append(f'bottle{i}')
+    mesh_obj('statue', lathe([(0, 0), (0.025, 0), (0.03, 0.02), (0.022, 0.04), (0.03, 0.06), (0.02, 0.08), (0.016, 0.09), (0, 0.095)], 32),
+             pbr('stm', (0.9, 0.42, 0.12), rough=0.35, coat=0.7), (BX + 0.12, DY + 0.1, DZ + 0.015)); props.append('statue')
+    # Edison bulb hanging over the middle of the table
+    mesh_obj('cord', cyl(0.002, 0.002, RH - 0.38, 8, (0, 0, (RH - 0.38) / 2)), pbr('cordm', (0.02, 0.02, 0.02), rough=0.6), (BX, DY, ZR + 0.38))
+    mesh_obj('bulb', lathe([(0, 0), (0.016, 0.004), (0.026, 0.03), (0.022, 0.06), (0.012, 0.075), (0.011, 0.09), (0, 0.09)], 32), pbr('bulbg', (1, 0.95, 0.85), rough=0.05, trans=0.9), (BX, DY, ZR + 0.29))
+    mesh_obj('fil', cyl(0.004, 0.004, 0.03, 8, (0, 0, 0.03)), pbr('film', (1, 0.6, 0.25), emit=25), (BX, DY, ZR + 0.29))
+    P = bpy.data.objects.new('bulbL', bpy.data.lights.new('bulbL', 'POINT')); P.data.energy = 6; P.data.shadow_soft_size = 0.01
+    P.location = (BX, DY, ZR + 0.32); sc.collection.objects.link(P); kelvin(P, 2200)
+    # the two: marble pawn (host) at the left end, gold queen (famous guest) at the right end, facing each other
+    HX, QX = BX - 0.78, BX + 0.78
+    mesh_obj('host', lathe([(r * 2.0 * S_, z * 2.0 * S_) for r, z in PAWN]), MARBLE('hm'), (HX, DY + 0.02, ZR + 0.01))
     gold = GOLD_M('gq')
-    queen('guest', gold, (BX + 0.26, DY + 0.22, ZR + 0.01), S_)
-    grille = pbr('grille', (0.08, 0.08, 0.09), metal=0.7, rough=0.45)
-    for i, (x, a) in enumerate([(-0.15, 0.35), (0.15, -0.35)]):
-        mesh_obj(f'mb{i}', lathe([(0, 0), (0.018, 0), (0.018, 0.075), (0.021, 0.08), (0.021, 0.105), (0.018, 0.11), (0, 0.115)], 24), grille,
-                 (BX + x, DY + 0.1, ZR + 0.31), (0.7, 0, a))
-    room_l = area('roomL', (BX, BY - 0.2, ZR + RH - 0.05), (BX, BY + 0.2, ZR), 60, 1.2, (1, 0.9, 0.78))
-    q_spot = spot('qs', (BX + 0.26, BY - 0.6, ZR + RH - 0.05), (BX + 0.26, DY + 0.22, ZR + 0.3), 120, 22, (1, 0.86, 0.6), 0.3)
-    spot('hs', (BX - 0.26, BY - 0.6, ZR + RH - 0.05), (BX - 0.26, DY + 0.22, ZR + 0.25), 50, 24, (0.75, 0.82, 1), 0.35)
+    queen('guest', gold, (QX, DY + 0.02, ZR + 0.01), S_ * 1.25)
+    # black boom-arm mics from the table toward each face
+    steel_d = pbr('armm', (0.03, 0.03, 0.035), metal=0.6, rough=0.35)
+    foam = pbr('foam', (0.025, 0.025, 0.03), rough=0.95)
+    body_m = pbr('micbody', (0.04, 0.04, 0.045), metal=0.5, rough=0.3)
+    for i, (px, head_z) in enumerate([(HX, ZR + 0.01 + 0.78 * 2.0 * S_), (QX, ZR + 0.01 + 1.35 * 1.25 * S_)]):
+        sx = -1 if i == 0 else 1
+        cx, cy = px - sx * (-0.2), DY - 0.15                    # clamp on the table, towards the middle
+        mesh_obj(f'clamp{i}', cube(0.03, 0.04, 0.03, (0, 0, 0), bevel=0.004), steel_d, (cx, cy, DZ + 0.03), smooth=False)
+        riser_top = (cx, cy, DZ + 0.2)
+        mesh_obj(f'riser{i}', cyl(0.006, 0.006, 0.17, 12, (0, 0, 0.085)), steel_d, (cx, cy, DZ + 0.03))
+        mesh_obj(f'joint{i}', sphere(0.012, 16, 10), steel_d, riser_top)
+        tip = np.array((px - sx * 0.07, DY + 0.0, head_z - 0.03))
+        base = np.array(riser_top); d = tip - base; L = float(np.linalg.norm(d))
+        yaw = math.atan2(d[1], d[0]); pitch = math.atan2(d[2], math.hypot(d[0], d[1]))
+        arm = mesh_obj(f'arm{i}', cyl(0.005, 0.005, L * 0.82, 12, (0, 0, L * 0.41)), steel_d, tuple(base)); arm.rotation_euler = (0, math.pi / 2 - pitch, yaw)
+        mic_pos = base + d * 0.84
+        mic = mesh_obj(f'mic{i}', lathe([(0, 0), (0.016, 0), (0.017, 0.004), (0.017, 0.06), (0.019, 0.064), (0.022, 0.07), (0.022, 0.1), (0.018, 0.112), (0, 0.118)], 32), body_m, tuple(mic_pos))
+        mic.rotation_euler = (0, math.pi / 2 - pitch, yaw)
+        ws = mesh_obj(f'ws{i}', lathe([(0, 0), (0.024, 0.0), (0.026, 0.03), (0.022, 0.05), (0, 0.056)], 32), foam, tuple(mic_pos + d / L * 0.07)); ws.rotation_euler = (0, math.pi / 2 - pitch, yaw)
+    # their warm key from the front sides + a soft top
+    kelvin(spot('qs', (QX - 0.2, BY - 0.6, ZR + RH - 0.05), (QX, DY, ZR + 0.4), 90, 26, (1, 1, 1), 0.4), 3000)
+    kelvin(spot('hs', (HX + 0.2, BY - 0.6, ZR + RH - 0.05), (HX, DY, ZR + 0.35), 70, 26, (1, 1, 1), 0.4), 3200)
+    kelvin(area('roomL', (BX, BY, ZR + RH - 0.04), (BX, BY + 0.2, ZR), 25, 1.4, (1, 1, 1)), 3000)
+    moon(0.35)
+    qa(['desktop', 'host', 'guest', 'mic0', 'mic1'] + props)
     # --- the gold tower (centre) rises later, coin + small coins as in the tower scene
     band = pbr('band', (1, 0.88, 0.62), emit=3.5); fin = pbr('fin', (0.95, 0.72, 0.35), metal=1.0, rough=0.25); tg = GOLD_M('tgold')
     floors = []
@@ -783,7 +910,7 @@ def scene_podcity(N):
     cm = pbr('smallc', (1, 0.79, 0.4), metal=1.0, rough=0.18)
     small = [mesh_obj(f'sc{i}', coin_bm(0.22, 0.04), cm, (0, 0, -5)) for i in range(16)]
     F0, CN = 140, 222
-    QT = (BX + 0.26, DY + 0.22, ZR + 0.32)       # the queen (focus inside)
+    QT = (BX + 0.4, DY + 0.1, ZR + 0.35)         # focus inside: the middle of the table
     cam.data.shift_x = -0.17
 
     def at(f):
@@ -804,8 +931,10 @@ def scene_podcity(N):
             o.location = (r * math.cos(a), r * math.sin(a), 0.5 + t * 9); o.rotation_euler = (t * 7, t * 4, a)
         # camera: 1) inside, slow push towards the guest  2) backs out through the window  3) rises over the city, turns to the tower
         #         4) follows the tower up to the coin
+        # inside (Aly: "عايز الكدر احسن"): a calm two-shot at the pieces' eye level, both centred in the area right of Aly's frame,
+        # ON AIR in view, desk in the lower third; a slow push in
         k1 = E2(f, 0, 64)
-        inside = (BX - 0.12 + 0.05 * k1, FY + 0.45 + 0.12 * k1, ZR + 0.42)
+        inside = (BX + 0.05, FY + 0.05 + 0.12 * k1, ZR + 0.33)  # the RWA wide: the long table front-on, both ends in frame
         k2 = E2(f, 64, 118)
         outside = (BX - 0.05, FY - 2.6, ZR + 0.55)
         k3 = E2(f, 118, 205)
@@ -815,13 +944,13 @@ def scene_podcity(N):
         p1 = [lerp_(k2, a_, b_) for a_, b_ in zip(inside, outside)]
         p2 = [lerp_(k3, a_, b_) for a_, b_ in zip(p1, over)]
         p3 = [lerp_(k4, a_, b_) for a_, b_ in zip(p2, (BX + 5.0, BY - 11.5, 4.2 + 0.4 * top))]
-        room_t = (BX + 0.05, DY + 0.2, ZR + 0.3)
+        room_t = (BX + 0.05, DY + 0.25, ZR + 0.37)
         city_t = (0, 0, 1.2 + 0.55 * top)
         tgt = [lerp_(k3, a_, b_) for a_, b_ in zip(room_t, city_t)]
-        lens = lerp_(k2, 26, 30) + 4 * k3
+        lens = lerp_(k2, 16 + 2.5 * k1, 30) + 4 * k3
         foc = QT if k3 < 0.5 else (0, 0, max(1.0, tgt[2]))
         look(p3, tgt, lens=lens, focus=foc, f=f, shake=0.012 if k2 < 0.5 else 0.02)
-        cam.data.shift_x = lerp_(k3, 0.0, -0.17)   # inside the room: centred; over the city: subject right of Aly's frame
+        cam.data.shift_x = -0.17   # the subject always right of Aly's frame (inside too)
     return at
 
 
