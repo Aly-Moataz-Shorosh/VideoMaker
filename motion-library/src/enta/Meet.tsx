@@ -1,5 +1,6 @@
 import React from 'react';
 import {AbsoluteFill, Img, OffthreadVideo, Sequence, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {Sticker} from './kit';
 
 // Online episode (Google Meet screen recording, cs ep01 2026-10-20). Aly: "simple, keep our focus on the video, hide the
 // top and bottom parts" -> the Meet UI is never shown: each webcam tile is cut from the recording and laid on a calm dark
@@ -94,10 +95,11 @@ export const MeetStage: React.FC<{source: string; tiles: MeetTiles; cues: Cue[];
           const bw = sv[2] * s * k, bh = sv[3] * s * k;
           const cx = (sv[0] - t[0] + sv[2] / 2) * s, cy = (sv[1] - t[1] + sv[3] / 2) * s;
           const bx = Math.min(r.w - bw - 10, cx - bw / 2), by = Math.min(r.h - bh - 10, cy - bh / 2);
-          const as = Math.max(bw / a[2], bh / a[3]); // cover the box with his picture (centred)
+          // Aly 2026-10-27: this part = Karim ONLY -> the corner is a soft blur with the ON AIR badge, not his picture
           return (
-            <div style={{position: 'absolute', left: bx, top: by, width: bw, height: bh, borderRadius: 14, overflow: 'hidden', border: '5px solid #FBF7EE', boxShadow: '0 10px 24px rgba(0,0,0,.5)'}}>
-              <OffthreadVideo src={staticFile(source)} muted startFrom={0} style={{position: 'absolute', left: -a[0] * as - (a[2] * as - bw) / 2, top: -a[1] * as - (a[3] * as - bh) / 2, width: 1920 * as, height: 1080 * as, maxWidth: 'none'}} />
+            <div style={{position: 'absolute', left: bx, top: by, width: bw, height: bh, borderRadius: 16, overflow: 'hidden', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+              background: 'rgba(18,20,25,.35)', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+              <Sticker name="onair" size={Math.min(bw, bh * 1.6) * 0.8} />
             </div>
           );
         })() : null}
