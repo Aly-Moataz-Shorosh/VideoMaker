@@ -2,7 +2,7 @@
 # the series is replaced by what he really showed on his screen at that moment (slides, film frames, photos, demo videos; checked with
 # frame_sheet.py, sheets ir0..ir4), or by real material he refers to (31: the Zoom H5 photo "اللي وريتكم الصورة بتاعته", the course
 # HeadMonitor animation). Applied on top of all the other series data: patch(SHORTS, CAP).
-from series_data import AUD_MIC, AUD_OUT, IMP_INFO
+from series_data import AUD_MIC, AUD_OUT, IMP, IMP_INFO
 from series_data2 import TUBE
 from series_data6 import MICKEY, KOC, WRS
 AU_WAVE = dict(sx=300, sy=40, sw=760)
@@ -14,7 +14,7 @@ R = {  # (short, piece start a) -> new piece(s)
     (1, 256.4): [dict(a=256.4, b=270.2, crop=AUD_OUT, labels=[('وحشة', 'صورة وحشة.. تكمل', 'television'), ('بويز', 'صوت بايظ.. تقفل', 'cross_mark')])],
     (1, 188.1): [dict(a=188.1, b=199.12, raw=True, crop=AUD_MIC, labels=[('هدانك', 'ودانك', 'ear'), ('الكرسي', 'تزييق الكرسي', 'chair')])],
     (1, 272.35): [dict(a=272.35, b=281.45, raw=True, crop=AUD_MIC, labels=[('الكاميرا', 'أصعب من التصوير', 'video_camera'), ('المونتاج', 'أهم من المونتاج', 'clapper_board')])],
-    (2, 341.2): [dict(a=341.2, b=356.6, crop=IMP_INFO, labels=[('المسدس', 'تعمير مسدس', 'water_pistol'), ('انفجار', 'انفجار', 'collision'), ('حادثة', 'حادثة', 'automobile')])],
+    (2, 341.2): [dict(a=341.2, b=356.6, crop=IMP, zoom=[(345.5, IMP_INFO)], labels=[('المسدس', 'تعمير مسدس', 'water_pistol'), ('انفجار', 'انفجار', 'collision'), ('حادثة', 'حادثة', 'automobile')])],
     (3, 652.5): [dict(a=652.5, b=661.2, crop=MICKEY)],
     (3, 709.7): [dict(a=709.7, b=713.6, raw=True, src=705.0, crop=MICKEY, labels=[('الكوميديا', 'الرسالة وصلت بالضحك', 'face_with_tears_of_joy')])],
     (3, 738.1): [dict(a=738.1, b=748.0, crop=KOC, labels=[('معنى', 'الموسيقى بتوصل معنى', 'musical_note'), ('مشهور', 'عايز يبقى مشهور', 'star')])],

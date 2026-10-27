@@ -160,3 +160,7 @@ SHORTS.update(_S6.SHORTS); CAP.update(_S6.CAP)
 # review 2026-10-27: icon rows -> his real screen / material
 import series_data7 as _S7
 _S7.patch(SHORTS, CAP)
+
+# review 2026-10-27 (2): 19-23 rebuilt with the sound examples heard + his pointing
+import series_data8 as _S8
+SHORTS.update(_S8.SHORTS); CAP.update(_S8.CAP)
