@@ -1,6 +1,7 @@
 import React from 'react';
 import {Img, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {AR, bi, lin, spr} from './kit';
+import {FilmTag} from './audio';
 
 // Idea scenes for the audio-course shorts while he talks without a screen (Aly 2026-10-26, reel 2: "حط icons تعبر عن اللي بقوله
 // او موشن متخليش الشاشة مملة"). Fluent 3D emoji pictures + drawn sound waves, what he says in that sentence.
@@ -142,4 +143,4 @@ export const IdeaRows: React.FC<{dur: number; rows: Row[]}> = ({dur, rows}) => {
   );
 };
 
-export const shortScenes: Record<string, React.FC<any>> = {BoomScene, IdeaRows};
+export const shortScenes: Record<string, React.FC<any>> = {BoomScene, IdeaRows, FilmTag};  // FilmTag = film name card (shorts 03/04, the films he played)

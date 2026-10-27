@@ -152,3 +152,7 @@ CAP[107] = CAP[7]
 # the rest of the series (2026-10-27): series_data.py
 import series_data as _S
 SHORTS.update(_S.SHORTS); CAP.update(_S.CAP)
+
+# batch 6: 03 + 04 with the films he played (Aly 2026-10-27)
+import series_data6 as _S6
+SHORTS.update(_S6.SHORTS); CAP.update(_S6.CAP)

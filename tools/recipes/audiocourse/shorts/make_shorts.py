@@ -120,6 +120,8 @@ def build(n):
             cues.append(dict(t=round(t, 3), d=round(d, 3), k='Big', p=dict(text=txt, sub=sub or None, ico=pc.get('ico'))))
         else:
             cues.append(dict(t=round(t, 3), d=round(max(d, 3.0), 3), k=show, p=dict(pc.get('anim', {}))))
+        if pc.get('film'):  # name card of the film he plays (shorts 03/04), under the screen card
+            cues.append(dict(t=round(t + 0.2, 3), d=round(min(d - 0.2, 6.0), 3), k='FilmTag', p=dict(pc['film'], x=40, y=1395)))
         if pc.get('bars'):
             cues.append(dict(t=round(t, 3), d=round(d, 3), k='Bars', p={}))
         if pc.get('step'):
