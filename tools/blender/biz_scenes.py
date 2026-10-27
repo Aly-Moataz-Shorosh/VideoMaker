@@ -23,6 +23,7 @@ ap.add_argument('--still', type=int, default=-1)
 ap.add_argument('--tex', default='')
 ap.add_argument('--res', type=int, nargs=2, default=[1920, 1080])
 ap.add_argument('--samples', type=int, default=32)
+ap.add_argument('--start', type=int, default=0)  # resume a crashed render from this frame
 A = ap.parse_args(a)
 random.seed(7)
 
@@ -493,7 +494,7 @@ def scene_three(N):
 SCENES = {'tower': scene_tower, 'road': scene_road, 'crowd': scene_crowd, 'three': scene_three}
 at = SCENES[A.scene](A.frames)
 os.makedirs(A.out, exist_ok=True)
-frames = [A.still] if A.still >= 0 else range(A.frames)
+frames = [A.still] if A.still >= 0 else range(A.start, A.frames)
 # the animation lives in at(f); as a frame handler it also runs on the motion-blur sub-frames, so the blur is real
 bpy.app.handlers.frame_change_pre.append(lambda scn, *a: at(scn.frame_current + scn.frame_subframe))
 sc.frame_start, sc.frame_end = 0, max(1, A.frames)
