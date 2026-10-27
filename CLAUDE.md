@@ -240,3 +240,10 @@ Done (2026-10-06):
   08/09 = Blender explainers per sentence (series_data9.py, scenes hz_a-d / sr_a-d). Render started 12:05 after his 'كمل', STOPPED by Aly
   at 14:20 (PC off): done = p_street + hz_a-d + sr_a/b clips, raw 01 03 04 06 10-18 (not levelled). Old versions in output/shorts/archive/before_1027.
   On his next 'كمل': run project `work/scripts/resume_1027.sh` in the background (sr_c/sr_d, level, 19-31, 02/08/09, txt; log work/night_1027.log).
+- 2026-10-27 show "انت بتشتغل ايه" رواد الأعمال EP01 `projects/انت بتشتغل ايه/2026-10-27 ep01 biz karim tamer` (guest Karim Tamer: Courzerve, Kiko's
+  Snacks, FPL Champ; Meet recording 45:03, code `entabiz01`). Opening 0:17-2:04 (Aly's tiny self-view) = full board `biz_open` (Aly in an
+  ON-AIR frame the whole time, Karim behind a curtain, Egypt->GUC map, 4 cinematic Blender clips `tools/blender/biz_scenes.py`, resume
+  after EEVEE crashes with `render_resume.sh`); 28 `biz_free` boards + 117 cards; NO crop of tiles (Meet labels covered). Recipe docs/22.
+  `output/review_01_opening.mp4` (0:00-3:25) SENT, waiting for his review; full render (`work/scripts/render.sh review_01`, ~hours)
+  only after his 'كمل'. Pending from Aly: Karim's new app link. Audio-course public parked in `_parked_public/audio` during this job
+  (move back to public/projects/audio before resume_1027.sh).
