@@ -30,6 +30,8 @@ import {EntaStickers, entaStickersSchema, EntaBubble, entaBubbleSchema, EntaName
 import {EntaPipeline, entaPipelineSchema, EntaClash, entaClashSchema, EntaDeadEnd, entaDeadEndSchema} from './enta/Board';
 import {EntaRender, entaRenderSchema, EntaMerge, entaMergeSchema} from './enta/Board2';
 import {EntaFlavours, entaFlavoursSchema, EntaDrawer, entaDrawerSchema} from './enta/Board3';
+import {BizOpen, bizOpenSchema} from './enta/BizOpen';
+import {BizFree, bizFreeSchema} from './enta/BoardBiz';
 import {QaWhat, qaWhatSchema, QaReq, qaReqSchema, QaEyes, qaEyesSchema, QaTypes, qaTypesSchema, QaLogin, qaLoginSchema, QaApi, qaApiSchema, QaPerf, qaPerfSchema, QaRoad, qaRoadSchema, QaJoker, qaJokerSchema, QaIstqb, qaIstqbSchema, QaAi, qaAiSchema, QaProd, qaProdSchema, QaDemand, qaDemandSchema} from './enta/BoardQA';
 
 // Single list of templates: id (= catalog id) -> component, schema, preview length, has 9:16.
@@ -75,6 +77,8 @@ export const registry: Record<string, Entry> = {
   enta_merge: {C: EntaMerge, schema: entaMergeSchema, frames: 220, v: false},
   enta_flavours: {C: EntaFlavours, schema: entaFlavoursSchema, frames: 160, v: false},
   enta_drawer: {C: EntaDrawer, schema: entaDrawerSchema, frames: 240, v: false},
+  biz_free: {C: BizFree, schema: bizFreeSchema, frames: 300, v: false},
+  biz_open: {C: BizOpen, schema: bizOpenSchema, frames: 300, v: false},
   qa_what: {C: QaWhat, schema: qaWhatSchema, frames: 240, v: false},
   qa_req: {C: QaReq, schema: qaReqSchema, frames: 240, v: false},
   qa_eyes: {C: QaEyes, schema: qaEyesSchema, frames: 240, v: false},

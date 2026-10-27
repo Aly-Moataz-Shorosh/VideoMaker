@@ -12,7 +12,16 @@ import {AbsoluteFill, Img, OffthreadVideo, Sequence, staticFile, useCurrentFrame
 
 type Rect = {x: number; y: number; w: number; h: number; o: number};
 type Cue = {t: string; at: number; dur: number; props: Record<string, any>};
-export type MeetTiles = {G: number[]; A: number[]; left: 'G' | 'A'}; // source px [x, y, w, h] of each tile
+export type MeetTiles = {G: number[]; A: number[]; left: 'G' | 'A'; phases?: {from: number; G: number[]; A: number[]; self?: number[]; masks?: Mask[]}[]; self?: number[]; masks?: Mask[]};
+// Meet UI drawn inside a tile (name label, the crop button) is covered, never cropped away (Aly 2026-10-27: no crop the whole video):
+// tag = our own paper name tag over the label; no tag = a small soft blur over the button. box = source px.
+type Mask = {who: 'G' | 'A'; box: number[]; tag?: string}; // source px [x, y, w, h] of each tile
+// phases (biz ep01 2026-10-27): the Meet layout changed during the call (guest big + Aly's tiny self-view -> side by side);
+// each phase = the tile boxes from that source second on (G/A above = before the first phase).
+export const tilesAt = (tiles: MeetTiles, sec: number): MeetTiles => {
+  const ph = [...(tiles.phases ?? [])].reverse().find((p) => sec >= p.from);
+  return ph ? {...tiles, G: ph.G, A: ph.A, self: ph.self, masks: ph.masks} : tiles;
+};
 
 const BLEND = 14;
 const smooth = (x: number) => x * x * (3 - 2 * x);
@@ -33,9 +42,10 @@ const layout = (m: string, who: 'G' | 'A', ar: number, left: boolean, W: number,
 const lerp = (a: Rect, b: Rect, k: number): Rect => ({
   x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k, w: a.w + (b.w - a.w) * k, h: a.h + (b.h - a.h) * k, o: a.o + (b.o - a.o) * k});
 
-export const MeetStage: React.FC<{source: string; tiles: MeetTiles; cues: Cue[]; segments: {src: number; tl: number; len: number}[]}> = ({source, tiles, cues, segments}) => {
+export const MeetStage: React.FC<{source: string; tiles: MeetTiles; cues: Cue[]; segments: {src: number; tl: number; len: number}[]}> = ({source, tiles: allTiles, cues, segments}) => {
   const frame = useCurrentFrame();
   const {fps, width: W, height: H} = useVideoConfig();
+  const tiles = tilesAt(allTiles, frame / fps);
   const f = (s: number) => Math.round(s * fps);
   const shots = cues.filter((c) => c.t === 'shot').sort((a, b) => a.at - b.at);
   let cur = 'two', prev = 'two', k = 1, d = 999;
@@ -68,6 +78,29 @@ export const MeetStage: React.FC<{source: string; tiles: MeetTiles; cues: Cue[];
           </Sequence>
         ))}
         </div>
+        {(tiles.masks ?? []).filter((m) => m.who === who).map((m, i) => {
+          const L = (m.box[0] - t[0]) * s, T = (m.box[1] - t[1]) * s, w = m.box[2] * s, h = m.box[3] * s;
+          return m.tag ? (
+            <div key={i} style={{position: 'absolute', left: L - 6, top: T + h / 2, transform: 'translateY(-50%) rotate(-2deg)', background: '#EFE6D2', color: '#1C2030', fontWeight: 900,
+              fontSize: Math.max(16, h * 0.95), padding: `${h * 0.12}px ${h * 0.5}px`, borderRadius: 6, whiteSpace: 'nowrap', border: '3px solid #FBF7EE', boxShadow: '0 4px 10px rgba(0,0,0,.4)', direction: 'rtl'}}>{m.tag}</div>
+          ) : (
+            <div key={i} style={{position: 'absolute', left: L, top: T, width: w, height: h, borderRadius: h / 2, backdropFilter: 'blur(7px)', WebkitBackdropFilter: 'blur(7px)'}} />
+          );
+        })}
+        {who === 'G' && tiles.self ? (() => {
+          // Meet drew Aly's self-view INSIDE the guest tile (biz ep01 0:17-3:07); no crop of the guest (Aly: "مش عايز كروب طول الفيديو")
+          // -> cover that corner with our own framed picture of Aly (his self-view itself, a bit bigger, sticker border)
+          const sv = tiles.self, a = tiles.A, k = 1.3;
+          const bw = sv[2] * s * k, bh = sv[3] * s * k;
+          const cx = (sv[0] - t[0] + sv[2] / 2) * s, cy = (sv[1] - t[1] + sv[3] / 2) * s;
+          const bx = Math.min(r.w - bw - 10, cx - bw / 2), by = Math.min(r.h - bh - 10, cy - bh / 2);
+          const as = Math.max(bw / a[2], bh / a[3]); // cover the box with his picture (centred)
+          return (
+            <div style={{position: 'absolute', left: bx, top: by, width: bw, height: bh, borderRadius: 14, overflow: 'hidden', border: '5px solid #FBF7EE', boxShadow: '0 10px 24px rgba(0,0,0,.5)'}}>
+              <OffthreadVideo src={staticFile(source)} muted startFrom={0} style={{position: 'absolute', left: -a[0] * as - (a[2] * as - bw) / 2, top: -a[1] * as - (a[3] * as - bh) / 2, width: 1920 * as, height: 1080 * as, maxWidth: 'none'}} />
+            </div>
+          );
+        })() : null}
       </div>
     );
   };
@@ -109,9 +142,10 @@ export const MeetBg: React.FC<{frame: number}> = ({frame}) => {
 // a circle in a corner "so people see him while he talks"; skip it only where the board itself is busy with motion).
 // Cues {t: 'pip', at, dur, props: {who: 'G' | 'A', zx, zy, side: 'L' | 'R'}} — consecutive cues crossfade, a new run pops in.
 // side: he looks towards the left of the screen -> circle on the RIGHT, and the other way round (Aly 2026-10-20; work/scripts/gaze.py).
-export const MeetPip: React.FC<{source: string; tiles: MeetTiles; cues: Cue[]}> = ({source, tiles, cues}) => {
+export const MeetPip: React.FC<{source: string; tiles: MeetTiles; cues: Cue[]}> = ({source, tiles: allTiles, cues}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
+  const tiles = tilesAt(allTiles, frame / fps);
   const f = (s: number) => Math.round(s * fps);
   const pips = cues.filter((c) => c.t === 'pip').sort((a, b) => a.at - b.at);
   const i = pips.findIndex((c) => frame >= f(c.at) && frame < f(c.at + c.dur));

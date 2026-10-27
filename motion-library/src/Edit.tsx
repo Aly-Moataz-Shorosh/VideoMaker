@@ -107,7 +107,9 @@ export const editSchema = z.object({
   captions: z.boolean().default(true), // Aly 2026-10-13: captions only in reels/shorts, OFF in long videos (Whisper mistakes)
   segments: z.array(z.object({src: z.number(), tl: z.number(), len: z.number(), source: z.string().optional(), fit: z.string().optional()})).default([]), // source: appended clip (CTA); fit 'cover' = clip already in the output aspect
   // Online interview (Google Meet recording): webcam tiles cut out of the screen recording, layouts via 'shot' cues (enta/Meet.tsx)
-  meet: z.object({G: z.array(z.number()), A: z.array(z.number()), left: z.enum(['G', 'A'])}).nullable().default(null),
+  meet: z.object({G: z.array(z.number()), A: z.array(z.number()), left: z.enum(['G', 'A']),
+    phases: z.array(z.object({from: z.number(), G: z.array(z.number()), A: z.array(z.number()), self: z.array(z.number()).optional(),
+      masks: z.array(z.object({who: z.enum(['G', 'A']), box: z.array(z.number()), tag: z.string().optional()})).optional()})).optional()}).nullable().default(null),
   words: z.array(z.object({w: z.string(), start: z.number(), end: z.number()})).default([]),
   cues: z.array(z.object({t: z.string(), at: z.number(), dur: z.number(), props: z.record(z.string(), z.any())})).default([]),
 });
