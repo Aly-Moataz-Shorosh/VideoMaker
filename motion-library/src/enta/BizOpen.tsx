@@ -43,7 +43,7 @@ const sm = (x: number) => (x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x));
 const life = (f: number, l: {at: number; dur: number}, out = 8) => Math.min(1, Math.max(0, (l.at + l.dur - f) / out));
 
 // the camera frame position per mode (centre x, centre y, scale of the pre-scaled clip)
-const POS: Record<string, [number, number, number]> = {hero: [960, 520, 1.0], left: [300, 560, 0.86], mini: [190, 170, 0.5], off: [-300, 560, 0.6]};
+const POS: Record<string, [number, number, number]> = {hero: [960, 500, 1.12], left: [295, 520, 1.0], mini: [190, 170, 0.5], off: [-300, 560, 0.6]};
 
 // guest frame positions: [centre x, centre y, width] (16:9)
 const GPOS: Record<string, [number, number, number]> = {corner: [1660, 170, 380], big: [1230, 470, 860], side: [1500, 300, 560], off: [2300, 170, 380]};
@@ -77,7 +77,7 @@ const Guest: React.FC<{g: NonNullable<z.infer<typeof bizOpenSchema>['guest']>}> 
   const cur = g.pos[i], prev = i ? g.pos[i - 1] : cur;
   const k = sm((f - cur.at) / 18);
   const a = GPOS[prev.m], b = GPOS[cur.m];
-  const x = lerp(k, a[0], b[0]), y = lerp(k, a[1], b[1]), w = lerp(k, a[2], b[2]), h = (w * 9) / 16;
+  const x = lerp(k, a[0], b[0]), y = lerp(k, a[1], b[1]), w = lerp(k, a[2], b[2]), h = (w * 800) / 1582; // his whole Meet tile, its own shape (no crop)
   const open = sm((f - g.openAt) / 22);
   const pop = enter(f, 30, g.pos[0].at);
   const shake = f < g.openAt && f > g.openAt - 20 ? Math.sin(f * 2.2) * 3 : 0; // the curtain trembles just before it opens
@@ -241,6 +241,10 @@ const BizMap: React.FC<{l: L; f: number}> = ({l, f}) => {
   const egy = rings('EGY').map((r) => 'M' + r.map((q) => q.join(',')).join('L') + 'Z').join('');
   const path = (pts: number[][]) => 'M' + pts.map((q) => q.join(',')).join('L');
   const nile = ((cairo as any).nile as number[][][]).map((r) => path(r.map(m2w))).join('');
+  // today's main roads (OSM, the cairohistory data): motorways/trunks thicker — only once we are over Cairo
+  const roads = ((cairo as any).roads as {k: string; pts: number[][]}[]);
+  const big = roads.filter((r) => r.k === 'm' || r.k === 't').map((r) => path(r.pts.map(m2w))).join('');
+  const mid = roads.filter((r) => r.k === 'p').map((r) => path(r.pts.map(m2w))).join('');
   const pin = t >= pinAt ? enter(f, 30, l.at + pinAt) : 0;
   const ring = ((t - pinAt) % 40) / 40;
   const lab = (x: number, y: number, text: string, size: number, col = E.ink, bg = E.paper, show = 1) => show > 0.01 ? (
@@ -261,6 +265,10 @@ const BizMap: React.FC<{l: L; f: number}> = ({l, f}) => {
         <g opacity={1 - k}>
           <path d={path(NILE_EG.map((q) => W2(q[0], q[1])))} fill="none" stroke="#3A8DB6" strokeWidth={px * 7} strokeLinecap="round" strokeLinejoin="round" />
           {DELTA.map((d, n) => <path key={n} d={path(d.map((q) => W2(q[0], q[1])))} fill="none" stroke="#3A8DB6" strokeWidth={px * 5} strokeLinecap="round" />)}
+        </g>
+        <g opacity={sm((k - 0.55) / 0.4)} fill="none" strokeLinecap="round" strokeLinejoin="round">
+          <path d={mid} stroke="#FFFDF5" strokeWidth={px * 2.2} opacity={0.7} />
+          <path d={big} stroke="#FFFDF5" strokeWidth={px * 4.5} />
         </g>
         <path d={nile} fill="#3A8DB6" stroke="#3A8DB6" strokeWidth={px * 10} strokeLinejoin="round" opacity={k} />
         {/* Cairo dot, then New Cairo area + the pin on GUC */}
