@@ -52,6 +52,44 @@ export const VEC: Record<string, Shape[]> = {
   onair: [
     {d: 'M6 26 Q6 18 14 18 L86 18 Q94 18 94 26 L94 74 Q94 82 86 82 L14 82 Q6 82 6 74Z', fill: O},
   ],
+  // رواد الأعمال (biz, 2026-10-27): idea, money, growth, business, startup, shop.
+  bulb: [
+    {d: 'M50 6 C72 6 84 22 84 40 C84 54 76 62 68 70 L66 76 L34 76 L32 70 C24 62 16 54 16 40 C16 22 28 6 50 6Z', fill: Y},
+    {d: 'M40 40 L46 54 L50 44 L54 54 L60 40 M46 54 L46 76 M54 54 L54 76', fill: 'none', ink: 4},
+    {d: 'M34 78 L66 78 L66 86 Q66 94 58 94 L42 94 Q34 94 34 86Z', fill: B},
+    {d: 'M34 86 L66 86', fill: 'none', ink: 3},
+  ],
+  coin: [
+    {d: 'M50 6 a44 44 0 1 0 0.1 0Z', fill: Y},
+    {d: 'M50 18 a32 32 0 1 0 0.1 0Z', fill: 'none', ink: 3},
+    {d: 'M62 36 C58 30 44 30 42 38 C40 46 60 50 58 60 C56 70 42 70 37 63 M50 26 L50 74', fill: 'none', ink: 6},
+  ],
+  chart_up: [
+    {d: 'M12 66 L28 66 L28 92 L12 92Z', fill: O},
+    {d: 'M38 52 L54 52 L54 92 L38 92Z', fill: Y},
+    {d: 'M64 36 L80 36 L80 92 L64 92Z', fill: G},
+    {d: 'M8 50 L36 28 L52 38 L78 14', fill: 'none', ink: 6},
+    {d: 'M68 6 L94 4 L90 30Z', fill: B},
+  ],
+  briefcase: [
+    {d: 'M36 26 L36 16 Q36 10 42 10 L58 10 Q64 10 64 16 L64 26 L56 26 L56 18 L44 18 L44 26Z', fill: B},
+    {d: 'M8 32 Q8 26 14 26 L86 26 Q92 26 92 32 L92 84 Q92 90 86 90 L14 90 Q8 90 8 84Z', fill: O},
+    {d: 'M12 52 L88 52', fill: 'none', ink: 3},
+    {d: 'M42 45 L58 45 L58 59 L42 59Z', fill: Y},
+  ],
+  rocket: [
+    {d: 'M38 64 L62 64 C62 78 56 86 50 96 C44 86 38 78 38 64Z', fill: Y},
+    {d: 'M32 46 L12 72 L32 66Z M68 46 L88 72 L68 66Z', fill: O},
+    {d: 'M50 4 C66 18 72 38 68 66 L32 66 C28 38 34 18 50 4Z', fill: B},
+    {d: 'M50 26 a10 10 0 1 0 0.1 0Z', fill: W},
+  ],
+  shop: [
+    {d: 'M14 44 L86 44 L86 90 L14 90Z', fill: G},
+    {d: 'M42 60 L58 60 L58 90 L42 90Z', fill: B},
+    {d: 'M20 54 L34 54 L34 70 L20 70Z M66 54 L80 54 L80 70 L66 70Z', fill: Y},
+    {d: 'M10 16 L90 16 L96 44 L4 44Z', fill: O},
+    {d: 'M30 21 L27 39 M50 21 L50 39 M70 21 L73 39', fill: 'none', ink: 3},
+  ],
 };
 
 export const VSticker: React.FC<{name: string; size: number; style?: React.CSSProperties}> = ({name, size, style}) => {

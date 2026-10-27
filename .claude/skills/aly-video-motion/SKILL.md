@@ -85,7 +85,7 @@ question with the list. A newly approved look = a new numbered folder (sample.mp
    changes when it reaches us") → cut cleanly on audio dips or soften; ask Aly.
 
 14. Show "انت بتشتغل ايه": stickers belong to the episode's department — فنون: reel, masks, brush, notes, splats;
-   حاسبات: { }, 0/1, floppy, bug; shared: ?!, burst, stars, sparkles, ON AIR, tape. Never a code sticker in a فنون episode
+   حاسبات: { }, 0/1, floppy, bug; رواد الأعمال (biz): bulb, coin, chart_up, briefcase, rocket, shop; shared: ?!, burst, stars, sparkles, ON AIR, tape. Never a code sticker in a فنون episode
    (ep01 v2 had `{` — left as is until Aly says).
 
 15. Never pixelated graphics/pictures (Aly 2026-10-13: the upscaled sheet stickers looked pixelated). Stickers/icons = vector

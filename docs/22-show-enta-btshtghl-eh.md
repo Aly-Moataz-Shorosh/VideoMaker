@@ -1,18 +1,21 @@
 # Show: "انت بتشتغل ايه" (What do you do for a living?) — show bible (2026-10-10, before episode 1)
 
-Interview show: Aly + one guest per episode, two departments: **حاسبات (cs)** and **فنون (fnon)**.
+Interview show: Aly + one guest per episode, three departments: **حاسبات (cs)**, **فنون (fnon)** and **رواد الأعمال (biz)** (added 2026-10-27).
 Aly hands his EDITED episode → Claude adds motion graphics + captions + sfx + internet pictures/clips that explain
 the guest's job, terms and examples. Goal (Aly): fun, visualized, explain every term with an example.
 
 ## Files
-- Episodes: `projects/انت بتشتغل ايه/<date> epNN <cs|fnon> <guest>/` made by `new-episode.bat` (in that folder).
+- Episodes: `projects/انت بتشتغل ايه/<date> epNN <cs|fnon|biz> <guest>/` made by `new-episode.bat` (in that folder; 3 = biz; epNN counts per department).
   notes.txt ends with `dept:` and `intro_in_video: yes|no`.
 - Brand copies (sources are READ-ONLY on E:/root/output/Youtube/Aly Shorosh New/انت بتشتغل ايه):
   `brand/enta/intro_cs.mp4`, `intro_fnon.mp4` (17.1 s, 1280x720 25 fps — upscale to the episode size),
   `logo_cs.png` / `logo_fnon.png` (cartoon Aly at desk, speech bubble "حاسبات/فنون — انت بتشتغل ايه", ON AIR, "يقدمه علي معتز شُرُش"),
   `styles_sheet.png` (his element sheet), `thumb_example_*.png`. Contact sheets: `references/style-sheets/enta_*.jpg`.
 - Studio = OBS two-camera layout (Aly LEFT, guest RIGHT; also single-focus scenes). Raw ep1 (fnon, Ahmed Moataz) exists on E:.
-- Guest questions per department: `اسئلة الضيوف - حاسبات/فنون.docx` in the show folder (read for terms).
+- Guest questions per department: `اسئلة الضيوف - حاسبات/فنون/بزنس.docx` in the show folder (read for terms).
+  biz has 2 question sets: `اسئلة الضيوف - بزنس.docx` (one project: idea -> first client -> his tasks vs hired -> first profit -> hardest
+  surprise -> where it is now -> advice) and `اسئلة الضيف - صاحب مشروعين.docx` (two projects: why each started / first client / why
+  it stopped). Episode chapters follow these sections (البداية / المشروع / الختام).
 
 ## Intro / outro
 - `intro_in_video: no` → prepend `brand/enta/intro_<dept>.mp4`. Episode also ENDS with the intro/its logo end
@@ -28,7 +31,10 @@ the guest's job, terms and examples. Goal (Aly): fun, visualized, explain every 
   olive #8E9A5B-ish, mustard #E8B54A-ish** on dark: ?!, burst lines, arrows, masking tape, paint splats,
   `{ }`, 0/1, floppy, bug (cs); film reel, theatre masks, brush, music notes (fnon); ON AIR sign, stars.
 - Thumbnails: mixed-media collage, sepia cut-out photos with white border, blue paper speech bubble.
-- Department flavour: cs → code, circuits, floppy, bug, 0101; fnon → curtain, film reel, masks, paint drips, notes.
+- Department flavour: cs → code, circuits, floppy, bug, 0101; fnon → curtain, film reel, masks, paint drips, notes;
+  biz → idea bulb, coins, rising chart, briefcase, rocket (startup), shop; boards = timeline of the project (idea → first client
+  → profit → now), team split (his tasks vs hired), numbers only when the guest says them.
+- biz has NO intro/logo yet (only `intro_cs` / `intro_fnon`, `logo_cs` / `logo_fnon`) — ask Aly before the first biz episode.
 
 ## Motion recipe = mix of all approved styles
 - Pacing from the reference (Peace Cake "مرتبة الشرف", 5YLfxDi4tIs): ~70 shot changes in 2 min (one every ~1.7 s):
@@ -79,6 +85,7 @@ the guest's job, terms and examples. Goal (Aly): fun, visualized, explain every 
 
 - Stickers per DEPARTMENT (Aly 2026-10-13, after ep01 v2 used `brace_l` `{` on a فنون card): never mix.
   فنون (fnon): reel, masks, brush, note_o/b/g, splat_o/b/g + shared. حاسبات (cs): brace_l/r, zero, one, floppy, bug + shared.
+  رواد الأعمال (biz, 2026-10-27, vector in `vstick.tsx`): bulb, coin, chart_up, briefcase, rocket, shop + shared.
   Shared (both): qmark, burst, star_*, spark_*, star8_b, onair, tape_*, arrows (only when they point at something).
   ep01 v2 still has the `{` sticker (card "الإنشائي يحدد العواميد") — fix only when Aly asks.
 - NO pixelated pictures (Aly 2026-10-13). The stickers are 3x upscales of ~100 px crops of his 1344x752 styles.png (the only
