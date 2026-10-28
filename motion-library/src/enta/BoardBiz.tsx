@@ -58,38 +58,50 @@ const key = (ks: number[][] | undefined, f: number, def: number[]): number[] => 
 };
 function last<T>(ks: [number, T][] | undefined, f: number, def: T): T { let v = def; for (const q of ks ?? []) if (f >= q[0]) v = q[1]; return v; }
 
-// Karim as a character (Aly 2026-10-28 "زي ما عملنا في مدينة اوز"): his REAL face (circle cut from his camera) on a drawn body
-// (black T-shirt, dark jeans, white shoes). moves [[f, x, y]], poses [[f, 'stand'|'walk'|'push'|'cheer'|'sad'|'jump']],
-// faces [[f, png]]; s = height in px; flip = faces left. x/y = his feet.
+// Karim as a character, Captain-Azouz style (Aly 2026-10-28: "خد صور له من الفيديو و قصها و حركها اكنها كارتون زي القبطان عزوز",
+// "الوش بس من غير الكتف", "صغر الوش شوية علشان يبقى زي باقي الجسم"): his real head from the call (hair + headset, no shoulders)
+// on a full cartoon body in black (zip knit, white tee at the collar, dark trousers, white shoes).
+// moves [[f, x, y]], poses [[f, 'stand'|'walk'|'push'|'cheer'|'sad'|'jump']], faces [[f, name with neutral/happy/sad]]; s = height px;
+// x/y = his feet; flip = faces left. The face moves in little steps like cut-out animation.
 const Char: React.FC<{d: Record<string, any>; f: number; o: number; p: number}> = ({d, f, o, p}) => {
   const [x, y] = key(d.moves, f, [d.x ?? 960, d.y ?? 800]);
   const pose: string = last(d.poses, f, 'stand');
-  const face: string = last(d.faces, f, d.face ?? 'projects/entabiz01/pics/karim_face_neutral.png');
+  const face: string = last(d.faces, f, d.face ?? 'neutral');
+  const mood = pose === 'push' ? 'effort' : /happy/.test(face) ? 'happy' : /sad/.test(face) ? 'sad' : 'neutral';
   const S = d.s ?? 300, u = S / 100, t = f / 30;
   const sw = pose === 'walk' ? Math.sin(t * 9) : 0;
-  const hop = pose === 'cheer' ? -Math.abs(Math.sin(t * 6)) * 8 * u : pose === 'jump' ? -6 * u : 0;
-  const lean = pose === 'push' ? 14 + Math.sin(t * 14) * 2 : pose === 'sad' ? 0 : sw * 2;
-  // arm / leg angles (deg from straight down, + = forward)
-  const [aF, aB] = pose === 'push' ? [95, 80] : pose === 'cheer' ? [160, 150] : pose === 'walk' ? [sw * 30, -sw * 30] : pose === 'sad' ? [6, -6] : pose === 'jump' ? [120, 110] : [14, -10];
-  const [lF, lB] = pose === 'walk' ? [sw * 26, -sw * 26] : pose === 'push' ? [-26, 18] : pose === 'jump' ? [30, -24] : [5, -5];
-  const limb = (ax: number, ay: number, len: number, ang: number, w: number, col: string, end: string, endR: number) => {
-    const r = (ang * Math.PI) / 180, ex = ax + Math.sin(r) * len, ey = ay + Math.cos(r) * len;
-    return <g><line x1={ax} y1={ay} x2={ex} y2={ey} stroke={col} strokeWidth={w} strokeLinecap="round" /><circle cx={ex} cy={ey} r={endR} fill={end} /></g>;
+  const hop = pose === 'cheer' ? -Math.abs(Math.sin(t * 6)) * 6 * u : pose === 'jump' ? -5 * u : 0;
+  const lean = pose === 'push' ? 12 + Math.sin(t * 14) * 2 : sw * 2;
+  // arm / leg angles (deg from straight down, + = forward = towards +x; flip turns him round)
+  const [aF, aB] = pose === 'push' ? [92, 78] : pose === 'cheer' ? [165, -165] : pose === 'walk' ? [sw * 32, -sw * 32] : pose === 'sad' ? [4, -4] : pose === 'jump' ? [130, -130] : [12, -12];
+  const [lF, lB] = pose === 'walk' ? [sw * 26, -sw * 26] : pose === 'push' ? [14, -28] : pose === 'jump' ? [28, -22] : [4, -4];
+  const skin = '#d3a07e', top = '#17181c', trousers = '#2a2f3b';
+  const arm = (ax: number, ang: number) => {
+    const r = (ang * Math.PI) / 180, ex = ax + Math.sin(r) * 25, ey = 43 + Math.cos(r) * 25;
+    return <g><line x1={ax} y1={43} x2={ex} y2={ey} stroke={top} strokeWidth={8} strokeLinecap="round" /><circle cx={ex} cy={ey} r={3.6} fill={skin} /></g>;
   };
-  const skin = '#c79574', shirt = '#1c1d22', jeans = '#2c3a52';
+  const leg = (lx: number, ang: number) => {
+    const r = (ang * Math.PI) / 180, ex = lx + Math.sin(r) * 24, ey = 72 + Math.cos(r) * 24;
+    return <g><line x1={lx} y1={72} x2={ex} y2={ey} stroke={trousers} strokeWidth={9} strokeLinecap="round" /><ellipse cx={ex + 2.5} cy={ey + 1.5} rx={5.5} ry={3} fill="#f6f4ef" stroke="#c9c4bb" strokeWidth={0.6} /></g>;
+  };
+  const tilt = pose === 'sad' ? 8 : Math.round(Math.sin(Math.floor(f / 3) / 2.2) * 4);
   return (
     <div style={{position: 'absolute', left: x - 50 * u, top: y - 100 * u + hop, width: 100 * u, height: 100 * u, opacity: o,
       transform: `scale(${lerp(p, 0.6, 1)}) scaleX(${d.flip ? -1 : 1}) rotate(${lean}deg)`, transformOrigin: '50% 100%', filter: 'drop-shadow(0 10px 12px rgba(0,0,0,.45))'}}>
       <svg viewBox="0 0 100 100" style={{position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible'}}>
-        {limb(46, 74, 21, -lB, 9, jeans, '#f4f1ea', 5)}
-        {limb(54, 74, 21, -lF, 9, jeans, '#f4f1ea', 5)}
-        {limb(41, 52, 18, -aB, 7, shirt, skin, 4)}
-        <rect x={35} y={46} width={30} height={30} rx={10} fill={shirt} />
-        <rect x={37} y={70} width={26} height={7} rx={3} fill={jeans} />
-        {limb(59, 52, 18, -aF, 7, shirt, skin, 4)}
+        {leg(45.5, lB)}{leg(54.5, lF)}
+        {arm(36, aB)}
+        {/* torso: black zip knit, shoulders, white tee at the collar */}
+        <path d="M 34 42 Q 36 38 44 37.5 L 56 37.5 Q 64 38 66 42 L 64 74 Q 50 77 36 74 Z" fill={top} />
+        <path d="M 45 37.5 L 50 43 L 55 37.5 Z" fill="#f1ede6" />
+        <path d="M 43.5 37 L 50 44 L 56.5 37" fill="none" stroke="#33343a" strokeWidth={1.6} />
+        <line x1={50} y1={44} x2={50} y2={74} stroke="#5a5b61" strokeWidth={0.9} />
+        <rect x={46.5} y={33} width={7} height={6} rx={2} fill="#bf8c6b" />{/* neck */}
       </svg>
-      <Img src={staticFile(face)} style={{position: 'absolute', left: 25 * u, top: 0, width: 50 * u, height: 50 * u, borderRadius: '50%',
-        border: `${Math.max(3, 1.6 * u)}px solid ${E.white}`, transform: `scaleX(${d.flip ? -1 : 1}) rotate(${pose === 'sad' ? 8 : Math.sin(t * 3) * 3}deg)`, boxSizing: 'border-box'}} />
+      {/* his real head from the call WITH the headset (Aly 2026-10-28: "خده بالسماعة عادي"), no shoulders */}
+      <Img src={staticFile(`projects/entabiz01/pics/karim_head_${mood}.png`)} style={{position: 'absolute', left: 33 * u, top: 4 * u, width: 34 * u, height: 34 * u,
+        transform: `rotate(${tilt}deg)`, transformOrigin: '50% 95%'}} />
+      <svg viewBox="0 0 100 100" style={{position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible'}}>{arm(64, aF)}</svg>
     </div>
   );
 };

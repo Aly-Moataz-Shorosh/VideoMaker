@@ -16,7 +16,7 @@ def main():
     font = ImageFont.truetype('C:/Windows/Fonts/arial.ttf', 14)
     rows = []
     for vid in ids:
-        info = subprocess.run([sys.executable, '-m', 'yt_dlp', '-f', 'b[height<=360]/bv[height<=360]', '-g', '--print', 'duration',
+        info = subprocess.run([sys.executable, '-m', 'yt_dlp', '--js-runtimes', 'node', '-f', 'b[height<=360]/bv[height<=360]', '-g', '--print', 'duration',
                                '--print', 'title', f'https://www.youtube.com/watch?v={vid}'], capture_output=True, text=True).stdout.split('\n')
         dur, title, url = float(info[0]), info[1], info[2]
         imgs = []
