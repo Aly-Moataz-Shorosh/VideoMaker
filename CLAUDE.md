@@ -249,4 +249,10 @@ Done (2026-10-06):
   2026-10-28 overnight: opening5 + stills of all 28 boards (4 overlap fixes) -> FULL `output/review_01.mp4` (45:03, 1.33 GB, not
   compressed) + `output/review_01.txt`; intro/outro frames + audio levels identical to the source. Waiting for Aly's review.
   E: was full (3 GB free): render chunks + mix in `D:/Temp/biz01_chunks` (render.sh CHUNKS/RTMP env) — ask before deleting.
-  Pending from Aly: Karim's new app link (placeholder in the txt). Audio-course public moved back to public/projects/audio.
+  Aly's review of review_01 (31 notes, project work/review1_notes.md; lessons docs/22 "review of the FULL episode") -> `output/review_02.mp4`
+  (+ .txt) made SMART: redo_parts.py diff -> only 20.2 of 45 min re-rendered + Edit layer 'fix' overlay (name tag "علي شُرُش", Meet
+  speaking-dots patches) over the old chunks, compose_redo.py, sound re-mixed (levels = source). New items: planet / char (Karim
+  Captain-Azouz style = his REAL head cut from the call with the headset on a cartoon body in black, approved after 6 tries) / cake / card;
+  RTL titles; both speaker circles. Waiting for Aly's review. Temp: D:/Temp/biz01_chunks (review_01 chunks) + D:/Temp/biz_redo_review_02
+  (parts, overlay PNGs) — ask before deleting. E: ~1.5 GB free. Audio-course public is parked again in `_parked_public/audio`
+  (bundle was 3.5 GB with it) — move back before resume_1027.sh. No link for Karim's app (Aly: not needed).

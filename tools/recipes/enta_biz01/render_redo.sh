@@ -24,7 +24,7 @@ for pr in $(python -c "import json,sys; print(' '.join('%d-%d' % (a, b) for a, b
   f="$D/parts/p_$(printf %02d $i).mp4"
   if [ ! -f "$f" ]; then
     st=$(date +%s)
-    run npx remotion render out/bundle edit "$f.part.mp4" --props="$PROPS" --frames=$pr --muted --crf=18 --concurrency=10 --timeout=240000 > "$W/redo_$i.log" 2>&1 \
+    run npx remotion render out/bundle edit "$f.part.mp4" --props="$PROPS" --frames=$pr --muted --crf=18 --concurrency=8 --timeout=240000 > "$W/redo_$i.log" 2>&1 \
       && mv "$f.part.mp4" "$f" && echo "part $i ($pr) OK $(( $(date +%s) - st ))s" || { echo "part $i FAILED"; tail -5 "$W/redo_$i.log"; exit 1; }
   fi
   i=$((i + 1))
