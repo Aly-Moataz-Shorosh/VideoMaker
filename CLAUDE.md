@@ -245,7 +245,8 @@ Done (2026-10-06):
   ON-AIR frame the whole time, Karim behind a curtain, Egypt->GUC map, 4 cinematic Blender clips `tools/blender/biz_scenes.py`, resume
   after EEVEE crashes with `render_resume.sh`); 28 `biz_free` boards + 117 cards; NO crop of tiles (Meet labels covered). Recipe docs/22.
   Opening reviewed 4x (2026-10-27/28; lessons in docs/22 "biz ep01 — Aly's opening reviews"): realistic v3 Blender (RWA studio
-  replica inside a building -> city -> gold tower 'podcity', detailed store, chess board + gold queen, framed cards). Aly said
-  (2026-10-28 ~01:30) "at morning I want the full final video" -> overnight: opening5 -> stills check -> `work/scripts/render.sh
-  review_01` -> `output/review_01.mp4` + .txt (from work/episode.txt). Not compressed (long video). Pending from Aly: Karim's new app link. Audio-course public parked in `_parked_public/audio` during this job
-  (move back to public/projects/audio before resume_1027.sh).
+  replica inside a building -> city -> gold tower 'podcity', detailed store, chess board + gold queen, framed cards).
+  2026-10-28 overnight: opening5 + stills of all 28 boards (4 overlap fixes) -> FULL `output/review_01.mp4` (45:03, 1.33 GB, not
+  compressed) + `output/review_01.txt`; intro/outro frames + audio levels identical to the source. Waiting for Aly's review.
+  E: was full (3 GB free): render chunks + mix in `D:/Temp/biz01_chunks` (render.sh CHUNKS/RTMP env) — ask before deleting.
+  Pending from Aly: Karim's new app link (placeholder in the txt). Audio-course public moved back to public/projects/audio.
