@@ -100,6 +100,10 @@ question with the list. A newly approved look = a new numbered folder (sample.mp
    Explanation boards > ~5 s: the person talking in a circle in a corner (MeetPip, cue `pip`) — skip only when the board
    itself is full of motion. Liked: the cadre switching ("حركة التنقل حلوة جدا جدا") and the calm dark background.
 
+18. (biz ep01 full review 2026-10-28, docs/22) Arabic text with English/numbers/arrows flipped 5x -> RTL everywhere, Arabic arrows ←,
+   still-check every mixed text. Card lines on their own words. Each sentence on its own side. Generic things = icons. Same colour =
+   same quantity. His name = "علي شُرُش". Re-render only the changed parts (redo_parts.py + render_redo.sh + 'fix' overlay layer).
+
 ## ONLINE interview (style 14, enta cs ep01 2026-10-20, docs/22 'حاسبات ep01') — cadre switching + background "حلوة جدا جدا"
 - Google Meet/Zoom screen recording: hide the meeting UI, tiles on a calm dark bg, NO decorative frame ("دوشة"), switch cadres
   (two / one big / person + card) instead of zoom; zoom only inside a tile, ≤ 1.08. Sides by gaze (usually Aly left, guest right).

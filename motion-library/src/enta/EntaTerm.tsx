@@ -14,6 +14,7 @@ export const entaTermSchema = z.object({
   def: z.string().default('الرسمة اللي المقاول بيبني منها'),
   example: z.string().default(''),
   exampleAt: z.number().default(45), // frame the example line appears (on its word)
+  defAt: z.number().default(9), // frame the definition line appears (on its word; biz ep01 review: lines came before the words)
   exLabel: z.string().default(''), // 'مثال' ONLY when Claude simplifies a term with its own example (Aly 2026-10-20); his/guest's words = no label
   pic: z.string().default(''), // optional small picture inside the card (public path)
   sticker: z.string().default(''), // optional sticker from his sheet on the card corner
@@ -28,7 +29,7 @@ export const EntaTerm: React.FC<z.infer<typeof entaTermSchema>> = (p) => {
   const frame = useCurrentFrame();
   const {fps, width, height, durationInFrames} = useVideoConfig();
   const inP = enter(frame, fps), out = exit(frame, durationInFrames, 9), k = Math.min(inP, out);
-  const tape = enter(frame, fps, 5), defP = enter(frame, fps, 9), exP = enter(frame, fps, p.exampleAt);
+  const tape = enter(frame, fps, 5), defP = enter(frame, fps, p.defAt), exP = enter(frame, fps, p.exampleAt);
   const acc = accentOf(p.accent);
   const w = 600;
   const cx = p.side === 'center' ? width / 2 : p.side === 'left' ? width * 0.25 : width * 0.75;
@@ -48,8 +49,8 @@ export const EntaTerm: React.FC<z.infer<typeof entaTermSchema>> = (p) => {
             <Hi text={p.term} color={acc} />
           </div>
           {p.en ? (
-            <div style={{direction: 'ltr', textAlign: 'right', fontFamily: 'Montserrat', fontWeight: 700, fontSize: 30, opacity: 0.65,
-              marginTop: 2, letterSpacing: 0.5}}>{p.en}</div>
+            <div style={/[؀-ۿ]/.test(p.en) ? {textAlign: 'right', fontWeight: 800, fontSize: 34, opacity: 0.7, marginTop: 2}
+              : {direction: 'ltr', textAlign: 'right', fontFamily: 'Montserrat', fontWeight: 700, fontSize: 30, opacity: 0.65, marginTop: 2, letterSpacing: 0.5}}>{p.en}</div>
           ) : null}
           <div style={{height: 6, width: `${defP * 40}%`, background: acc, borderRadius: 3, margin: '12px 0 14px auto', transform: 'rotate(-1.5deg)'}} />
           {p.def ? (

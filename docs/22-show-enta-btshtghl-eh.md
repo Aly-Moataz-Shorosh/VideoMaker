@@ -202,3 +202,27 @@ the guest's job, terms and examples. Goal (Aly): fun, visualized, explain every 
 - Blender renders: run ONE chain at a time; stopping the outer bash leaves child loops alive -> kill them (they wrote old-version
   frames into the new folders). render_resume.sh resumes after EEVEE crashes.
 
+
+### biz ep01 — Aly's review of the FULL episode (2026-10-28, 31 notes, `work/review1_notes.md`) -> review_02
+- **Re-render only what changed** ("متعيدش الفيديو كله… عيد بس الموشن للحتت دي و بعدين جمع الفيديو"): `work/scripts/redo_parts.py <old json>
+  <new json>` diffs the cues (a changed shot counts until the next shot; mixed-direction board titles; captioned collages) ->
+  `redo_parts.json`; `render_redo.sh review_02 <old chunks>` renders those parts muted, renders the Edit layer **'fix'** (transparent:
+  only masks marked fix/patch, nothing while a full-screen board is on) as PNGs, and `compose_redo.py` lays overlay + parts over the old
+  chunks in ONE ffmpeg pass; sound re-mixed whole (voice untouched). Global changes (a renamed name tag) go in the 'fix' overlay;
+  the new tag keeps the old text's width (`keep`) so it covers the old one completely.
+- Meet's "speaking" dots on the guest tile (77 % of the call) = masks with `patch` = clean crops of that spot from frames without dots
+  (`work/indicator_scan.npz`, nearest earlier crop), drawn inside the picture with a soft round edge. Scan the source for Meet UI first.
+- **Text direction** (5 notes!): board titles were LTR (biz_free is not inside Base) -> "4 شهور", "هرم AI", "موجة الـAI" flipped.
+  Title is RTL now; arrows inside Arabic text point LEFT (←). Write his titles exactly ("الـAI بيتغلغل واحدة واحدة", no dots).
+- Every card line on ITS word: term `defAt` / `exAt` (absolute s); a line whose word is far later becomes a note on that word,
+  never early inside the card. English name = the term itself -> Arabic name under it (Accountability -> المساءلة).
+- Each sentence on its own side / pillar (Breadfast vs Early Breakfast = two halves, no joining arrow; the 5 pillars). Generic
+  players = icons (3000 restaurants), real brands only when named. Same colour = same quantity in comparisons (time / money).
+- Recurring ideas get a recurring motif: "العالم بتاعك" = planets (`planet` item: players on the rim, grow, shake, ceiling) + the guest
+  as a character with his REAL face (`char`: face circles cut from his camera, poses walk/push/jump/cheer/sad) like the Oz shorts.
+- Examples Aly explains get their own animation (cake: small cake/big share vs big cake/small share, `cake`); jokes too
+  ("عزة النفس بتلعب كوتشينة" = `card` items on a table). Both people stay visible while one explains (`board(..., both=True)` = one
+  circle per side).
+- Sources: a number from the internet gets its source ON screen (picture + who said it: Karpathy's napkin math via 36Kr), our own
+  episodes get thumbnail + exact title + QR. His accounts: YouTube @AlyShorosh · Instagram @alyshorosh · Facebook aly.shorosh · TikTok @alyshorosh.
+- His name on screen: "علي شُرُش" (or "علي معتز شُرُش"), never "علي معتز".

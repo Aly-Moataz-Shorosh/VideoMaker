@@ -8,6 +8,9 @@ import {MeetPip, MeetStage} from './enta/Meet';
 
 // Whole-video assembly. edit.json is produced by tools/build_edit.py (all times in timeline seconds).
 // layer: 'all' = review video (footage + motion + captions); 'captions' / 'motion' = alpha tracks only.
+// 'fix' (Meet episodes, biz ep01 2026-10-28) = transparent overlay of what changed over an ALREADY rendered video: the Meet masks
+// marked fix/patch only; nothing while a full-screen board is on. Times where a card could cover a mask are re-rendered instead
+// (redo_parts.py), so the overlay never draws over a card (cards drawn twice would double their shadows).
 // Cue t='zoom' is a camera move on the footage (smart zoom), not a template:
 //   props {to: 1.2, x: 0.5, y: 0.35, style: 'punch' | 'push' | 'out' | 'cut'}  ('cut' = camera switch on one speaker, wins over others)
 
@@ -94,7 +97,7 @@ export const editSchema = z.object({
   source: z.string().default(''),
   fps: z.number().default(30),
   duration: z.number().default(3),
-  layer: z.enum(['all', 'captions', 'motion']).default('all'),
+  layer: z.enum(['all', 'captions', 'motion', 'fix']).default('all'),
   pack: z.string().default('charcoal'), // color pack from brand/packs.json (per video)
   cropX: z.number().default(0.5), // 9:16: where the speaker is in the 16:9 footage (0..1) -> centered in the crop
   vShift: z.number().default(0), // 9:16: lift the main footage (fraction of height) so the face sits higher
@@ -109,7 +112,8 @@ export const editSchema = z.object({
   // Online interview (Google Meet recording): webcam tiles cut out of the screen recording, layouts via 'shot' cues (enta/Meet.tsx)
   meet: z.object({G: z.array(z.number()), A: z.array(z.number()), left: z.enum(['G', 'A']),
     phases: z.array(z.object({from: z.number(), G: z.array(z.number()), A: z.array(z.number()), self: z.array(z.number()).optional(),
-      masks: z.array(z.object({who: z.enum(['G', 'A']), box: z.array(z.number()), tag: z.string().optional()})).optional()})).optional()}).nullable().default(null),
+      masks: z.array(z.object({who: z.enum(['G', 'A']), box: z.array(z.number()), tag: z.string().optional(), keep: z.string().optional(),
+        patch: z.array(z.tuple([z.number(), z.string()])).optional(), fix: z.boolean().optional()})).optional()})).optional()}).nullable().default(null),
   words: z.array(z.object({w: z.string(), start: z.number(), end: z.number()})).default([]),
   cues: z.array(z.object({t: z.string(), at: z.number(), dur: z.number(), props: z.record(z.string(), z.any())})).default([]),
 });
@@ -131,6 +135,7 @@ export const Edit: React.FC<z.infer<typeof editSchema>> = ({source, segments, wo
     left: width / 2 - rW * cropX, maxWidth: 'none'};
   const fade = (s: {len: number}) => (k: number) => Math.min(1, k / 3, (f(s.len) - k) / 3); // no clicks at cuts
   const FULL = ['egypt_crowd', 'judge_scene', 'portal_world'];
+  if (layer === 'fix' && cues.some((c) => (c.t === 'biz_open' || c.t === 'biz_free') && frame >= f(c.at) && frame < f(c.at + c.dur))) return null;
   return (
     <AbsoluteFill style={{background: 'transparent'}}>
       {layer === 'all' && vertical ? <GrainBg frame={frame} width={width} height={height} /> : null}
@@ -154,7 +159,7 @@ export const Edit: React.FC<z.infer<typeof editSchema>> = ({source, segments, wo
           })}
         </AbsoluteFill>
       ) : null}
-      {layer === 'all' && meet && !vertical ? <MeetStage source={source} tiles={meet} cues={cues as Cue[]} segments={segments} /> : null}
+      {(layer === 'all' || layer === 'fix') && meet && !vertical ? <MeetStage source={source} tiles={meet} cues={cues as Cue[]} segments={segments} fix={layer === 'fix'} /> : null}
       {layer === 'all' && !useRoto && !(meet && !vertical) ? (
         <AbsoluteFill style={vertical && !segments.some((s) => s.fit === 'cover' && frame >= f(s.tl) && frame < f(s.tl + s.len)) ? splitStyle(splitAmount(frame, fps, cues as Cue[]), height) : {}}>
         <AbsoluteFill style={camera(frame, fps, cues as Cue[])}>
@@ -167,7 +172,7 @@ export const Edit: React.FC<z.infer<typeof editSchema>> = ({source, segments, wo
         </AbsoluteFill>
         </AbsoluteFill>
       ) : null}
-      {layer !== 'captions'
+      {layer !== 'captions' && layer !== 'fix'
         ? cues.map((c, i) => {
             if (c.t === 'sfx') // sound effect from public/sfx (tools/make_sfx.py), props {name, volume}
               return layer === 'all' ? (

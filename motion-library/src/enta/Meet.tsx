@@ -16,7 +16,11 @@ type Cue = {t: string; at: number; dur: number; props: Record<string, any>};
 export type MeetTiles = {G: number[]; A: number[]; left: 'G' | 'A'; phases?: {from: number; G: number[]; A: number[]; self?: number[]; masks?: Mask[]}[]; self?: number[]; masks?: Mask[]};
 // Meet UI drawn inside a tile (name label, the crop button) is covered, never cropped away (Aly 2026-10-27: no crop the whole video):
 // tag = our own paper name tag over the label; no tag = a small soft blur over the button. box = source px.
-type Mask = {who: 'G' | 'A'; box: number[]; tag?: string}; // source px [x, y, w, h] of each tile
+// patch = Meet's "speaking" dots (biz ep01 2026-10-28, on the guest's tile ~77 % of the call): a clean crop of the same spot from a
+// frame without the dots ([[from sec, png], ...], the nearest earlier one is used), drawn INSIDE the picture with soft edges.
+// keep = old tag text: the tag is at least that wide (a renamed tag fully covers the old one in a 'fix' overlay render).
+// fix = drawn in the 'fix' overlay layer (Edit layer 'fix': only what changed, over an already rendered video).
+type Mask = {who: 'G' | 'A'; box: number[]; tag?: string; keep?: string; patch?: [number, string][]; fix?: boolean}; // source px [x, y, w, h]
 // phases (biz ep01 2026-10-27): the Meet layout changed during the call (guest big + Aly's tiny self-view -> side by side);
 // each phase = the tile boxes from that source second on (G/A above = before the first phase).
 export const tilesAt = (tiles: MeetTiles, sec: number): MeetTiles => {
@@ -43,7 +47,7 @@ const layout = (m: string, who: 'G' | 'A', ar: number, left: boolean, W: number,
 const lerp = (a: Rect, b: Rect, k: number): Rect => ({
   x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k, w: a.w + (b.w - a.w) * k, h: a.h + (b.h - a.h) * k, o: a.o + (b.o - a.o) * k});
 
-export const MeetStage: React.FC<{source: string; tiles: MeetTiles; cues: Cue[]; segments: {src: number; tl: number; len: number}[]}> = ({source, tiles: allTiles, cues, segments}) => {
+export const MeetStage: React.FC<{source: string; tiles: MeetTiles; cues: Cue[]; segments: {src: number; tl: number; len: number}[]; fix?: boolean}> = ({source, tiles: allTiles, cues, segments, fix = false}) => {
   const frame = useCurrentFrame();
   const {fps, width: W, height: H} = useVideoConfig();
   const tiles = tilesAt(allTiles, frame / fps);
@@ -70,26 +74,36 @@ export const MeetStage: React.FC<{source: string; tiles: MeetTiles; cues: Cue[];
     if (r.o <= 0.01 && !withAudio) return null;
     return (
       <div key={who} style={{position: 'absolute', left: r.x, top: r.y, width: r.w, height: r.h, opacity: r.o, borderRadius: 28,
-        overflow: 'hidden', boxShadow: '0 22px 50px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.06)'}}>
+        overflow: 'hidden', boxShadow: fix ? undefined : '0 22px 50px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.06)'}}>
         <div style={{position: 'absolute', inset: 0, transform: `scale(${zoom.z})`, transformOrigin: `${zoom.x * 100}% ${zoom.y * 100}%`}}>
-        {segments.map((sg, i) => (
+        {fix ? null : segments.map((sg, i) => (
           <Sequence key={i} from={f(sg.tl)} durationInFrames={Math.max(1, f(sg.tl + sg.len) - f(sg.tl))} layout="none">
             <OffthreadVideo src={staticFile(source)} startFrom={f(sg.src)} muted={!withAudio}
               style={{position: 'absolute', left: -t[0] * s, top: -t[1] * s, width: 1920 * s, height: 1080 * s, maxWidth: 'none'}} />
           </Sequence>
         ))}
+        {(tiles.masks ?? []).filter((m) => m.who === who && m.patch).map((m, i) => {
+          const sec = frame / fps, pp = m.patch as [number, string][];
+          const src = ([...pp].reverse().find((q) => sec >= q[0]) ?? pp[0])[1];
+          return <Img key={'pt' + i} src={staticFile(src)} style={{position: 'absolute', left: (m.box[0] - t[0]) * s, top: (m.box[1] - t[1]) * s, width: m.box[2] * s, height: m.box[3] * s,
+            maskImage: 'radial-gradient(circle, black 55%, transparent 72%)', WebkitMaskImage: 'radial-gradient(circle, black 55%, transparent 72%)'}} />;
+        })}
         </div>
         {/* (inner shadow ring removed — Aly 2026-10-27: "من غير ال inner shadow افضل"; radius 28 alone hides Meet's corners) */}
-        {(tiles.masks ?? []).filter((m) => m.who === who).map((m, i) => {
+        {(tiles.masks ?? []).filter((m) => m.who === who && !m.patch && (!fix || m.fix)).map((m, i) => {
           const L = (m.box[0] - t[0]) * s, T = (m.box[1] - t[1]) * s, w = m.box[2] * s, h = m.box[3] * s;
           return m.tag ? (
             <div key={i} style={{position: 'absolute', left: L - 6, top: T + h / 2, transform: 'translateY(-50%) rotate(-2deg)', background: '#EFE6D2', color: '#1C2030', fontWeight: 900,
-              fontSize: Math.max(16, h * 0.95), padding: `${h * 0.12}px ${h * 0.5}px`, borderRadius: 6, whiteSpace: 'nowrap', border: '3px solid #FBF7EE', boxShadow: '0 4px 10px rgba(0,0,0,.4)', direction: 'rtl'}}>{m.tag}</div>
-          ) : (
+              fontSize: Math.max(16, h * 0.95), padding: `${h * 0.12}px ${h * 0.5}px`, borderRadius: 6, whiteSpace: 'nowrap', border: '3px solid #FBF7EE', boxShadow: fix ? undefined : '0 4px 10px rgba(0,0,0,.4)', direction: 'rtl',
+              display: 'grid', justifyItems: 'center'}}>
+              <span style={{gridArea: '1 / 1'}}>{m.tag}</span>
+              {m.keep ? <span style={{gridArea: '1 / 1', visibility: 'hidden'}}>{m.keep}</span> : null}
+            </div>
+          ) : fix ? null : (
             <div key={i} style={{position: 'absolute', left: L, top: T, width: w, height: h, borderRadius: h / 2, backdropFilter: 'blur(7px)', WebkitBackdropFilter: 'blur(7px)'}} />
           );
         })}
-        {who === 'G' && tiles.self ? (() => {
+        {who === 'G' && tiles.self && !fix ? (() => {
           // Meet drew Aly's self-view INSIDE the guest tile corner (biz ep01 0:17-3:07). Karim only here, no crop: blur ONLY the part of
           // the self-view that is inside the tile (Aly 2026-10-27: "مش محتاجين blur لكله… دي حتة صغيرة اوي"), soft edges, nothing else.
           const sv = tiles.self;
@@ -107,6 +121,7 @@ export const MeetStage: React.FC<{source: string; tiles: MeetTiles; cues: Cue[];
     );
   };
   // 'full' = his own intro/outro (the raw frame as it is, hard cut, no motion)
+  if (cur === 'full' && fix) return null;
   if (cur === 'full') return (
     <AbsoluteFill style={{background: '#000'}}>
       {segments.map((sg, i) => (
@@ -119,7 +134,7 @@ export const MeetStage: React.FC<{source: string; tiles: MeetTiles; cues: Cue[];
   if (prev === 'full') { prev = cur; } // coming out of the intro: no slide from nowhere
   return (
     <AbsoluteFill>
-      <MeetBg frame={frame} />
+      {fix ? null : <MeetBg frame={frame} />}
       {tile('G', false)}
       {tile('A', true)}
     </AbsoluteFill>
@@ -149,7 +164,14 @@ export const MeetPip: React.FC<{source: string; tiles: MeetTiles; cues: Cue[]}> 
   const {fps} = useVideoConfig();
   const tiles = tilesAt(allTiles, frame / fps);
   const f = (s: number) => Math.round(s * fps);
-  const pips = cues.filter((c) => c.t === 'pip').sort((a, b) => a.at - b.at);
+  // one circle per side (biz ep01 2026-10-28: both people on a board while one explains and the other listens)
+  const all = cues.filter((c) => c.t === 'pip').sort((a, b) => a.at - b.at);
+  const sides = ['L', 'R'].map((sd) => all.filter((c) => (c.props.side ?? 'R') === sd));
+  return <>{sides.map((pips, si) => <PipSide key={si} pips={pips} frame={frame} fps={fps} tiles={tiles} source={source} />)}</>;
+};
+
+const PipSide: React.FC<{pips: Cue[]; frame: number; fps: number; tiles: MeetTiles; source: string}> = ({pips, frame, fps, tiles, source}) => {
+  const f = (s: number) => Math.round(s * fps);
   const i = pips.findIndex((c) => frame >= f(c.at) && frame < f(c.at + c.dur));
   if (i < 0) return null;
   const c = pips[i], pc = i > 0 && Math.abs(f(pips[i - 1].at + pips[i - 1].dur) - f(c.at)) <= 1 ? pips[i - 1] : null;

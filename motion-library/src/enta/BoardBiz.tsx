@@ -46,6 +46,138 @@ const partial = (pts: number[][], t: number) => {
 };
 const polyLen = (pts: number[][]) => pts.slice(1).reduce((a, p, i) => a + Math.hypot(p[0] - pts[i][0], p[1] - pts[i][1]), 0);
 
+// keyframed value: list of [frame, ...values] -> values at f (smooth between keys, held outside)
+const key = (ks: number[][] | undefined, f: number, def: number[]): number[] => {
+  if (!ks || !ks.length) return def;
+  if (f <= ks[0][0]) return ks[0].slice(1);
+  for (let i = 1; i < ks.length; i++) if (f < ks[i][0]) {
+    const k = sm((f - ks[i - 1][0]) / Math.max(1, ks[i][0] - ks[i - 1][0]));
+    return ks[i].slice(1).map((v, j) => lerp(k, ks[i - 1][j + 1], v));
+  }
+  return ks[ks.length - 1].slice(1);
+};
+function last<T>(ks: [number, T][] | undefined, f: number, def: T): T { let v = def; for (const q of ks ?? []) if (f >= q[0]) v = q[1]; return v; }
+
+// Karim as a character (Aly 2026-10-28 "زي ما عملنا في مدينة اوز"): his REAL face (circle cut from his camera) on a drawn body
+// (black T-shirt, dark jeans, white shoes). moves [[f, x, y]], poses [[f, 'stand'|'walk'|'push'|'cheer'|'sad'|'jump']],
+// faces [[f, png]]; s = height in px; flip = faces left. x/y = his feet.
+const Char: React.FC<{d: Record<string, any>; f: number; o: number; p: number}> = ({d, f, o, p}) => {
+  const [x, y] = key(d.moves, f, [d.x ?? 960, d.y ?? 800]);
+  const pose: string = last(d.poses, f, 'stand');
+  const face: string = last(d.faces, f, d.face ?? 'projects/entabiz01/pics/karim_face_neutral.png');
+  const S = d.s ?? 300, u = S / 100, t = f / 30;
+  const sw = pose === 'walk' ? Math.sin(t * 9) : 0;
+  const hop = pose === 'cheer' ? -Math.abs(Math.sin(t * 6)) * 8 * u : pose === 'jump' ? -6 * u : 0;
+  const lean = pose === 'push' ? 14 + Math.sin(t * 14) * 2 : pose === 'sad' ? 0 : sw * 2;
+  // arm / leg angles (deg from straight down, + = forward)
+  const [aF, aB] = pose === 'push' ? [95, 80] : pose === 'cheer' ? [160, 150] : pose === 'walk' ? [sw * 30, -sw * 30] : pose === 'sad' ? [6, -6] : pose === 'jump' ? [120, 110] : [14, -10];
+  const [lF, lB] = pose === 'walk' ? [sw * 26, -sw * 26] : pose === 'push' ? [-26, 18] : pose === 'jump' ? [30, -24] : [5, -5];
+  const limb = (ax: number, ay: number, len: number, ang: number, w: number, col: string, end: string, endR: number) => {
+    const r = (ang * Math.PI) / 180, ex = ax + Math.sin(r) * len, ey = ay + Math.cos(r) * len;
+    return <g><line x1={ax} y1={ay} x2={ex} y2={ey} stroke={col} strokeWidth={w} strokeLinecap="round" /><circle cx={ex} cy={ey} r={endR} fill={end} /></g>;
+  };
+  const skin = '#c79574', shirt = '#1c1d22', jeans = '#2c3a52';
+  return (
+    <div style={{position: 'absolute', left: x - 50 * u, top: y - 100 * u + hop, width: 100 * u, height: 100 * u, opacity: o,
+      transform: `scale(${lerp(p, 0.6, 1)}) scaleX(${d.flip ? -1 : 1}) rotate(${lean}deg)`, transformOrigin: '50% 100%', filter: 'drop-shadow(0 10px 12px rgba(0,0,0,.45))'}}>
+      <svg viewBox="0 0 100 100" style={{position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible'}}>
+        {limb(46, 64, 30, -lB, 9, jeans, '#f4f1ea', 5)}
+        {limb(54, 64, 30, -lF, 9, jeans, '#f4f1ea', 5)}
+        {limb(42, 40, 22, -aB, 7, shirt, skin, 4)}
+        <rect x={36} y={34} width={28} height={34} rx={9} fill={shirt} />
+        <rect x={38} y={60} width={24} height={8} rx={3} fill={jeans} />
+        {limb(58, 40, 22, -aF, 7, shirt, skin, 4)}
+      </svg>
+      <Img src={staticFile(face)} style={{position: 'absolute', left: 31 * u, top: 0, width: 38 * u, height: 38 * u, borderRadius: '50%',
+        border: `${Math.max(3, 1.6 * u)}px solid ${E.white}`, transform: `scaleX(${d.flip ? -1 : 1}) rotate(${pose === 'sad' ? 8 : Math.sin(t * 3) * 3}deg)`, boxSizing: 'border-box'}} />
+    </div>
+  );
+};
+
+// a small world ("العالم بتاعك", Aly 2026-10-28): a shaded sphere, a label, the players of that business on its rim (emoji/logos at
+// angles), grow [[f, scale]], shake [[f]] (Karim pushes it: it shakes and does not move), ceiling at a frame (a glass dome he hits).
+const Planet: React.FC<{d: Record<string, any>; f: number; o: number; p: number}> = ({d, f, o, p}) => {
+  const R = d.r ?? 170, [g] = key(d.grow, f, [1]);
+  const col = accentOf(d.color ?? 'blue');
+  const sh = (d.shake ?? []).reduce((a: number, q: number[]) => (f >= q[0] && f < q[0] + 20 ? Math.sin((f - q[0]) * 2.2) * (20 - (f - q[0])) * 0.8 : a), 0);
+  const spin = (f / 30) * 18;
+  const ceil = d.ceiling !== undefined ? sm((f - d.ceiling) / 12) : 0, cr = d.ceilR ?? 1.45; // dome radius (x R)
+  const id = `${Math.round(d.x)}_${Math.round(d.y)}`;
+  return (
+    <div style={{position: 'absolute', left: d.x + sh, top: d.y, width: 0, height: 0, opacity: o, transform: `scale(${lerp(p, 0.3, 1) * g})`}}>
+      <svg style={{position: 'absolute', left: -R * 1.6, top: -R * 1.6, width: R * 3.2, height: R * 3.2, overflow: 'visible'}} viewBox={`${-R * 1.6} ${-R * 1.6} ${R * 3.2} ${R * 3.2}`}>
+        <defs>
+          <radialGradient id={`pl${id}`} cx="35%" cy="30%" r="75%">
+            <stop offset="0%" stopColor="#ffffff" stopOpacity={0.55} /><stop offset="35%" stopColor={col} stopOpacity={1} /><stop offset="100%" stopColor="#0c0f18" stopOpacity={1} />
+          </radialGradient>
+          <clipPath id={`pc${id}`}><circle r={R} /></clipPath>
+        </defs>
+        <circle r={R * 1.12} fill={col} opacity={0.12} />
+        <circle r={R} fill={`url(#pl${id})`} stroke={E.white} strokeWidth={6} />
+        <g clipPath={`url(#pc${id})`} opacity={0.22}>
+          {[-0.5, -0.15, 0.2, 0.55].map((k, i) => <ellipse key={i} cx={((spin * (i % 2 ? 1 : -1) + i * 90) % (R * 4)) - R * 2} cy={k * R} rx={R * 0.9} ry={R * 0.12} fill="#fff" />)}
+        </g>
+        {ceil > 0 ? <path d={`M ${-R * cr} ${-R * 0.1} A ${R * cr} ${R * cr} 0 0 1 ${R * cr} ${-R * 0.1}`} fill="none" stroke="rgba(200,230,255,.85)" strokeWidth={7}
+          strokeDasharray={`${ceil * R * cr * 3.2} 9999`} style={{filter: 'drop-shadow(0 0 8px rgba(160,210,255,.8))'}} /> : null}
+      </svg>
+      {d.logo ? <div style={{position: 'absolute', left: -R * 0.32, top: -R * 0.32, width: R * 0.64, height: R * 0.64, borderRadius: R * 0.14, background: E.white,
+        display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 18px rgba(0,0,0,.5)'}}><Img src={staticFile(d.logo)} style={{width: '78%', height: '78%', objectFit: 'contain'}} /></div> : null}
+      {d.icon ? <Img src={staticFile(`fluent/${d.icon}.png`)} style={{position: 'absolute', left: -R * 0.42, top: -R * 0.42, width: R * 0.84, height: R * 0.84}} /> : null}
+      {(d.pop ?? []).map((q: Record<string, any>, i: number) => {
+        if (f < (q.at ?? 0)) return null;
+        const k = enter(f, 30, q.at ?? 0), a = ((q.ang ?? 0) - 90) * Math.PI / 180, s = q.s ?? R * 0.42;
+        const gq = q.grey !== undefined ? interpolate(f, [q.grey, q.grey + 15], [0, 1], clamp) : 0;
+        return <Img key={i} src={staticFile(q.src ?? `fluent/${q.n}.png`)} style={{position: 'absolute', left: Math.cos(a) * (R + s * 0.38) - s / 2, top: Math.sin(a) * (R + s * 0.38) - s / 2,
+          width: s, height: s, objectFit: 'contain', transform: `rotate(${q.ang ?? 0}deg) scale(${k})`, filter: `drop-shadow(0 6px 8px rgba(0,0,0,.5)) grayscale(${gq})`, opacity: 1 - gq * 0.5}} />;
+      })}
+      {d.label ? <div style={{position: 'absolute', left: 0, top: R + 26, transform: 'translateX(-50%)', background: col, color: E.ink, fontWeight: 900, fontSize: d.labelSize ?? 34,
+        padding: '6px 22px', borderRadius: 40, border: `4px solid ${E.white}`, whiteSpace: 'nowrap', direction: 'rtl', boxShadow: '0 8px 16px rgba(0,0,0,.45)'}}><Hi text={d.label} color={E.white} /></div> : null}
+    </div>
+  );
+};
+
+// cake seen from above at an angle (Aly's example 2026-10-28: "مش فارق تاخد قد إيه من التورتة… قد ما فارق حجم التورتة"):
+// frac = the slice, cut at `cut`, the slice slides by `slide` [dx, dy] at `move`. r = radius in px.
+const Cake: React.FC<{d: Record<string, any>; f: number; o: number; p: number}> = ({d, f, o, p}) => {
+  const R = d.r ?? 150, ry = 0.55, H = R * 0.32, fr = d.frac ?? 0.25;
+  const cutK = d.cut !== undefined ? sm((f - d.cut) / 10) : 0;
+  const mv = d.move !== undefined ? sm((f - d.move) / 22) : 0;
+  const a0 = -Math.PI / 2, a1 = a0 + fr * 2 * Math.PI;
+  const pt = (a: number, dy = 0) => `${Math.cos(a) * R} ${Math.sin(a) * R * ry + dy}`;
+  const sector = (s0: number, s1: number, dy = 0) => `M 0 ${dy} L ${pt(s0, dy)} A ${R} ${R * ry} 0 ${s1 - s0 > Math.PI ? 1 : 0} 1 ${pt(s1, dy)} Z`;
+  const piece = (s0: number, s1: number, dx: number, dy: number, k2: string) => (
+    <g key={k2} transform={`translate(${dx} ${dy})`}>
+      <path d={sector(s0, s1, H)} fill="#7a3f22" stroke="#4a2412" strokeWidth={3} />
+      <path d={sector(s0, s1, 0)} fill="#f3d9b5" stroke="#fff" strokeWidth={4} />
+      {[0.2, 0.45, 0.7].map((k, i) => { const a = s0 + (s1 - s0) * k; return <circle key={i} cx={Math.cos(a) * R * 0.62} cy={Math.sin(a) * R * 0.62 * ry} r={R * 0.08} fill="#d6283c" />; })}
+    </g>
+  );
+  const mid = (a0 + a1) / 2, out = 14 * cutK;
+  const [sx, sy] = d.slide ?? [0, 160];
+  return (
+    <div style={{position: 'absolute', left: d.x, top: d.y, width: 0, height: 0, opacity: o, transform: `scale(${lerp(p, 0.4, 1)})`}}>
+      <svg style={{position: 'absolute', left: -R * 2, top: -R * 2, width: R * 4, height: R * 4, overflow: 'visible'}} viewBox={`${-R * 2} ${-R * 2} ${R * 4} ${R * 4}`}>
+        <ellipse cx={0} cy={H + R * 0.12} rx={R * 1.15} ry={R * 1.15 * ry} fill="#e9e4dc" stroke="#fff" strokeWidth={4} opacity={0.9} />
+        {piece(a1, a0 + 2 * Math.PI, 0, 0, 'rest')}
+        {piece(a0, a1, Math.cos(mid) * out + sx * mv, Math.sin(mid) * out * ry + sy * mv, 'slice')}
+      </svg>
+    </div>
+  );
+};
+
+// playing card thrown onto the table (عزة النفس بتلعب كوتشينة): from -> to over dur frames with a spin, face = 'A♠' etc.
+const Card: React.FC<{d: Record<string, any>; f: number; o: number}> = ({d, f, o}) => {
+  const k = sm((f - (d.at ?? 0)) / (d.dur ?? 14));
+  const [x0, y0] = d.from ?? [960, 1200], [x1, y1] = d.to ?? [960, 600];
+  const x = lerp(k, x0, x1), y = lerp(k, y0, y1) - Math.sin(k * Math.PI) * (d.arc ?? 120);
+  const red = /[♥♦]/.test(d.face ?? '');
+  return (
+    <div style={{position: 'absolute', left: x - 55, top: y - 78, width: 110, height: 156, borderRadius: 12, background: '#fbf8f1', border: '4px solid #fff', outline: '2px solid rgba(20,20,30,.45)',
+      boxShadow: '0 12px 22px rgba(0,0,0,.5)', transform: `rotate(${lerp(k, d.spin ?? 540, d.rot ?? 0)}deg)`, opacity: o, display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontFamily: 'Montserrat', fontWeight: 900, fontSize: 58, color: red ? '#d6283c' : '#1c2030', direction: 'ltr'}}>{d.face ?? 'A♠'}</div>
+  );
+};
+
 const Item: React.FC<{d: Record<string, any>; f: number}> = ({d, f}) => {
   const at = d.at ?? 0;
   if (f < at) return null;
@@ -169,6 +301,14 @@ const Item: React.FC<{d: Record<string, any>; f: number}> = ({d, f}) => {
       const txt = (d.prefix ?? '') + (d.dec ? v.toFixed(d.dec) : Math.round(v).toLocaleString('en-US')) + (d.suffix ?? '');
       return wrap(<div style={{fontSize: d.size ?? 120, fontWeight: 900, color: accentOf(d.color ?? 'mustard'), textShadow: '0 8px 0 rgba(0,0,0,.35)', whiteSpace: 'nowrap', direction: /[\u0600-\u06FF]/.test(txt) ? 'rtl' : 'ltr'}}>{txt}</div>, 0);
     }
+    case 'char':
+      return <Char d={d} f={f} o={o} p={p} />;
+    case 'planet':
+      return <Planet d={d} f={f} o={o} p={p} />;
+    case 'cake':
+      return <Cake d={d} f={f} o={o} p={p} />;
+    case 'card':
+      return <Card d={d} f={f} o={o} />;
     case 'strike': {
       const k = sm((f - at) / 10);
       return <div style={{position: 'absolute', left: d.x - d.w / 2, top: d.y - 5, width: d.w * k, height: 10, background: E.orange, borderRadius: 5, transform: `rotate(${d.rot ?? -6}deg)`, transformOrigin: 'left center', opacity: o, boxShadow: '0 3px 8px rgba(0,0,0,.4)'}} />;

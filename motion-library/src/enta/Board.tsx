@@ -33,7 +33,7 @@ export const Title: React.FC<{text: string; at?: number}> = ({text, at = 4}) => 
   const {fps} = useVideoConfig();
   const p = enter(frame, fps, at);
   return (
-    <div style={{position: 'absolute', top: 60, left: 0, right: 0, display: 'flex', justifyContent: 'center'}}>
+    <div style={{position: 'absolute', top: 60, left: 0, right: 0, display: 'flex', justifyContent: 'center', direction: 'rtl'}}>
       <div style={{position: 'relative', background: E.paper, color: E.ink, fontSize: 64, fontWeight: 900, padding: '10px 46px', borderRadius: 10,
         transform: `rotate(-1.5deg) scale(${p})`, ...stickerBorder(7), overflow: 'hidden'}}>
         <Grain opacity={0.3} seed={43} />
