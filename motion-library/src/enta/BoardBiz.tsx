@@ -81,14 +81,14 @@ const Char: React.FC<{d: Record<string, any>; f: number; o: number; p: number}> 
     <div style={{position: 'absolute', left: x - 50 * u, top: y - 100 * u + hop, width: 100 * u, height: 100 * u, opacity: o,
       transform: `scale(${lerp(p, 0.6, 1)}) scaleX(${d.flip ? -1 : 1}) rotate(${lean}deg)`, transformOrigin: '50% 100%', filter: 'drop-shadow(0 10px 12px rgba(0,0,0,.45))'}}>
       <svg viewBox="0 0 100 100" style={{position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible'}}>
-        {limb(46, 64, 30, -lB, 9, jeans, '#f4f1ea', 5)}
-        {limb(54, 64, 30, -lF, 9, jeans, '#f4f1ea', 5)}
-        {limb(42, 40, 22, -aB, 7, shirt, skin, 4)}
-        <rect x={36} y={34} width={28} height={34} rx={9} fill={shirt} />
-        <rect x={38} y={60} width={24} height={8} rx={3} fill={jeans} />
-        {limb(58, 40, 22, -aF, 7, shirt, skin, 4)}
+        {limb(46, 74, 21, -lB, 9, jeans, '#f4f1ea', 5)}
+        {limb(54, 74, 21, -lF, 9, jeans, '#f4f1ea', 5)}
+        {limb(41, 52, 18, -aB, 7, shirt, skin, 4)}
+        <rect x={35} y={46} width={30} height={30} rx={10} fill={shirt} />
+        <rect x={37} y={70} width={26} height={7} rx={3} fill={jeans} />
+        {limb(59, 52, 18, -aF, 7, shirt, skin, 4)}
       </svg>
-      <Img src={staticFile(face)} style={{position: 'absolute', left: 31 * u, top: 0, width: 38 * u, height: 38 * u, borderRadius: '50%',
+      <Img src={staticFile(face)} style={{position: 'absolute', left: 25 * u, top: 0, width: 50 * u, height: 50 * u, borderRadius: '50%',
         border: `${Math.max(3, 1.6 * u)}px solid ${E.white}`, transform: `scaleX(${d.flip ? -1 : 1}) rotate(${pose === 'sad' ? 8 : Math.sin(t * 3) * 3}deg)`, boxSizing: 'border-box'}} />
     </div>
   );

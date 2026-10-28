@@ -8,12 +8,15 @@ parts = json.load(open(parts_json))
 chunks = sorted(glob.glob(os.path.join(old, 'v_*.mp4')))
 lst = os.path.join(d, 'old_list.txt')
 open(lst, 'w').write(''.join(f"file '{c.replace(os.sep, '/')}'\n" for c in chunks))
-pngs = sorted(glob.glob(os.path.join(d, 'fix', 'element-*.png')))
+# Remotion names the PNGs element-<frame> with a width that depends on the range -> one fixed width for ffmpeg's pattern
+for f in glob.glob(os.path.join(d, 'fix', 'element-*.png')):
+    os.replace(f, os.path.join(d, 'fix', '%06d.png' % int(os.path.basename(f)[8:-4])))
+pngs = sorted(glob.glob(os.path.join(d, 'fix', '[0-9]*.png')))
 assert pngs, 'no overlay frames'
-digits = len(os.path.basename(pngs[0])) - len('element-.png')
-first = int(os.path.basename(pngs[0])[8:8 + digits])
+first = int(os.path.basename(pngs[0])[:6])
+assert int(os.path.basename(pngs[-1])[:6]) - first + 1 == len(pngs), 'overlay frames missing'
 cmd = ['ffmpeg', '-v', 'error', '-stats', '-y', '-f', 'concat', '-safe', '0', '-i', lst,
-       '-framerate', '30', '-start_number', str(first), '-i', os.path.join(d, 'fix', f'element-%0{digits}d.png')]
+       '-framerate', '30', '-start_number', str(first), '-i', os.path.join(d, 'fix', '%06d.png')]
 for k, (a, b) in enumerate(parts):
     cmd += ['-itsoffset', f'{a / 30:.6f}', '-i', os.path.join(d, 'parts', f'p_{k:02d}.mp4')]
 fl = ['[0:v][1:v]overlay=0:0:eof_action=pass:format=auto[b0]']

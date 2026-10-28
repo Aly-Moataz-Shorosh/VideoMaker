@@ -44,4 +44,5 @@ done
 # 3) compose: old chunks + overlay, new parts over their frames; then the whole soundtrack
 python -X utf8 "$W/scripts/compose_redo.py" "$OLD" "$D" "$(cygpath -w "$W/redo_parts.json")" "$D/video.mp4" || exit 1
 python -X utf8 "$W/scripts/mix_audio.py" "$PROPS" "$D" || exit 1
-ffmpeg -v error -y -i "$D/video.mp4" -i "$D/audio.m4a" -map 0:v -map 1:a -c copy -movflags +faststart "$(cygpath -m "$W/../output")/$NAME.mp4" && echo "JOINED $NAME.mp4"
+# joined on D: (E: is nearly full) -> moved into output/ by hand once there is room
+ffmpeg -v error -y -i "$D/video.mp4" -i "$D/audio.m4a" -map 0:v -map 1:a -c copy -movflags +faststart "$D/$NAME.mp4" && echo "JOINED $D/$NAME.mp4"

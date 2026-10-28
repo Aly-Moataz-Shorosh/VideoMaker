@@ -35,11 +35,12 @@ export const Tape: React.FC<{w: number; rot?: number; olive?: boolean; style?: R
 );
 
 // "text with *highlight*" -> highlighted part in the accent color.
+// isolated run: Arabic text RTL, Latin-only text LTR (biz ep01 2026-10-28: "@alyshorosh" showed as "alyshorosh@")
 export const Hi: React.FC<{text: string; color: string}> = ({text, color}) => (
-  <>
+  <span style={{direction: /[؀-ۿ]/.test(text) ? 'rtl' : 'ltr', unicodeBidi: 'isolate'}}>
     {text.split(/(\*[^*]+\*)/g).map((p, i) =>
       p.startsWith('*') ? <span key={i} style={{color}}>{p.slice(1, -1)}</span> : <span key={i}>{p}</span>)}
-  </>
+  </span>
 );
 
 // Sticker outline used on cards/photos: white border + dark hairline + soft shadow (like his sheet).

@@ -323,14 +323,14 @@ board(a, b, 'إحنا كنا *Software Engineers*', [
 a, b = S('S160'), E('S168') + 0.4
 board(a, b, 'الماركتنج = *تجارب*', [
     # Aly 2026-10-28: several posters side by side (small overlap); the videos one by one: motion examples, then studio shots
-    i('pic', src=P + 'web/courzerve/cz_android.jpg', x=300, y=500, w=280, rot=-7, at=T('S160', 'صور') - 0.3),
-    i('pic', src=P + 'web/courzerve/cz_instructors.jpg', x=470, y=530, w=280, rot=2, at=T('S160', 'صور') + 0.1),
-    i('pic', src=P + 'web/courzerve/cz_head.jpg', x=640, y=500, w=280, rot=7, at=T('S160', 'بس'), cap='الأول: *صور*'),
-    i('arrow', pts=[[800, 520], [880, 520]], color='mustard', at=T('S160', 'وبعد')),
+    # Aly 2026-10-28: designs from INSIDE their project (cz_head was the designer's Behance cover, not a Courzerve design)
+    *[i('pic', src=P + f'web/courzerve/cz_post_{n}.jpg', x=210 + k * 140, y=500 + (k % 2) * 30, w=230, rot=[-8, 4, -3, 6, -5][k], tape=k % 2 == 0,
+        at=T('S160', 'صور') - 0.4 + k * 0.18, **({'cap': 'الأول: *صور*'} if k == 2 else {})) for k, n in enumerate([1, 5, 4, 7, 8])],
+    i('arrow', pts=[[860, 520], [930, 520]], color='mustard', at=T('S160', 'وبعد')),
     i('pic', src=P + 'web/courzerve/campaign_2.mp4', x=1310, y=480, w=720, ar=16 / 9, rot=2, cap='بعدين: *موشن*', at=T('S160', 'عملنا'), out=T('S160', 'الانستروكترز') - 0.3, **{'from': 30 * 36}),
     i('pic', src=P + 'web/courzerve/campaign_1.mp4', x=1310, y=480, w=720, ar=16 / 9, rot=-2, cap='و*موشن* كمان', at=T('S160', 'الانستروكترز'), out=T('S160', 'ستوديوز') - 0.3, **{'from': 30 * 6}),
     i('pic', src=P + 'web/courzerve/campaign_1.mp4', x=1310, y=480, w=720, ar=16 / 9, rot=2, cap='و*تصوير* في ستوديو', at=T('S160', 'ستوديوز'), out=T('S160', 'ادتنج') - 0.3, **{'from': 30 * 105}),
-    i('pic', src=P + 'web/courzerve/campaign_3.mp4', x=1310, y=480, w=720, ar=16 / 9, rot=-2, cap='و*تصوير* في ستوديو', at=T('S160', 'ادتنج'), **{'from': 30 * 125}),
+    i('pic', src=P + 'web/courzerve/campaign_3.mp4', x=1310, y=480, w=720, ar=16 / 9, rot=-2, cap='و*تصوير* في ستوديو', at=T('S160', 'ادتنج'), **{'from': 30 * 121}),
     i('emo', n='clapper_board', x=360, y=880, s=120, at=S('S161') + 0.6), i('emo', n='camera_with_flash', x=540, y=880, s=120, at=S('S162')),
     i('logo', src='logos/premiere-pro-official.png', x=720, y=880, s=110, pad=0.08, at=T('S162', 'منتاج')),
     i('logo', src='logos/after-effects.png', x=880, y=880, s=110, pad=0.08, at=T('S162', 'منتاج') + 0.4),
@@ -385,12 +385,12 @@ board(a, b, 'كل بيزنس = *عالم* لوحده', [
       pop=[dict(n='hamburger', ang=-55, s=70, at=T('S234', 'البرجر')), dict(n='french_fries', ang=55, s=70, at=T('S234', 'الفاست'))]),
     i('planet', x=1400, y=560, r=150, color='olive', icon='man_cook', label='عالم *البرجر الجورميه*', at=T('S234', 'الجورميه'), out=T('S234', 'تحدد') - 0.3),
     i('text', text='*مش* في نفس العالم', x=960, y=330, size=44, paper=True, at=T('S234', 'نفس'), out=T('S234', 'تحدد') - 0.3),
-    i('planet', x=960, y=610, r=200, color='blue', icon='graduation_cap', label='عالم *كورسات Software*', at=T('S234', 'تحدد'),
+    i('planet', x=960, y=720, r=180, color='blue', icon='graduation_cap', label='عالم *كورسات Software*', at=T('S234', 'تحدد'),
       shake=[[T('S236', 'Software')], [T('S236', 'موسقة')], [T('S236', 'هيفيدك')]],
       pop=[dict(n='school', ang=-150 + k * 25, s=64, at=T('S234', 'الكورسز') + 1.2 + 0.12 * k) for k in range(13)]),
-    i('char', s=200, at=T('S234', 'العالم', 3),
-      moves=[[T('S234', 'العالم', 3), 960, 410], [T('S236', 'وأنا'), 960, 410], [T('S236', 'Software') - 0.2, 700, 760], [S('S240'), 700, 760],
-             [T('S240', 'أحارب') + 0.3, 520, 820], [S('S241'), 520, 820], [T('S241', 'يحتاج') + 0.6, 960, 410]],
+    i('char', s=330, at=T('S234', 'العالم', 3),
+      moves=[[T('S234', 'العالم', 3), 960, 545], [T('S236', 'وأنا'), 960, 545], [T('S236', 'Software') - 0.2, 660, 880], [S('S240'), 660, 880],
+             [T('S240', 'أحارب') + 0.3, 470, 940], [S('S241'), 470, 940], [T('S241', 'يحتاج') + 0.6, 960, 545]],
       poses=[[T('S234', 'العالم', 3), 'stand'], [T('S236', 'وأنا'), 'walk'], [T('S236', 'Software'), 'push'], [T('S240', 'أحارب'), 'sad'],
              [S('S241'), 'walk'], [T('S241', 'يحتاج') + 0.6, 'cheer'], [S('S243'), 'stand']],
       faces=[[T('S234', 'العالم', 3), KF + 'neutral.png'], [S('S235'), KF + 'sad.png'], [T('S241', 'يحتاج'), KF + 'happy.png'], [S('S243'), KF + 'neutral.png']]),
@@ -398,9 +398,9 @@ board(a, b, 'كل بيزنس = *عالم* لوحده', [
     i('emo', n='scroll', x=1520, y=420, s=120, at=T('S235', 'شهادات')),
     i('chip', text='العملاء عايزين *شهادات معتمدة*', x=1500, y=560, bg='blue', size=32, at=T('S235', 'شهادات') + 0.2),
     i('chip', text='وهو مقتنع: *مش هتفرق*', x=1500, y=660, bg='orange', size=32, at=T('S236', 'Software')),
-    i('mark', ok=False, x=420, y=640, s=100, at=T('S240', 'أحارب')), i('chip', text='*تحارب* عالمك', x=420, y=960, bg='orange', size=34, at=T('S240', 'أحارب') + 0.2),
+    i('mark', ok=False, x=280, y=560, s=100, at=T('S240', 'أحارب')), i('chip', text='*تحارب* عالمك', x=330, y=980, bg='orange', size=34, at=T('S240', 'أحارب') + 0.2),
     i('mark', ok=True, x=1240, y=300, s=100, at=T('S241', 'يحتاج')), i('chip', text='عالمك يبقى *محتاجك*', x=1500, y=960, bg='olive', size=34, at=T('S241', 'يحتاج') + 0.2),
-    i('text', text='هتبقى *أحسن واحد* في عالمك؟', x=960, y=1000, size=36, paper=True, at=S('S243')),
+    i('text', text='هتبقى *أحسن واحد* في عالمك؟', x=960, y=1040, size=34, paper=True, at=S('S243')),
 ], both=True)
 term(S('S261'), E('S268') - S('S261') + 0.5, 'لو انت *تحت*', 'ومفيش *علامات إيجابية* تكمل عشانها', 'يبقى لازم *تفوق*… وتقفل', exAt=S('S265'), sticker='qmark', accent='orange', w='G')
 note(S('S272'), 'Courzerve: *2019* ← *2021* · قرب سنتين', d=4.0, accent='blue')
@@ -446,13 +446,13 @@ a, b = S('S372'), E('S375') + 1.0
 board(a, b, 'عالم *جديد*… مفيش فيه منافسة', [
     i('planet', x=500, y=620, r=150, color='blue', icon='graduation_cap', label='عالم *الكورسات*', at=a + 0.2,
       pop=[dict(n='school', ang=-150 + k * 30, s=56, at=a + 0.4 + 0.08 * k) for k in range(11)]),
-    i('char', s=180, at=a + 0.5,
-      moves=[[a + 0.5, 500, 470], [T('S373', 'هعمل'), 500, 470], [T('S373', 'عالم') + 0.2, 930, 240], [T('S373', 'جديد') + 0.6, 1360, 430]],
+    i('char', s=300, at=a + 0.5,
+      moves=[[a + 0.5, 500, 470], [T('S373', 'هعمل'), 500, 470], [T('S373', 'عالم') + 0.2, 930, 420], [T('S373', 'جديد') + 0.6, 1360, 430]],
       poses=[[a, 'sad'], [T('S373', 'هعمل'), 'jump'], [T('S373', 'جديد') + 0.6, 'stand'], [T('S374', 'منافسة'), 'cheer']],
       faces=[[a, KF + 'sad.png'], [T('S373', 'هعمل'), KF + 'neutral.png'], [T('S374', 'منافسة'), KF + 'happy.png']]),
     i('planet', x=1360, y=620, r=190, color='orange', icon='popcorn', label='سناكس *السينما* للبيت', at=T('S373', 'عالم'),
       pop=[dict(n='house', ang=60, s=90, at=T('S373', 'للبيت')), dict(n='clapper_board', ang=-60, s=80, at=T('S373', 'السينما'))]),
-    i('emo', n='crown', x=1360, y=230, s=110, at=T('S374', 'منافسة') + 0.4, rot=-8),
+    i('emo', n='crown', x=1360, y=100, s=100, at=T('S374', 'منافسة') + 0.4, rot=-8),
     i('text', text='مفيش منافسة… يبقى أنا *الأحسن* في العالم ده', x=960, y=1000, size=40, paper=True, at=T('S374', 'منافسة')),
     i('pic', src=P + 'web/kikos/p03.jpg', x=1740, y=860, w=240, rot=6, at=S('S375') + 1.0),
 ])
@@ -509,8 +509,8 @@ a, b = S('S507'), E('S508') + 0.3
 board(a, b, '*سقف* العالم بتاعه', [
     i('planet', x=960, y=660, r=200, color='olive', icon='soccer_ball', label='عالم *الـFantasy*', at=a + 0.2, ceiling=T('S507', 'سقف'), ceilR=2.4,
       pop=[dict(n='mobile_phone', ang=-140 + k * 40, s=70, at=a + 0.6 + 0.1 * k) for k in range(8)]),
-    i('char', s=180, at=a + 0.6,
-      moves=[[a + 0.6, 960, 460], [T('S507', 'العالم'), 960, 460], [T('S507', 'العالم') + 0.35, 960, 330], [T('S507', 'العالم') + 0.8, 960, 460]],
+    i('char', s=280, at=a + 0.6,
+      moves=[[a + 0.6, 960, 460], [T('S507', 'العالم'), 960, 460], [T('S507', 'العالم') + 0.35, 960, 405], [T('S507', 'العالم') + 0.8, 960, 460]],
       poses=[[a, 'stand'], [T('S507', 'العالم'), 'jump'], [T('S507', 'العالم') + 0.8, 'sad']],
       faces=[[a, KF + 'neutral.png'], [T('S507', 'العالم') + 0.6, KF + 'sad.png']]),
     i('text', text='المنافسين *سبقوه*… والـAI هيخليهم يسبقوا *أكتر*', x=960, y=1010, size=36, paper=True, at=S('S508')),
@@ -657,10 +657,10 @@ for c in cues:  # walker riding the wave: its wave 'at' = board start (frames)
             if it.get('k') == 'walker': it['wave']['at'] = it['at'] - F(a, S('S908')) if False else 0
 photos(S('S921'), 5.5, [dict(src='logos/claude.svg', w=200, rot=-5, caption='الحلقة دي اتعمل موشن بـ*Claude*', bare=True)], w='A')
 note(S('S924'), 'علي اتعلم *موشن جرافيك* وعمل فيه كورسات… ودلوقتي AI بيعمله', d=5.0, accent='olive')
-photos(S('S941') + 1.0, 7.0, [dict(src='logos/instagram.svg', x=0.66, y=0.27, w=130, h=130, rot=-4, bare=True, caption='@alyshorosh'),
-                        dict(src='logos/facebook.svg', x=0.86, y=0.27, w=130, h=130, rot=4, at=8, bare=True, caption='aly.shorosh'),
-                        dict(src='logos/youtube-icon.svg', x=0.66, y=0.62, w=130, h=130, rot=3, at=16, bare=True, caption='@AlyShorosh'),
-                        dict(src='logos/tiktok.svg', x=0.86, y=0.62, w=130, h=130, rot=-3, at=24, bare=True, caption='@alyshorosh')], w='A')
+photos(S('S941') + 1.0, 7.0, [dict(src='logos/instagram.svg', x=0.66, y=0.27, w=130, h=130, rot=-4, fit='contain', caption='@alyshorosh'),
+                        dict(src='logos/facebook.svg', x=0.86, y=0.27, w=130, h=130, rot=4, at=8, fit='contain', caption='aly.shorosh'),
+                        dict(src='logos/youtube-icon.svg', x=0.66, y=0.62, w=130, h=130, rot=3, at=16, fit='contain', caption='@AlyShorosh'),
+                        dict(src='logos/tiktok.svg', x=0.86, y=0.62, w=130, h=130, rot=-3, at=24, fit='contain', caption='@alyshorosh')], w='A')
 note(S('S941') + 8.2, 'ريل *كل يوم*: Instagram · Facebook · YouTube · TikTok', d=4.0, accent='orange')
 note(S('S950'), 'مفيش وقت *تقعد تفكر*… حاول *تتصرف*', d=4.5, accent='orange')
 note(S('S966'), 'لينك مشروع كريم الجديد *في الوصف*', d=5.0, accent='mustard')
@@ -686,7 +686,7 @@ board(a, b, 'قد إيه من *التورتة*؟', [
 a, b = S('S258') + 0.3, E('S260') + 0.2
 board(a, b, 'العالم *كبير*', [
     i('planet', x=960, y=640, r=170, color='blue', icon='graduation_cap', label='عالمك', at=a + 0.2, grow=[[a + 0.4, 1.0], [T('S260', 'كبير'), 1.35]]),
-    i('char', s=150, at=a + 0.4, moves=[[a + 0.4, 960, 470], [T('S260', 'كبير'), 960, 410]], poses=[[a, 'stand'], [T('S260', 'فيكفي'), 'cheer']],
+    i('char', s=240, at=a + 0.4, moves=[[a + 0.4, 960, 470], [T('S260', 'كبير'), 960, 410]], poses=[[a, 'stand'], [T('S260', 'فيكفي'), 'cheer']],
       faces=[[a, KF + 'neutral.png'], [T('S260', 'فيكفي'), KF + 'happy.png']]),
     i('chip', text='*التاني*', x=1460, y=420, bg='olive', size=34, at=T('S259', 'الثاني')),
     i('chip', text='*التالت*', x=1520, y=560, bg='olive', size=34, at=T('S259', 'الثلاثة')),
@@ -722,10 +722,10 @@ board(a, b, 'الـAI *بيتغلغل* واحدة واحدة', [
     i('emo', n='laptop', x=460, y=520, s=180, at=S('S866') + 2.0), i('chip', text='*Software*', x=460, y=680, bg='blue', at=S('S866') + 2.2),
     i('emo', n='classical_building', x=960, y=520, s=180, at=S('S866') + 10.0), i('chip', text='*المعماري*', x=960, y=680, bg='olive', at=S('S866') + 10.2),
     # Aly 2026-10-28: our architect episode = thumbnail + its exact YouTube title + QR (never a QR without the thumbnail)
-    i('panel', x=1460, y=330, w=600, h=300, bg='dark', at=S('S866') + 10.6, out=S('S868') - 0.3),
-    i('pic', src=P + 'pics/arch_ep_thumb.jpg', x=1380, y=300, w=300, ar=16 / 9, tape=False, at=S('S866') + 10.8, out=S('S868') - 0.3),
-    i('pic', src=P + 'pics/qr_arch_ep.png', x=1650, y=300, w=150, tape=False, at=S('S866') + 11.0, out=S('S868') - 0.3),
-    i('text', text='من رسمة حلوة لمبنى حقيقي:\nشغل الـ*Technical Design*', x=1460, y=430, size=24, at=S('S866') + 11.0, out=S('S868') - 0.3),
+    i('panel', x=1290, y=330, w=600, h=300, bg='dark', at=S('S866') + 10.6, out=S('S868') - 0.3),
+    i('pic', src=P + 'pics/arch_ep_thumb.jpg', x=1210, y=300, w=300, ar=16 / 9, tape=False, at=S('S866') + 10.8, out=S('S868') - 0.3),
+    i('pic', src=P + 'pics/qr_arch_ep.png', x=1480, y=300, w=150, tape=False, at=S('S866') + 11.0, out=S('S868') - 0.3),
+    i('text', text='من رسمة حلوة لمبنى حقيقي:\nشغل الـ*Technical Design*', x=1290, y=430, size=24, at=S('S866') + 11.0, out=S('S868') - 0.3),
     i('emo', n='money_bag', x=1460, y=520, s=180, at=S('S868')), i('chip', text='*Finance*', x=1460, y=680, bg='mustard', at=S('S868') + 0.2),
     i('emo', n='robot', x=960, y=300, s=150, at=S('S871'), float=True),
     i('text', text='مع الوقت… هيدخل في *مجالك*', x=960, y=950, size=40, paper=True, at=S('S871')),
