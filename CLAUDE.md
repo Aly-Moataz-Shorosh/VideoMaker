@@ -259,6 +259,9 @@ Done (2026-10-06):
   RTL titles; both speaker circles. Waiting for Aly's review. Temp: D:/Temp/biz01_chunks (review_01 chunks) + D:/Temp/biz_redo_review_02
   (parts, overlay PNGs) — ask before deleting. E: ~1.5 GB free. Audio-course public is parked again in `_parked_public/audio`
   (bundle was 3.5 GB with it) — move back before resume_1027.sh. No link for Karim's app (Aly: not needed).
+- 2026-10-28 biz ep01 -> 5 meet-shorts `output/shorts/01..05` + .txt (Aly picked 3/5/7/18/1; end = input/e3.png + QR youtu.be/HCDZvW9lJtk;
+  MeetShort masks = our name tags over Meet labels). Saved as **style 17 online-episode-3d** (the long episode) + **style 18 meet-shorts**.
+  Episode .txt: chapters + titles 'ep3-entrepreneurs | <all-Arabic topic> | انت بتشتغل ايه؟'.
 - 2026-10-28 ASSETS LIVE IN THEIR PROJECT (Aly moves finished projects to his external disk, "انقلها لفولدراتها"): every project's
   public assets (old motion-library/_parked_public/* and public/projects/entabiz01) are now in `<project>/motion_public/<name>/`
   (projects already moved off the PC got a folder of the same name holding only motion_public, to merge with his copy). To re-render

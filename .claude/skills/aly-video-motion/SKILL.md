@@ -19,7 +19,7 @@ But (v2 review): keep the sentence that gives the hook its meaning (what it's FO
 
 ## 0. Style number first
 `notes.txt` line `الستايل: NN` → `styles/styles.json` tells the recipe/scripts for that number (01 youtube-motion, 02 reels-roto,
-03 tutorial-short, 04 film-faceless, 05 film-face, 06 vhs-faceless, 07 map-history, 08 timeline-history, 09 pop-studio, 10 glass-face, 11 tutorial-hook-glass, 12 lottie-mix, 13 lecture-stage, 14 online-interview; samples in `styles/`). No number → ask him ONE
+03 tutorial-short, 04 film-faceless, 05 film-face, 06 vhs-faceless, 07 map-history, 08 timeline-history, 09 pop-studio, 10 glass-face, 11 tutorial-hook-glass, 12 lottie-mix, 13 lecture-stage, 14 online-interview, 15 glass-face-talk, 16 journey-series, 17 online-episode-3d, 18 meet-shorts; samples in `styles/`). No number → ask him ONE
 question with the list. A newly approved look = a new numbered folder (sample.mp4 12 s, cover.jpg, اقرأني.txt) + styles.json entry.
 
 ## 1. Read the job first
