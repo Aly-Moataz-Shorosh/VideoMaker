@@ -258,3 +258,10 @@ Done (2026-10-06):
   RTL titles; both speaker circles. Waiting for Aly's review. Temp: D:/Temp/biz01_chunks (review_01 chunks) + D:/Temp/biz_redo_review_02
   (parts, overlay PNGs) — ask before deleting. E: ~1.5 GB free. Audio-course public is parked again in `_parked_public/audio`
   (bundle was 3.5 GB with it) — move back before resume_1027.sh. No link for Karim's app (Aly: not needed).
+- 2026-10-28 ASSETS LIVE IN THEIR PROJECT (Aly moves finished projects to his external disk, "انقلها لفولدراتها"): every project's
+  public assets (old motion-library/_parked_public/* and public/projects/entabiz01) are now in `<project>/motion_public/<name>/`
+  (projects already moved off the PC got a folder of the same name holding only motion_public, to merge with his copy). To re-render
+  a project: move `motion_public/<name>` back to `motion-library/public/projects/<name>`. Audio course = `projects/2026-10-20 youtube
+  audioproduction/motion_public/audio` (back to public/projects/audio before resume_1027.sh); biz ep01 = its motion_public/entabiz01
+  (back to public/projects/entabiz01 before any review_03). biz ep01 3D scenes saved as .blend (textures packed) in `<project>/blender/`
+  (`biz_scenes.py --save`; the per-frame animation is code, the .blend opens on frame 1). Temp files deleted after each job.

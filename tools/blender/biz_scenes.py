@@ -24,6 +24,7 @@ ap.add_argument('--tex', default='')
 ap.add_argument('--res', type=int, nargs=2, default=[1920, 1080])
 ap.add_argument('--samples', type=int, default=48)
 ap.add_argument('--start', type=int, default=0)  # resume a crashed render from this frame
+ap.add_argument('--save', default='')  # build the scene and save it as a .blend (no render) so Aly can open it in Blender
 A = ap.parse_args(a)
 random.seed(7)
 
@@ -1027,6 +1028,9 @@ def scene_podcity(N):
 
 SCENES = {'podcity': scene_podcity, 'podcast': scene_podcast, 'tower': scene_tower, 'road': scene_road, 'crowd': scene_crowd, 'three': scene_three}
 at = SCENES[A.scene](A.frames)
+if A.save:  # the per-frame animation is a Python handler -> the .blend opens on its first frame (models, lights, camera, materials)
+    bpy.ops.file.pack_all()  # textures inside the .blend: the project folder can be moved anywhere
+    bpy.ops.wm.save_as_mainfile(filepath=A.save, compress=True); sys.exit(0)
 os.makedirs(A.out, exist_ok=True)
 frames = [A.still] if A.still >= 0 else range(A.start, A.frames)
 # the animation lives in at(f); as a frame handler it also runs on the motion-blur sub-frames, so the blur is real
