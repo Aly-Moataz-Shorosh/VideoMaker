@@ -151,6 +151,24 @@
    "recipe": "docs/30-recipe-journey-series-shorts.md",
    "scripts": "tools/recipes/journey/ (shorts_data/huwa_data/oz_data/prog_data/intro_data -> make_shorts.py N.. -> render.sh N.. (rebundles when public or src changed) -> finalize.py N.. with meta_all.py)",
    "rules": "file number = playlist position; his EXACT logos; clean voice only where it matches (else published audio with music, one gain); no overlaps / nothing outside the frame; emoji <= Emoji 12; whole sentences at every edge; never >= 3:00 (merge = drop repeats only); in reviews redo ONLY named videos, originals to archive/"
+  },
+  "17": {
+   "folder": "17 online-episode-3d",
+   "name": "ONLINE episode (style 14) + a BLENDER 3D opening (RWA-like studio -> city -> gold tower, chess + gold queen), Aly visible the whole opening, guest behind a curtain; full biz_free boards with RTL-correct text; recurring-idea motif (planets 'العالم بتاعك'); the guest as a Captain-Azouz character (his real head cut from the call on a cartoon body); explained examples (cake) and jokes (cards); both speaker circles when one explains; sources on screen; name tag علي شُرُش; Meet dots patched",
+   "approved": "biz ep01 Karim Tamer review_02 (2026-10-28; Aly: 'save knowledge and styles')",
+   "input": "Meet recording in input/, notes.txt 'الستايل: 17', project logos + links, guest photos for the character",
+   "build": "composition 'edit' + meet, cues biz_open / biz_free (items planet/char/cake/card), tools/blender/biz_scenes.py (+ --save .blend)",
+   "recipe": "docs/22-show-enta-btshtghl-eh.md (biz ep01 sections)",
+   "scripts": "tools/recipes/enta_biz01/ (make_plan.py, build.sh, render.sh; review redo: redo_parts.py + render_redo.sh + compose_redo.py)"
+  },
+  "18": {
+   "folder": "18 meet-shorts",
+   "name": "Vertical shorts from an ONLINE episode: Meet tiles stacked (Aly top), speaker big, the approved long edit's boards on top at their moments, hook + rewind, headline + series tag + exact captions, our name tags over Meet labels, END = episode thumbnail + QR",
+   "approved": "biz ep01 shorts 01-05 (2026-10-28) after cs ep01 shorts",
+   "input": "the approved long edit, the episode YouTube link + thumbnail (input/eN.png), Aly picks the ideas from a list with motion %",
+   "build": "composition 'meet-short' (src/enta/MeetShort.tsx, masks)",
+   "recipe": "docs/22 (cs ep01 shorts + biz ep01 shorts)",
+   "scripts": "tools/recipes/enta_biz01_shorts/ (shorts_data, caps, cap_words, make_short, build_shorts.sh, level, qc_av, qc_sync, make_txt)"
   }
  },
  "_always": "Every style: his ORIGINAL voice (only per-sentence gain to one level, no cleanup), edges fitted on the waveform, sfx, CTA clip + comment card at the end of shorts, <video>.txt beside every output, sfx + voice stems. Word script only on request. Shorts: ASK one short (whole goal of the video) or several (suggestions, he picks) first; no short ever reaches 3:00."
