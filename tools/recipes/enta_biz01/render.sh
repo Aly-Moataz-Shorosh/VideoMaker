@@ -5,12 +5,14 @@
 NAME=${1:-review_01}
 W="$(cd "$(dirname "$0")/.." && pwd)"
 ML="$W/../../../../motion-library"
-OUT="$(cygpath -m "$W/../output/$NAME")"; mkdir -p "$OUT"
+# CHUNKS / RTMP = optional dirs on another drive (E: was full on 2026-10-28: chunks + temp on D:, only the final mp4 on E:)
+FINAL="$(cygpath -m "$W/../output")/$NAME.mp4"
+OUT="${CHUNKS:-$(cygpath -m "$W/../output/$NAME")}"; mkdir -p "$OUT"
 PROPS="$(cygpath -m "$ML/public/projects/entabiz01/edit_$NAME.json")"
 cd "$ML" || exit 1
 [ -f out/bundle/index.html ] || npx remotion bundle --out-dir out/bundle > /dev/null 2>&1
 TOTAL=$(python -c "import json;p=json.load(open(r'$PROPS',encoding='utf-8'));print(round(p['duration']*p['fps']))")
-CH=9000; T="$(pwd)/out/tmp_render"; i=0; s=0
+CH=9000; T="${RTMP:-$(pwd)/out/tmp_render}"; i=0; s=0
 while [ $s -lt $TOTAL ]; do
   e=$((s + CH - 1)); [ $e -ge $TOTAL ] && e=$((TOTAL - 1))
   f="$OUT/v_$(printf %02d $i).mp4"
@@ -25,4 +27,4 @@ while [ $s -lt $TOTAL ]; do
 done
 python -X utf8 "$W/scripts/mix_audio.py" "$PROPS" "$OUT" || exit 1
 ls "$OUT"/v_*.mp4 | sed "s/.*/file '&'/" > "$OUT/list.txt"
-ffmpeg -v error -y -f concat -safe 0 -i "$OUT/list.txt" -i "$OUT/audio.m4a" -map 0:v -map 1:a -c copy -movflags +faststart "$OUT/../$NAME.mp4" && echo "JOINED $OUT/../$NAME.mp4"
+ffmpeg -v error -y -f concat -safe 0 -i "$OUT/list.txt" -i "$OUT/audio.m4a" -map 0:v -map 1:a -c copy -movflags +faststart "$FINAL" && echo "JOINED $FINAL"

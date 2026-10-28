@@ -231,7 +231,7 @@ term(S('S089'), 5.0, 'بدأ *في الجامعة*', 'تالتة جامعة… �
 # Breadfast story
 a, b = S('S091'), S('S095') + 1.0
 board(a, b, 'نفس *الفكرة*… في نفس *الوقت*', [
-    i('emo', n='sunrise', x=960, y=330, s=200, at=a + 0.3, float=True),
+    i('emo', n='sunrise', x=960, y=330, s=200, at=a + 0.3, float=True, out=S('S094')),  # the chip takes its place (no overlap)
     i('text', text='التجمع · كل يوم *الصبح*', x=960, y=470, size=40, at=a + 0.6),
     i('emo', n='motor_scooter', x=560, y=640, s=230, at=a + 0.8), i('emo', n='bread', x=520, y=520, s=120, at=a + 1.0),
     i('chip', text='الستارتب اللي كريم *اشتغل فيها*', x=560, y=820, bg='orange', size=34, at=a + 1.2),
@@ -264,11 +264,11 @@ note(S('S122') + 0.2, 'بالبودجت؟ بالعلاقات؟ ولا *بنفس�
 # what a courses business needs
 a, b = S('S129'), E('S139') + 0.4
 board(a, b, 'كورسات *Software* = كذا *شِق*', [
-    i('emo', n='globe_with_meridians', x=420, y=470, s=180, at=S('S131')), i('chip', text='*Website*', x=420, y=640, bg='blue', at=S('S131') + 0.2),
-    i('logo', src='logos/zoom.svg', x=780, y=470, s=170, at=S('S133')), i('chip', text='الكورس على *Zoom*', x=780, y=640, bg='blue', at=S('S133') + 0.2),
-    i('emo', n='handshake', x=1140, y=470, s=180, at=S('S135')), i('chip', text='اتفاقات *الـInstructors*', x=1140, y=640, bg='olive', at=S('S135') + 0.2),
-    i('emo', n='books', x=1500, y=470, s=180, at=S('S136')), i('chip', text='*المحتوى*', x=1500, y=640, bg='mustard', at=S('S136') + 0.2),
-    i('mark', ok=True, x=480, y=380, s=100, at=S('S139')),
+    i('emo', n='globe_with_meridians', x=390, y=470, s=180, at=S('S131')), i('chip', text='*Website*', x=390, y=640, bg='blue', at=S('S131') + 0.2),
+    i('logo', src='logos/zoom.svg', x=760, y=470, s=170, at=S('S133')), i('chip', text='الكورس على *Zoom*', x=760, y=640, bg='blue', size=32, at=S('S133') + 0.2),
+    i('emo', n='handshake', x=1170, y=470, s=180, at=S('S135')), i('chip', text='اتفاقات *الـInstructors*', x=1170, y=640, bg='olive', size=32, at=S('S135') + 0.2),
+    i('emo', n='books', x=1540, y=470, s=180, at=S('S136')), i('chip', text='*المحتوى*', x=1540, y=640, bg='mustard', at=S('S136') + 0.2),
+    i('mark', ok=True, x=450, y=380, s=100, at=S('S139')),
     i('text', text='أسهل حاجة لينا… *الويبسايت*', x=960, y=860, size=46, at=S('S139') + 0.2),
 ])
 term(S('S141'), E('S144') - S('S141'), 'خليك *صريح* مع نفسك', 'إيه اللي انت *شاطر* فيه… وإيه اللي *لأ*', 'وماتستخبّاش في الـ*Comfort Zone*', exAt=S('S144'),
@@ -343,23 +343,23 @@ note(S('S272'), 'Courzerve: *2019* → *2021* · قرب سنتين', d=4.0, acce
 # the 4-month system nobody asked for — comic strip
 a, b = S('S278'), E('S296') + 0.5
 board(a, b, '*4 شهور* شغل… راحوا في كده', [
-    i('panel', x=500, y=420, w=760, h=440, label='1', at=S('S279')),
-    i('emo', n='man_office_worker', x=330, y=440, s=170, at=S('S279')), i('emo', n='speech_balloon', x=470, y=330, s=110, at=S('S279') + 0.5),
-    i('text', text='محتاج *سيستم*\nللـWorking Space والحجوزات', x=650, y=460, size=32, paper=True, at=S('S280')),
-    i('panel', x=1420, y=420, w=760, h=440, label='2', at=S('S282')),
-    i('emo', n='man_technologist', x=1180, y=440, s=140, at=S('S282')), i('emo', n='man_technologist', x=1330, y=440, s=140, at=S('S282') + 0.3),
-    i('emo', n='man_technologist', x=1480, y=440, s=140, at=S('S282') + 0.6),
-    i('num', from_=0, to=4, x=1700, y=360, size=90, suffix=' شهور', at=S('S283'), dur=30, **{'from': 0}),
-    i('chip', text='*4 ساعات* كل يوم بعد الجامعة', x=1420, y=580, bg='mustard', size=30, at=S('S284')),
-    i('panel', x=500, y=890, w=760, h=380, label='3', at=S('S286')),
-    i('emo', n='spiral_calendar', x=380, y=890, s=170, at=S('S286')), i('chip', text='شبه *Google Calendar*', x=640, y=900, bg='blue', size=32, at=S('S286') + 0.3),
-    i('emo', n='trophy', x=820, y=820, s=100, at=S('S287')),
-    i('panel', x=1420, y=890, w=760, h=380, label='4', at=S('S287') + 1.5),
-    i('emo', n='door', x=1170, y=890, s=150, at=S('S288')), i('emo', n='sleeping_face', x=1360, y=880, s=150, at=S('S289')),
-    i('emo', n='pouting_face', x=1360, y=880, s=150, at=S('S290')),
-    i('text', text='"*انتو مين*؟!"', x=1610, y=850, size=40, paper=True, at=S('S291')),
+    i('panel', x=500, y=480, w=760, h=380, label='1', at=S('S279')),
+    i('emo', n='man_office_worker', x=330, y=490, s=170, at=S('S279')), i('emo', n='speech_balloon', x=470, y=380, s=110, at=S('S279') + 0.5),
+    i('text', text='محتاج *سيستم*\nللـWorking Space والحجوزات', x=650, y=505, size=32, paper=True, at=S('S280')),
+    i('panel', x=1420, y=480, w=760, h=380, label='2', at=S('S282')),
+    i('emo', n='man_technologist', x=1180, y=490, s=140, at=S('S282')), i('emo', n='man_technologist', x=1330, y=490, s=140, at=S('S282') + 0.3),
+    i('emo', n='man_technologist', x=1480, y=490, s=140, at=S('S282') + 0.6),
+    i('num', from_=0, to=4, x=1660, y=400, size=80, suffix=' شهور', at=S('S283'), dur=30, **{'from': 0}),
+    i('chip', text='*4 ساعات* كل يوم بعد الجامعة', x=1420, y=615, bg='mustard', size=30, at=S('S284')),
+    i('panel', x=500, y=905, w=760, h=320, label='3', at=S('S286')),
+    i('emo', n='spiral_calendar', x=380, y=910, s=160, at=S('S286')), i('chip', text='شبه *Google Calendar*', x=640, y=915, bg='blue', size=32, at=S('S286') + 0.3),
+    i('emo', n='trophy', x=820, y=835, s=100, at=S('S287')),
+    i('panel', x=1420, y=905, w=760, h=320, label='4', at=S('S287') + 1.5),
+    i('emo', n='door', x=1170, y=905, s=150, at=S('S288')), i('emo', n='sleeping_face', x=1360, y=900, s=150, at=S('S289')),
+    i('emo', n='pouting_face', x=1360, y=900, s=150, at=S('S290')),
+    i('text', text='"*انتو مين*؟!"', x=1610, y=865, size=40, paper=True, at=S('S291')),
     i('text', text='"لا… *مش عايز*"', x=1610, y=960, size=36, paper='blue', at=S('S292')),
-    i('mark', ok=False, x=1700, y=720, s=110, at=S('S296')),
+    i('mark', ok=False, x=1680, y=790, s=100, at=S('S296')),
 ], snd=True)
 cues[[k for k, c in enumerate(cues) if c['t'] == 'biz_free'][-1]]['props']['items'] = [dict(it, **({'from': 0} if it.get('k') == 'num' else {})) for it in cues[[k for k, c in enumerate(cues) if c['t'] == 'biz_free'][-1]]['props']['items']]
 sfx(S('S289'), 'pop_3', 0.35); sfx(S('S290'), 'buzz_wrong', 0.25)
@@ -506,18 +506,19 @@ note(S('S724'), 'اعرف هتوصل *لعملائك* إزاي… *قبل* ما 
 # how each project reached its customers
 a, b = S('S731'), E('S752') + 0.4
 board(a, b, 'كل بيزنس *وصل لعملاؤه* إزاي؟', [
-    i('panel', x=380, y=600, w=560, h=700, bg='dark', label='Courzerve', at=S('S731')),
-    i('pic', src=P + 'web/courzerve/campaign_3.mp4', x=380, y=480, w=480, ar=16 / 9, rot=-2, at=S('S732'), **{'from': 30 * 30}),
-    i('logo', src='logos/youtube-icon.svg', x=290, y=720, s=110, at=S('S733')), i('logo', src='logos/instagram.svg', x=460, y=720, s=110, at=S('S733') + 0.4),
-    i('chip', text='*Video Ads*', x=380, y=860, bg='blue', size=34, at=S('S732') + 0.3),
-    i('panel', x=960, y=600, w=560, h=700, bg='dark', label="Kiko's", at=S('S735')),
-    i('pic', src=P + 'web/kikos/p06.jpg', x=960, y=470, w=360, rot=2, at=S('S736')),
-    i('emo', n='woman_cook', x=1110, y=700, s=120, at=S('S738')), i('chip', text='*Food Bloggers*', x=960, y=860, bg='orange', size=34, at=S('S738') + 0.3),
-    i('text', text='سنتين… من غير ما يدفع\nتقريبًا في *الإعلانات*', x=960, y=760, size=28, at=S('S743')),
-    i('panel', x=1540, y=600, w=560, h=700, bg='dark', label='FPL Champ', at=S('S747')),
-    i('pic', src=P + 'web/fpl/p01.jpg', x=1540, y=470, w=360, rot=-2, at=S('S747') + 0.4),
-    i('emo', n='speech_balloon', x=1440, y=720, s=110, at=S('S749')), i('chip', text='مجتمع *Reddit*', x=1600, y=720, bg='olive', size=30, at=S('S750')),
-    i('chip', text='*Paid Collab* مع Influencers', x=1540, y=860, bg='mustard', size=28, at=S('S752')),
+    # panels start at y 330 so the speaker circle (top right) never covers the 'FPL Champ' label
+    i('panel', x=380, y=650, w=560, h=640, bg='dark', label='Courzerve', at=S('S731')),
+    i('pic', src=P + 'web/courzerve/campaign_3.mp4', x=380, y=560, w=480, ar=16 / 9, rot=-2, at=S('S732'), **{'from': 30 * 30}),
+    i('logo', src='logos/youtube-icon.svg', x=290, y=770, s=110, at=S('S733')), i('logo', src='logos/instagram.svg', x=460, y=770, s=110, at=S('S733') + 0.4),
+    i('chip', text='*Video Ads*', x=380, y=915, bg='blue', size=34, at=S('S732') + 0.3),
+    i('panel', x=960, y=650, w=560, h=640, bg='dark', label="Kiko's", at=S('S735')),
+    i('pic', src=P + 'web/kikos/p06.jpg', x=960, y=545, w=330, rot=2, at=S('S736')),
+    i('emo', n='woman_cook', x=1175, y=700, s=100, at=S('S738')), i('chip', text='*Food Bloggers*', x=960, y=915, bg='orange', size=34, at=S('S738') + 0.3),
+    i('text', text='سنتين… من غير ما يدفع\nتقريبًا في *الإعلانات*', x=960, y=790, size=28, at=S('S743')),
+    i('panel', x=1540, y=650, w=560, h=640, bg='dark', label='FPL Champ', at=S('S747')),
+    i('pic', src=P + 'web/fpl/p01.jpg', x=1540, y=585, w=300, rot=-2, at=S('S747') + 0.4),
+    i('emo', n='speech_balloon', x=1440, y=820, s=90, at=S('S749')), i('chip', text='مجتمع *Reddit*', x=1600, y=820, bg='olive', size=30, at=S('S750')),
+    i('chip', text='*Paid Collab* مع Influencers', x=1540, y=915, bg='mustard', size=28, at=S('S752')),
 ])
 term(S('S753'), E('S755') - S('S753'), '*Storytelling*', 'تحكي *قصة* بتفيد الناس… مش إعلان بحت', 'بيشرح بشكل *مبسط*… والناس تستفيد', exAt=S('S754'), en='Storytelling', sticker='star_y', accent='mustard', w='G')
 bubble(S('S756') + 2.0, 5.0, 'لو رجعت لكريم *2019*… تنصحه بإيه؟', w='A')
