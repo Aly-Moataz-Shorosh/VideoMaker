@@ -16,7 +16,7 @@ for x in "$@"; do
   cd "$ML"
   rm -rf out/bundle/public/projects/entacs01s; mkdir -p out/bundle/public/projects; cp -r public/projects/entacs01s out/bundle/public/projects/   # fresh media without re-bundling
   T="$PWD/out/tmp_render"; mkdir -p "$T"; export TEMP="$(cygpath -w "$T")" TMP="$(cygpath -w "$T")"
-  npx remotion render out/bundle meet-short "$P/output/shorts/_raw/$n.mp4" --props="$P/work/shorts/props_$n.json" --concurrency=10 --crf=16 >> "$S/../shorts/build_$n.log" 2>&1 \
+  npx remotion render out/bundle meet-short "$P/output/shorts/_raw/$n.mp4" --props="$P/work/shorts/props_$n.json" --concurrency=6 --crf=16 >> "$S/../shorts/build_$n.log" 2>&1 \
     || { echo "short $n render FAILED"; rm -rf "$T"; continue; }
   rm -rf "$T"
   cd "$S"; PYTHONIOENCODING=utf8 python level.py $x

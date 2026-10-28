@@ -196,6 +196,7 @@ Done (2026-10-06):
   (free length), tags, كومنت مثبت. NO YouTube link, NO posting-order line. Skill aly-video-motion + memory aly-notepad-format.
 - ⚠ Remotion copies public/ (~2 GB) into Temp on EVERY bundle/still → C: hit 0 bytes twice. Use `stills_cli.sh`
   (one bundle in out/bundle), set TEMP/TMP to `motion-library/out/tmp` for renders and DELETE that folder after (one render left 13 GB).
+- ⚠ C: fills during renders = Windows auto page file (19.4 GB) when RAM is full -> Remotion --concurrency=6 (not 10), temp never on C:, purge npm/pip caches after jobs (2026-10-29).
 - ⚠ E: ~17 GB free. Premiere 2020 alpha format still untested by Aly (`_tests/premiere-test`).
 - 2026-10-22 `projects/2026-10-22 shorts Journey to the center of computer graphics` (his whole playlist "رحلة إلى مركز الجرافيكس", 37 videos)
   → plan of 48 shorts (`خطة_الشورتس.md`), PILOT 3: `output/08_vectors.mp4`, `33_scarecrow.mp4`, `44_3d_programs.mp4` (+ .txt). New look 'journey'

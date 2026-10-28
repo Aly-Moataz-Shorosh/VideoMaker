@@ -25,7 +25,7 @@ for x in "$@"; do
   rm -f public/projects/newstage19/cam_*.mp4; cp "$P/work/cam/cam_$n.mp4" public/projects/newstage19/
   rm -rf out/bundle; npx remotion bundle --out-dir out/bundle > /dev/null 2>&1
   T="$PWD/out/tmp_render"; mkdir -p "$T"; export TEMP="$T" TMP="$T"
-  npx remotion render out/bundle stage-short "$P/output/_raw/short_$n.mp4" --props="$P/work/shorts/props_$n.json" --concurrency=10 --crf=16 >> "$S/../shorts/build_$n.log" 2>&1 \
+  npx remotion render out/bundle stage-short "$P/output/_raw/short_$n.mp4" --props="$P/work/shorts/props_$n.json" --concurrency=6 --crf=16 >> "$S/../shorts/build_$n.log" 2>&1 \
     || { echo "short $n render FAILED"; rm -rf "$T"; continue; }
   rm -rf "$T"; rm -f public/projects/newstage19/cam_$n.mp4
   cd "$S"; PYTHONIOENCODING=utf8 python level.py $x

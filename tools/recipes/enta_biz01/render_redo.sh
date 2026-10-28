@@ -24,7 +24,7 @@ for pr in $(python -c "import json,sys; print(' '.join('%d-%d' % (a, b) for a, b
   f="$D/parts/p_$(printf %02d $i).mp4"
   if [ ! -f "$f" ]; then
     st=$(date +%s)
-    run npx remotion render out/bundle edit "$f.part.mp4" --props="$PROPS" --frames=$pr --muted --crf=18 --concurrency=8 --timeout=240000 > "$W/redo_$i.log" 2>&1 \
+    run npx remotion render out/bundle edit "$f.part.mp4" --props="$PROPS" --frames=$pr --muted --crf=18 --concurrency=6 --timeout=240000 > "$W/redo_$i.log" 2>&1 \
       && mv "$f.part.mp4" "$f" && echo "part $i ($pr) OK $(( $(date +%s) - st ))s" || { echo "part $i FAILED"; tail -5 "$W/redo_$i.log"; exit 1; }
   fi
   i=$((i + 1))
@@ -36,7 +36,7 @@ while [ $s -lt $TOTAL ]; do
   e=$((s + 8999)); [ $e -ge $TOTAL ] && e=$((TOTAL - 1))
   if [ ! -f "$D/fix/done_$s" ]; then
     st=$(date +%s)
-    run npx remotion render out/bundle edit "$D/fix" --props="$FIXP" --frames=$s-$e --sequence --image-format=png --concurrency=10 --timeout=240000 > "$W/fix_$s.log" 2>&1 \
+    run npx remotion render out/bundle edit "$D/fix" --props="$FIXP" --frames=$s-$e --sequence --image-format=png --concurrency=6 --timeout=240000 > "$W/fix_$s.log" 2>&1 \
       && touch "$D/fix/done_$s" && echo "fix $s-$e OK $(( $(date +%s) - st ))s" || { echo "fix $s FAILED"; tail -5 "$W/fix_$s.log"; exit 1; }
   fi
   s=$((e + 1))
