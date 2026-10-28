@@ -36,6 +36,9 @@ export const meetShortSchema = z.object({
   len: z.string().default('30:23'),
   words: z.array(z.object({w: z.string(), start: z.number(), end: z.number(), hl: z.boolean().optional()})).default([]),
   sfx: z.array(z.object({t: z.number(), file: z.string(), vol: z.number().default(0.3)})).default([]),
+  // Meet UI in the raw strip covered like in the long edit (biz ep01 2026-10-28): tag = our paper name tag, patch = a clean crop
+  // (Meet's speaking dots), neither = a soft blur. box = strip px [x, y, w, h]
+  masks: z.array(z.object({who: z.enum(['A', 'G']), box: z.array(z.number()), tag: z.string().optional(), patch: z.string().optional()})).default([]),
 });
 type Props = z.infer<typeof meetShortSchema>;
 type Shot = z.infer<typeof shot>;
@@ -59,7 +62,7 @@ const rectOf = (s: Shot, p: 'A' | 'G'): R => {
 };
 
 export const MeetShort: React.FC<Props> = (p) => {
-  const {duration, no, total, tag, head, src, rev, srcW, srcH, tiles, face, shots, notes, hookEnd, rewind, thumb, qr, len, words, sfx} = p;
+  const {duration, no, total, tag, head, src, rev, srcW, srcH, tiles, face, shots, notes, hookEnd, rewind, thumb, qr, len, words, sfx, masks} = p;
   const {fps} = useVideoConfig();
   const now = useCurrentFrame();
   const fr = (s: number) => Math.round(s * fps);
@@ -87,6 +90,15 @@ export const MeetShort: React.FC<Props> = (p) => {
       <div key={pp} style={{position: 'absolute', left: r.x + 14, top: r.y, width: r.w - 28, height: r.h, opacity: r.o, borderRadius: 22, overflow: 'hidden',
         boxShadow: '0 22px 50px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.06)', background: '#0c0d11'}}>
         <OffthreadVideo src={staticFile(src)} muted style={{position: 'absolute', left: left - 14, top, width: srcW * s, height: srcH * s, maxWidth: 'none'}} />
+        {masks.filter((m) => m.who === pp).map((m, j) => {
+          const L = left - 14 + m.box[0] * s, T = top + m.box[1] * s, w = m.box[2] * s, h = m.box[3] * s;
+          if (m.tag) return <div key={j} style={{position: 'absolute', left: L - 6, top: T + h / 2, transform: 'translateY(-50%) rotate(-2deg)', background: '#EFE6D2', color: '#1C2030',
+            fontWeight: 900, fontFamily: AR, fontSize: Math.max(16, h * 0.95), padding: `${h * 0.12}px ${h * 0.5}px`, borderRadius: 6, whiteSpace: 'nowrap', border: '3px solid #FBF7EE',
+            boxShadow: '0 4px 10px rgba(0,0,0,.4)', direction: 'rtl'}}>{m.tag}</div>;
+          if (m.patch) return <Img key={j} src={staticFile(m.patch)} style={{position: 'absolute', left: L, top: T, width: w, height: h,
+            maskImage: 'radial-gradient(circle, black 55%, transparent 72%)', WebkitMaskImage: 'radial-gradient(circle, black 55%, transparent 72%)'}} />;
+          return <div key={j} style={{position: 'absolute', left: L, top: T, width: w, height: h, borderRadius: h / 2, backdropFilter: 'blur(7px)', WebkitBackdropFilter: 'blur(7px)'}} />;
+        })}
       </div>
     );
   };

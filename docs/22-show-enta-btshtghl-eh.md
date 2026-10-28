@@ -226,3 +226,10 @@ the guest's job, terms and examples. Goal (Aly): fun, visualized, explain every 
 - Sources: a number from the internet gets its source ON screen (picture + who said it: Karpathy's napkin math via 36Kr), our own
   episodes get thumbnail + exact title + QR. His accounts: YouTube @AlyShorosh · Instagram @alyshorosh · Facebook aly.shorosh · TikTok @alyshorosh.
 - His name on screen: "علي شُرُش" (or "علي معتز شُرُش"), never "علي معتز".
+
+### biz ep01 -> 5 vertical SHORTS (2026-10-28) — `output/shorts/NN_slug.mp4` + `.txt`, composition `meet-short`
+- Aly picked from 3 idea lists (rejected most): 01 AI took two pillars, 02 The Dip, 03 first customers, 04 food business, 05 worlds (last).
+  Pipeline = cs ep01 shorts recipe (scripts `tools/recipes/enta_biz01_shorts/`): strip y 282..820 (side-by-side tiles), boards from review_02,
+  MeetShort `masks` (our name tags علي شُرُش / كريم تامر over Meet labels, blur on the crop button, clean patch over Karim's speaking dots).
+  End card = his thumbnail `input/e3.png` + QR of https://youtu.be/HCDZvW9lJtk (checked from every rendered end frame). All picture/voice
+  QC ok, -16 LUFS. Titles in the .txt all Arabic. Assets afterwards in `<project>/motion_public/entabiz01s`.
