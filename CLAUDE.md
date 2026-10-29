@@ -244,7 +244,10 @@ Done (2026-10-06):
   at 14:20 (PC off): done = p_street + hz_a-d + sr_a/b clips, raw 01 03 04 06 10-18 (not levelled). Old versions in output/shorts/archive/before_1027.
   2026-10-29 night ('كمل'): resume_1027.sh + fix_1029.sh -> ALL 31 shorts in output/shorts levelled -16 LUFS + .txt (05 kept, still
   waiting for his decision). Fixes: BlenderClip tag null out = NaN (sound3d.tsx), tags y 1190 (above captions), 08 first tag ends before the
-  3D '3 Hz'. My own overlapping 08/09 renders kept in archive/before_1029_* (ask before deleting). Waiting for Aly's review.
+  3D '3 Hz'. My own overlapping 08/09 renders kept in archive/before_1029_* (ask before deleting).
+  Review 2026-10-29 (rest "حلوة اوي"): series_data10.py -> 01 = silence hook + whole sentences ("50% في الفيديو", "المهم الأوديو بقى"),
+  19 = El Aar clip (FilmTag, no bars) + the no-music Istabraq video 40 s (gain 1), 171.8 s; 05 ARCHIVED (no useful info) -> 30 shorts,
+  but the bands still say NN/31 and the files jump 04 -> 06 (renumbering = re-render all, ask him). make_shorts: caption line ends with its piece.
 - 2026-10-27 show "انت بتشتغل ايه" رواد الأعمال EP01 `projects/انت بتشتغل ايه/2026-10-27 ep01 biz karim tamer` (guest Karim Tamer: Courzerve, Kiko's
   Snacks, FPL Champ; Meet recording 45:03, code `entabiz01`). Opening 0:17-2:04 (Aly's tiny self-view) = full board `biz_open` (Aly in an
   ON-AIR frame the whole time, Karim behind a curtain, Egypt->GUC map, 4 cinematic Blender clips `tools/blender/biz_scenes.py`, resume
