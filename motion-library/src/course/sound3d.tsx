@@ -38,7 +38,7 @@ const Tag: React.FC<{text: string; y: number; at?: number; c?: string; out?: num
   const {fps} = useVideoConfig();
   const p = spr(f, fps, at, 160, 14);
   return (
-    <div style={{position: 'absolute', left: 0, right: 0, top: y, display: 'flex', justifyContent: 'center', opacity: Math.min(1, p * 1.4) * (out === undefined ? 1 : 1 - lin(f, out - 8, out)), transform: `translateY(${(1 - p) * 20}px)`}}>
+    <div style={{position: 'absolute', left: 0, right: 0, top: y, display: 'flex', justifyContent: 'center', opacity: Math.min(1, p * 1.4) * (out == null ? 1 : 1 - lin(f, out - 8, out)), transform: `translateY(${(1 - p) * 20}px)`}}>
       <div style={{padding: '10px 26px', borderRadius: 30, background: 'rgba(10,14,22,0.86)', border: `3px solid ${c}`, fontFamily: AR, fontWeight: 900, fontSize: Math.min(44, Math.floor(900 / (text.length * 0.62))),
         color: '#fff', direction: 'rtl', boxShadow: `0 0 30px ${c}55`}}>{bi(text)}</div>
     </div>
@@ -240,7 +240,7 @@ export const BlenderClip: React.FC<{dur: number; file: string; full?: boolean; t
   return full ? (
   <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, opacity: Math.min(lin(f, 0, 10), 1 - lin(f, dur - 8, dur))}}>
     <OffthreadVideo src={staticFile(file)} transparent muted style={{position: 'absolute', inset: 0, width: 1080, height: 1920}} />
-    {tags.map((g, i) => <Tag key={i} text={g.text} y={g.y} at={g.at ?? 12} c={g.c === 'gold' ? GOLD : g.c} out={g.out} />)}
+    {tags.map((g, i) => <Tag key={i} text={g.text} y={g.y} at={g.at ?? 12} c={g.c === 'gold' ? GOLD : g.c ?? undefined} out={g.out ?? undefined} />)}
   </div>
 ) : (
   <Box dur={dur}>
