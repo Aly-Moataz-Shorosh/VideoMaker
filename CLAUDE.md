@@ -247,7 +247,9 @@ Done (2026-10-06):
   3D '3 Hz'. My own overlapping 08/09 renders kept in archive/before_1029_* (ask before deleting).
   Review 2026-10-29 (rest "حلوة اوي"): series_data10.py -> 01 = silence hook + whole sentences ("50% في الفيديو", "المهم الأوديو بقى"),
   19 = El Aar clip (FilmTag, no bars) + the no-music Istabraq video 40 s (gain 1), 171.8 s; 05 ARCHIVED (no useful info) -> 30 shorts,
-  but the bands still say NN/31 and the files jump 04 -> 06 (renumbering = re-render all, ask him). make_shorts: caption line ends with its piece.
+  make_shorts: caption line ends with its piece. Aly: no renumbering -> NEW 05 `05_editing_and_sound.mp4` (series_data11.py, 2:19): the
+  video he played at 7:54 "اللعبة مع المونتاج والصوت" heard as-is (511.7-629.8, crop below the Zoom bar) + tense-music clip as hook
+  (636.6-649); out of course order on purpose. Series = 31 again. Intermediate renders in output/shorts/archive/before_1029_* (ask).
 - 2026-10-27 show "انت بتشتغل ايه" رواد الأعمال EP01 `projects/انت بتشتغل ايه/2026-10-27 ep01 biz karim tamer` (guest Karim Tamer: Courzerve, Kiko's
   Snacks, FPL Champ; Meet recording 45:03, code `entabiz01`). Opening 0:17-2:04 (Aly's tiny self-view) = full board `biz_open` (Aly in an
   ON-AIR frame the whole time, Karim behind a curtain, Egypt->GUC map, 4 cinematic Blender clips `tools/blender/biz_scenes.py`, resume
