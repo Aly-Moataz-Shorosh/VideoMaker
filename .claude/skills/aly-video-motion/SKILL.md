@@ -320,6 +320,10 @@ Writer: tools/recipes/graphictablet/write_meta.py.
 - A short with no useful takeaway (05: general talk only) should not exist; theory shorts (Hz, sample rate) need an animation that
   SHOWS the concept step by step, else "ممل". Keep every example of a set (01: drawing + camera + sound).
 - Text never leaves the frame: Label / Tag font shrinks with the text length (Short.tsx, shortScenes.tsx, sound3d.tsx).
+- REVIEW 2026-10-29 (rest "حلوة اوي"): a piece never ends mid-thought ("يعتبر تقريبا" without "50% / نص الفيديو") and never starts
+  after his bridge words ("المهم الأوديو بقى") — read the words around both edges. The hook = his strongest one-liner (01: "الصمت مهم زي
+  أهمية الصوت"). Every example he PLAYS in that part is in the short (19 missed the العار clip), and a played video runs long enough
+  to be felt — never 10 s of it; it is always heard as it was (gain 1). Tags/labels never on the caption line (Blender tags y 1190).
 
 ## 3D opening for an episode (رواد الأعمال ep01, 2026-10-27/28) — Aly: "عايز المقدمة استثنائية… مش اي حد يعرف يعمل زيه"
 - Blender = realistic, not childish: lathe objects (chess pieces, coins, mics), measured PBR, kelvin practicals, real props; use the

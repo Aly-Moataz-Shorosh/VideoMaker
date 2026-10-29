@@ -168,3 +168,7 @@ SHORTS.update(_S8.SHORTS); CAP.update(_S8.CAP)
 # review 2026-10-27 (3): 08 + 09 = Blender explainers
 import series_data9 as _S9
 _S9.patch(SHORTS, CAP)
+
+# review 2026-10-29: 01 (silence hook, whole sentences) + 19 (العار example, the no-music video longer)
+import series_data10 as _S10
+_S10.patch(SHORTS, CAP)
