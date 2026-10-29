@@ -172,3 +172,7 @@ _S9.patch(SHORTS, CAP)
 # review 2026-10-29: 01 (silence hook, whole sentences) + 19 (العار example, the no-music video longer)
 import series_data10 as _S10
 _S10.patch(SHORTS, CAP)
+
+# 2026-10-29: a NEW 05 (the video he played at 7:54 with its sound + the tense-music clip), the old 05 stays archived
+import series_data11 as _S11
+_S11.patch(SHORTS, CAP)
