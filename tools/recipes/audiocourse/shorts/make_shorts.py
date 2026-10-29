@@ -89,6 +89,7 @@ def build(n):
             pass
         elif cap and ew:  # corrected words spread over his real speech span
             toks = cap.replace('_', ' ').split()
+            if toks and toks[-1][-1] not in '.!?؟،': toks[-1] += '..'  # the caption line ends with the piece (01: "ده | المهم الأوديو")
             for k_, tok in enumerate(toks):
                 u0 = k_ / len(toks); u1 = (k_ + 1) / len(toks)
                 i0 = min(len(ew) - 1, int(u0 * len(ew))); i1 = min(len(ew) - 1, int(u1 * len(ew) - 1e-6))
