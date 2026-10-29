@@ -250,6 +250,9 @@ Done (2026-10-06):
   make_shorts: caption line ends with its piece. Aly: no renumbering -> NEW 05 `05_editing_and_sound.mp4` (series_data11.py, 2:19): the
   video he played at 7:54 "اللعبة مع المونتاج والصوت" heard as-is (511.7-629.8, crop below the Zoom bar) + tense-music clip as hook
   (636.6-649); out of course order on purpose. Series = 31 again. Intermediate renders in output/shorts/archive/before_1029_* (ask).
+  2026-10-30 references (Aly: 'تديله ريفرينس'): FilmTag (above the card when bars are on) + description line: 05 = JR Alli
+  'EGYPT- Like Never Before' (youtu.be/TvzWNwJ41_k, frame-matched); 19 = CINEMATOLOGY (العار talk) + Hazem El Seddiq (Stabraq video);
+  exact videos for 19 and the 05 hook clip (hooded man) NOT found. Previous 05/19 in archive/before_1029_ref.
 - 2026-10-27 show "انت بتشتغل ايه" رواد الأعمال EP01 `projects/انت بتشتغل ايه/2026-10-27 ep01 biz karim tamer` (guest Karim Tamer: Courzerve, Kiko's
   Snacks, FPL Champ; Meet recording 45:03, code `entabiz01`). Opening 0:17-2:04 (Aly's tiny self-view) = full board `biz_open` (Aly in an
   ON-AIR frame the whole time, Karim behind a curtain, Egypt->GUC map, 4 cinematic Blender clips `tools/blender/biz_scenes.py`, resume
