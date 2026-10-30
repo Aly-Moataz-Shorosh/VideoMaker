@@ -193,7 +193,8 @@ Done (2026-10-06):
   that video's thumbnail → v2 = thumbnail + QR end in `output/v2/` (v1 kept; only the end re-rendered + spliced, `v2_end.sh`). Job closed.
   Unsure: he says "14" buttons (Huion page: 12 hard + 16 soft) — hidden in captions.
 - RULE 2026-10-21: the `<video>.txt` beside every video starts with the exact header `العناوين:` (his posting script reads it), then الوصف
-  (free length), tags, كومنت مثبت. NO YouTube link, NO posting-order line. Skill aly-video-motion + memory aly-notepad-format.
+  (free length) with ONE line of real #hashtags inside it (2026-10-30), then `الكومنت المثبت:` (exact: his reels-publisher bulk.py
+  reads only العناوين/الوصف/الكومنت headings). NO YouTube link, NO posting-order line. Skill aly-video-motion + memory aly-notepad-format.
 - ⚠ Remotion copies public/ (~2 GB) into Temp on EVERY bundle/still → C: hit 0 bytes twice. Use `stills_cli.sh`
   (one bundle in out/bundle), set TEMP/TMP to `motion-library/out/tmp` for renders and DELETE that folder after (one render left 13 GB).
 - ⚠ C: fills during renders = Windows auto page file (19.4 GB) when RAM is full -> Remotion --concurrency=6 (not 10), temp never on C:, purge npm/pip caches after jobs (2026-10-29).
@@ -253,6 +254,7 @@ Done (2026-10-06):
   2026-10-30 references (Aly: 'تديله ريفرينس'): FilmTag (above the card when bars are on) + description line: 05 = JR Alli
   'EGYPT- Like Never Before' (youtu.be/TvzWNwJ41_k, frame-matched); 19 = CINEMATOLOGY (العار talk) + Hazem El Seddiq (Stabraq video);
   exact videos for 19 and the 05 hook clip (hooded man) NOT found. Previous 05/19 in archive/before_1029_ref.
+  All 31 txts regenerated with hashtags (make_txt.py) and checked with reels-publisher notes_for.
 - 2026-10-27 show "انت بتشتغل ايه" رواد الأعمال EP01 `projects/انت بتشتغل ايه/2026-10-27 ep01 biz karim tamer` (guest Karim Tamer: Courzerve, Kiko's
   Snacks, FPL Champ; Meet recording 45:03, code `entabiz01`). Opening 0:17-2:04 (Aly's tiny self-view) = full board `biz_open` (Aly in an
   ON-AIR frame the whole time, Karim behind a curtain, Egypt->GUC map, 4 cinematic Blender clips `tools/blender/biz_scenes.py`, resume

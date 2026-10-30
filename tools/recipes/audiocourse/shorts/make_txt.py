@@ -19,16 +19,20 @@ T = {  # no: (3 titles, description lines, extra tags)
 }
 import txt_series
 T.update(txt_series.T)
-BASE_TAGS = ['كورس الصوت', 'الصوت للفيديو', 'أسرار الصوت', 'مونتاج', 'Aly Shorosh']
+HASH_BASE = ['أسرار الصوت', 'كورس الصوت', 'مونتاج', 'هندسة الصوت', 'AlyShorosh', 'Shorts']
 
 for n in map(int, sys.argv[1:]):
     titles, desc, tags = T[n]
     spec = SD.SHORTS[n]
     mp4 = sorted((PROJ / 'output/shorts').glob(f'{n:02d}_*.mp4'))
     name = mp4[0].stem if mp4 else f'{n:02d}'
+    # Aly 2026-10-30 "ليه مش حاتط هاشتاجز": a hashtag-only line INSIDE الوصف (reels-publisher bulk.split_tags takes it out
+    # as the reel's hashtags; Instagram/TikTok use the first 5 -> the short's own 2 first). No separate 'الوسوم:' part
+    # (not a heading his script knows: it ended up inside the description).
+    tg = list(dict.fromkeys('#' + '_'.join(x.split()) for x in tags[:2] + HASH_BASE))
     txt = ['العناوين:', *titles, '', 'الوصف:', *desc, '',
            f'ده جزء من كورس "أسرار الصوت" الكامل على القناة (نظري + عملي، Premiere و Audition).. الفصل {spec["chapter"]}.',
-           '', 'الوسوم:', ', '.join(tags + BASE_TAGS), '', 'كومنت مثبت:',
+           '', ' '.join(tg), '', 'الكومنت المثبت:',
            f'الكورس الكامل على القناة 👆 وده الفصل {spec["chapter"]} منه.. عايز شورت عن إيه بعد كده؟']
     (PROJ / f'output/shorts/{name}.txt').write_text('\n'.join(txt), encoding='utf-8')
     print(name)

@@ -272,8 +272,13 @@ Add what he liked to section 2 and every mistake to section 3 (with the fix), pl
 - Camera mp4: split + trim per piece + concat in the short's order (select=between reorders a hook to source order).
 
 ## The .txt beside every video (Aly 2026-10-21) — his posting script reads the word "العناوين:"
-Usual layout: `العناوين:` (exact header, first line) + 1) 2) 3) titles / `الوصف:` free length / #tags / `كومنت مثبت:`.
+Usual layout: `العناوين:` (exact header, first line) + 1) 2) 3) titles / `الوصف:` free length / #tags / `الكومنت المثبت:`.
 NO YouTube link in the txt, NO "ترتيب النشر" line (he tried a strict template and took it back). UTF-8 without BOM, LF line ends.
+HASHTAGS (Aly 2026-10-30 "ليه مش حاتط هاشتاجز"): ONE line of real #hashtags INSIDE الوصف (every word starts with #, multi-word
+joined with _), 6-8 tags, the short's own 2-3 FIRST (Instagram/TikTok take only 5). His reels-publisher (bulk.notes_for) reads only
+the headings العناوين / الوصف / الكومنت / ترتيب النشر: a 'الوسوم:' part or 'كومنت مثبت:' (without ال) is NOT a heading and lands inside
+the description -> pinned heading = `الكومنت المثبت:`. Check: run reels-publisher app.bulk.notes_for on the mp4 (read only).
+Credit a played third-party clip by name + channel (on screen FilmTag + in الوصف), never its YouTube link.
 Writer: tools/recipes/graphictablet/write_meta.py.
 
 ## Series shorts from a whole playlist = style 16 journey-series (Journey 2026-10-22/23, docs/30) — v4 APPROVED "حلو اوي انت كدا فهمت زوقي"
