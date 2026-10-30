@@ -62,6 +62,6 @@ for n in [int(a) for a in sys.argv[1:] if a.isdigit()]:
     if used:  # free Commons pictures: author + license (CC BY / BY-SA need the credit)
         desc += '\n\nصور من Wikimedia Commons:\n' + '\n'.join(f"- {c['artist'].strip()} ({c['license']})" for c in used)
     txt = 'العناوين:\n' + '\n'.join(f'{i + 1}) {t}' for i, t in enumerate(titles))
-    txt += f'\n\nالوصف:\n{desc}\n\n{TAGS}\n\nكومنت مثبت:\n{PIN}\n'
+    txt += f'\n\nالوصف:\n{desc}\n\n{TAGS}\n\nالكومنت المثبت:\n{PIN}\n'
     (P / 'output' / f'{name}.txt').write_text(txt, encoding='utf-8', newline='\n')
     print(f'{name}: raw {L:.1f} -> {got:.1f} LUFS, {out.stat().st_size / 1e6:.1f} MB')

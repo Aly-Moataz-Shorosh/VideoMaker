@@ -29,7 +29,7 @@ META = {
 }
 for n, (titles, desc) in META.items():
     txt = 'العناوين:\n' + '\n'.join(f'{i + 1}) {t}' for i, t in enumerate(titles))  # exact header word: his posting script reads it
-    txt += f'\n\nالوصف:\n{desc}\n\n{TAGS}\n\nكومنت مثبت:\n{PIN}\n'
+    txt += f'\n\nالوصف:\n{desc}\n\n{TAGS}\n\nالكومنت المثبت:\n{PIN}\n'
     for d in (OUT, OUT / 'v2'):
         d.mkdir(exist_ok=True)
         (d / f'short_{n}.txt').write_text(txt, encoding='utf-8', newline='\n')

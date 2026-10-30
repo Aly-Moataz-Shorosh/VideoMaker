@@ -28,6 +28,6 @@ for n, sh in SHORTS.items():
     if not vid or vid.name.endswith('.BAD.mp4'):
         continue
     body = ('العناوين:\n' + '\n'.join(f'{k + 1}) {t}' for k, t in enumerate(titles)) +
-            f'\n\nالوصف:\n{desc}\nمن حلقة كريم تامر في قسم رواد الأعمال من برنامج انت بتشتغل ايه. الحلقة كاملة على القناة.\n\n{TAGS}\n\nكومنت مثبت:\n{pin}\n')
+            f'\n\nالوصف:\n{desc}\nمن حلقة كريم تامر في قسم رواد الأعمال من برنامج انت بتشتغل ايه. الحلقة كاملة على القناة.\n\n{TAGS}\n\nالكومنت المثبت:\n{pin}\n')
     vid.with_suffix('.txt').write_text(body, encoding='utf-8', newline='\n')
     print(vid.with_suffix('.txt').name)
