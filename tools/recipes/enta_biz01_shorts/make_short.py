@@ -17,6 +17,7 @@ SRC = P / 'input' / '2026-10-27 16-06-01.mp4'
 REVSRC = P / 'output' / 'review_02.mp4'
 OUT = P / 'work' / 'shorts'
 from shorts_data import SHORTS, TOTAL
+YT_CUT = (231.2, 269.2)   # part Aly removed from the YouTube episode (review_02 seconds)
 from edges import fit
 try:
     from caps import CAPS
@@ -305,11 +306,13 @@ def build(n):
         sfx.append({'t': nt['t'], 'file': f"sfx/pop_{1 + int(nt['t'] * 10) % 3}.wav", 'vol': 0.22})
     sfx.append({'t': round(dur - 3.4, 2), 'file': 'sfx/riser.wav', 'vol': 0.2})
 
-    props = dict(duration=round(dur, 2), no=n, total=TOTAL, head=sh['head'], src=f'projects/{CODE}/v{n:02d}.mp4', rev=f'projects/{CODE}/r{n:02d}.mp4',
+    # band = where the short starts in the PUBLISHED episode (Aly cut 231.2-269.2 s from the YouTube copy -> later times -38 s)
+    s0 = min(r[0] for r in sh['pieces']); s0 = s0 - YT_CUT[1] + YT_CUT[0] if s0 >= YT_CUT[1] else s0
+    props = dict(duration=round(dur, 2), no=n, total=TOTAL, at=f'{int(s0 // 60)}:{int(s0 % 60):02d}', head=sh['head'], src=f'projects/{CODE}/v{n:02d}.mp4', rev=f'projects/{CODE}/r{n:02d}.mp4',
                  srcW=STRIP[0], srcH=STRIP[1], tiles=TILES, face=FACE, shots=shots, notes=notes, hookEnd=round(rew_t, 2),
                  rewind={'t': round(rew_t, 2), 'd': REW, 'from': mmss(hook[1]), 'to': mmss(first)},
                  thumb=f'projects/{CODE}/thumb.jpg' if (PUB / 'thumb.jpg').exists() else '', qr=f'projects/{CODE}/qr.png' if (PUB / 'qr.png').exists() else '',
-                 len='45:03', words=words, sfx=sfx, work=work, workLogo=(f'projects/{CODE}/cz/logo.jpg' if work else ''), tag='انت بتشتغل ايه · رواد الأعمال', masks=masks_for(sh['hook'][0]))
+                 len='44:25', words=words, sfx=sfx, work=work, workLogo=(f'projects/{CODE}/cz/logo.jpg' if work else ''), tag='انت بتشتغل ايه · رواد الأعمال', masks=masks_for(sh['hook'][0]))
     json.dump(props, open(OUT / f'props_{n:02d}.json', 'w', encoding='utf8'), ensure_ascii=False, indent=1)
     json.dump({'segs': [{'a': a, 'b': b, 'st': st} for a, b, st in tl], 'dur': dur}, open(OUT / f'tl_{n:02d}.json', 'w'))
     print(f'short {n}: {dur:.1f} s, {len(shots)} shots, {len(notes)} notes, {len(words)} words, pieces {[(round(a, 2), round(b, 2)) for a, b in spans]}')

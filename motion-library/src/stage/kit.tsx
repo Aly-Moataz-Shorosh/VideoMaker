@@ -59,7 +59,7 @@ export const StageBg: React.FC<{hue?: number}> = () => {
 // pal / tag: other shows reuse the frame in their own colours (enta cs shorts 2026-10-21)
 export type Pal = {box: string; boxInk: string; bar: string[]; now: string; hl: string};
 export const STAGE_PAL: Pal = {box: S.yellow, boxInk: S.ink, bar: [S.blue, S.violet, S.red], now: S.yellow, hl: S.red};
-export const Frame: React.FC<{no: number; total: number; head: string; dur: number; hookEnd: number; tag?: string; pal?: Pal}> = ({no, total, head, dur, hookEnd, tag = 'NEW STAGE 19 · DIGITAL ART', pal = STAGE_PAL}) => {
+export const Frame: React.FC<{no: number; total: number; head: string; dur: number; hookEnd: number; tag?: string; pal?: Pal; at?: string}> = ({no, total, head, dur, hookEnd, tag = 'NEW STAGE 19 · DIGITAL ART', pal = STAGE_PAL, at = ''}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const p = f / Math.max(1, dur);
@@ -71,7 +71,10 @@ export const Frame: React.FC<{no: number; total: number; head: string; dur: numb
       <div style={{position: 'absolute', left: 0, top: 0, height: 10, width: W * p, background: `linear-gradient(90deg, ${pal.bar.join(', ')})`, boxShadow: `0 0 20px ${pal.bar[1]}`}} />
       <div style={{position: 'absolute', left: 0, right: 0, top: L.tag, display: 'flex', justifyContent: 'center', gap: 14, alignItems: 'center', opacity: q}}>
         <span style={{fontWeight: 800, fontSize: 24, letterSpacing: /[A-Za-z]/.test(tag) ? 4 : 0, color: S.soft, fontFamily: /[A-Za-z]/.test(tag) ? EN : AR}}>{tag}</span>
-        <span style={{fontFamily: EN, fontWeight: 900, fontSize: 22, color: S.ink, background: S.white, borderRadius: 12, padding: '2px 10px'}}>{String(no).padStart(2, '0')}/{total}</span>
+        {at ? (  // show shorts (enta, Aly 2026-10-31): where it is in the episode instead of a post number
+          <span style={{fontFamily: AR, fontWeight: 900, fontSize: 22, color: S.ink, background: S.white, borderRadius: 12, padding: '2px 12px', direction: 'rtl', unicodeBidi: 'isolate'}}>
+            من الدقيقة <span style={{fontFamily: EN, direction: 'ltr', unicodeBidi: 'isolate'}}>{at}</span> في الحلقة</span>
+        ) : <span style={{fontFamily: EN, fontWeight: 900, fontSize: 22, color: S.ink, background: S.white, borderRadius: 12, padding: '2px 10px'}}>{String(no).padStart(2, '0')}/{total}</span>}
       </div>
       <div style={{position: 'absolute', left: 50, right: 50, top: L.head, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center',
         gap: '6px 18px', direction: 'rtl'}}>

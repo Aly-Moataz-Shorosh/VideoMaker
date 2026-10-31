@@ -136,6 +136,9 @@ the guest's job, terms and examples. Goal (Aly): fun, visualized, explain every 
 ## حاسبات ep01 -> vertical SHORTS (2026-10-21; 17 ideas, Aly picked: only the 5 strongest) — `output/shorts/NN_slug.mp4` + `.txt`, composition `meet-short`
 - Aly: "حولي الفيديو ده ل shorts" + full episode link (https://youtu.be/5xqomlWcKzE) + his thumbnail `input/e2.png`; END of every short =
   the episode itself + QR (like newstage19), NO CTA clip of his.
+- Band (Aly 2026-10-31, enta shorts ONLY): no "NN/total" post number — he chooses what to post. The pill says
+  "من الدقيقة m:ss في الحلقة" = the first piece's start in the PUBLISHED episode (MeetShort `at`; make_short maps review seconds to
+  YouTube seconds with YT_CUT when he cut a part before upload; EndCard length = the YouTube length). Check with `yt-dlp --print duration_string`.
 - Ideas = every self-contained Q&A of the episode (17), posting order = strongest first (tester vs developer eyes, AI replace, boring?...).
   Data `work/scripts/shorts_data.py` (hook + pieces in source sec), captions hand-corrected per piece in `caps.py` (Whisper on the Meet
   mix is weak: re-transcribe per piece with `cap_words.py`, then write their exact words; English terms in English).

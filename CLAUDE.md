@@ -274,6 +274,8 @@ Done (2026-10-06):
 - 2026-10-28 biz ep01 -> 5 meet-shorts `output/shorts/01..05` + .txt (Aly picked 3/5/7/18/1; end = input/e3.png + QR youtu.be/HCDZvW9lJtk;
   MeetShort masks = our name tags over Meet labels). Saved as **style 17 online-episode-3d** (the long episode) + **style 18 meet-shorts**.
   Episode .txt: chapters + titles 'ep3-entrepreneurs | <all-Arabic topic> | انت بتشتغل ايه؟'.
+  2026-10-31: + short 06 Courzerve (real Courzerve work on top, MeetShort `work`). Aly: NO post number in enta shorts -> band
+  'من الدقيقة m:ss في الحلقة' (YouTube copy has 231.2-269.2 cut = YT_CUT, length 44:25); all 6 re-rendered, old in output/shorts/archive_v2.
   2026-10-31 + short 06_courzerve (2:28): real Courzerve work (Behance campaign clips + posts) on top via MeetShort `work` (docs/22). Waiting for review.
 - 2026-10-28 ASSETS LIVE IN THEIR PROJECT (Aly moves finished projects to his external disk, "انقلها لفولدراتها"): every project's
   public assets (old motion-library/_parked_public/* and public/projects/entabiz01) are now in `<project>/motion_public/<name>/`

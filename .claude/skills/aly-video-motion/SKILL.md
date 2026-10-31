@@ -115,7 +115,10 @@ question with the list. A newly approved look = a new numbered folder (sample.mp
 - SFX on camera moves (cs ep01 shorts 2026-10-21): a whoosh on EVERY zoom in/out = "over". Whoosh only when the cadre itself moves
   (layout / other person), never on a zoom inside the same cadre.
 - Shorts from an online episode (cs ep01 2026-10-21, docs/22): ONLY the 3–5 strongest (Aly: 17 = too many). Composition `meet-short` — tiles stacked (Aly top), speaker big,
-  the approved long edit's boards on top; hook + rewind + captions; END = episode thumbnail + QR only (no CTA clip). Waiting for review.
+  the approved long edit's boards on top; hook + rewind + captions; END = episode thumbnail + QR only (no CTA clip).
+  NO post number ("06/6") in انت بتشتغل ايه shorts (Aly 2026-10-31: he picks which to post) -> band pill = "من الدقيقة m:ss في الحلقة"
+  (MeetShort prop `at`) in the PUBLISHED YouTube episode — his upload may cut parts (biz ep01: 231.2-269.2 removed = -38 s, make_short YT_CUT).
+  Other series (courses, playlists) keep the REEL NN/total number.
 
 ## Vertical reels from a long video (figmaMake reels 2026-10-08)
 - Ranges = closed ideas; his edit has almost no pauses → put every edge on a measured audio dip (50 ms dB profile),

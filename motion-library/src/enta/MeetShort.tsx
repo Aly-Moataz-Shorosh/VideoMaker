@@ -19,6 +19,7 @@ export const meetShortSchema = z.object({
   duration: z.number().default(5),
   no: z.number().default(1),
   total: z.number().default(17),
+  at: z.string().default(''),   // 'mm:ss' in the PUBLISHED episode -> band says 'من الدقيقة .. في الحلقة' (no post number)
   tag: z.string().default('انت بتشتغل ايه · حاسبات'),
   head: z.string().default(''),
   src: z.string().default(''),
@@ -67,7 +68,7 @@ const rectOf = (s: Shot, p: 'A' | 'G'): R => {
 };
 
 export const MeetShort: React.FC<Props> = (p) => {
-  const {duration, no, total, tag, head, src, rev, srcW, srcH, tiles, face, shots, notes, hookEnd, rewind, thumb, qr, len, words, sfx, masks, work, workLogo} = p;
+  const {duration, no, total, at, tag, head, src, rev, srcW, srcH, tiles, face, shots, notes, hookEnd, rewind, thumb, qr, len, words, sfx, masks, work, workLogo} = p;
   const {fps} = useVideoConfig();
   const now = useCurrentFrame();
   const fr = (s: number) => Math.round(s * fps);
@@ -153,7 +154,7 @@ export const MeetShort: React.FC<Props> = (p) => {
       {note()}
       {rewind ? <Sequence from={fr(rewind.t)} durationInFrames={fr(rewind.d)} layout="none"><Rewind dur={fr(rewind.d)} from={rewind.from} to={rewind.to} /></Sequence> : null}
       <Caps words={words} top={CAP} pal={PAL} />
-      <Frame no={no} total={total} head={head} dur={D} hookEnd={fr(hookEnd)} tag={tag} pal={PAL} />
+      <Frame no={no} total={total} at={at} head={head} dur={D} hookEnd={fr(hookEnd)} tag={tag} pal={PAL} />
       {thumb ? <Badge thumb={thumb} qr={qr} at={fr(hookEnd + (rewind?.d ?? 0))} big={D + 999} label="الحلقة كاملة" sub="على قناتي في يوتيوب" len={len} y0={TOP + 18}
         hide={Math.max(revK, workK, Math.min(1, (now - (D - fr(END))) / 8))} /> : null}
       {thumb ? <Sequence from={D - fr(END)} layout="none"><EndCard thumb={thumb} qr={qr} len={len} /></Sequence> : null}
