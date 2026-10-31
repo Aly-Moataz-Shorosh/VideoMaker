@@ -42,7 +42,7 @@ export const meetShortSchema = z.object({
   masks: z.array(z.object({who: z.enum(['A', 'G']), box: z.array(z.number()), tag: z.string().optional(), patch: z.string().optional()})).default([]),
   // the guest's REAL work on top while he names it (biz ep01 Courzerve short, Aly 2026-10-31): clip = a cut of their campaign video,
   // pic = one design, posts = several designs fanned out; label = paper chip (*word* = highlighted); cadre 'work' = card on top + speaker under
-  work: z.array(z.object({t: z.number(), d: z.number(), kind: z.enum(['clip', 'pic', 'posts']), label: z.string().default(''), pos: z.enum(['bottom', 'top']).default('bottom'),
+  work: z.array(z.object({t: z.number(), d: z.number(), kind: z.enum(['clip', 'pic', 'posts']), label: z.string().default(''), pos: z.enum(['bottom', 'top', 'corner']).default('bottom'),
     src: z.string().optional(), srcs: z.array(z.string()).optional()})).default([]),
   workLogo: z.string().default(''),
 });
@@ -199,12 +199,13 @@ const WorkCard: React.FC<{w: Props['work'][number]; logo: string}> = ({w, logo})
   return (
     <AbsoluteFill style={{opacity: Math.min(1, f / 4 + 0.2)}}>
       {body()}
-      {logo ? <div style={{position: 'absolute', left: 18, ...(w.pos === 'top' ? {bottom: 16} : {top: 16}), display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(12,13,17,.72)', borderRadius: 40,
+      {/* 'corner' (Aly 2026-10-31): small label in the free bottom-right corner, no badge — a top label covered the instructors' faces */}
+      {logo && w.pos !== 'corner' ? <div style={{position: 'absolute', left: 18, ...(w.pos === 'top' ? {bottom: 16} : {top: 16}), display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(12,13,17,.72)', borderRadius: 40,
         padding: '6px 16px 6px 6px', opacity: a}}>
         <Img src={staticFile(logo)} style={{width: 44, height: 44, borderRadius: 22}} />
         <span style={{fontFamily: EN, fontWeight: 900, fontSize: 24, color: E.white, letterSpacing: 1}}>COURZERVE</span></div> : null}
-      {w.label ? <div style={{position: 'absolute', right: 22, ...(w.pos === 'top' ? {top: 18} : {bottom: 20}), maxWidth: CW - 80, background: E.paper, color: E.ink, borderRadius: 10, padding: '6px 22px 10px',
-        fontFamily: AR, fontWeight: 900, fontSize: 40, direction: 'rtl', boxShadow: '0 10px 24px rgba(0,0,0,.5)', border: `5px solid ${E.white}`,
+      {w.label ? <div style={{position: 'absolute', right: 22, ...(w.pos === 'top' ? {top: 18} : {bottom: w.pos === 'corner' ? 14 : 20}), maxWidth: w.pos === 'corner' ? 440 : CW - 80, background: E.paper, color: E.ink, borderRadius: 10, padding: w.pos === 'corner' ? '4px 16px 7px' : '6px 22px 10px',
+        fontFamily: AR, fontWeight: 900, fontSize: w.pos === 'corner' ? 30 : 40, ...(w.pos === 'corner' ? {lineHeight: 1.25} : {}), direction: 'rtl', boxShadow: '0 10px 24px rgba(0,0,0,.5)', border: `5px solid ${E.white}`,
         transform: `translateY(${(1 - spr(f, fps, 5, 170, 15)) * (w.pos === 'top' ? -90 : 90)}px) rotate(-1.2deg)`}}><Hi text={w.label} color={E.orange} /></div> : null}
     </AbsoluteFill>
   );

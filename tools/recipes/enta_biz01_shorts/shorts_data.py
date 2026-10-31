@@ -11,7 +11,7 @@ IDEAS = {
     # Aly 2026-10-31: "شورت ليها علاقة ب courzerve يكون باين فيها امثلة من شغل courzerve" -> the story + the lesson, and REAL Courzerve work
     # (their posts + campaign videos from Behance) on top while he names it. work = (src a, src b, item): pic / posts / clip (campaign N, from sec)
     21: dict(slug='courzerve', head='قصة *Courzerve*… واتقفلت', hook=(491.30, 499.12, 'x'), pieces=[(307.79, 336.40, 'x'), (342.6, 362.98), (457.85, 545.3)],
-             work=[(307.9, 312.9, dict(kind='pic', src='cz_banner.jpg', label='هنا بدأت *Courzerve*')),
+             work=[(307.9, 312.9, dict(kind='pic', src='cz_banner_blur.jpg', label='هنا بدأت *Courzerve*')),
                    (318.5, 322.4, dict(kind='pic', src='logo.jpg', label='*Cour*se + Rese*rve* = Courzerve')),
                    (348.9, 356.3, dict(kind='posts', srcs=['cz_web.jpg', 'cz_android.jpg', 'cz_post_4.jpg', 'cz_post_8.jpg'], label='كورسات *Software Engineering*')),
                    (356.5, 362.95, dict(kind='clip', cam=1, frm=30.0, label='بعد الكورونا: الكورس *Live* على Zoom')),
@@ -20,8 +20,8 @@ IDEAS = {
                    (493.2, 496.6, dict(kind='clip', cam=1, frm=77.6, label='تحجز معاد الكورس من الـ*Calendar*')),
                    (496.6, 499.1, dict(kind='clip', cam=2, frm=102.5, label='فورم تسجيل، ورسايل *SMS*، و*Mail*')),
                    (517.6, 520.3, dict(kind='posts', srcs=['cz_post_1.jpg', 'cz_post_5.jpg', 'cz_post_7.jpg', 'cz_post_3.jpg', 'cz_post_6.jpg'], label='الأول: *صور* بس')),
-                   (520.3, 525.4, dict(kind='clip', cam=2, frm=110.0, label='بعدين: فيديوهات الـ*Instructors* في ستوديو', pos='top')),
-                   (525.4, 530.3, dict(kind='clip', cam=3, frm=119.5, label='كاميرا، و*Backdrop*، ومونتاج… على *يوتيوب*', pos='top'))]),
+                   (520.3, 525.4, dict(kind='clip', cam=2, frm=110.0, label='بعدين: فيديوهات الـ*Instructors* في ستوديو', pos='corner')),
+                   (525.4, 530.3, dict(kind='clip', cam=3, frm=119.5, label='كاميرا، و*Backdrop*، ومونتاج… على *يوتيوب*', pos='corner'))]),
 }
 PICK = [3, 5, 7, 18, 1, 21]   # posting order (Aly: the worlds one LAST of the first five; 21 = Courzerve, added 2026-10-31)
 SHORTS = {i + 1: dict(IDEAS[k], idea=k) for i, k in enumerate(PICK)}

@@ -119,6 +119,7 @@ question with the list. A newly approved look = a new numbered folder (sample.mp
   NO post number ("06/6") in انت بتشتغل ايه shorts (Aly 2026-10-31: he picks which to post) -> band pill = "من الدقيقة m:ss في الحلقة"
   (MeetShort prop `at`) in the PUBLISHED YouTube episode — his upload may cut parts (biz ep01: 231.2-269.2 removed = -38 s, make_short YT_CUT).
   Other series (courses, playlists) keep the REEL NN/total number.
+  Real work pictures/clips on top: blur phone numbers; labels never on faces (pos 'corner' in the free corner) (Courzerve review 2026-10-31).
 
 ## Vertical reels from a long video (figmaMake reels 2026-10-08)
 - Ranges = closed ideas; his edit has almost no pauses → put every edge on a measured audio dip (50 ms dB profile),
