@@ -233,3 +233,9 @@ the guest's job, terms and examples. Goal (Aly): fun, visualized, explain every 
   MeetShort `masks` (our name tags علي شُرُش / كريم تامر over Meet labels, blur on the crop button, clean patch over Karim's speaking dots).
   End card = his thumbnail `input/e3.png` + QR of https://youtu.be/HCDZvW9lJtk (checked from every rendered end frame). All picture/voice
   QC ok, -16 LUFS. Titles in the .txt all Arabic. Assets afterwards in `<project>/motion_public/entabiz01s`.
+- 06 Courzerve (2026-10-31, Aly: "شورت ليها علاقة ب courzerve يكون باين فيها امثلة من شغل courzerve"): the story (idea -> name -> pivot ->
+  corona -> closed) + the lesson (engineers polished the website, weak in marketing/sales, marketing = experiments). NEW MeetShort
+  `work` items = the guest's REAL work on top while he names it (cadre 'work': card + speaker under): `clip` = cut of their Behance
+  campaign videos (website, calendar, form/SMS, Zoom session, instructors in the studio), `pic`, `posts` (fanned designs); label chip
+  (`pos: top` when a clip has a lower third), small brand logo badge. Data = `work` list in shorts_data (source seconds), make_short cuts the
+  clips into `entabiz01s/cz/`. Captions: consecutive English words now one LTR group (stage Caps; "Engineering Software" bug).

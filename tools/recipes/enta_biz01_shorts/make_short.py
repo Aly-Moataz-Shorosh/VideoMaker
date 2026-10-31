@@ -202,6 +202,56 @@ def build(n):
         clean.append(s)
     shots = clean
 
+    # ---- real work of the guest's business on top (Courzerve short, Aly 2026-10-31): item = pic / posts / clip (cut from the
+    # campaign video into the short's public folder); its own cadre 'work' (card on top, the speaker under it), wins over the
+    # cadres it covers; after it the cadre that would be on then comes back ----
+    work = []
+    WEB = PUB.parents[1] / 'projects' / 'entabiz01' / 'web' / 'courzerve'
+    if not WEB.exists():
+        WEB = P / 'motion_public' / 'entabiz01' / 'web' / 'courzerve'
+    (PUB / 'cz').mkdir(exist_ok=True)
+    if sh.get('work') and not (PUB / 'cz' / 'logo.jpg').exists():
+        (PUB / 'cz' / 'logo.jpg').write_bytes((WEB / 'logo.jpg').read_bytes())
+    for wa, wb, it in sh.get('work', []):
+        for hk in (True, False):
+            s0, s1 = to_short(wa, hk), to_short(wb, hk)
+            if s0 is None and s1 is None:
+                continue
+            seg = tl[0] if hk else next(x for x in tl[1:] if x[0] - 0.05 <= (wa if s0 is not None else wb) <= x[1] + 0.05)
+            s0 = s0 if s0 is not None else seg[2]
+            s1 = s1 if s1 is not None else seg[2] + seg[1] - seg[0]
+            if s1 - s0 < 0.8:
+                continue
+            w = {'t': round(s0, 2), 'd': round(s1 - s0, 2), 'kind': it['kind'], 'label': it['label'], 'pos': it.get('pos', 'bottom')}
+            if it['kind'] == 'clip':
+                off = 0 if to_short(wa, hk) is not None else max(0, seg[0] - wa)   # the hook / a piece may start inside the item
+                name = f"cz/c{it['cam']}_{it['frm'] + off:.1f}_{s1 - s0:.1f}.mp4"
+                if not (PUB / name).exists():
+                    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', f"{it['frm'] + off:.2f}", '-t', f'{s1 - s0 + 0.6:.2f}', '-i', str(WEB / f"campaign_{it['cam']}.mp4"),
+                                    '-an', '-vf', 'fps=30,scale=1052:-2:flags=lanczos', '-c:v', 'libx264', '-crf', '18', '-preset', 'veryfast', str(PUB / name)], check=True)
+                w['src'] = f'projects/{CODE}/{name}'
+            else:
+                srcs = it.get('srcs') or [it['src']]
+                for f in srcs:
+                    if not (PUB / 'cz' / f).exists():
+                        (PUB / 'cz' / f).write_bytes((WEB / f).read_bytes())
+                w['srcs'] = [f'projects/{CODE}/cz/{f}' for f in srcs]
+            work.append(w)
+    work.sort(key=lambda w: w['t'])
+    for w in work:
+        a_, b_ = w['t'], w['t'] + w['d']
+        at_end = [s for s in shots if s['t'] <= b_ + 0.01]
+        back = dict(at_end[-1]) if at_end else {'m': 'two', 'who': 'A', 'z': 1.0}
+        sp = [x[2] for x in raw if a_ <= (x[0] if not x[3] else x[0]) < b_ and x[2]]
+        who = max('AG', key=sp.count) if sp else 'G'
+        shots = [s for s in shots if not (a_ - 0.01 <= s['t'] <= b_ + 0.01)]
+        shots.append({'t': round(a_, 2), 'm': 'work', 'who': who, 'z': 1.0})
+        if not any(abs(o['t'] - b_) < 0.05 for o in work):          # next item starts right here -> no flash back
+            back['t'] = round(b_, 2); shots.append(back)
+        shots.sort(key=lambda s: s['t'])
+    if work:   # a shot that is replaced within 0.4 s only flickers
+        shots = [s for j, s in enumerate(shots) if j + 1 == len(shots) or shots[j + 1]['t'] - s['t'] >= 0.4 or s['t'] < 0.01]
+
     # ---- notes of the long edit (enta_note) -> taped strips in the short ----
     notes = []
     for c in PLAN['cues']:
@@ -247,8 +297,10 @@ def build(n):
     # مش زوم"), pop on notes, riser before the end card ----
     sfx = [{'t': round(rew_t - 0.05, 2), 'file': 'sfx/tape.wav', 'vol': 0.5}]
     for a_, b_ in zip(shots[1:], shots[2:]):
-        if (a_['m'], a_['who'] if a_['m'] != 'two' else '') != (b_['m'], b_['who'] if b_['m'] != 'two' else ''):
+        if (a_['m'], a_['who'] if a_['m'] != 'two' else '') != (b_['m'], b_['who'] if b_['m'] != 'two' else '') and b_['m'] != 'work':
             sfx.append({'t': max(0, round(b_['t'] - 0.06, 2)), 'file': f"sfx/whoosh_{1 + int(b_['t'] * 10) % 3}.wav", 'vol': 0.12 if b_['m'] in ('two', 'one') else 0.2})
+    for w in work:
+        sfx.append({'t': round(w['t'], 2), 'file': f"sfx/pop_{1 + int(w['t'] * 10) % 3}.wav", 'vol': 0.2})
     for nt in notes:
         sfx.append({'t': nt['t'], 'file': f"sfx/pop_{1 + int(nt['t'] * 10) % 3}.wav", 'vol': 0.22})
     sfx.append({'t': round(dur - 3.4, 2), 'file': 'sfx/riser.wav', 'vol': 0.2})
@@ -257,7 +309,7 @@ def build(n):
                  srcW=STRIP[0], srcH=STRIP[1], tiles=TILES, face=FACE, shots=shots, notes=notes, hookEnd=round(rew_t, 2),
                  rewind={'t': round(rew_t, 2), 'd': REW, 'from': mmss(hook[1]), 'to': mmss(first)},
                  thumb=f'projects/{CODE}/thumb.jpg' if (PUB / 'thumb.jpg').exists() else '', qr=f'projects/{CODE}/qr.png' if (PUB / 'qr.png').exists() else '',
-                 len='45:03', words=words, sfx=sfx, tag='انت بتشتغل ايه · رواد الأعمال', masks=masks_for(sh['hook'][0]))
+                 len='45:03', words=words, sfx=sfx, work=work, workLogo=(f'projects/{CODE}/cz/logo.jpg' if work else ''), tag='انت بتشتغل ايه · رواد الأعمال', masks=masks_for(sh['hook'][0]))
     json.dump(props, open(OUT / f'props_{n:02d}.json', 'w', encoding='utf8'), ensure_ascii=False, indent=1)
     json.dump({'segs': [{'a': a, 'b': b, 'st': st} for a, b, st in tl], 'dur': dur}, open(OUT / f'tl_{n:02d}.json', 'w'))
     print(f'short {n}: {dur:.1f} s, {len(shots)} shots, {len(notes)} notes, {len(words)} words, pieces {[(round(a, 2), round(b, 2)) for a, b in spans]}')

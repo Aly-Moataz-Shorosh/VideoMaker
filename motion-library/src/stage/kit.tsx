@@ -123,17 +123,34 @@ export const Caps: React.FC<{words: Wd[]; hide?: [number, number][]; top?: numbe
   return (
     <div style={{position: 'absolute', left: 40, right: 40, top, display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '4px 16px', direction: 'rtl',
       transform: `scale(${0.86 + 0.14 * pop})`}}>
-      {c.map((w, i) => {
-        const on = t >= w.start - 0.03;
-        const now = on && t < w.end + 0.05;
-        const latin = /^[A-Za-z0-9.\-]+$/.test(w.w);
-        return (
-          <span key={i} style={{display: 'inline-block', fontFamily: latin ? EN : AR, fontWeight: 900, fontSize: latin ? 60 : 68, lineHeight: 1.2, padding: '0 12px 4px', borderRadius: 14,
-            color: now ? S.ink : w.hl ? pal.now : S.white, background: now ? (w.hl ? pal.hl : pal.now) : 'transparent', opacity: on ? 1 : 0.35,
-            transform: now ? 'scale(1.07) rotate(-1.5deg)' : 'none',
-            WebkitTextStroke: now ? undefined : '2px rgba(0,0,0,0.55)', textShadow: now ? undefined : '0 6px 22px rgba(0,0,0,0.85)'}}>{w.w.replace(/[.،,:]+$/, '')}</span>
-        );
-      })}
+      {(() => {
+        // consecutive English words = ONE left-to-right group, else the rtl row reverses them ("Engineering Software", 2026-10-31)
+        const isLat = (w: Wd) => /^[A-Za-z0-9.\-]+[.،,:]*$/.test(w.w);
+        const word = (w: Wd, i: number) => {
+          const on = t >= w.start - 0.03;
+          const now = on && t < w.end + 0.05;
+          const latin = isLat(w);
+          return (
+            <span key={i} style={{display: 'inline-block', fontFamily: latin ? EN : AR, fontWeight: 900, fontSize: latin ? 60 : 68, lineHeight: 1.2, padding: '0 12px 4px', borderRadius: 14,
+              color: now ? S.ink : w.hl ? pal.now : S.white, background: now ? (w.hl ? pal.hl : pal.now) : 'transparent', opacity: on ? 1 : 0.35,
+              transform: now ? 'scale(1.07) rotate(-1.5deg)' : 'none',
+              WebkitTextStroke: now ? undefined : '2px rgba(0,0,0,0.55)', textShadow: now ? undefined : '0 6px 22px rgba(0,0,0,0.85)'}}>{w.w.replace(/[.،,:]+$/, '')}</span>
+          );
+        };
+        const out: React.ReactNode[] = [];
+        for (let i = 0; i < c.length; ) {
+          if (isLat(c[i]) && i + 1 < c.length && isLat(c[i + 1])) {
+            let j = i;
+            while (j < c.length && isLat(c[j])) j++;
+            out.push(<span key={'g' + i} style={{display: 'inline-flex', direction: 'ltr', gap: '4px 16px'}}>{c.slice(i, j).map((w, q) => word(w, i + q))}</span>);
+            i = j;
+          } else {
+            out.push(word(c[i], i));
+            i++;
+          }
+        }
+        return out;
+      })()}
     </div>
   );
 };

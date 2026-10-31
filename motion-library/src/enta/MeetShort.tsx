@@ -14,7 +14,7 @@ import {MeetBg} from './Meet';
 //   rev = the same timeline cut from the approved long edit (review_02, 1080x608): used where it shows a board or a card
 // Cadres (shots): two = both stacked (Aly top) · one = the speaker big · board / card = the long edit's board (or person + card)
 // on top and `who` under it (board: the speaker; card: the listener). Zoom only inside a tile, <= 1.08 (style 14 rule).
-const shot = z.object({t: z.number(), m: z.enum(['two', 'one', 'board', 'card']), who: z.enum(['A', 'G']).default('A'), z: z.number().default(1)});
+const shot = z.object({t: z.number(), m: z.enum(['two', 'one', 'board', 'card', 'work']), who: z.enum(['A', 'G']).default('A'), z: z.number().default(1)});
 export const meetShortSchema = z.object({
   duration: z.number().default(5),
   no: z.number().default(1),
@@ -39,6 +39,11 @@ export const meetShortSchema = z.object({
   // Meet UI in the raw strip covered like in the long edit (biz ep01 2026-10-28): tag = our paper name tag, patch = a clean crop
   // (Meet's speaking dots), neither = a soft blur. box = strip px [x, y, w, h]
   masks: z.array(z.object({who: z.enum(['A', 'G']), box: z.array(z.number()), tag: z.string().optional(), patch: z.string().optional()})).default([]),
+  // the guest's REAL work on top while he names it (biz ep01 Courzerve short, Aly 2026-10-31): clip = a cut of their campaign video,
+  // pic = one design, posts = several designs fanned out; label = paper chip (*word* = highlighted); cadre 'work' = card on top + speaker under
+  work: z.array(z.object({t: z.number(), d: z.number(), kind: z.enum(['clip', 'pic', 'posts']), label: z.string().default(''), pos: z.enum(['bottom', 'top']).default('bottom'),
+    src: z.string().optional(), srcs: z.array(z.string()).optional()})).default([]),
+  workLogo: z.string().default(''),
 });
 type Props = z.infer<typeof meetShortSchema>;
 type Shot = z.infer<typeof shot>;
@@ -62,7 +67,7 @@ const rectOf = (s: Shot, p: 'A' | 'G'): R => {
 };
 
 export const MeetShort: React.FC<Props> = (p) => {
-  const {duration, no, total, tag, head, src, rev, srcW, srcH, tiles, face, shots, notes, hookEnd, rewind, thumb, qr, len, words, sfx, masks} = p;
+  const {duration, no, total, tag, head, src, rev, srcW, srcH, tiles, face, shots, notes, hookEnd, rewind, thumb, qr, len, words, sfx, masks, work, workLogo} = p;
   const {fps} = useVideoConfig();
   const now = useCurrentFrame();
   const fr = (s: number) => Math.round(s * fps);
@@ -75,8 +80,11 @@ export const MeetShort: React.FC<Props> = (p) => {
   const since = i >= 0 ? now - fr(cur.t) : 999;
   const k = smooth(Math.min(1, since / BLEND));
   const kz = smooth(Math.min(1, since / (BLEND * 2.5)));
-  const isRev = (s: Shot) => s.m === 'board' || s.m === 'card';
-  const revK = (isRev(prev) ? 1 - k : 0) + (isRev(cur) ? k : 0);
+  const isRev = (s: Shot) => s.m === 'board' || s.m === 'card' || s.m === 'work';
+  const isLong = (s: Shot) => s.m === 'board' || s.m === 'card';
+  const revK = (isLong(prev) ? 1 - k : 0) + (isLong(cur) ? k : 0);
+  const workK = (prev.m === 'work' ? 1 - k : 0) + (cur.m === 'work' ? k : 0);
+  const wk = [...work].reverse().find((w) => now >= fr(w.t) - 2 && now < fr(w.t + w.d) + BLEND);
 
   const tile = (pp: 'A' | 'G') => {
     const r = lerp(rectOf(prev, pp), rectOf(cur, pp), k);
@@ -136,15 +144,67 @@ export const MeetShort: React.FC<Props> = (p) => {
           <OffthreadVideo src={staticFile(rev)} muted style={{position: 'absolute', left: -14, top: -8, width: 1080, height: 608, maxWidth: 'none'}} />
         </div>
       ) : null}
+      {workK > 0.01 && wk ? (
+        <div style={{position: 'absolute', left: REV.x + 14, top: REV.y + (1 - workK) * -40, width: REV.w - 28, height: REV.h - 16, opacity: workK, borderRadius: 22,
+          overflow: 'hidden', boxShadow: '0 22px 50px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08)', background: '#0c0d11'}}>
+          <Sequence key={wk.t} from={fr(wk.t)} layout="none"><WorkCard w={wk} logo={workLogo} /></Sequence>
+        </div>
+      ) : null}
       {note()}
       {rewind ? <Sequence from={fr(rewind.t)} durationInFrames={fr(rewind.d)} layout="none"><Rewind dur={fr(rewind.d)} from={rewind.from} to={rewind.to} /></Sequence> : null}
       <Caps words={words} top={CAP} pal={PAL} />
       <Frame no={no} total={total} head={head} dur={D} hookEnd={fr(hookEnd)} tag={tag} pal={PAL} />
       {thumb ? <Badge thumb={thumb} qr={qr} at={fr(hookEnd + (rewind?.d ?? 0))} big={D + 999} label="الحلقة كاملة" sub="على قناتي في يوتيوب" len={len} y0={TOP + 18}
-        hide={Math.max(revK, Math.min(1, (now - (D - fr(END))) / 8))} /> : null}
+        hide={Math.max(revK, workK, Math.min(1, (now - (D - fr(END))) / 8))} /> : null}
       {thumb ? <Sequence from={D - fr(END)} layout="none"><EndCard thumb={thumb} qr={qr} len={len} /></Sequence> : null}
       {src ? <Audio src={staticFile(src)} /> : null}
       {sfx.map((s, j) => <Sequence key={'x' + j} from={fr(s.t)} durationInFrames={fr(2.5)} layout="none"><Audio src={staticFile(s.file)} volume={s.vol} /></Sequence>)}
+    </AbsoluteFill>
+  );
+};
+
+// one piece of the guest's real work (W x H = the card on top), its label chip bottom-right, the brand logo top-left
+const CW = 1052, CH = 592;
+const WorkCard: React.FC<{w: Props['work'][number]; logo: string}> = ({w, logo}) => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const a = spr(f, fps, 0, 150, 16);
+  const srcs = w.srcs ?? [];
+  const body = () => {
+    if (w.kind === 'clip' && w.src) return <OffthreadVideo src={staticFile(w.src)} muted style={{position: 'absolute', inset: 0, width: CW, height: CH, objectFit: 'cover'}} />;
+    if (w.kind === 'pic' && srcs[0]) return (
+      <>
+        <Img src={staticFile(srcs[0])} style={{position: 'absolute', inset: -40, width: CW + 80, height: CH + 80, objectFit: 'cover', filter: 'blur(28px) brightness(.55)'}} />
+        <Img src={staticFile(srcs[0])} style={{position: 'absolute', left: '50%', top: '47%', maxWidth: CW - 120, maxHeight: CH - 150, borderRadius: 14,
+          border: `6px solid ${E.white}`, boxShadow: '0 18px 40px rgba(0,0,0,.55)', transform: `translate(-50%, -50%) scale(${0.9 + 0.1 * a + f * 0.0006})`}} />
+      </>
+    );
+    // posts: fanned out one by one, a slow drift
+    const n = srcs.length, size = n > 4 ? 300 : 340, gap = (CW - 120 - size) / Math.max(1, n - 1);
+    const per = Math.max(3, Math.min(7, Math.round((w.d * fps * 0.45) / n)));
+    return (
+      <>
+        <AbsoluteFill style={{background: 'radial-gradient(circle at 50% 40%, #3D5BA6 0%, #1E2C55 70%)'}} />
+        {srcs.map((s, j) => {
+          const q = spr(f, fps, j * per, 170, 14);
+          const rot = ((j % 2 ? 1 : -1) * (4 + (j * 3) % 5)) * (1 - 0.3 * q);
+          return <Img key={j} src={staticFile(s)} style={{position: 'absolute', left: 60 + j * gap - f * 0.15, top: (CH - 70 - size) / 2 + (j % 2 ? 22 : -10) + (1 - q) * 160,
+            width: size, height: size, objectFit: 'cover', borderRadius: 10, border: `6px solid ${E.white}`, boxShadow: '0 16px 34px rgba(0,0,0,.55)',
+            opacity: q, transform: `rotate(${rot}deg) scale(${0.85 + 0.15 * q})`}} />;
+        })}
+      </>
+    );
+  };
+  return (
+    <AbsoluteFill style={{opacity: Math.min(1, f / 4 + 0.2)}}>
+      {body()}
+      {logo ? <div style={{position: 'absolute', left: 18, ...(w.pos === 'top' ? {bottom: 16} : {top: 16}), display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(12,13,17,.72)', borderRadius: 40,
+        padding: '6px 16px 6px 6px', opacity: a}}>
+        <Img src={staticFile(logo)} style={{width: 44, height: 44, borderRadius: 22}} />
+        <span style={{fontFamily: EN, fontWeight: 900, fontSize: 24, color: E.white, letterSpacing: 1}}>COURZERVE</span></div> : null}
+      {w.label ? <div style={{position: 'absolute', right: 22, ...(w.pos === 'top' ? {top: 18} : {bottom: 20}), maxWidth: CW - 80, background: E.paper, color: E.ink, borderRadius: 10, padding: '6px 22px 10px',
+        fontFamily: AR, fontWeight: 900, fontSize: 40, direction: 'rtl', boxShadow: '0 10px 24px rgba(0,0,0,.5)', border: `5px solid ${E.white}`,
+        transform: `translateY(${(1 - spr(f, fps, 5, 170, 15)) * (w.pos === 'top' ? -90 : 90)}px) rotate(-1.2deg)`}}><Hi text={w.label} color={E.orange} /></div> : null}
     </AbsoluteFill>
   );
 };
