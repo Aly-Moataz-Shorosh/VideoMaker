@@ -104,6 +104,8 @@ question with the list. A newly approved look = a new numbered folder (sample.mp
    still-check every mixed text. Card lines on their own words. Each sentence on its own side. Generic things = icons. Same colour =
    same quantity. His name = "علي شُرُش". Re-render only the changed parts (redo_parts.py + render_redo.sh + 'fix' overlay layer).
 
+19. (biz ep01 shorts 2026-10-31) A short's HOOK is never the sentence the short starts with after the rewind (heard twice) — take it from later.
+
 ## ONLINE interview (style 14, enta cs ep01 2026-10-20, docs/22 'حاسبات ep01') — cadre switching + background "حلوة جدا جدا"
 - Google Meet/Zoom screen recording: hide the meeting UI, tiles on a calm dark bg, NO decorative frame ("دوشة"), switch cadres
   (two / one big / person + card) instead of zoom; zoom only inside a tile, ≤ 1.08. Sides by gaze (usually Aly left, guest right).
