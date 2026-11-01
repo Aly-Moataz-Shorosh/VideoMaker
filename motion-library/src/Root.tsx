@@ -1,5 +1,6 @@
 import React from 'react';
 import {Composition} from 'remotion';
+import {MatchReel, matchReelSchema} from './match/MatchReel';
 import {registry} from './registry';
 import {Edit, editSchema} from './Edit';
 import {FilmShort, filmShortSchema} from './film/FilmShort';
@@ -42,6 +43,10 @@ export const Root: React.FC = () => (
       fps={30} width={1080} height={1920} durationInFrames={90}
       calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * 30))})} />
     <Composition id="meet-short" component={MeetShort} schema={meetShortSchema} defaultProps={meetShortSchema.parse({})}
+      fps={30} width={1080} height={1920} durationInFrames={90}
+      calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * 30))})} />
+    {/* Live Playmobil match reel (2026-11-01). Props from projects/<code>/work/scripts/make_props.py */}
+    <Composition id="match-reel" component={MatchReel} schema={matchReelSchema} defaultProps={matchReelSchema.parse({})}
       fps={30} width={1080} height={1920} durationInFrames={90}
       calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * 30))})} />
   </>
