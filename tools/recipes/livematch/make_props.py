@@ -72,7 +72,8 @@ CUES = [
     C(3.66, 3.5, 'vs', b={'a': 0.92, 'b': 1.36, 'real': 1.9, 'score': 2.62}),
     C(6.3, 0.9, 'behind', text='2-2', color='#FFD43B', size=320),
     # every doll moves like the real player: real (top) vs Playmobil (bottom), same goal
-    C(7.16, 4.55, 'split', top='goalR', bot='goalP', **{'from': 2.0}, words=[[3.62, 'لحظة بلحظة', 'لحظة بلحظة']]),
+    C(7.16, 4.55, 'split', top='goal2R', bot='goal2P', **{'from': 0.0}, words=[[3.62, 'لحظة بلحظة', 'لحظة بلحظة']],
+      pic={'at': 0.22, 'file': 'old_video_thumb.jpg', 'label': 'عروسة = كاركتر بيتحرك'}),
     C(11.8, 1.32, 'behind', text='ازاي؟', color='#FFD43B', size=300),
     C(13.1, 2.5, 'map', b={'logo': 0.84}),
     C(15.62, 1.66, 'clip', file='s_cam', **{'from': 3.0}, label='كاميرات تتبع', stamps=[{'text': '+ AI', 'at': 1.4, 'x': 160, 'y': 120, 'size': 56, 'color': '#2F6BFF'}]),
@@ -84,21 +85,23 @@ CUES = [
       groups=[['head', 4.32], ['sh', 4.7], ['mid', 5.2], ['arm', 5.68], ['leg', 6.36], ['heel', 6.8], ['tip', 7.26]],
       tags=[{'text': 'الكمبيوتر عارف كل حركة', 'at': 8.3, 'x': 175, 'y': 395, 'size': 30}]),
     C(32.6, 2.3, 'behind', text='21', color='#FFD43B', size=420),
-    C(41.65, 4.1, 'clip', file='p_ref', **{'from': 2.8}, stamps=[{'text': 'مش للعرض', 'at': 0.95, 'x': 560, 'y': 120, 'size': 56}]),
+    C(41.65, 4.1, 'clip', file='p_ref', **{'from': 2.8}, stamps=[{'text': 'مش للعرض', 'at': 0.95, 'x': 150, 'y': 372, 'size': 46, 'r': -6}]),
     C(45.8, 3.45, 'offside', b={'off': 0.35, 'name': 1.05}),
     C(46.1, 1.85, 'behind', text='تسلل', color='#FF3D3D', size=300),
     C(49.3, 2.7, 'flow', b={'move': 1.8}),
+    C(51.3, 2.2, 'side', pic='old_video_thumb.jpg', label='العرايس = كاركترز', x=880, y=230, h=210, ls=28),
     C(52.05, 4.2, 'wrap', b={'skin': 1.5, 'logo': 3.15}),
     C(55.15, 1.15, 'behind', text='PLAYMOBIL', color='#FFFFFF', size=160),
     C(56.3, 3.4, 'brands', b={'lego': 1.1, 'plastic': 1.9}),
     C(59.75, 4.1, 'render', file='p_heli', rate=0.88, b={'logo': 2.6}),
     C(62.3, 1.5, 'behind', text='UNREAL', color='#FFFFFF', size=200),
     # runs / shoots: real (top) vs Playmobil (bottom)
-    C(63.92, 3.08, 'split', top='chanceR', bot='chanceP', **{'from': 0.4}, words=[[0.42, 'يجري', 'يجري'], [1.78, 'يشوت', 'يشوت']],
+    C(63.92, 3.2, 'split', top='penR', bot='penP', **{'from': 0.9}, words=[[0.42, 'يجري', 'يجري'], [1.78, 'يشوت', 'يشوت']],
       labels=['اللعيب', 'الكاركتر']),
     # Aly as a Playmobil reporter
-    C(67.0, 6.6, 'reporter', bg='p_lineup', b={'real': 14},
-      cards=[{'k': 'mocap', 'at': 0.08, 'd': 2.5}, {'k': 'live', 'at': 2.62, 'd': 1.7}, {'k': 'first', 'at': 4.38, 'd': 2.2}]),
+    # films' motion capture full screen (Aly v2: a video, not a photo over the reporter), then Aly as a Playmobil reporter
+    C(66.9, 2.85, 'fullclip', file='mocap', label='Motion Capture', sub='في الأفلام', credit='Video: cottonbro studio / Pexels'),
+    C(69.45, 4.15, 'reporter', bg='p_lineup', b={'real': 14}, cards=[{'k': 'live', 'at': 0.17, 'd': 1.7}, {'k': 'first', 'at': 1.93, 'd': 2.2}]),
     C(73.62, 5.85, 'channels', b={'rights': 2.7, 'beta': 4.6}),
     C(76.3, 1.6, 'behind', text='حقوق البث', color='#FFD43B', size=190),
     C(79.5, 7.7, 'old', b={'year': 1.65, 'qr': 1.0, 'note': 2.3}),
@@ -119,7 +122,7 @@ def sfx():
     for i, c in enumerate(CUES):
         if c['k'] == 'behind':
             out.append({'t': c['t'], 'file': 'sfx/swish.wav', 'vol': 0.22})
-        elif c['k'] in ('split', 'reporter'):
+        elif c['k'] in ('split', 'reporter', 'fullclip'):
             out.append({'t': max(0, c['t'] - 0.15), 'file': 'sfx/swoop_up.wav', 'vol': 0.3})
         else:
             out.append({'t': c['t'], 'file': f'sfx/{wh[i % 3]}.wav', 'vol': 0.22})
@@ -135,7 +138,7 @@ def sfx():
         if c['k'] == 'skel':
             out.append({'t': c['t'] + b['count'] + 0.75, 'file': 'sfx/ding.wav', 'vol': 0.3})
         if c['k'] == 'reporter':
-            out += [{'t': c['t'] + 2.62, 'file': 'sfx/stamp.wav', 'vol': 0.3}, {'t': c['t'] + 4.38, 'file': 'sfx/impact.wav', 'vol': 0.3}]
+            out += [{'t': c['t'] + 0.12, 'file': 'sfx/stamp.wav', 'vol': 0.3}, {'t': c['t'] + 1.88, 'file': 'sfx/impact.wav', 'vol': 0.3}]
         if c['k'] == 'follow':
             out.append({'t': c['t'] + 0.66, 'file': 'sfx/click.wav', 'vol': 0.4})
     return sorted(out, key=lambda s: s['t'])

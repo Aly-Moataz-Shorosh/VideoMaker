@@ -221,12 +221,12 @@ const Chain: Sc = ({dur, p}) => {
         <path d="M 290 60 Q 150 0 20 60" fill="none" stroke={VOX.red} strokeWidth={8} strokeLinecap="round" pathLength={1} strokeDasharray={1} strokeDashoffset={1 - arrow} />
         {arrow > 0.95 ? <path d="M 20 60 l 26 -22 M 20 60 l 32 6" stroke={VOX.red} strokeWidth={8} strokeLinecap="round" /> : null}
       </svg>
-      <Tag text="اشترتها · 2025" x={385} y={150} at={f2(fps, b, 'ea') + 4} bg={VOX.red} size={34} />
-      <Logo file="eablue.png" at={f2(fps, b, 'ea')} x={200} y={105} h={70} maxW={330} />
-      <Logo file="eafc.png" at={f2(fps, b, 'fc')} x={250} y={300} h={130} />
-      <div style={{position: 'absolute', right: 40, top: 255, direction: 'rtl', fontFamily: AR, fontWeight: 800, fontSize: 38, color: VOX.ink, lineHeight: 1.35,
+      <Tag text="اشترتها سنة 2025" x={390} y={36} at={f2(fps, b, 'ea') + 4} bg={VOX.red} size={30} />
+      <Logo file="eablue.png" at={f2(fps, b, 'ea')} x={190} y={110} h={58} maxW={300} />
+      <Logo file="eafc.png" at={f2(fps, b, 'fc')} x={160} y={305} h={105} />
+      <div style={{position: 'absolute', right: 34, top: 250, width: 520, direction: 'rtl', fontFamily: AR, fontWeight: 800, fontSize: 32, color: VOX.ink, lineHeight: 1.35,
         opacity: lin(f, f2(fps, b, 'fc') + 4, f2(fps, b, 'fc') + 12)}}>
-        <Marker text="EA بتاعة FIFA" at={f2(fps, b, 'fc') + 2} size={46} /><br />اللعبة اسمها دلوقتي EA SPORTS FC</div>
+        <Marker text="EA بتاعة FIFA" at={f2(fps, b, 'fc') + 2} size={44} /><br />اللعبة اسمها دلوقتي ⁦EA SPORTS FC⁩</div>
       <Stamp text="AI" at={f2(fps, b, 'ai', 99)} x={690} y={200} color={VOX.blue} size={44} r={8} />
     </Paper>
   );
@@ -488,7 +488,38 @@ const Poll: Sc = ({dur, p}) => {
     </Paper>
   );
 };
-const TRAYS: Record<string, Sc> = {clip: ClipCard, vs: Vs, map: MapDE, chain: Chain, track: Track, cams: Cams, skel: Skel, offside: Offside, flow: Flow,
+const Side: Sc = ({dur, p}) => {
+  const {fps} = useVideoConfig();
+  return (
+    <Paper w={p.w ?? 330} h={p.h ?? 230} x={p.x ?? 880} y={p.y ?? 250} tilt={p.tilt ?? 4} dur={dur} pad={8}>
+      <Img src={staticFile(P + 'pics/' + p.pic)} style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: p.pos ?? '70% 50%'}} />
+    </Paper>
+  );
+};
+const SideWithLabel: Sc = ({dur, p}) => {
+  const W2 = p.w ?? 330, H2 = p.h ?? 230, x = p.x ?? 880, y = p.y ?? 250;
+  return <>
+    <Side dur={dur} p={p} />
+    {/* label = solid yellow box, one line (a wrapped marker left the 2nd line off the yellow, Aly v2) */}
+    {p.label ? <div style={{position: 'absolute', left: p.lx ?? x - W2 / 2, top: p.ly ?? y + H2 / 2 + 22, width: p.lw ?? W2, display: 'flex', justifyContent: 'center',
+      opacity: Math.min(1, (dur - useCurrentFrame()) / 6)}}>
+      <div style={{background: VOX.marker, color: VOX.ink, fontFamily: AR, fontWeight: 900, fontSize: p.ls ?? 30, padding: '4px 16px', borderRadius: 10, whiteSpace: 'nowrap',
+        direction: 'rtl', transform: `rotate(-2deg) scale(${spr(useCurrentFrame(), 30, 5, 260, 14)})`, boxShadow: '0 8px 20px rgba(0,0,0,0.4)'}}>{p.label}</div></div> : null}
+  </>;
+};
+const FullClip: React.FC<{dur: number; p: any; src: string; at: number}> = ({dur, p, src, at}) => {
+  const f = useCurrentFrame();
+  return (
+    <AbsoluteFill style={{opacity: Math.min(1, f / 2, (dur - f) / 5), background: '#000'}}>
+      <Vid file={p.file} from={p.from ?? 0} w={1080} h={1920} />
+      <div style={{position: 'absolute', left: 0, right: 0, top: 200, textAlign: 'center'}}><Marker text={p.label} at={3} size={70} /></div>
+      {p.sub ? <div style={{position: 'absolute', left: 0, right: 0, top: 310, textAlign: 'center'}}><Marker text={p.sub} at={8} size={54} color="#fff" /></div> : null}
+      <FaceBubble src={src} x={880} y={1480} d={300} at={at} />
+      {p.credit ? <div style={{position: 'absolute', left: 60, top: 1600, fontFamily: EN, fontWeight: 700, fontSize: 24, color: 'rgba(255,255,255,0.7)'}}>{p.credit}</div> : null}
+    </AbsoluteFill>
+  );
+};
+const TRAYS: Record<string, Sc> = {side: SideWithLabel, clip: ClipCard, vs: Vs, map: MapDE, chain: Chain, track: Track, cams: Cams, skel: Skel, offside: Offside, flow: Flow,
   wrap: Wrap, brands: Brands, render: Render, channels: Channels, old: OldVideo, follow: Follow, poll: Poll};
 
 // ---------- full-screen moments (his face stays in a round bubble) ----------
@@ -529,7 +560,8 @@ const Split: React.FC<{dur: number; p: any; src: string; at: number}> = ({dur, p
       <div style={{position: 'absolute', left: 540, top: 832, transform: 'translate(-50%,-50%)', fontFamily: EN, fontWeight: 900, fontSize: 90, color: S.yellow,
         textShadow: '0 6px 20px rgba(0,0,0,0.8)'}}>=</div>
       <FaceBubble src={src} x={880} y={1520} d={300} at={at} />
-      <div style={{position: 'absolute', left: 70, top: 1440, fontFamily: AR, fontWeight: 700, fontSize: 26, color: 'rgba(255,255,255,0.6)', direction: 'rtl'}}>المصدر: ⁦Bundesliga⁩ — مقاطع قصيرة للمراجعة</div>
+      {p.pic && f >= Math.round(p.pic.at * fps) ? <Sequence from={Math.round(p.pic.at * fps)} layout="none"><SideWithLabel dur={dur - Math.round(p.pic.at * fps)} p={{pic: p.pic.file, x: 230, y: 1545, w: 320, h: 190, tilt: -3, label: p.pic.label, ls: 30, lx: 395, ly: 1520, lw: 330}} /></Sequence> : null}
+      <div style={{position: 'absolute', left: 70, top: 196, fontFamily: AR, fontWeight: 700, fontSize: 26, color: 'rgba(255,255,255,0.6)', direction: 'rtl'}}>المصدر: ⁦Bundesliga⁩ — مقاطع قصيرة للمراجعة</div>
     </AbsoluteFill>
   );
 };
@@ -543,17 +575,13 @@ const Reporter: React.FC<{dur: number; p: any; amp: number[]; at: number}> = ({d
   const b = p.b as B;
   return (
     <AbsoluteFill style={{opacity: o, background: '#000'}}>
-      <AbsoluteFill style={{filter: 'blur(16px) brightness(0.62)', transform: 'scale(1.15)'}}>
-        <Vid file={p.bg ?? 'p_lineup'} from={0} w={1080} h={1920} rate={0.6} />
-      </AbsoluteFill>
-      <div style={{position: 'absolute', left: 0, top: 260, transform: `scale(${1 + f / 900})`, transformOrigin: '50% 60%'}}>
-        <Fig3D w={1080} h={1500} mode="stand" on={0} skin={0} skelFade={0} mouth={Math.min(1, a)} talk={a} mic cam={{r: 2.6, y: 1.45, ang: 0.32 + 0.05 * Math.sin(f / 50), look: 1.32, fov: 38}} ground={false} />
-      </div>
+      {/* pre-blurred clip (a CSS blur layer was composited OVER the 3D canvas in full-size renders and cut his mouth away, v2 review) */}
+      <AbsoluteFill><Vid file={(p.bg ?? 'p_lineup') + '_blur'} from={0} w={1080} h={1920} /></AbsoluteFill>
       <LiveBug x={60} y={170} />
       {/* name strap like a TV reporter */}
-      <div style={{position: 'absolute', right: 0, top: 1300, width: 900, transform: `translateX(${(1 - spr(f, fps, 8, 200, 16)) * 900}px)`}}>
-        <div style={{background: S.yellow, color: VOX.ink, fontFamily: AR, fontWeight: 900, fontSize: 58, padding: '6px 40px', direction: 'rtl'}}>علي شُرُش</div>
-        <div style={{background: VOX.ink, color: '#fff', fontFamily: AR, fontWeight: 700, fontSize: 38, padding: '6px 40px', direction: 'rtl'}}>مراسل من ملعب ⁦Playmobil⁩</div>
+      <div style={{position: 'absolute', right: 0, top: 1555, width: 900, transform: `translateX(${(1 - spr(f, fps, 8, 200, 16)) * 900}px)`}}>
+        <div style={{background: S.yellow, color: VOX.ink, fontFamily: AR, fontWeight: 900, fontSize: 46, padding: '6px 36px', direction: 'rtl'}}>
+          علي شُرُش <span style={{fontWeight: 700, fontSize: 34}}>· مراسل من ملعب ⁦Playmobil⁩</span></div>
       </div>
       {/* the movies' motion capture vs this time live */}
       {(p.cards ?? []).map((c: any, i: number) => {
@@ -569,6 +597,10 @@ const Reporter: React.FC<{dur: number; p: any; amp: number[]; at: number}> = ({d
             <Logo file="bundesliga.png" at={8} x={200} y={630} h={34} maxW={300} /></> : null}
         </Sequence>;
       })}
+      {/* 3D canvas LAST, nothing over it: any DOM layer above it (name strap) made Chrome drop a band of the canvas = his mouth (v2 review) */}
+      <div style={{position: 'absolute', left: 0, top: 260}}>
+        <Fig3D w={1080} h={1290} mode="stand" on={0} skin={0} built skelFade={0} mouth={Math.min(1, a)} talk={a} mic cam={{r: 2.6 - f / 900, y: 1.45, ang: 0.32 + 0.05 * Math.sin(f / 50), look: 1.32, fov: 38}} ground={false} />
+      </div>
     </AbsoluteFill>
   );
 };
@@ -596,7 +628,7 @@ export const MatchReel: React.FC<Props> = ({duration, src, roto, cues, words, zo
   const zs = zoom.map((z) => z[0]), zv = zoom.map((z) => z[1]);
   const zm = zs.length > 1 ? interpolate(t, zs, zv, {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}) : zv[0];
   const camStyle: React.CSSProperties = {position: 'absolute', inset: 0, transform: `scale(${zm})`, transformOrigin: '50% 34%'};
-  const full = cues.filter((c) => (c.k === 'split' || c.k === 'reporter') && live(c));
+  const full = cues.filter((c) => (c.k === 'split' || c.k === 'reporter' || c.k === 'fullclip') && live(c));
   const fullOn = full.some((c) => now >= fr(c.t) + 6 && now < fr(c.t + c.d) - 6);
   const behinds = cues.filter((c) => c.k === 'behind');
   const trays = cues.filter((c) => TRAYS[c.k]);
@@ -620,7 +652,7 @@ export const MatchReel: React.FC<Props> = ({duration, src, roto, cues, words, zo
       })}
       {full.map((c, i) => (
         <Sequence key={'f' + i} from={fr(c.t)} durationInFrames={fr(c.d)} layout="none">
-          {c.k === 'split' ? <Split dur={fr(c.d)} p={c.p} src={src} at={c.t} /> : <Reporter dur={fr(c.d)} p={c.p} amp={amp} at={c.t} />}
+          {c.k === 'split' ? <Split dur={fr(c.d)} p={c.p} src={src} at={c.t} /> : c.k === 'fullclip' ? <FullClip dur={fr(c.d)} p={c.p} src={src} at={c.t} /> : <Reporter dur={fr(c.d)} p={c.p} amp={amp} at={c.t} />}
         </Sequence>))}
       <Caps words={words} hide={capsHide} top={fullOn ? 1700 : CAP_Y} />
       {sfx.map((s, i) => <Sequence key={'x' + i} from={fr(s.t)} durationInFrames={fr(2.5)} layout="none"><Audio src={staticFile(s.file)} volume={s.vol} /></Sequence>)}

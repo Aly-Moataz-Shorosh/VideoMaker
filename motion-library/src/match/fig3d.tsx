@@ -112,10 +112,10 @@ const Head: React.FC<{p: V; mouth: number; s: number; face?: boolean}> = ({p, mo
 );
 
 // Playmobil body built on the skeleton: every part pops on in order (skin = frame it starts, -1 = never)
-const Body: React.FC<{P: Pose; f: number; skin: number; mouth: number; mic?: boolean}> = ({P, f, skin, mouth, mic}) => {
+const Body: React.FC<{P: Pose; f: number; skin: number; mouth: number; mic?: boolean; built?: boolean}> = ({P, f, skin, mouth, mic, built}) => {
   const {fps} = useVideoConfig();
   if (skin < 0) return null;
-  const s = (i: number) => (f < skin ? 0 : spr(f, fps, skin + i * 2, 230, 12));
+  const s = (i: number) => (built ? 1 : f < skin ? 0 : spr(f, fps, skin + i * 2, 230, 12));
   const torsoA: V = [P.hip[0], P.hip[1] - 0.04, P.hip[2]], torsoB: V = [P.neck[0], P.neck[1] - 0.02, P.neck[2]];
   const A = new THREE.Vector3(...torsoA), B = new THREE.Vector3(...torsoB);
   const q = new THREE.Quaternion().setFromUnitVectors(UP, B.clone().sub(A).normalize());
@@ -173,13 +173,13 @@ const Skel: React.FC<{P: Pose; on: number; lit: J[]; dim?: number}> = ({P, on, l
 
 // tray/full scene: points count up (on: 0..1), named groups light up, Playmobil skin pops at `skin`
 export const Fig3D: React.FC<{w: number; h: number; mode: 'run' | 'stand'; on?: number; lit?: J[]; skin?: number; skelFade?: number;
-  mouth?: number; talk?: number; cam?: {r: number; y: number; ang: number; look: number; fov?: number}; mic?: boolean; ground?: boolean}> = (
-  {w, h, mode, on = 1, lit = [], skin = -1, skelFade = 1, mouth = 0, talk = 0, cam = {r: 3.4, y: 1.1, ang: 0.5, look: 1.0}, mic, ground = true}) => {
+  mouth?: number; talk?: number; cam?: {r: number; y: number; ang: number; look: number; fov?: number}; mic?: boolean; ground?: boolean; built?: boolean}> = (
+  {w, h, mode, on = 1, lit = [], skin = -1, skelFade = 1, mouth = 0, talk = 0, cam = {r: 3.4, y: 1.1, ang: 0.5, look: 1.0}, mic, ground = true, built}) => {
   const f = useCurrentFrame();
   const P = mode === 'run' ? runPose(f) : standPose(f, talk);
   const cx = cam.r * Math.sin(cam.ang), cz = cam.r * Math.cos(cam.ang);
   return (
-    <ThreeCanvas width={w} height={h} gl={{antialias: true, alpha: true}} camera={{position: [cx, cam.y, cz], fov: cam.fov ?? 34}}
+    <ThreeCanvas width={w} height={h} gl={{antialias: false, alpha: true}} camera={{position: [cx, cam.y, cz], fov: cam.fov ?? 34}}
       onCreated={({camera}) => camera.lookAt(0, cam.look, 0)}>
       <CamLook x={cx} y={cam.y} z={cz} look={cam.look} />
       <Env />
@@ -188,7 +188,7 @@ export const Fig3D: React.FC<{w: number; h: number; mode: 'run' | 'stand'; on?: 
       <directionalLight position={[-3, 2, -2]} intensity={0.9} color="#9DB7FF" />
       {ground ? <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}><circleGeometry args={[1.1, 48]} /><meshStandardMaterial color="#1C2B22" transparent opacity={0.55} /></mesh> : null}
       {skelFade > 0.01 ? <Skel P={P} on={on} lit={lit} dim={skelFade} /> : null}
-      <Body P={P} f={f} skin={skin} mouth={mouth} mic={mic} />
+      <Body P={P} f={f} skin={skin} mouth={mouth} mic={mic} built={built} />
     </ThreeCanvas>
   );
 };
