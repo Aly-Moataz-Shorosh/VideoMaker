@@ -99,12 +99,14 @@ const Head: React.FC<{p: V; mouth: number; s: number; face?: boolean}> = ({p, mo
     <mesh position={[0, 0.1, -0.06]}><cylinderGeometry args={[0.215, 0.205, 0.2, 40, 1, false, Math.PI * 0.32, Math.PI * 1.36]} /><meshStandardMaterial color={PM.hair} roughness={0.45} side={THREE.DoubleSide} /></mesh>
     {face ? <>
       {/* beard ring on the jaw + moustache (Aly has both) */}
-      <mesh position={[0, -0.075, 0]}><cylinderGeometry args={[0.2, 0.193, 0.09, 40, 1, true, -Math.PI * 0.36, Math.PI * 0.72]} /><meshStandardMaterial color={PM.hair} roughness={0.6} transparent opacity={0.7} side={THREE.DoubleSide} /></mesh>
-      <mesh position={[0, 0.0, 0.198]} scale={[1, 0.35, 0.4]}><boxGeometry args={[0.12, 0.05, 0.03]} /><meshStandardMaterial color={PM.hair} /></mesh>
+      <mesh position={[0, -0.1, 0]}><cylinderGeometry args={[0.199, 0.19, 0.07, 40, 1, true, -Math.PI * 0.36, Math.PI * 0.72]} /><meshStandardMaterial color={PM.hair} roughness={0.6} transparent opacity={0.7} side={THREE.DoubleSide} /></mesh>
+      <mesh position={[0, 0.03, 0.199]} scale={[1, 0.35, 0.4]}><boxGeometry args={[0.12, 0.05, 0.03]} /><meshStandardMaterial color={PM.hair} /></mesh>
       {[-1, 1].map((k) => <mesh key={k} position={[k * 0.07, 0.1, 0.188]} scale={[1, 1.25, 0.5]}><sphereGeometry args={[0.022, 16, 12]} /><meshStandardMaterial color={PM.ink} roughness={0.2} /></mesh>)}
       {[-1, 1].map((k) => <mesh key={'b' + k} position={[k * 0.07, 0.16, 0.19]} rotation={[0, 0, -k * 0.15]}><boxGeometry args={[0.07, 0.014, 0.01]} /><meshStandardMaterial color={PM.hair} /></mesh>)}
       {/* mouth opens with his voice */}
-      <mesh position={[0, -0.045, 0.188]} scale={[1, 0.25 + mouth * 1.5, 0.25]}><sphereGeometry args={[0.035, 20, 12]} /><meshStandardMaterial color="#5A1620" roughness={0.5} /></mesh>
+      {/* (v2: the mouth sat inside the beard band -> above it, in front of the skin, Playmobil smile + opening with his voice) */}
+      <mesh position={[0, -0.03, 0.2]} rotation={[Math.PI / 2, 0, 0]} scale={[1.25, 0.3, 0.35 + mouth * 1.25]}><cylinderGeometry args={[0.04, 0.04, 0.02, 28]} /><meshStandardMaterial color="#4A0E16" roughness={0.5} /></mesh>
+      <mesh position={[0, -0.03 + 0.012 * (0.35 + mouth * 1.25), 0.205]} scale={[1, 0.25, 0.3]}><boxGeometry args={[0.05, 0.02, 0.02]} /><meshStandardMaterial color="#F7F3EA" /></mesh>
     </> : null}
   </group>
 );

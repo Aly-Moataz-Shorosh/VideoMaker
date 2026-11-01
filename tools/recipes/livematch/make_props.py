@@ -64,8 +64,10 @@ CUES = [
     # hook: live on MBC3, not AI, not a game
     C(0.0, 1.7, 'behind', text='LIVE', color='#FF3D3D', size=300),
     C(1.72, 1.95, 'behind', text='MBC3', color='#8BC34A', size=280),
-    C(0.05, 3.62, 'clip', file='p_celeb', live=True, logos=[{'file': 'mbc3.png', 'at': 1.75, 'x': 95, 'y': 330, 'h': 110}],
-      stamps=[{'text': '✗ مش AI', 'at': 2.55, 'x': 560, 'y': 120, 'size': 52}, {'text': '✗ مش لعبة', 'at': 3.2, 'x': 420, 'y': 300, 'size': 52, 'r': 7}]),
+    C(0.05, 3.62, 'clip', file='p_celeb', live=True,
+      w=900, h=500, grid=[{'file': 'goalP', 'from': 3.0}, {'file': 'p_penalty', 'from': 0.8}, {'file': 'p_heli', 'from': 0.0},
+            {'file': 'p_moon', 'from': 0.0}, {'file': 'p_fire', 'from': 0.0}, {'file': 'p_fans', 'from': 0.4}], logos=[{'file': 'mbc3.png', 'at': 1.75, 'x': 450, 'y': 250, 'h': 130}],
+      stamps=[{'text': '✗ مش AI', 'at': 2.55, 'x': 680, 'y': 130, 'size': 56}, {'text': '✗ مش لعبة', 'at': 3.2, 'x': 230, 'y': 380, 'size': 56, 'r': 7}]),
     # the real Bayern-Dortmund, ended 2-2
     C(3.66, 3.5, 'vs', b={'a': 0.92, 'b': 1.36, 'real': 1.9, 'score': 2.62}),
     C(6.3, 0.9, 'behind', text='2-2', color='#FFD43B', size=320),

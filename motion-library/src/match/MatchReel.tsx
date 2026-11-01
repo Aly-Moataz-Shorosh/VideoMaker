@@ -124,7 +124,7 @@ const ClipCard: Sc = ({dur, p}) => {
   const w = p.w ?? 760, h = p.h ?? 428;
   return (
     <Paper w={w + 24} h={h + 24} dur={dur} tilt={p.tilt ?? -2}>
-      <Vid file={p.file} from={p.from ?? 0} w={w} h={h} rate={p.rate ?? 1} />
+      {p.grid ? <Grid tiles={p.grid} w={w} h={h} /> : p.seq ? <Montage seq={p.seq} w={w} h={h} /> : <Vid file={p.file} from={p.from ?? 0} w={w} h={h} rate={p.rate ?? 1} />}
       {p.label ? <div style={{position: 'absolute', right: 14, bottom: 12}}><Marker text={p.label} at={f2(fps, p.b, 'label', 0.15)} size={40} /></div> : null}
       {(p.logos ?? []).map((l: any, i: number) => <Logo key={i} file={l.file} at={f2(fps, l, 'at')} x={l.x ?? 90} y={l.y ?? 80} h={l.h ?? 90} />)}
       {(p.stamps ?? []).map((s: any, i: number) => <Stamp key={i} text={s.text} at={f2(fps, s, 'at')} x={s.x ?? w / 2} y={s.y ?? h / 2} color={s.color} size={s.size} r={s.r} />)}
@@ -132,6 +132,31 @@ const ClipCard: Sc = ({dur, p}) => {
       {p.live ? <LiveBug x={w - 120} y={30} /> : null}
     </Paper>
   );
+};
+// several shots AT THE SAME TIME, 3 x 2 tiles popping in one by one (Aly v1 review: "كلهم parallel" — many angles at once)
+const Grid: React.FC<{tiles: {file: string; from: number}[]; w: number; h: number}> = ({tiles, w, h}) => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const cols = 3, rows = Math.ceil(tiles.length / cols), g = 8;
+  const tw = (w - g * (cols - 1)) / cols, th = (h - g * (rows - 1)) / rows;
+  return <div style={{position: 'absolute', inset: 0, background: VOX.ink}}>{tiles.map((c, i) => {
+    const q = spr(f, fps, i * 2 - 2, 300, 15);
+    return <div key={i} style={{position: 'absolute', left: (cols - 1 - (i % cols)) * (tw + g), top: Math.floor(i / cols) * (th + g), width: tw, height: th, overflow: 'hidden',
+      transform: `scale(${q})`, opacity: Math.min(1, q * 1.4)}}><Vid file={c.file} from={c.from} w={tw} h={th} /></div>;
+  })}</div>;
+};
+// several shots in a row, fast cuts with a white flash (Aly v1 review: the hook needs many angles, not one shot)
+const Montage: React.FC<{seq: {file: string; from: number; d: number}[]; w: number; h: number}> = ({seq, w, h}) => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  let at = 0;
+  return <>{seq.map((c, i) => {
+    const s0 = at, n = Math.round(c.d * fps);
+    at += n;
+    return <Sequence key={i} from={s0} durationInFrames={n} layout="none">
+      <div style={{position: 'absolute', inset: 0, transform: `scale(${1.12 - 0.12 * lin(f - s0, 0, n)})`}}><Vid file={c.file} from={c.from} w={w} h={h} /></div>
+      <div style={{position: 'absolute', inset: 0, background: '#fff', opacity: i ? 1 - lin(f - s0, 0, 4) : 0}} /></Sequence>;
+  })}</>;
 };
 const LiveBug: React.FC<{x: number; y: number}> = ({x, y}) => {
   const f = useCurrentFrame();
