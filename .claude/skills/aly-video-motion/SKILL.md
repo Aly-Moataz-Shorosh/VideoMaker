@@ -106,6 +106,11 @@ question with the list. A newly approved look = a new numbered folder (sample.mp
 
 19. (biz ep01 shorts 2026-10-31) A short's HOOK is never the sentence the short starts with after the rewind (heard twice) — take it from later.
 
+20. (livematch reel 2026-11-01) His Playmobil reporter had NO mouth in the render but stills looked fine: any DOM layer over a big
+   ThreeCanvas (name strap) made Chrome drop a band of the canvas. Check 3D with stills at SCALE=1, and draw the 3D canvas LAST with
+   nothing over it. Labels go BESIDE a picture (solid yellow box, one line), never on it; stamps never on faces; "same moment" pairs =
+   same camera view in both (real vs Playmobil). Many angles in a hook = tiles playing at once ("كلهم parallel").
+
 ## ONLINE interview (style 14, enta cs ep01 2026-10-20, docs/22 'حاسبات ep01') — cadre switching + background "حلوة جدا جدا"
 - Google Meet/Zoom screen recording: hide the meeting UI, tiles on a calm dark bg, NO decorative frame ("دوشة"), switch cadres
   (two / one big / person + card) instead of zoom; zoom only inside a tile, ≤ 1.08. Sides by gaze (usually Aly left, guest right).
