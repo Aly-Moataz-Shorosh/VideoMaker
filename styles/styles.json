@@ -169,6 +169,15 @@
    "build": "composition 'meet-short' (src/enta/MeetShort.tsx, masks)",
    "recipe": "docs/22 (cs ep01 shorts + biz ep01 shorts)",
    "scripts": "tools/recipes/enta_biz01_shorts/ (shorts_data, caps, cap_words, make_short, build_shorts.sh, level, qc_av, qc_sync, make_txt)"
+  },
+  "19": {
+   "folder": "19 trend-reel-3d",
+   "name": "Trend reel from his 9:16 phone talk: his face fills the frame almost all the time (zoom in/out), big text BEHIND him via his matte, Vox-style paper/marker cards under his face with a net picture/clip/logo on every word, a grid of many shots at once in the hook, real vs other-version SAME-moment split with his face bubble, real 3D (21-point skeleton, Playmobil body, Aly as a 3D reporter with lip-moving mouth), claim-safe clips (short, mirrored, smaller, muted, credited)",
+   "approved": "livematchligo reel v3 (2026-11-01, 'ممتاز')",
+   "input": "his phone video 9:16 + any reference links; TikTok clips must be downloaded by him",
+   "build": "composition 'match-reel' (src/match/MatchReel.tsx + fig3d.tsx), matte via tools/matte.py (whole video)",
+   "recipe": "docs/31-recipe-trend-reel-3d.md",
+   "scripts": "tools/recipes/livematch/ (clips.sh, make_props.py)"
   }
  },
  "_always": "Every style: his ORIGINAL voice (only per-sentence gain to one level, no cleanup), edges fitted on the waveform, sfx, CTA clip + comment card at the end of shorts, <video>.txt beside every output, sfx + voice stems. Word script only on request. Shorts: ASK one short (whole goal of the video) or several (suggestions, he picks) first; no short ever reaches 3:00."

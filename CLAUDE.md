@@ -277,6 +277,12 @@ Done (2026-10-06):
   2026-10-31: + short 06 Courzerve (real Courzerve work on top, MeetShort `work`). Aly: NO post number in enta shorts -> band
   'من الدقيقة m:ss في الحلقة' (YouTube copy has 231.2-269.2 cut = YT_CUT, length 44:25); all 6 re-rendered, old in output/shorts/archive_v2.
   2026-10-31 + short 06_courzerve (2:28): real Courzerve work (Behance campaign clips + posts) on top via MeetShort `work` (docs/22). Waiting for review.
+- 2026-11-01 `projects/2026-11-01 reel-h livematchligo` (his 9:16 phone talk: Bayern–Dortmund 2-2 shown LIVE as Playmobil on MBC3, urgent, no notes)
+  -> NEW composition `match-reel` (`src/match/`: face fills the frame + zoom, text behind him via whole-video matte, Vox-style paper cards
+  with a net visual on every word, hook = 6 shots at once, real vs Playmobil same-moment splits, real 3D: 21-point skeleton, Playmobil body,
+  Aly as a 3D Playmobil reporter with a voice-driven mouth; claim-safe clips = short, mirrored, smaller, muted, credited). v1 -> v2 -> v3
+  (only changed parts re-rendered in parallel + spliced). APPROVED v3 ("ممتاز") -> **style 19 trend-reel-3d**. Recipe `docs/31-recipe-trend-reel-3d.md`,
+  scripts `tools/recipes/livematch/`, assets `<project>/motion_public/livematch` (move back to public/projects/livematch to re-render).
 - 2026-10-28 ASSETS LIVE IN THEIR PROJECT (Aly moves finished projects to his external disk, "انقلها لفولدراتها"): every project's
   public assets (old motion-library/_parked_public/* and public/projects/entabiz01) are now in `<project>/motion_public/<name>/`
   (projects already moved off the PC got a folder of the same name holding only motion_public, to merge with his copy). To re-render
