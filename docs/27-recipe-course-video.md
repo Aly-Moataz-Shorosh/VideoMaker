@@ -74,3 +74,10 @@ floored to a 60 fps frame; checked "no cut inside a word" for all chapters. Time
 Aly review 1: NO brand intro/outro ("Intro + video + outro" meant OUR opening/ending pages); separators wanted (only skip if he says so
 again); teaser clips = his most striking moments (he picks); the 'text' icon cursor blinked 100 px outside its tile (fixed in kit.tsx Ico).
 Remotion text: no accented Latin (è) inside Arabic lines — `bi()` only isolates [A-Za-z0-9] runs, "Mise-en-scène" flipped.
+
+### FAST course — result (APPROVED v2, 2026-11-06, "thank you")
+- Timing: pieces render ~10 min (teaser/pages/33 seps/end), the NVENC join of 1:26:37 = 64 min (1.37x). Total ≈ 75 min, vs many hours for a full Remotion render.
+- QC after the join: audio xcorr + picture match vs source at 5 chapters. The concat filter drifts ~4 ms per piece
+  (picture and sound together, so lip-sync stays exact; 133 ms by the end) -> timestamps are still right to the second.
+- Done = delete work/render parts + out/bundle, move public/projects/filmcourse -> `<project>/motion_public/filmcourse`.
+- Thumbnail: Aly makes it himself with GPT; I give him a ready prompt that describes the video (see the memory aly-thumbnail-gpt-prompt).

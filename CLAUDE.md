@@ -303,4 +303,6 @@ Done (2026-10-06):
   outro and no separators -> Aly: NO intro/outro (he meant our opening/ending pages), separators back, new teaser clips 4/5, icon cursor fix.
   v2 = teaser + Claude's coverage (Film Art 46 / UCLA 27 / Aberystwyth stages 56) + 6-part timestamps + 33 separators + course untouched +
   ending (missing topics, Premiere course, Ibrahim El Abyad video youtu.be/NWtPI7aiefw first). Only teaser/pages/seps/end rendered + one
-  NVENC pass. Recipe docs/27 "FAST course", scripts `tools/recipes/filmcourse/`, evidence `research/shots/`. Waiting for Aly's review.
+  NVENC pass. Recipe docs/27 "FAST course", scripts `tools/recipes/filmcourse/`, evidence `research/shots/`. APPROVED v2 ("thank you", 2026-11-06). QC: concat drifts ~4 ms per piece (picture AND sound together,
+  133 ms at the end) -> fine for timestamps. Temp deleted; assets in `<project>/motion_public/filmcourse` (back to public/projects/filmcourse to
+  re-render). output/v1 (old full video) kept — ask before deleting. Thumbnail = Aly via GPT (prompt given).
