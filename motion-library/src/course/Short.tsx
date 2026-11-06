@@ -42,7 +42,8 @@ export const courseShortSchema = z.object({
   end: z.object({at: z.number(), d: z.number(), thumb: z.string(), qr: z.string(), title: z.string().default('الكورس الكامل على القناة')}).nullable().default(null),
   footer: z.object({face: z.string(), name: z.string()}).nullable().default(null), // channel logo + name at the very bottom (Aly 2026-10-26)
   // his webcam square of the recording as a small round circle (Aly 2026-11-06, film course shorts): one entry per piece, crop in src px
-  cam: z.array(z.object({t: z.number(), d: z.number(), file: z.string(), from: z.number(), sx: z.number(), sy: z.number(), s: z.number()})).default([]),
+  stage: z.object({top: z.number(), h: z.number()}).default({top: 430, h: 840}),
+  cam: z.array(z.object({t: z.number(), d: z.number(), file: z.string(), from: z.number(), sx: z.number(), sy: z.number(), s: z.number(), pos: z.string().default('br')})).default([]),
 });
 type Props = z.infer<typeof courseShortSchema>;
 
@@ -77,6 +78,9 @@ const Logo: React.FC<{logo: string}> = ({logo}) => {
       justifyContent: 'center', flexShrink: 0}}><span style={{fontFamily: EN, fontWeight: 700, fontSize: 42, color: CC.violet}}>{logo}</span></div>);
 };
 export const CW = 1016, CH = 840, CTOP = 430; // the big screen card (Aly: the recording must be big in a short)
+// the card area can move per series (film course 2026-11-07: top 545 / h 760 so his round webcam has its own strip, no overlap)
+const StageCtx = React.createContext({top: CTOP, h: CH});
+const useStage = () => React.useContext(StageCtx);
 
 // ---------- the series frame (same in every short). Aly 2026-10-18: the short's title INSIDE the band, "Reel 01", the chapter
 // number in the full video and the minute it starts at (no long phrase) ----------
@@ -111,7 +115,8 @@ const DualCard: React.FC<{file: string; from: number; d: number; top: {sx: numbe
   const {w: SRCW, h: SRCH} = useSrc();
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const W = CW, H2 = (CH - 12) / 2;
+  const st = useStage();
+  const W = CW, H2 = (st.h - 12) / 2;
   const pIn = cin ? 1 : spr(f, fps, 0, 140, 16), o = cout ? 1 : 1 - lin(f, d * fps - 8, d * fps); // one card across pieces (film course shorts)
   const pane = (c: {sx: number; sy: number; sw: number}, label: string, delay: number) => {
     const k = W / c.sw;
@@ -139,7 +144,7 @@ const DualCard: React.FC<{file: string; from: number; d: number; top: {sx: numbe
     );
   };
   return (
-    <div style={{position: 'absolute', left: 520 - W / 2 + 8, top: under ? CTOP + H2 + 40 : CTOP, transform: `scale(${0.92 + 0.08 * pIn})`, opacity: Math.min(1, pIn * 1.4) * o}}>
+    <div style={{position: 'absolute', left: 520 - W / 2 + 8, top: under ? st.top + H2 + 40 : st.top, transform: `scale(${0.92 + 0.08 * pIn})`, opacity: Math.min(1, pIn * 1.4) * o}}>
       <Glass w={W + 24} pad={12} r={34} glow={acc}>
         <div style={{display: 'flex', flexDirection: 'column', gap: 12}}>
           {under ? null : pane(top, 'الإعداد', 0)}
@@ -157,8 +162,9 @@ const Label: React.FC<{text: string; dur: number; acc: string; img?: string}> = 
   const p = spr(f, fps, 0, 220, 11), o = 1 - lin(f, dur - 5, dur);
   // long text shrinks to stay inside the frame (Aly 2026-10-27: reels 02/03 text went out of the frame); ~0.62 size per Arabic char
   const size = Math.max(50, Math.min(96, Math.floor((img ? 800 : 960) / (text.length * 0.62 + 0.8))));
+  const st = useStage();
   return (
-    <div style={{position: 'absolute', left: 0, right: 0, top: CTOP + 40, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 30, direction: 'rtl',
+    <div style={{position: 'absolute', left: 0, right: 0, top: st.top + 40, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 30, direction: 'rtl',
       opacity: Math.min(1, p * 1.5) * o, transform: `scale(${0.4 + 0.6 * p})`}}>
       {/* own space next to the pill, never on it (Aly 2026-10-26: overlaps in reel 29) */}
       {img ? <Img src={staticFile(`fluent/${img}.png`)} style={{width: 140, height: 140, flexShrink: 0, objectFit: 'contain', filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.5))'}} /> : null}
@@ -189,7 +195,8 @@ const ScreenCard: React.FC<{file: string; from: number; d: number; keys: {t: num
   const {w: SRCW, h: SRCH} = useSrc();
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const W = CW, H = CH;
+  const st = useStage();
+  const W = CW, H = st.h;
   let i = 0;
   while (i + 1 < keys.length && f >= keys[i + 1].t * fps) i++;
   const a = keys[i] ?? {t: 0, sx: 0, sy: 0, sw: SRCW};
@@ -200,7 +207,7 @@ const ScreenCard: React.FC<{file: string; from: number; d: number; keys: {t: num
   // Aly 2026-10-26 (reel 26): "لقطات متفرقة مش فيديو على بعضه" -> between two screen pieces the card does not pop out and in again
   const pIn = cin ? 1 : spr(f, fps, 0, 140, 16), o = cout ? 1 : 1 - lin(f, d * fps - 8, d * fps);
   return (
-    <div style={{position: 'absolute', left: 520 - W / 2 + 8, top: CTOP, transform: `scale(${0.9 + 0.1 * pIn})`, opacity: Math.min(1, pIn * 1.4) * o}}>
+    <div style={{position: 'absolute', left: 520 - W / 2 + 8, top: st.top, transform: `scale(${0.9 + 0.1 * pIn})`, opacity: Math.min(1, pIn * 1.4) * o}}>
       <Glass w={W + 24} pad={12} r={34} glow={acc}>
         <div style={{position: 'relative', width: W, height: H, borderRadius: 24, overflow: 'hidden', background: '#000'}}>
           <OffthreadVideo muted src={staticFile(file)} startFrom={Math.round(from * fps)} style={{position: 'absolute', left: -sx * sc, top: -sy * sc, width: SRCW * sc, height: SRCH * sc}} />
@@ -405,19 +412,21 @@ const EndCard: React.FC<{thumb: string; qr: string; title: string; dur: number; 
 };
 
 // his round webcam (bottom-left, between the captions and the footer: never on the content)
-const CamCircle: React.FC<{file: string; from: number; sx: number; sy: number; s: number; acc: string; first: boolean}> = ({file, from, sx, sy, s, acc, first}) => {
+// Aly 2026-11-07 'بلاش تحطني تحت اوي' -> on a corner of the content card: br = bottom-right, tr = top-right
+const CamCircle: React.FC<{file: string; from: number; sx: number; sy: number; s: number; acc: string; first: boolean; pos?: string}> = ({file, from, sx, sy, s, acc, first, pos = 'br'}) => {
   const {w: SRCW, h: SRCH} = useSrc();
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const D = 250, k = D / s, p = first ? spr(f, fps, 0, 150, 14) : 1;
+  const D = 220, k = D / s, p = first ? spr(f, fps, 0, 150, 14) : 1;
+  const L = 830, T = pos === 'tr' ? 314 : 1066; // tr = the free strip between the band (300) and the card (545)
   return (
-    <div style={{position: 'absolute', left: 56, top: 1555, width: D, height: D, borderRadius: '50%', overflow: 'hidden', border: `6px solid ${acc}`, boxShadow: `0 0 36px ${acc}88, 0 16px 40px rgba(0,0,0,0.6)`,
+    <div style={{position: 'absolute', left: L, top: T, width: D, height: D, borderRadius: '50%', overflow: 'hidden', border: `6px solid ${acc}`, boxShadow: `0 0 36px ${acc}88, 0 16px 40px rgba(0,0,0,0.6)`,
       transform: `scale(${p})`, background: '#000'}}>
       <OffthreadVideo muted src={staticFile(file)} startFrom={Math.round(from * fps)} style={{position: 'absolute', left: -sx * k, top: -sy * k, width: SRCW * k, height: SRCH * k}} />
     </div>);
 };
 
-export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues, cta, music, sfx, env, words, brand, src, end, footer, cam}) => {
+export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues, cta, music, sfx, env, words, brand, src, end, footer, cam, stage}) => {
   const {fps} = useVideoConfig();
   const now = useCurrentFrame();
   const L = LOOK[look] ?? LOOK.glass;
@@ -426,7 +435,7 @@ export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues
   const inEnd = end ? now >= fr(end.at) : false;
   const live = (t: number, d: number) => now >= fr(t) - 2 && now < fr(t + d) + 2;
   return (
-    <SrcCtx.Provider value={src}>
+    <SrcCtx.Provider value={src}><StageCtx.Provider value={stage}>
     <AbsoluteFill style={{background: '#07090D'}}>
       <style>{fontCss + popFontCss}</style>
       <L.Bg />
@@ -446,11 +455,13 @@ export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues
         else if (c.k === 'Big') el = <Big {...(c.p as any)} dur={d} acc={L.acc} />;
         else if (c.k === 'Label') el = <Label {...(c.p as any)} dur={d} acc={L.acc} />;
         else if (c.k === 'Fix') el = <Fix {...(c.p as any)} dur={d} />;
-        else if (c.k === 'Kw') el = <Kw {...(c.p as any)} dur={d} x={540} y={CTOP + CH - 50} />;
-        else if (c.k === 'Key') el = <Key {...(c.p as any)} dur={d} x={1000} y={CTOP + CH - 160} />;
+        else if (c.k === 'Kw') el = <Kw {...(c.p as any)} dur={d} x={540} y={stage.top + stage.h - 50} />;
+        else if (c.k === 'Key') el = <Key {...(c.p as any)} dur={d} x={1000} y={stage.top + stage.h - 160} />;
         else if (c.k === 'Def') el = <Def {...(c.p as any)} dur={d} x={540} y={1000} w={940} color={L.acc} />;
         else if (c.k === 'New26') el = <New26V {...(c.p as any)} dur={d} />;
-        else if (filmScenes[c.k]) { const S4 = filmScenes[c.k]; el = <S4 {...(c.p as any)} dur={d} />; }
+        else if (filmScenes[c.k]) { const S4 = filmScenes[c.k]; const fit = (c.p as any).fit as number[] | undefined;
+          const k = fit ? Math.min(1, (stage.h + 80) / (fit[1] - fit[0])) : 1;
+          el = fit ? <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transform: `translate(${540 * (1 - k)}px, ${stage.top - fit[0] * k}px) scale(${k})`, transformOrigin: '0 0'}}><S4 {...(c.p as any)} dur={d} /></div> : <S4 {...(c.p as any)} dur={d} />; }
         else if (shortScenes[c.k]) { const S2 = shortScenes[c.k]; el = <S2 {...(c.p as any)} dur={d} />; }
         else if (sound3d[c.k]) { const S3 = sound3d[c.k]; el = <S3 {...(c.p as any)} dur={d} />; }
         else el = <AnimV name={c.k} {...(c.p as any)} dur={d} />;
@@ -480,6 +491,6 @@ export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues
       ))}
       {sfx.map((s, i) => <Sequence key={'x' + i} from={fr(s.t)} durationInFrames={fr(2)} layout="none"><Audio src={staticFile(s.file)} volume={s.vol} /></Sequence>)}
     </AbsoluteFill>
-    </SrcCtx.Provider>
+    </StageCtx.Provider></SrcCtx.Provider>
   );
 };

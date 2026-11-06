@@ -80,7 +80,7 @@ def shift(anim, a):
     mv = lambda t: round(t - a, 3) if t > 100 else t
     for k in ('modes', 'steps'):
         if k in o: o[k] = [[mv(x[0]), *x[1:]] for x in o[k]]
-    for k in ('tags',):
+    for k in ('tags', 'pics'):
         if k in o: o[k] = [dict(x, t=mv(x['t'])) for x in o[k]]
     if 'outB' in o: o['outB'] = mv(o['outB'])
     return o
@@ -101,7 +101,7 @@ def build(n):
         d = b - a
         gain = round(float(10 ** ((target - lv) / 20)), 3)
         voice.append(dict(file=PUB + 'course.mp4', **{'from': a}, to=b, at=round(t, 3), gain=min(1.25, max(0.5, gain))))
-        cam.append(dict(t=round(t, 3), d=round(d + GAP, 3), file=PUB + 'course.mp4', **{'from': a}, **SD.webcam(a)))  # Aly: his webcam square -> small round circle
+        cam.append(dict(t=round(t, 3), d=round(d + GAP, 3), file=PUB + 'course.mp4', **{'from': a}, **SD.webcam(a), pos=spec.get('cam', 'br')))  # Aly: his webcam square -> small round circle
         cap = caps[k] if k < len(caps) else None
         ew = [w for w in EPW if a - 0.05 <= w[1] < b]
         if cap == '':
@@ -145,7 +145,7 @@ def build(n):
             cin2 = cin or pc.get('cin', False)
             cues.append(dict(t=round(t, 3), d=round(max(d, 3.0) + (GAP if cout else 0), 3), k=show, p=dict(shift(pc.get('anim', {}), a), cin=cin2, cout=cout)))
         if pc.get('film'):
-            cues.append(dict(t=round(t + 0.3, 3), d=round(min(d - 0.3, 5.0), 3), k='FilmTag', p=dict(pc['film'], x=40, y=1405 if show == 'under' else 1395)))
+            cues.append(dict(t=round(t + 0.3, 3), d=round(min(d - 0.3, 5.0), 3), k='FilmTag', p=dict(pc['film'], x=60, y=1285 if show == 'under' else 1395)))
         if pc.get('rew'):
             cues.append(dict(t=round(t, 3), d=1.3, k='Label', p=dict(text='⏪ من الأول', img=None)))
         for lb in pc.get('labels', []):
@@ -164,7 +164,7 @@ def build(n):
     end = dict(at=end_at, d=SD.END_D, thumb=PUB + 'pics/film_course_thumb.jpg', qr=PUB + 'qr/film_course.png', title='الكورس الكامل على القناة')
     dur = end_at + SD.END_D
     body = [pc for pc in spec['pieces'] if pc.get('rew')] or spec['pieces']
-    props = dict(fps=FPS, duration=round(dur, 3), look='film', brand=dict(logo='film', name='كورس Film making'), src=dict(w=1280, h=720),
+    props = dict(fps=FPS, duration=round(dur, 3), stage=(dict(top=430, h=840) if any(pc.get('under') for pc in spec['pieces']) else SD.STAGE), look='film', brand=dict(logo='film', name='كورس Film making'), src=dict(w=1280, h=720),
                  footer=dict(face=PUB + 'pics/ch_face.png', name=PUB + 'pics/ch_name.png'),
                  series=dict(no=spec['no'], total=SD.TOTAL, title=spec['title'].replace('*', '').replace('_', ' '), at=full_at(body[0]['a']), chap=spec['chapter']),
                  voice=voice, cam=cam, screens=screens, cues=cues, cta=None, end=end, music=[], sfx=sfx, env=[round(v, 2) for v in env], words=words)
