@@ -41,6 +41,8 @@ export const courseShortSchema = z.object({
   src: z.object({w: z.number(), h: z.number()}).default({w: 1276, h: 720}),
   end: z.object({at: z.number(), d: z.number(), thumb: z.string(), qr: z.string(), title: z.string().default('الكورس الكامل على القناة')}).nullable().default(null),
   footer: z.object({face: z.string(), name: z.string()}).nullable().default(null), // channel logo + name at the very bottom (Aly 2026-10-26)
+  // his webcam square of the recording as a small round circle (Aly 2026-11-06, film course shorts): one entry per piece, crop in src px
+  cam: z.array(z.object({t: z.number(), d: z.number(), file: z.string(), from: z.number(), sx: z.number(), sy: z.number(), s: z.number()})).default([]),
 });
 type Props = z.infer<typeof courseShortSchema>;
 
@@ -402,7 +404,20 @@ const EndCard: React.FC<{thumb: string; qr: string; title: string; dur: number; 
   );
 };
 
-export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues, cta, music, sfx, env, words, brand, src, end, footer}) => {
+// his round webcam (bottom-left, between the captions and the footer: never on the content)
+const CamCircle: React.FC<{file: string; from: number; sx: number; sy: number; s: number; acc: string; first: boolean}> = ({file, from, sx, sy, s, acc, first}) => {
+  const {w: SRCW, h: SRCH} = useSrc();
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const D = 250, k = D / s, p = first ? spr(f, fps, 0, 150, 14) : 1;
+  return (
+    <div style={{position: 'absolute', left: 56, top: 1555, width: D, height: D, borderRadius: '50%', overflow: 'hidden', border: `6px solid ${acc}`, boxShadow: `0 0 36px ${acc}88, 0 16px 40px rgba(0,0,0,0.6)`,
+      transform: `scale(${p})`, background: '#000'}}>
+      <OffthreadVideo muted src={staticFile(file)} startFrom={Math.round(from * fps)} style={{position: 'absolute', left: -sx * k, top: -sy * k, width: SRCW * k, height: SRCH * k}} />
+    </div>);
+};
+
+export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues, cta, music, sfx, env, words, brand, src, end, footer, cam}) => {
   const {fps} = useVideoConfig();
   const now = useCurrentFrame();
   const L = LOOK[look] ?? LOOK.glass;
@@ -444,6 +459,8 @@ export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues
       {end ? <Sequence from={fr(end.at)} durationInFrames={fr(end.d)}><EndCard thumb={end.thumb} qr={end.qr} title={end.title} dur={fr(end.d)} acc={L.acc} /></Sequence> : null}
       {cta ? <Sequence from={fr(cta.at)} durationInFrames={fr(cta.d)}><CtaV file={cta.file} dur={fr(cta.d)} qr={cta.qr} vol={cta.vol} acc={L.acc} word={cta.word} thumb={cta.thumb} /></Sequence> : null}
       {inCta ? null : <L.Fx />}
+      {inEnd || inCta ? null : cam.map((c, i) => !live(c.t, c.d) ? null : (
+        <Sequence key={'cam' + i} from={fr(c.t)} durationInFrames={fr(c.d)} layout="none"><CamCircle {...c} acc={L.acc} first={i === 0} /></Sequence>))}
       {inCta || inEnd ? null : <Captions words={words} maxWords={4} accent="gold" previewBg="" lift={0} bottomFrac={0.225} />}
       <SeriesFrame {...series} acc={L.acc} logo={brand.logo} name={brand.name} />
       {footer && !inCta ? (

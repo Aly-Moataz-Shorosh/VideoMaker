@@ -28,6 +28,10 @@ GROUND = dict(sx=840, sy=200, sw=430)
 # 20 — the film clip window (Movies & TV player, 640x480 file shown at 213..1066 x 170..533)
 HP = dict(sx=205, sy=175, sw=870)
 
+# his webcam square in the recording (1280x720): bigger box in the slides part (until ~1500 s), smaller later; square around his face
+def webcam(a):
+    return dict(sx=1065, sy=558, s=160) if a < 1500 else dict(sx=1085, sy=590, s=130)
+
 ST = lambda *k: [list(x) for x in k]
 HP_STEPS = ST((4580, 0, 2), (4611.9, 0, 2), (4617.2, 3, 2), (4623.1, 3, 4), (4628.5, 5, 4), (4630.0, 4, 5), (4631.3, 5, 5), (4661.5, 5, 5),
               (4662.1, 5, 2), (4665.2, 5, 2), (4666.0, 5, 2))

@@ -88,7 +88,7 @@ def shift(anim, a):
 
 def build(n):
     spec = SD.SHORTS[n]
-    voice, screens, cues, sfx, env, words = [], [], [], [], [], []
+    voice, screens, cues, sfx, env, words, cam = [], [], [], [], [], [], []
     t = 0.3
     plan = [(pc, *fit(pc['a'], pc['b'])) for pc in spec['pieces']]
     levels = [level(a, b) for _, a, b in plan]
@@ -101,6 +101,7 @@ def build(n):
         d = b - a
         gain = round(float(10 ** ((target - lv) / 20)), 3)
         voice.append(dict(file=PUB + 'course.mp4', **{'from': a}, to=b, at=round(t, 3), gain=min(1.25, max(0.5, gain))))
+        cam.append(dict(t=round(t, 3), d=round(d + GAP, 3), file=PUB + 'course.mp4', **{'from': a}, **SD.webcam(a)))  # Aly: his webcam square -> small round circle
         cap = caps[k] if k < len(caps) else None
         ew = [w for w in EPW if a - 0.05 <= w[1] < b]
         if cap == '':
@@ -166,7 +167,7 @@ def build(n):
     props = dict(fps=FPS, duration=round(dur, 3), look='film', brand=dict(logo='film', name='كورس Film making'), src=dict(w=1280, h=720),
                  footer=dict(face=PUB + 'pics/ch_face.png', name=PUB + 'pics/ch_name.png'),
                  series=dict(no=spec['no'], total=SD.TOTAL, title=spec['title'].replace('*', '').replace('_', ' '), at=full_at(body[0]['a']), chap=spec['chapter']),
-                 voice=voice, screens=screens, cues=cues, cta=None, end=end, music=[], sfx=sfx, env=[round(v, 2) for v in env], words=words)
+                 voice=voice, cam=cam, screens=screens, cues=cues, cta=None, end=end, music=[], sfx=sfx, env=[round(v, 2) for v in env], words=words)
     out = PROJ / f'work/shorts/props_{n:02d}.json'
     out.parent.mkdir(exist_ok=True)
     json.dump(props, open(out, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
