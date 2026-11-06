@@ -26,11 +26,11 @@ const P = 'projects/ibrahim/';
 const BG = '#0D1015', PANEL = '#141920', LINE = '#252C36', INK = '#EDEFF2', SOFT = '#9AA4B2', DIM = '#5B6573';
 const AUD = '#2E9E6B';
 const EN = 'Montserrat', AR = 'Cairo';
-const VID = {x: 40, y: 78, w: 1240, h: 540};
-const RC = {x: 1310, w: 570};
+const VID = {x: 640, y: 78, w: 1240, h: 540};   // film RIGHT (Arabic eye starts right), script LEFT
+const RC = {x: 40, w: 570};
 const SW = {y: 78, h: 296};   // sound window
 const PW = {y: 384, h: 234};  // picture window
-const CARD = {x: 40, y: 632, w: 1240, h: 138};
+const CARD = {x: 640, y: 632, w: 1240, h: 138};
 const TL = {x: 40, y: 786, w: 1840, h: 278};
 const SCN: Record<string, string> = {'55': 'Sc 55', '56': 'Sc 56', add: 'Film addition', x: 'Not in script'};
 const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
