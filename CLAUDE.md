@@ -290,3 +290,9 @@ Done (2026-10-06):
   audioproduction/motion_public/audio` (back to public/projects/audio before resume_1027.sh); biz ep01 = its motion_public/entabiz01
   (back to public/projects/entabiz01 before any review_03). biz ep01 3D scenes saved as .blend (textures packed) in `<project>/blender/`
   (`biz_scenes.py --save`; the per-frame animation is code, the .blend opens on frame 1). Temp files deleted after each job.
+- 2026-11-06 `projects/2026-11-06 youtube sceneAnalysis ibrahimLabyad` (Ibrahim El Abyad sc 55/56, film analysis, no face) -> NEW composition
+  `scene-analysis` (`src/scene/`): film RIGHT untouched, script LEFT (SOUND + PICTURE windows on the real V10 PDF pages, FILM ≠ SCRIPT chips),
+  3 card kinds under the film (Editing first), Premiere timeline (V1/A1/A2/A3, markers, lead-in spans). 98 shots (old list 88 missed 10 cuts).
+  Aly: a drawing beside every term + full name under every abbreviation. Recipe `docs/32-recipe-scene-analysis.md`, scripts
+  `tools/recipes/ibrahimLabyad/`. `output/review_01.mp4` + .txt, board `output/shot_scene_sequence.png`. 7 open questions (echo, unclear lines,
+  shot 3 move, shot 71 flash cut, montage music start) rendered with my defaults — waiting for his review.

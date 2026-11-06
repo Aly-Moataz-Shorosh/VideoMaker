@@ -348,3 +348,8 @@ Writer: tools/recipes/graphictablet/write_meta.py.
   window -> the city). Replicate the reference he names (RWA podcast set) closely, wide normal-lens framing, enough light.
 - Nothing overlaps; his camera crop centred on his face; the guest never flashes; rings/highlights fitted to the real text box.
 
+## Film SCENE ANALYSIS (Ibrahim El Abyad 2026-11-06, docs/32) — composition `scene-analysis`
+- Film plays whole and untouched; ONE place per thing (film right, script left, card under film, timeline bottom); English terms only.
+- Every term in the shot label = its own drawing; every abbreviation = full name under it ("حد تاني ميعرفش LS / OTS").
+- Re-check any shot list I'm handed: frame-diff cut search + contact sheets (old 88 → real 98). Unsure = one question with the list.
+
