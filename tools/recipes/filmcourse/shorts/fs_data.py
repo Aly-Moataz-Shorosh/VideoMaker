@@ -84,3 +84,6 @@ CAP0 = {5: ['عشان أقدر أطلع الكواليتي دي.. عملت كر�
 CAP = {2: CAP0[5], 3: CAP0[15], 1: ['بص بقى هنا الكلمة القاضية.. فدي اللي نزلت.. وبعد كده طلعت.. فالسلطة بقت معاها'] + CAP0[20][1:]}
 
 STAGE = dict(top=545, h=760)  # screen card under his circle strip (Aly 2026-11-07: no overlap); 'under' shorts keep the default
+
+import fs_data2 as _D2
+SHORTS.update(_D2.SHORTS); CAP.update(_D2.CAP)
