@@ -91,7 +91,7 @@ def unit(x, y, z):
     n = math.sqrt(x * x + y * y + z * z); return (x / n, y / n, z / n)
 def camfor(s):
     pl, size, mv, ex = s['place'], s['size'].split('→')[0].strip(), s['move'], s['extra']
-    d = DIST.get(size.split()[0], 1.9)
+    d = min(2.8, DIST.get(size.split()[0], 1.9))   # diagram: wide shots drawn closer so the camera stays in view
     def frm(tg, dr, dd=d, dy=0.0):
         u = unit(*dr); return {'pos': [round(tg[0] + u[0] * dd, 2), round(tg[1] + u[1] * dd + dy, 2), round(tg[2] + u[2] * dd, 2)], 'look': list(tg)}
     if pl == 'TI': c = frm((-1.05, 1.05, 0), (1, 0.05, 0.4))

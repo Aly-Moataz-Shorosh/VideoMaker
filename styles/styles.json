@@ -178,6 +178,15 @@
    "build": "composition 'match-reel' (src/match/MatchReel.tsx + fig3d.tsx), matte via tools/matte.py (whole video)",
    "recipe": "docs/31-recipe-trend-reel-3d.md",
    "scripts": "tools/recipes/livematch/ (clips.sh, make_props.py)"
+  },
+  "20": {
+   "folder": "20 scene-analysis",
+   "name": "Film scene analysis 16:9 (from the script to the screen): film RIGHT untouched, real script PDF LEFT (SOUND + PICTURE windows, FILM ≠ SCRIPT / SOUND ≠ PICTURE), shot label with a drawing per term + full names of abbreviations, terms panel (Egyptian Arabic definitions) or technique card under the film, 3D set diorama (camera move + actors + lights, approx.), Premiere timeline V1/A1/A2/A3 with markers and lead-in spans",
+   "approved": "ibrahimLabyad review_02 (2026-11-06, 'thank you')",
+   "input": "OBS recording of the scene + the script PDF (pages) + his notes",
+   "build": "composition 'scene-analysis' (src/scene/SceneAnalysis.tsx, anims.tsx, set3d.tsx)",
+   "recipe": "docs/32-recipe-scene-analysis.md",
+   "scripts": "tools/recipes/ibrahimLabyad/ (cuts.py, contact.py, bg_motion.py, onion.py, retr.py, sfx_detect.py, make_props.py, make_sss.py)"
   }
  },
  "_always": "Every style: his ORIGINAL voice (only per-sentence gain to one level, no cleanup), edges fitted on the waveform, sfx, CTA clip + comment card at the end of shorts, <video>.txt beside every output, sfx + voice stems. Word script only on request. Shorts: ASK one short (whole goal of the video) or several (suggestions, he picks) first; no short ever reaches 3:00."

@@ -27,7 +27,7 @@ export const SETS: Record<string, SetDef> = {
   alley: {view: [4.2, 3.6, 5.2], at: [0, 0.8, -1],
     actors: [{p: [0, 0, 0], c: IBR, face: 0, name: 'Ibrahim'}, {p: [-0.9, 0, -2.6], c: OTHER, face: 0}, {p: [1.0, 0, -3.4], c: OTHER, face: 0}],
     lights: [{p: [-1.2, 0.3, -1.2], to: [0, 1, 0], c: '#FF8A2A', k: 'fire'}, {p: [1.3, 0.3, -2.4], to: [0, 1, 0], c: '#FF8A2A', k: 'fire'}, {p: [0.6, 1.6, 0.4], to: [0, 1.2, 0], c: '#FFB060', k: 'practical'}],
-    props: [{k: 'plane', p: [0, 0, -1.5], s: [3.4, 1, 9], c: '#2A2016'}, {k: 'box', p: [-1.8, 1.6, -1.5], s: [0.2, 3.2, 9], c: '#3A2E22'}, {k: 'box', p: [1.8, 1.6, -1.5], s: [0.2, 3.2, 9], c: '#3A2E22'},
+    props: [{k: 'plane', p: [0, 0, -1.5], s: [3.4, 1, 9], c: '#2A2016'}, {k: 'box', p: [-1.8, 1.6, -1.5], s: [0.2, 3.2, 9], c: '#3A2E22'},
       {k: 'box', p: [0, 1.5, 1.6], s: [1.6, 1.6, 0.02], c: '#C8C2B0', o: 0.5}]},
   pills: {view: [3.4, 3.0, 3.8], at: [0, 0.9, 0],
     actors: [{p: [0, 0, 0], c: IBR, face: 20, name: 'Ibrahim'}],
@@ -48,12 +48,12 @@ export const SETS: Record<string, SetDef> = {
     actors: [{p: [0, 0, 0], c: IBR, face: 200, lie: true, name: 'Ibrahim'}],
     lights: [{p: [-3, 3.5, -3], to: [0, 0.3, 0], c: '#7FA0D8', k: 'sky'}],
     props: [{k: 'plane', p: [0, 0, -2], s: [8, 1, 8], c: '#22262C'}, {k: 'cyl', p: [2.2, 1.8, -5.5], s: [0.25, 3.6, 0.25], c: '#C8B89A'}, {k: 'box', p: [1.4, 0.7, -5.5], s: [2.2, 1.4, 1.2], c: '#C8B89A'}]},
-  roofD: {view: [6.5, 5.5, 7.5], at: [0, 1.5, -1],
+  roofD: {view: [9.5, 7.5, 10.5], at: [0, 2.6, 0.5],
     actors: [{p: [0, 1.6, -0.6], c: IBR, face: 180, sit: true, name: 'Ibrahim'}],
     lights: [{p: [-4, 6, -6], to: [0, 1.5, 0], c: '#9DB8E8', k: 'sky'}],
     props: [{k: 'box', p: [0, 0.8, -0.6], s: [3, 1.6, 2.4], c: '#3A4048'}, {k: 'box', p: [-3, 0.9, -3], s: [2, 1.8, 2], c: '#2C3138'}, {k: 'box', p: [3, 1.1, -3.5], s: [2, 2.2, 2], c: '#2C3138'},
       {k: 'plane', p: [0, 0, -1], s: [12, 1, 10], c: '#1C2026'}]},
-  hole: {view: [3.0, 3.6, 3.2], at: [0, 0.3, 0],
+  hole: {view: [4.2, 5.2, 4.6], at: [0, 0.9, 0],
     actors: [{p: [-0.45, 0, 0], c: ASHRY, face: 90, kneel: true, name: 'Ashry'}, {p: [0.45, 0, 0], c: IBR, face: -90, kneel: true, name: 'Ibrahim'}],
     lights: [{p: [0.8, 2.4, -1.0], to: [0, 0, 0], c: '#FFD9A0', k: 'practical'}],
     props: [{k: 'plane', p: [0, 0, 0], s: [4, 1, 4], c: '#2A251E'}, {k: 'cyl', p: [0, 0.01, 0.1], s: [0.35, 0.02, 0.35], c: '#090909'}, {k: 'box', p: [0, 0.25, -0.9], s: [1.6, 0.5, 0.8], c: '#C9B28A'}]},
@@ -61,7 +61,7 @@ export const SETS: Record<string, SetDef> = {
     actors: [{p: [0, 0, 0], c: ASHRY, face: 180, sit: true, name: 'Ashry'}, {p: [-1.4, 0, -2.0], c: OTHER, face: 0}, {p: [1.3, 0, -3.0], c: OTHER, face: 30}, {p: [-1.1, 0, 1.6], c: OTHER, face: 90}],
     lights: [{p: [-2.5, 4.5, -2], to: [0, 1, 0], c: '#FFF3DD', k: 'sky'}],
     props: [{k: 'plane', p: [0, 0, -1.5], s: [4.2, 1, 10], c: '#3A3A38'}, {k: 'box', p: [0, 0.35, 0], s: [0.35, 0.5, 1.4], c: '#20242A'},
-      {k: 'box', p: [-2.2, 1.8, -1.5], s: [0.2, 3.6, 10], c: '#4A4640'}, {k: 'box', p: [2.2, 1.8, -1.5], s: [0.2, 3.6, 10], c: '#4A4640'}]},
+      {k: 'box', p: [-2.2, 1.8, -1.5], s: [0.2, 3.6, 10], c: '#4A4640'}]},
 };
 
 const ease = (x: number) => 0.5 - Math.cos(Math.PI * Math.min(1, Math.max(0, x))) / 2;

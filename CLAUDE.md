@@ -292,12 +292,9 @@ Done (2026-10-06):
   (`biz_scenes.py --save`; the per-frame animation is code, the .blend opens on frame 1). Temp files deleted after each job.
 - 2026-11-06 `projects/2026-11-06 youtube sceneAnalysis ibrahimLabyad` (Ibrahim El Abyad sc 55/56, film analysis, no face) -> NEW composition
   `scene-analysis` (`src/scene/`): film RIGHT untouched, script LEFT (SOUND + PICTURE windows on the real V10 PDF pages, FILM ≠ SCRIPT chips),
-  3 card kinds under the film (Editing first), Premiere timeline (V1/A1/A2/A3, markers, lead-in spans). 98 shots (old list 88 missed 10 cuts).
-  Aly: a drawing beside every term + full name under every abbreviation. Recipe `docs/32-recipe-scene-analysis.md`, scripts
-  `tools/recipes/ibrahimLabyad/`. `output/review_01.mp4` + .txt, board `output/shot_scene_sequence.png`. 7 open questions (echo, unclear lines,
-  shot 3 move, shot 71 flash cut, montage music start) rendered with my defaults — waiting for his review.
-- 2026-11-06 `projects/2026-11-06 youtube intro to film making course` (his film making intro course, recorded today from his 5-year-old files,
-  1:22:57 1080p60, webcam corner) -> `output/film_making_course_full.mp4` (+ .txt, coverage Excel): NO separators (Aly: save render time) =
-  teaser (5 of his clips) + intro sting + Claude's coverage (Film Art 46 / UCLA 27 / Aberystwyth stages 56) + 6-part timestamps, course untouched,
-  ending = what to study next + his courses, outro.avi over the last page. Only ~82 s rendered + one NVENC pass. Recipe docs/27 "FAST course",
-  scripts `tools/recipes/filmcourse/`, evidence `research/shots/`. Waiting for Aly's review.
+  shot label = a drawing per term + full name under every abbreviation, under the film a TERMS panel (Arabic definitions) or a technique
+  card + a 3D SET diorama (`set3d.tsx`: camera move, actors, lights, approx.), Premiere timeline (V1/A1/A2/A3, markers, lead-in spans).
+  98 shots (the handed-over list of 88 missed 10 cuts). Review 1: camera moves re-measured on the BACKGROUND only (people masked,
+  `bg_motion.py` + `onion.py` by eye), SFX from Demucs stems + AST labels. APPROVED review_02 ("thank you") -> **style 20 scene-analysis**.
+  Recipe `docs/32-recipe-scene-analysis.md`, scripts `tools/recipes/ibrahimLabyad/`, assets `<project>/motion_public/ibrahim`
+  (move back to public/projects/ibrahim to re-render). Still open from v1 list (rendered with my defaults): echo, unclear lines, shot 71.

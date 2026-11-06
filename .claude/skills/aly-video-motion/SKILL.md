@@ -19,7 +19,7 @@ But (v2 review): keep the sentence that gives the hook its meaning (what it's FO
 
 ## 0. Style number first
 `notes.txt` line `الستايل: NN` → `styles/styles.json` tells the recipe/scripts for that number (01 youtube-motion, 02 reels-roto,
-03 tutorial-short, 04 film-faceless, 05 film-face, 06 vhs-faceless, 07 map-history, 08 timeline-history, 09 pop-studio, 10 glass-face, 11 tutorial-hook-glass, 12 lottie-mix, 13 lecture-stage, 14 online-interview, 15 glass-face-talk, 16 journey-series, 17 online-episode-3d, 18 meet-shorts; samples in `styles/`). No number → ask him ONE
+03 tutorial-short, 04 film-faceless, 05 film-face, 06 vhs-faceless, 07 map-history, 08 timeline-history, 09 pop-studio, 10 glass-face, 11 tutorial-hook-glass, 12 lottie-mix, 13 lecture-stage, 14 online-interview, 15 glass-face-talk, 16 journey-series, 17 online-episode-3d, 18 meet-shorts, 19 trend-reel-3d, 20 scene-analysis; samples in `styles/`). No number → ask him ONE
 question with the list. A newly approved look = a new numbered folder (sample.mp4 12 s, cover.jpg, اقرأني.txt) + styles.json entry.
 
 ## 1. Read the job first
@@ -348,7 +348,7 @@ Writer: tools/recipes/graphictablet/write_meta.py.
   window -> the city). Replicate the reference he names (RWA podcast set) closely, wide normal-lens framing, enough light.
 - Nothing overlaps; his camera crop centred on his face; the guest never flashes; rings/highlights fitted to the real text box.
 
-## Film SCENE ANALYSIS (Ibrahim El Abyad 2026-11-06, docs/32) — composition `scene-analysis`
+## Film SCENE ANALYSIS = style 20 scene-analysis (Ibrahim El Abyad 2026-11-06, docs/32) — review_02 APPROVED
 - Film plays whole and untouched; ONE place per thing (film right, script left, card under film, timeline bottom); English terms only.
 - Every term in the shot label = its own drawing; every abbreviation = full name under it ("حد تاني ميعرفش LS / OTS").
 - Re-check any shot list I'm handed: frame-diff cut search + contact sheets (old 88 → real 98). Unsure = one question with the list.
