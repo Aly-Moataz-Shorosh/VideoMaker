@@ -306,3 +306,8 @@ Done (2026-10-06):
   NVENC pass. Recipe docs/27 "FAST course", scripts `tools/recipes/filmcourse/`, evidence `research/shots/`. APPROVED v2 ("thank you", 2026-11-06). QC: concat drifts ~4 ms per piece (picture AND sound together,
   133 ms at the end) -> fine for timestamps. Temp deleted; assets in `<project>/motion_public/filmcourse` (back to public/projects/filmcourse to
   re-render). output/v1 (old full video) kept — ask before deleting. Thumbnail = Aly via GPT (prompt given).
+- 2026-11-07 film course -> 20 SHORTS (`output/shorts/NN_slug.mp4` + .txt), Aly: each short standalone, posting order = most exciting first
+  (01 power stairs, 02 chroma scarf, 03 camera angle Dahih vs Big Brother, 04-20 in fs_data2.py). His webcam square = round circle in its OWN strip
+  top-right (stage prop top 545/h 760; "مش عايز overlap"). New scenes `src/course/filmShorts.tsx` + `filmShorts2.tsx` (AngleScene, PowerStairs,
+  ToolsLadder, AngleVS, FocusScene, CutMeaning, MoveScene, TreeScene, Pipeline, LiteracyScene, AspectScene). Render bundle/temp on D:/Temp (E: ~6 GB free).
+  Scripts `tools/recipes/filmcourse/shorts/`. v1 pilots in output/shorts/archive_v1. Rendered overnight after his 'كمل' — waiting for his review.
