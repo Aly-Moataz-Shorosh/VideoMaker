@@ -74,12 +74,18 @@ const Label: React.FC<{icon: string; c: string; text: string; sub?: string; o?: 
 
 
 // Shot label: every term gets its own drawing (size = framed person, move = looping mini animation).
+const FULL: Record<string, string> = {ELS: 'Extreme Long Shot', LS: 'Long Shot', WS: 'Wide Shot', MLS: 'Medium Long Shot', MS: 'Medium Shot',
+  MCU: 'Medium Close-Up', CU: 'Close-Up', ECU: 'Extreme Close-Up', OTS: 'Over-the-Shoulder', Insert: 'Insert Shot'};
 const ShotLabel: React.FC<{shot: any; c: string; o: number}> = ({shot, c, o}) => {
   const T = {fontFamily: EN, fontWeight: 800, fontSize: 22, color: '#fff', letterSpacing: 1.2, textShadow: '0 2px 6px rgba(0,0,0,0.85)', whiteSpace: 'nowrap' as const};
   const G = {background: 'rgba(10,12,16,0.6)', borderRadius: 6, padding: '2px 3px', display: 'flex', boxShadow: `0 0 0 2px ${c}`};
   const sep = (x: string, k: string) => <span key={k} style={{...T, color: '#AEB6C2', fontWeight: 600}}>{x}</span>;
   const term = (g: React.ReactNode, txt: string, k: string) => (
-    <span key={k} style={{display: 'flex', alignItems: 'center', gap: 7}}><span style={G}>{g}</span><span style={{...T, fontWeight: 700}}>{txt}</span></span>);
+    <span key={k} style={{display: 'flex', alignItems: 'center', gap: 7}}><span style={G}>{g}</span>
+      <span style={{display: 'flex', flexDirection: 'column', lineHeight: 1.05}}>
+        <span style={{...T, fontWeight: 700}}>{txt}</span>
+        {FULL[txt] && FULL[txt] !== txt && <span style={{...T, fontSize: 13, fontWeight: 600, letterSpacing: 0.4, color: '#C9D1DC'}}>{FULL[txt]}</span>}
+      </span></span>);
   const parts: React.ReactNode[] = [];
   shot.size.split('→').map((x: string) => x.trim()).forEach((x: string, i: number) => {
     if (i) parts.push(sep('→', 'sa' + i));
