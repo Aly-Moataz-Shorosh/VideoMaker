@@ -298,3 +298,9 @@ Done (2026-10-06):
   `bg_motion.py` + `onion.py` by eye), SFX from Demucs stems + AST labels. APPROVED review_02 ("thank you") -> **style 20 scene-analysis**.
   Recipe `docs/32-recipe-scene-analysis.md`, scripts `tools/recipes/ibrahimLabyad/`, assets `<project>/motion_public/ibrahim`
   (move back to public/projects/ibrahim to re-render). Still open from v1 list (rendered with my defaults): echo, unclear lines, shot 71.
+- 2026-11-06 `projects/2026-11-06 youtube intro to film making course` (his film making intro course, recorded today from his 5-year-old files,
+  1:22:57 1080p60, webcam corner) -> `output/film_making_course_full.mp4` (+ .txt, coverage Excel). v1 (in output/v1) had his intro sting +
+  outro and no separators -> Aly: NO intro/outro (he meant our opening/ending pages), separators back, new teaser clips 4/5, icon cursor fix.
+  v2 = teaser + Claude's coverage (Film Art 46 / UCLA 27 / Aberystwyth stages 56) + 6-part timestamps + 33 separators + course untouched +
+  ending (missing topics, Premiere course, Ibrahim El Abyad video youtu.be/NWtPI7aiefw first). Only teaser/pages/seps/end rendered + one
+  NVENC pass. Recipe docs/27 "FAST course", scripts `tools/recipes/filmcourse/`, evidence `research/shots/`. Waiting for Aly's review.
