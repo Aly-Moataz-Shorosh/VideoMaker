@@ -248,3 +248,76 @@ export const MiniIcon: React.FC<{k: string; c?: string}> = ({k, c = INK}) => {
   return s(<rect x={4} y={4} width={36} height={22} rx={3} {...st(c, 2)} />);
 };
 export const kindIcon = (k: string) => (k === 'edit' ? 'scissors' : k === 'sound' ? 'wave' : 'cam');
+
+// ---------- Shot-label glyphs: one small drawing per TERM (Aly 2026-11-06: "كل مصطلح تعمل رسمة توضح") ----------
+// Shot SIZE = how much of a person the frame holds (StudioBinder sizes). Person: head top y=-50, feet y=0.
+const BAND: Record<string, [number, number]> = {
+  ELS: [-150, 30], LS: [-56, 4], WS: [-56, 4], MLS: [-54, -16], MS: [-53, -26], MCU: [-52, -33], CU: [-51, -38], ECU: [-46, -41],
+};
+const Fig: React.FC<{c: string}> = ({c}) => (
+  <g>
+    <circle cx={0} cy={-44} r={6} fill={c} />
+    <path d="M-9 -36 Q0 -38 9 -36 L11 -14 L6 -14 L5 0 L1 0 L0 -12 L-1 0 L-5 0 L-6 -14 L-11 -14 Z" fill={c} />
+    <circle cx={-2.2} cy={-44.5} r={1} fill="#0D1015" /><circle cx={2.2} cy={-44.5} r={1} fill="#0D1015" />
+  </g>
+);
+export const SizeGlyph: React.FC<{k: string; c?: string}> = ({k, c = INK}) => {
+  const W = 40, H = 28;
+  const key = k.trim().split(' ')[0];
+  const box = (ch: React.ReactNode) => (
+    <svg width={W + 4} height={H + 4} viewBox={`-2 -2 ${W + 4} ${H + 4}`}>
+      <defs><clipPath id={'cp' + key}><rect x={0} y={0} width={W} height={H} rx={3} /></clipPath></defs>
+      <g clipPath={`url(#cp${key})`}>{ch}</g>
+      <rect x={0} y={0} width={W} height={H} rx={3} {...st(c, 1.8)} />
+    </svg>
+  );
+  if (key === 'Insert') return box(<path d="M18 6 L18 3 L22 3 L22 6 L25 10 L25 25 L15 25 L15 10 Z" fill={c} />);
+  if (key === 'OTS') return box(<><g transform="translate(26,30) scale(0.42)"><Fig c={c} /></g><path d="M-4 30 Q-2 8 12 8 Q22 10 20 30 Z" fill="#3A434F" /></>);
+  const b = BAND[key] ?? BAND.MS;
+  const s = H / (b[1] - b[0]);
+  return box(<g transform={`translate(${W / 2},${-b[0] * s}) scale(${s})`}><Fig c={c} /></g>);
+};
+// Camera MOVE / angle / framing extras: small looping drawings.
+export const MoveGlyph: React.FC<{k: string; c?: string}> = ({k, c = INK}) => {
+  const f = useCurrentFrame();
+  const p = loop(f, 45);
+  const e = ease(p < 0.7 ? p / 0.7 : 1);
+  const W = 44, H = 30;
+  const box = (ch: React.ReactNode) => <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}>{ch}</svg>;
+  const s = k.toLowerCase();
+  const arrow = (x1: number, y1: number, x2: number, y2: number) => {
+    const a = Math.atan2(y2 - y1, x2 - x1), h = 5;
+    return <><line x1={x1} y1={y1} x2={x2} y2={y2} {...st(c, 2.2)} />
+      <path d={`M${x2 - h * Math.cos(a - 0.6)} ${y2 - h * Math.sin(a - 0.6)} L${x2} ${y2} L${x2 - h * Math.cos(a + 0.6)} ${y2 - h * Math.sin(a + 0.6)}`} {...st(c, 2.2)} /></>;
+  };
+  const frame = (sc: number, dx = 0, dy = 0, o = 1) => <rect x={22 - 17 * sc + dx} y={15 - 11 * sc + dy} width={34 * sc} height={22 * sc} rx={3} {...st(c, 1.8)} opacity={o} />;
+  if (s.includes('static') || s.includes('locked')) return box(<><rect x={13} y={4} width={16} height={10} rx={2} {...st(c, 2)} /><path d="M21 14 L21 18 M21 18 L13 27 M21 18 L29 27 M21 18 L21 27" {...st(c, 2)} /></>);
+  if (s.includes('push') || s.includes('zoom in')) return box(<>{frame(1, 0, 0, 0.35)}{frame(1 - 0.45 * e)}</>);
+  if (s.includes('pull')) return box(<>{frame(0.55, 0, 0, 0.35)}{frame(0.55 + 0.45 * e)}</>);
+  if (s.includes('whip')) return box(<>{[0, 1, 2].map((i) => <line key={i} x1={6 + e * 8} y1={8 + i * 7} x2={30 + e * 8} y2={8 + i * 7} {...st(c, 2)} opacity={1 - i * 0.25} />)}</>);
+  if (s.includes('arc')) return box(<><path d="M5 18 A 17 9 0 0 0 39 18" {...st(c, 1.6)} strokeDasharray="3 3" opacity={0.5} />
+    <circle cx={22} cy={11} r={3.5} fill={c} /><circle cx={5 + 34 * e} cy={18 + Math.sin(Math.PI * e) * 9} r={3} {...st(c, 2)} /></>);
+  if (s.includes('crane')) return box(<><line x1={6} y1={27} x2={38} y2={27} {...st(c, 1.6)} opacity={0.5} />
+    <g transform={`rotate(${-10 - 30 * e} 10 24)`}><line x1={10} y1={24} x2={34} y2={24} {...st(c, 2.2)} /><rect x={32} y={20} width={8} height={7} rx={1.5} fill={c} /></g></>);
+  if (s.includes('top shot')) return <MiniIcon k="top" c={c} />;
+  if (s.includes('low angle')) return box(<><circle cx={30} cy={7} r={3.5} fill={c} /><rect x={6} y={20} width={11} height={8} rx={2} {...st(c, 2)} transform="rotate(-28 11 24)" />{arrow(16, 20, 26, 11)}</>);
+  if (s.includes('track')) return box(<><circle cx={14} cy={9} r={3.5} fill={c} /><rect x={26} y={6} width={11} height={8} rx={2} {...st(c, 2)} />
+    {[0, 1, 2].map((i) => <line key={i} x1={((i * 15 - e * 15) % 45 + 45) % 45} y1={25} x2={((i * 15 - e * 15) % 45 + 45) % 45 + 8} y2={25} {...st(c, 2)} opacity={0.6} />)}{arrow(20, 18, 38, 18)}</>);
+  if (s.includes('truck') || s.includes('lateral')) return box(<><line x1={4} y1={26} x2={40} y2={26} {...st(c, 1.6)} opacity={0.5} />
+    <rect x={6 + 22 * e} y={12} width={12} height={9} rx={2} {...st(c, 2)} /><circle cx={9 + 22 * e} cy={24} r={1.6} fill={c} /><circle cx={15 + 22 * e} cy={24} r={1.6} fill={c} /></>);
+  if (s.includes('tilt up')) return box(<>{frame(0.7, 0, 4 - 8 * e, 0.9)}{arrow(40, 26, 40, 5)}</>);
+  if (s.includes('tilt down')) return box(<>{frame(0.7, 0, -4 + 8 * e, 0.9)}{arrow(40, 4, 40, 25)}</>);
+  if (s.includes('tilt')) return box(<>{frame(0.7, 0, 4 - 8 * e, 0.9)}{arrow(40, 26, 40, 5)}</>);
+  if (s.includes('pan left')) return box(<><path d="M38 20 Q22 4 6 20" {...st(c, 2.2)} />{arrow(10, 15, 6, 20)}<circle cx={22} cy={24} r={2.4} fill={c} /></>);
+  if (s.includes('pan')) return box(<><path d="M6 20 Q22 4 38 20" {...st(c, 2.2)} />{arrow(34, 15, 38, 20)}<circle cx={22} cy={24} r={2.4} fill={c} /></>);
+  if (s.includes('handheld')) {
+    const dx = Math.sin(f * 0.9) * 1.6, dy = Math.cos(f * 1.3) * 1.2;
+    return box(<>{frame(0.8, dx, dy)}<path d="M14 27 Q16 24 18 27 Q20 30 22 27 Q24 24 26 27 Q28 30 30 27" {...st(c, 1.6)} opacity={0.6} /></>);
+  }
+  if (s.includes('reveal')) return box(<><rect x={4} y={4} width={36} height={22} rx={3} {...st(c, 1.8)} /><circle cx={30} cy={13} r={3.5} fill={c} /><rect x={4} y={4} width={36 - 22 * e} height={22} rx={3} fill="#3A434F" /></>);
+  if (s.includes('dirty')) return <MiniIcon k="dirty" c={c} />;
+  if (s.includes('frame within')) return <MiniIcon k="fwf" c={c} />;
+  if (s.includes('flash')) return box(<><rect x={4} y={4} width={36} height={22} rx={3} {...st(c, 1.8)} /><path d="M24 6 L16 16 L22 16 L18 25 L28 13 L22 13 Z" fill={c} opacity={p < 0.15 ? 1 : 0.55} /></>);
+  if (s.includes('darkness')) return box(<><rect x={4} y={4} width={36} height={22} rx={3} {...st(c, 1.8)} /><rect x={4} y={4} width={36 * e} height={22} rx={3} fill="#000" /></>);
+  return <MiniIcon k="cam" c={c} />;
+};

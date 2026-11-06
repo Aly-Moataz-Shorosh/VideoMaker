@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, Img, interpolate, OffthreadVideo, Sequence, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {z} from 'zod';
 import {fontCss} from '../blocks/theme';
-import {Anim, KIND, MiniIcon, SC, kindIcon} from './anims';
+import {Anim, KIND, MiniIcon, MoveGlyph, SC, SizeGlyph, kindIcon} from './anims';
 
 // Scene analysis (Ibrahim El Abyad sc 55/56, 2026-11-06). 16:9. The film plays untouched (audio muxed later with ffmpeg).
 // ONE place for each thing: film (top-left) · script (right: SOUND + PICTURE windows) · card strip (under the film) ·
@@ -72,6 +72,32 @@ const Label: React.FC<{icon: string; c: string; text: string; sub?: string; o?: 
   </div>
 );
 
+
+// Shot label: every term gets its own drawing (size = framed person, move = looping mini animation).
+const ShotLabel: React.FC<{shot: any; c: string; o: number}> = ({shot, c, o}) => {
+  const T = {fontFamily: EN, fontWeight: 800, fontSize: 22, color: '#fff', letterSpacing: 1.2, textShadow: '0 2px 6px rgba(0,0,0,0.85)', whiteSpace: 'nowrap' as const};
+  const G = {background: 'rgba(10,12,16,0.6)', borderRadius: 6, padding: '2px 3px', display: 'flex', boxShadow: `0 0 0 2px ${c}`};
+  const sep = (x: string, k: string) => <span key={k} style={{...T, color: '#AEB6C2', fontWeight: 600}}>{x}</span>;
+  const term = (g: React.ReactNode, txt: string, k: string) => (
+    <span key={k} style={{display: 'flex', alignItems: 'center', gap: 7}}><span style={G}>{g}</span><span style={{...T, fontWeight: 700}}>{txt}</span></span>);
+  const parts: React.ReactNode[] = [];
+  shot.size.split('→').map((x: string) => x.trim()).forEach((x: string, i: number) => {
+    if (i) parts.push(sep('→', 'sa' + i));
+    parts.push(term(<SizeGlyph k={x} />, x, 'sz' + i));
+  });
+  const toks = [shot.extra, shot.move].filter(Boolean).join(' · ').split(/( \+ | · | → )/);
+  toks.forEach((x: string, i: number) => {
+    if (!x.trim()) return;
+    if (/^ (\+|·|→) $/.test(x)) { parts.push(sep(x.trim(), 'mp' + i)); return; }
+    const tx = x.trim();
+    parts.push(term(/^(OTS|CU|MCU|MS|MLS|LS|WS|ELS|ECU|Insert)$/.test(tx) ? <SizeGlyph k={tx} /> : <MoveGlyph k={x} />, tx, 'mv' + i));
+  });
+  return <div style={{display: 'flex', alignItems: 'center', gap: 10, opacity: o, flexWrap: 'nowrap'}}>
+    <span style={{...T, fontWeight: 900, background: c, color: '#0D1015', textShadow: 'none', borderRadius: 6, padding: '2px 10px'}}>SHOT {shot.n}</span>
+    {sep('·', 'd0')}{parts}
+  </div>;
+};
+
 const Film: React.FC<Props> = (p) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
@@ -80,14 +106,13 @@ const Film: React.FC<Props> = (p) => {
   const sinceCut = t - shot.s;
   const lo = interpolate(sinceCut, [0, 0.18], [0.35, 1], clamp);
   const mark = at(p.marks as any[], t);
-  const parts = [shot.size, shot.extra, shot.move].filter(Boolean).join(' · ');
   return (
     <div style={{position: 'absolute', left: VID.x, top: VID.y, width: VID.w, height: VID.h, borderRadius: 10, overflow: 'hidden', background: '#000',
       boxShadow: '0 0 0 1px #20262F'}}>
       <OffthreadVideo src={staticFile(P + 'scene.mp4')} muted style={{width: VID.w, height: VID.h}} />
       <div style={{position: 'absolute', left: 0, right: 0, bottom: 0, height: 120, background: 'linear-gradient(transparent, rgba(0,0,0,0.6))'}} />
       <div style={{position: 'absolute', left: 22, bottom: 18}}>
-        <Label icon="cam" c={SC[shot.scene]} text={`SHOT ${shot.n}`} sub={`  ·  ${parts}`} o={lo} />
+        <ShotLabel shot={shot} c={SC[shot.scene]} o={lo} />
       </div>
       {mark && (() => {
         const o = inOut(t, mark.t0, mark.t1, 0.25);
