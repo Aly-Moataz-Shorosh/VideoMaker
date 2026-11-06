@@ -8,6 +8,7 @@ import {Course, courseSchema} from './course/Course';
 import {CourseShort, courseShortSchema} from './course/Short';
 import {StageShort, stageShortSchema} from './stage/StageShort';
 import {MeetShort, meetShortSchema} from './enta/MeetShort';
+import {SceneAnalysis, sceneAnalysisSchema} from './scene/SceneAnalysis';
 
 // Every template: 16:9 composition `<id-with-dashes>` and, when v, 9:16 `<id>-v`.
 export const Root: React.FC = () => (
@@ -48,6 +49,10 @@ export const Root: React.FC = () => (
     {/* Live Playmobil match reel (2026-11-01). Props from projects/<code>/work/scripts/make_props.py */}
     <Composition id="match-reel" component={MatchReel} schema={matchReelSchema} defaultProps={matchReelSchema.parse({})}
       fps={30} width={1080} height={1920} durationInFrames={90}
+      calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * 30))})} />
+    {/* Film scene analysis 16:9 (Ibrahim El Abyad 2026-11-06). Props from projects/<code>/work/scripts/make_props.py */}
+    <Composition id="scene-analysis" component={SceneAnalysis} schema={sceneAnalysisSchema} defaultProps={sceneAnalysisSchema.parse({})}
+      fps={30} width={1920} height={1080} durationInFrames={90}
       calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * 30))})} />
   </>
 );
