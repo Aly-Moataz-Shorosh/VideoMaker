@@ -63,3 +63,11 @@ Lessons (Aly reviews 2026-10-18):
   "💾 Save" keyframes + Play), `HideNote` context hides anim notes in shorts; `under=` puts the anim small on top + his screen below.
 - Delivery: `_raw` = render only (delete after); `output/shorts` = leveled + compressed finals + .txt. Don't delete finals before the
   new version replaces them. Don't run a 2nd level pass over files he may be watching (a half-written mp4 = "broken" file).
+
+## FAST course (film making, 2026-11-06) — no separators, render only the bookends
+Aly: "متحطش فواصل علشان نوفر وقت الـ render". Scripts `tools/recipes/filmcourse/` (data in `film_data.py`):
+teaser (his clips, cut once into public `teaser.mp4` at 1276x720 30 fps) -> his intro sting (`brand/clips/genjutsu_intro_sting.mp4`)
+-> opening pages (OCoverage 3 yardsticks, ORecommend, OParts, 2× OStampsParts) -> the course file UNTOUCHED -> ending (ONextA + ONextVideos)
+-> his outro `_branding/outro.avi` (BGRA alpha overlay) over the frozen last ending page. Remotion renders only ~82 s (`render.sh`,
+5 min); `assemble.sh` = ONE ffmpeg concat pass with h264_nvenc (~1 min of 1080p60 per 14 s). Timestamps = offset + source time.
+Remotion text: no accented Latin (è) inside Arabic lines — `bi()` only isolates [A-Za-z0-9] runs, "Mise-en-scène" flipped.

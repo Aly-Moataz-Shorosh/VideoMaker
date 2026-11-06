@@ -296,3 +296,8 @@ Done (2026-10-06):
   Aly: a drawing beside every term + full name under every abbreviation. Recipe `docs/32-recipe-scene-analysis.md`, scripts
   `tools/recipes/ibrahimLabyad/`. `output/review_01.mp4` + .txt, board `output/shot_scene_sequence.png`. 7 open questions (echo, unclear lines,
   shot 3 move, shot 71 flash cut, montage music start) rendered with my defaults — waiting for his review.
+- 2026-11-06 `projects/2026-11-06 youtube intro to film making course` (his film making intro course, recorded today from his 5-year-old files,
+  1:22:57 1080p60, webcam corner) -> `output/film_making_course_full.mp4` (+ .txt, coverage Excel): NO separators (Aly: save render time) =
+  teaser (5 of his clips) + intro sting + Claude's coverage (Film Art 46 / UCLA 27 / Aberystwyth stages 56) + 6-part timestamps, course untouched,
+  ending = what to study next + his courses, outro.avi over the last page. Only ~82 s rendered + one NVENC pass. Recipe docs/27 "FAST course",
+  scripts `tools/recipes/filmcourse/`, evidence `research/shots/`. Waiting for Aly's review.
