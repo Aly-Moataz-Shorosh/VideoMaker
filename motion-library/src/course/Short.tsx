@@ -12,6 +12,7 @@ import {courseAnims, HideNote} from './anims';
 import {audioAnims} from './audioAnims';
 import {sound3d} from './sound3d';
 import {shortScenes} from './shortScenes';
+import {filmScenes} from './filmShorts';
 import {courseScenes} from './scenes';
 import {Captions} from '../templates/Captions';
 
@@ -58,6 +59,12 @@ const SOUND = '#2EE6B6';
 // the series logo box: 'Pr' text, or 'wave' = sound bars (audio course)
 const Logo: React.FC<{logo: string}> = ({logo}) => {
   const f = useCurrentFrame();
+  if (logo === 'film') return ( // film-making course (2026-11-06): a clapperboard
+    <div style={{width: 84, height: 82, borderRadius: 18, background: '#14181F', border: '4px solid #FFC21A', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0}}>
+      <svg width={56} height={52} viewBox="0 0 56 52"><g transform={`rotate(${-14 + 14 * Math.abs(Math.sin(f / 18))} 4 18)`}><rect x={2} y={8} width={52} height={11} rx={2} fill="#fff" />
+        {[0, 1, 2, 3].map((i) => <path key={i} d={`M ${8 + i * 12} 8 L ${14 + i * 12} 8 L ${10 + i * 12} 19 L ${4 + i * 12} 19 Z`} fill="#14181F" />)}</g>
+        <rect x={2} y={21} width={52} height={29} rx={3} fill="#FFC21A" /></svg>
+    </div>);
   if (logo === 'wave') return (
     <div style={{width: 84, height: 82, borderRadius: 18, background: '#101828', border: `4px solid ${SOUND}`, boxSizing: 'border-box', display: 'flex', alignItems: 'center',
       justifyContent: 'center', gap: 5, flexShrink: 0}}>
@@ -97,16 +104,16 @@ const SeriesFrame: React.FC<{no: number; total: number; title: string; at: strin
 
 // a setting and its result at the same moment: the panel he changes on top, the picture it changes below (Aly 2026-10-18)
 type DMark = {t: number; d: number; x: number; y: number; r: number; label: string};
-const DualCard: React.FC<{file: string; from: number; d: number; top: {sx: number; sy: number; sw: number}; bottom: {sx: number; sy: number; sw: number}; acc: string; under?: boolean; marks?: DMark[]}> = (
-  {file, from, d, top, bottom, acc, under = false, marks = []}) => {
+const DualCard: React.FC<{file: string; from: number; d: number; top: {sx: number; sy: number; sw: number}; bottom: {sx: number; sy: number; sw: number}; acc: string; under?: boolean; marks?: DMark[]; cin?: boolean; cout?: boolean}> = (
+  {file, from, d, top, bottom, acc, under = false, marks = [], cin = false, cout = false}) => {
   const {w: SRCW, h: SRCH} = useSrc();
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const W = CW, H2 = (CH - 12) / 2;
-  const pIn = spr(f, fps, 0, 140, 16), o = 1 - lin(f, d * fps - 8, d * fps);
+  const pIn = cin ? 1 : spr(f, fps, 0, 140, 16), o = cout ? 1 : 1 - lin(f, d * fps - 8, d * fps); // one card across pieces (film course shorts)
   const pane = (c: {sx: number; sy: number; sw: number}, label: string, delay: number) => {
     const k = W / c.sw;
-    const q = spr(f, fps, delay, 150, 16);
+    const q = cin ? 1 : spr(f, fps, delay, 150, 16);
     return (
       <div style={{position: 'relative', width: W, height: H2, borderRadius: 22, overflow: 'hidden', background: '#000', transform: `translateX(${(1 - q) * (delay ? 60 : -60)}px)`, opacity: Math.min(1, q * 1.4)}}>
         <OffthreadVideo muted src={staticFile(file)} startFrom={Math.round(from * fps)} style={{position: 'absolute', left: -c.sx * k, top: -c.sy * k, width: SRCW * k, height: SRCH * k}} />
@@ -410,7 +417,7 @@ export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues
       <L.Bg />
       {screens.map((s, i) => !live(s.t, s.d) ? null : (
         <Sequence key={'s' + i} from={fr(s.t)} durationInFrames={fr(s.d)} layout="none">
-          {s.dual ? <DualCard file={s.file} from={s.from} d={s.d} top={s.dual.top} bottom={s.dual.bottom} acc={L.acc} under={s.under} marks={s.marks} />
+          {s.dual ? <DualCard file={s.file} from={s.from} d={s.d} top={s.dual.top} bottom={s.dual.bottom} acc={L.acc} under={s.under} marks={s.marks} cin={s.cin} cout={s.cout} />
             : <ScreenCard file={s.file} from={s.from} d={s.d} keys={s.keys} marks={s.marks} y={s.y} acc={L.acc} cin={s.cin} cout={s.cout} />}
         </Sequence>
       ))}
@@ -428,6 +435,7 @@ export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues
         else if (c.k === 'Key') el = <Key {...(c.p as any)} dur={d} x={1000} y={CTOP + CH - 160} />;
         else if (c.k === 'Def') el = <Def {...(c.p as any)} dur={d} x={540} y={1000} w={940} color={L.acc} />;
         else if (c.k === 'New26') el = <New26V {...(c.p as any)} dur={d} />;
+        else if (filmScenes[c.k]) { const S4 = filmScenes[c.k]; el = <S4 {...(c.p as any)} dur={d} />; }
         else if (shortScenes[c.k]) { const S2 = shortScenes[c.k]; el = <S2 {...(c.p as any)} dur={d} />; }
         else if (sound3d[c.k]) { const S3 = sound3d[c.k]; el = <S3 {...(c.p as any)} dur={d} />; }
         else el = <AnimV name={c.k} {...(c.p as any)} dur={d} />;
