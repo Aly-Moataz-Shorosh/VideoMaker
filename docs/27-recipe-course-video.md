@@ -64,10 +64,13 @@ Lessons (Aly reviews 2026-10-18):
 - Delivery: `_raw` = render only (delete after); `output/shorts` = leveled + compressed finals + .txt. Don't delete finals before the
   new version replaces them. Don't run a 2nd level pass over files he may be watching (a half-written mp4 = "broken" file).
 
-## FAST course (film making, 2026-11-06) — no separators, render only the bookends
-Aly: "متحطش فواصل علشان نوفر وقت الـ render". Scripts `tools/recipes/filmcourse/` (data in `film_data.py`):
-teaser (his clips, cut once into public `teaser.mp4` at 1276x720 30 fps) -> his intro sting (`brand/clips/genjutsu_intro_sting.mp4`)
--> opening pages (OCoverage 3 yardsticks, ORecommend, OParts, 2× OStampsParts) -> the course file UNTOUCHED -> ending (ONextA + ONextVideos)
--> his outro `_branding/outro.avi` (BGRA alpha overlay) over the frozen last ending page. Remotion renders only ~82 s (`render.sh`,
-5 min); `assemble.sh` = ONE ffmpeg concat pass with h264_nvenc (~1 min of 1080p60 per 14 s). Timestamps = offset + source time.
+## FAST course (film making, 2026-11-06) — render only the added pieces
+Scripts `tools/recipes/filmcourse/` (data in `film_data.py`). Final = teaser (his clips, cut once into public `teaser.mp4` 1276x720 30 fps)
+-> opening pages (OCoverage 3 yardsticks, ORecommend, OParts, 2x OStampsParts) -> [Sep 4 s + chapter AS-IS] x N -> Sep 'what to learn next'
+-> ending (ONextA + ONextVideos). Remotion renders only teaser/pages/end + ALL separators back to back in ONE `seps.mp4` (~4 min total);
+`assemble.py` = one ffmpeg pass: every piece of `work/pieces.json` is its own `-ss/-t` input, concat filter, h264_nvenc (~1.2x realtime).
+Chapter cuts: `quiet_near` = the widest word gap (transcript word times) just before the chapter's first word, at its quietest 100 ms,
+floored to a 60 fps frame; checked "no cut inside a word" for all chapters. Timestamps = separator start.
+Aly review 1: NO brand intro/outro ("Intro + video + outro" meant OUR opening/ending pages); separators wanted (only skip if he says so
+again); teaser clips = his most striking moments (he picks); the 'text' icon cursor blinked 100 px outside its tile (fixed in kit.tsx Ico).
 Remotion text: no accented Latin (è) inside Arabic lines — `bi()` only isolates [A-Za-z0-9] runs, "Mise-en-scène" flipped.

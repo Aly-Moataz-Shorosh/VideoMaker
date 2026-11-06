@@ -29,7 +29,7 @@ CH = [
     (2, 1157.5, 'الفريمات والـ Aspect ratio', 'Frames & aspect ratio', 'grid'),
     (3, 1242.8, 'جمال السينما', 'Cinema', 'film'),
     (3, 1366.8, 'السينما لغة مرئية: Visual literacy', 'Visual literacy', 'text'),
-    (3, 1501.0, 'المونتاج: القطع ليه معنى', 'Editing', 'razor'),
+    (3, 1498.7, 'المونتاج: القطع ليه معنى', 'Editing', 'razor'),
     (3, 1975.1, 'السيناريو: Sequence و Scene و Shot', 'Script breakdown', 'seq'),
     (3, 2124.1, 'سكريبت إبراهيم الأبيض مع المشهد', 'Script vs scene', 'text'),
     (4, 2366.0, 'الكاميرا: جرامر اللقطة', 'Camera grammar', 'cam'),
@@ -54,8 +54,9 @@ TEASER = [  # (from, to, caption, app)
     (182.0, 185.7, 'السينما لغة: شكل ومحتوى', None),
     (2427.0, 2429.8, 'أحجام اللقطات', 'Shot sizes'),
     (2606.4, 2608.6, 'الـ Framing وقاعدة الـ 180 درجة', None),
-    (3398.5, 3403.2, 'عدسة بفوكسين', 'Split diopter'),
-    (4588.4, 4591.4, 'تحليل مشهد: السلطة في الكادر', None),
+    # Aly review 1: clip 4 = something cooler (the huge crowd shot + fast camera), clip 5 = him saying who went down / up a step
+    (4296.7, 4302.7, 'حركة كاميرا في مشهد ضخم', 'Crowd shot'),
+    (4661.5, 4668.7, 'السلطة في الكادر: نزلت سلمة.. وطلعت سلمة', None),
 ]
 
 # ---- Claude's coverage: each yardstick = an official course / textbook, one row per topic (1 = explained in the session)
@@ -116,12 +117,11 @@ END = [
               dict(head='أنواع الأفلام وتاريخ السينما', sub='Genres، الوثائقي، مدارس السينما', src='Film Art')],
         foot='الترشيحات دي من Claude.. من المراجع اللي قارنت بيها الكورس')),
     ('ONextVideos', 14.0, dict(title='فيديوهات من القناة تكمّل بيها', foot='امسح الـ QR بالموبايل.. أو اللينكات في الوصف', vids=[
+        dict(title='تحليل مشهد إبراهيم الأبيض', why='نفس المشهد اللي في الكورس.. لقطة لقطة، من السكريبت للشاشة', thumb=PUB + 'pics/yt_NWtPI7aiefw.jpg', qr=PUB + 'qr/yt_NWtPI7aiefw.png', c='#FF6B5B'),
         dict(title='كورس الصوت للفيديو', why='الصوت نص الفيلم.. من الأساسيات للبرامج', thumb=PUB + 'pics/audio_course_thumb.jpg', qr=PUB + 'qr/audio_course.png', c='#19B5A5'),
         dict(title='تظبيط الإضاءة لفيديوهات اليوتيوب', why='الإضاءة اللي اتذكرت بسرعة في الكورس', thumb=PUB + 'pics/yt_o7QYL5qIY84.jpg', qr=PUB + 'qr/yt_o7QYL5qIY84.png', c='#35D07F'),
         dict(title='هو ايه | SFX & FX', why='المؤثرات الصوتية والبصرية ببساطة', thumb=PUB + 'pics/yt_oi9vWEbEwqI.jpg', qr=PUB + 'qr/yt_oi9vWEbEwqI.png', c='#F5B83D'),
-        dict(title='طريقة سهلة وسريعة لتحسين صوت الفيديو', why='صوتك يبقى أنضف في دقايق', thumb=PUB + 'pics/yt_IjVlRDHEBSY.jpg', qr=PUB + 'qr/yt_IjVlRDHEBSY.png', c='#3BA9F5'),
     ])),
 ]
-OUTRO_LEN = 33.3
 LINKS = dict(premiere='https://youtu.be/D4fqs2c0DfY', audio='https://youtu.be/2XVRSnTuZJQ', lighting='https://youtu.be/o7QYL5qIY84',
-             sfx='https://youtu.be/oi9vWEbEwqI', voice='https://youtu.be/IjVlRDHEBSY')
+             sfx='https://youtu.be/oi9vWEbEwqI', ibrahim='https://youtu.be/NWtPI7aiefw')
