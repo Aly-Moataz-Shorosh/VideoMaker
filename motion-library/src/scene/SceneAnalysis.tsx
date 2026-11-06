@@ -2,6 +2,7 @@ import React from 'react';
 import {AbsoluteFill, Img, interpolate, OffthreadVideo, Sequence, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {z} from 'zod';
 import {fontCss} from '../blocks/theme';
+import {Set3D} from './set3d';
 import {Anim, KIND, MiniIcon, MoveGlyph, SC, SizeGlyph, kindIcon} from './anims';
 
 // Scene analysis (Ibrahim El Abyad sc 55/56, 2026-11-06). 16:9. The film plays untouched (audio muxed later with ffmpeg).
@@ -30,8 +31,9 @@ const VID = {x: 640, y: 78, w: 1240, h: 540};   // film RIGHT (Arabic eye starts
 const RC = {x: 40, w: 570};
 const SW = {y: 78, h: 296};   // sound window
 const PW = {y: 384, h: 234};  // picture window
-const CARD = {x: 640, y: 632, w: 1240, h: 138};
-const TL = {x: 40, y: 786, w: 1840, h: 278};
+const CARD = {x: 640, y: 630, w: 610, h: 190};
+const SET = {x: 1262, y: 630, w: 618, h: 190};
+const TL = {x: 40, y: 832, w: 1840, h: 232};
 const SCN: Record<string, string> = {'55': 'Sc 55', '56': 'Sc 56', add: 'Film addition', x: 'Not in script'};
 const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 const tc = (s: number) => {
@@ -107,7 +109,7 @@ const ShotLabel: React.FC<{shot: any; c: string; o: number}> = ({shot, c, o}) =>
 const Film: React.FC<Props> = (p) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const t = f / fps;
+  const t = (f + 0.02) / fps;
   const shot = p.shots.find((s: any) => t >= s.s && t < s.e) ?? p.shots[p.shots.length - 1];
   const sinceCut = t - shot.s;
   const lo = interpolate(sinceCut, [0, 0.18], [0.35, 1], clamp);
@@ -204,7 +206,7 @@ const Empty: React.FC<{title: string; ar: string}> = ({title, ar}) => (
 const Script: React.FC<Props> = (p) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const t = f / fps;
+  const t = (f + 0.02) / fps;
   const L = p.lines as any[];
   // SOUND: current line (or the last one, dimmed) ; before the first line -> scene heading of p.97
   const HEAD0 = {t0: 0, t1: 7.4, r: [97, 40, 36, 556, 92], spk: '', scene: '55', diff: ''};
@@ -253,11 +255,53 @@ const Script: React.FC<Props> = (p) => {
   </>;
 };
 
+
+// Definitions of the current shot's terms (StudioBinder meanings, short Egyptian Arabic). Shown when no card is up.
+const DEF: [RegExp, string][] = [
+  [/^ELS/, 'الشخص صغير جدا والمكان هو الأساس'], [/^LS/, 'الجسم كله من الراس للرجل'], [/^WS/, 'الجسم كله ومعاه المكان حواليه'],
+  [/^MLS/, 'من الراس لحد الركبة'], [/^MS/, 'من الراس لحد الوسط'], [/^MCU/, 'من الراس لحد الصدر'], [/^CU/, 'الوش بيملا الكادر'],
+  [/^ECU/, 'جزء صغير بس، زي العين أو البق'], [/^Insert/, 'لقطة قريبة لحاجة مهمة للحكاية (مش وش)'], [/^OTS/, 'الكاميرا ورا كتف شخص وباصة على التاني'],
+  [/Static/, 'الكاميرا ثابتة مش بتتحرك'], [/Whip/, 'لفة سريعة جدا بتعمل زغللة في الصورة'], [/Pan/, 'الكاميرا بتلف يمين أو شمال وهي في مكانها'],
+  [/Tilt/, 'الكاميرا بتلف لفوق أو لتحت وهي في مكانها'], [/Truck/, 'الكاميرا كلها بتتنقل يمين أو شمال'], [/Push-in/, 'الكاميرا بتقرّب من الشخص'],
+  [/Pull-out/, 'الكاميرا بتبعد عن الشخص'], [/Arc/, 'الكاميرا بتلف حوالين الشخص في دايرة'], [/Crane/, 'الكاميرا على دراع طويل بتطلع لفوق'],
+  [/Tracking/, 'الكاميرا ماشية مع الشخص وهو بيتحرك'], [/Handheld/, 'الكاميرا في الإيد، فيها اهتزاز طبيعي'], [/Dirty Frame/, 'حاجة في المقدمة بتغطي جزء من الكادر'],
+  [/Low Angle/, 'الكاميرا تحت وباصة لفوق: الشخص يبان أقوى'], [/Top Shot/, 'الكاميرا فوق بالظبط وباصة لتحت'], [/Frame within/, 'كادر جوه كادر: باب أو شباك'],
+  [/Flash Cut/, 'شوت قصير جدا، أقل من ثانية'], [/Reveal/, 'الحركة بتكشف حاجة كانت مستخبية'],
+];
+const defOf = (x: string) => DEF.find(([r]) => r.test(x.replace(/^(Slow|Handheld · ) ?/, (m) => (m.startsWith('Handheld') ? 'Handheld' : ''))))?.[1];
+const Terms: React.FC<{shot: any; note?: any; o: number}> = ({shot, note, o}) => {
+  const items: {k: string; g: React.ReactNode}[] = [];
+  const seen = new Set<string>();
+  const add = (x: string, size: boolean) => {
+    const k = x.trim(); const d = defOf(k);
+    if (!d || seen.has(d)) return; seen.add(d);
+    items.push({k, g: size ? <SizeGlyph k={k} /> : <MoveGlyph k={k} />});
+  };
+  shot.size.split('→').forEach((x: string) => add(x, true));
+  [shot.extra, shot.move].filter(Boolean).join(' · ').split(/ \+ | · | → /).forEach((x: string) => {
+    const tx = x.trim(); add(tx, /^(OTS|CU|MCU|MS|MLS|LS|WS|ELS|ECU|Insert)$/.test(tx));
+  });
+  const rows = items.slice(0, note ? 2 : 3);
+  return <div style={{position: 'absolute', inset: 0, opacity: o, background: PANEL, borderRadius: 12, boxShadow: `0 0 0 1px ${LINE}`, padding: '8px 16px',
+    display: 'flex', flexDirection: 'column', gap: 4, boxSizing: 'border-box'}}>
+    <span style={{fontFamily: EN, fontWeight: 800, fontSize: 12, letterSpacing: 2, color: DIM}}>TERMS · SHOT {shot.n}</span>
+    {rows.map((r, i) => <div key={i} style={{display: 'flex', alignItems: 'center', gap: 12, height: 44}}>
+      <span style={{background: 'rgba(10,12,16,0.6)', borderRadius: 6, padding: '2px 3px', display: 'flex', boxShadow: `0 0 0 2px ${SC[shot.scene]}`}}>{r.g}</span>
+      <span style={{fontFamily: EN, fontWeight: 800, fontSize: 19, color: '#fff', width: 190, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>{r.k}</span>
+      <span style={{fontFamily: AR, fontWeight: 700, fontSize: 19, color: '#D9DEE5', direction: 'rtl', textAlign: 'right', flex: 1}}>{defOf(r.k)}</span>
+    </div>)}
+    {note && <div style={{display: 'flex', alignItems: 'center', gap: 12, height: 40, borderTop: `1px solid ${LINE}`}}>
+      <span style={{fontFamily: EN, fontWeight: 800, fontSize: 13, letterSpacing: 2, color: SOFT, width: 236}}>NOTE · {note.k}</span>
+      <span style={{fontFamily: AR, fontWeight: 700, fontSize: 19, color: INK, direction: 'rtl', textAlign: 'right', flex: 1}}>{note.txt}</span>
+    </div>}
+  </div>;
+};
+
 // ---------------- card strip (under the film) ----------------
 const Cards: React.FC<Props> = (p) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const t = f / fps;
+  const t = (f + 0.02) / fps;
   const c = at(p.cards as any[], t);
   const n = at(p.notes as any[], t);
   const bars = (p.shots as any[]).map((s) => ({d: s.e - s.s, sc: s.scene}));
@@ -267,32 +311,54 @@ const Cards: React.FC<Props> = (p) => {
       const sp = spring({frame: lf, fps, config: {damping: 18, mass: 0.7}});
       const o = Math.min(sp, interpolate(t, [c.t1 - 0.3, c.t1], [1, 0], clamp));
       const col = KIND[c.kind as keyof typeof KIND];
+      const fs = c.term.length < 16 ? 38 : c.term.length < 24 ? 31 : 25;
       return <div style={{position: 'absolute', inset: 0, opacity: o, transform: `translateY(${(1 - sp) * 18}px)`, background: PANEL, borderRadius: 12,
-        boxShadow: `0 0 0 1px ${LINE}`, display: 'flex', alignItems: 'center', overflow: 'hidden'}}>
-        <div style={{width: 6, alignSelf: 'stretch', background: col}} />
-        <div style={{width: 232, display: 'flex', justifyContent: 'center'}}>
-          <div style={{width: 200, height: 116}}>
-            <Sequence from={Math.round(c.t0 * fps)} layout="none"><Anim k={c.anim} c={col} lead={c.lead} bars={bars} /></Sequence>
+        boxShadow: `0 0 0 1px ${LINE}`, overflow: 'hidden', display: 'flex'}}>
+        <div style={{width: 6, background: col}} />
+        <div style={{flex: 1, padding: '12px 18px', display: 'flex', flexDirection: 'column', gap: 8}}>
+          <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
+            <span style={{display: 'flex', alignItems: 'center', gap: 4, fontFamily: EN, fontWeight: 800, fontSize: 13, letterSpacing: 2, color: col, flex: 'none'}}>
+              <MiniIcon k={kindIcon(c.kind)} c={col} />{c.kind === 'edit' ? 'EDITING' : c.kind === 'sound' ? 'SOUND' : 'CAMERA'}</span>
+            <span style={{fontFamily: EN, fontWeight: 900, fontSize: fs, color: '#fff', letterSpacing: 0.3, whiteSpace: 'nowrap'}}>{c.term}</span>
           </div>
-        </div>
-        <div style={{flex: 1, paddingRight: 30, display: 'flex', flexDirection: 'column', gap: 8}}>
-          <div style={{display: 'flex', alignItems: 'center', gap: 14}}>
-            <span style={{display: 'flex', alignItems: 'center', gap: 4, fontFamily: EN, fontWeight: 800, fontSize: 14, letterSpacing: 2, color: col}}>
-              <MiniIcon k={kindIcon(c.kind)} c={col} />{c.kind === 'edit' ? 'EDITING' : c.kind === 'sound' ? 'SOUND DESIGN' : 'CAMERA'}</span>
-            <span style={{fontFamily: EN, fontWeight: 900, fontSize: 40, color: '#fff', letterSpacing: 0.5}}>{c.term}</span>
+          <div style={{display: 'flex', gap: 14, alignItems: 'center'}}>
+            <div style={{width: 200, height: 116, flex: 'none'}}>
+              <Sequence from={Math.round(c.t0 * fps)} layout="none"><Anim k={c.anim} c={col} lead={c.lead} bars={bars} /></Sequence>
+            </div>
+            <div style={{fontFamily: AR, fontWeight: 700, fontSize: 21, color: '#D9DEE5', direction: 'rtl', textAlign: 'right', lineHeight: 1.4, flex: 1}}>{c.ar}</div>
           </div>
-          <div style={{fontFamily: AR, fontWeight: 700, fontSize: 25, color: '#D9DEE5', direction: 'rtl', textAlign: 'right', lineHeight: 1.3}}>{c.ar}</div>
         </div>
       </div>;
     })()}
-    {!c && n && (() => {
-      const o = inOut(t, n.t0, n.t1);
-      return <div style={{position: 'absolute', left: 0, bottom: 0, height: 52, opacity: o, display: 'flex', alignItems: 'center', gap: 12, background: PANEL,
-        borderRadius: 10, padding: '0 18px', boxShadow: `0 0 0 1px ${LINE}`}}>
-        <span style={{fontFamily: EN, fontWeight: 800, fontSize: 14, letterSpacing: 2, color: SOFT}}>NOTE · {n.k}</span>
-        <span style={{fontFamily: AR, fontWeight: 700, fontSize: 21, color: INK, direction: 'rtl'}}>{n.txt}</span>
-      </div>;
+    {!c && (() => {
+      const shot = p.shots.find((x: any) => t >= x.s && t < x.e) ?? p.shots[p.shots.length - 1];
+      const prevEnd = (p.cards as any[]).filter((k) => k.t1 <= t).reduce((m, k) => Math.max(m, k.t1), -9);
+      const o = interpolate(t - prevEnd, [0, 0.3], [0, 1], clamp);
+      return <Terms shot={shot} note={n} o={o} />;
     })()}
+  </div>;
+};
+
+// ---------------- 3D set (camera + actors + light, per set-up) ----------------
+const SETNAME: Record<string, string> = {table: 'Table room', alley: 'Alley', pills: 'Drink & pills room', narges: 'Doorway', street: 'Burning street',
+  roofN: 'Rooftop (night)', roofD: 'Rooftops (dawn)', hole: 'Money hole', bike: 'Street'};
+const SetPanel: React.FC<Props> = (p) => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const t = (f + 0.02) / fps;
+  const shot = p.shots.find((s: any) => t >= s.s && t < s.e) ?? p.shots[p.shots.length - 1];
+  if (!shot.cam) return null;
+  const u = (t - shot.s) / Math.max(0.1, shot.e - shot.s);
+  const HEAD = 30;
+  return <div style={{position: 'absolute', left: SET.x, top: SET.y, width: SET.w, height: SET.h, borderRadius: 10, overflow: 'hidden', background: '#0B0E12', boxShadow: `0 0 0 1px ${LINE}`}}>
+    <div style={{height: HEAD, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 12px', background: '#10141A', borderBottom: `2px solid ${KIND.camera}`}}>
+      <span style={{fontFamily: EN, fontWeight: 800, fontSize: 13, letterSpacing: 1.5, color: KIND.camera}}>3D SET · {SETNAME[shot.set] ?? ''}</span>
+      <span style={{display: 'flex', gap: 12, fontFamily: EN, fontWeight: 700, fontSize: 12, color: SOFT}}>
+        <span><span style={{color: KIND.camera}}>■</span> Camera</span><span><span style={{color: '#FFD27A'}}>●</span> Light</span><span>approx.</span></span>
+    </div>
+    <div style={{position: 'absolute', top: HEAD + 2, left: 0}}>
+      <Set3D w={SET.w} h={SET.h - HEAD - 2} set={shot.set} cam={shot.cam} u={u} f={f} />
+    </div>
   </div>;
 };
 
@@ -328,7 +394,7 @@ const Legend: React.FC = () => {
 const Timeline: React.FC<Props> = (p) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const t = f / fps;
+  const t = (f + 0.02) / fps;
   const LBL = 112, X0 = LBL, CW = TL.w - LBL - 8;
   const WIN = 22;                           // seconds visible in the zoom window
   const pps = CW / WIN;
@@ -336,8 +402,8 @@ const Timeline: React.FC<Props> = (p) => {
   const v0 = Math.min(Math.max(0, t - WIN * PH), p.duration - WIN);
   const X = (s: number) => X0 + (s - v0) * pps;
   const phx = X(t);
-  const R = {head: 0, ov: 28, ru: 54, mk: 78, v1: 106, a1: 162, a2: 202, a3: 236};
-  const H = {v1: 50, a1: 34, a2: 28, a3: 28};
+  const R = {head: 0, ov: 24, ru: 42, mk: 62, v1: 84, a1: 124, a2: 156, a3: 184};
+  const H = {v1: 38, a1: 30, a2: 26, a3: 42};
   const OW = TL.w - 16;
   const OX = (s: number) => 8 + (s / p.duration) * OW;
   const card = at(p.cards as any[], t);
@@ -397,8 +463,13 @@ const Timeline: React.FC<Props> = (p) => {
       {track(R.a3, H.a3, 'A3', 'SFX')}
       {(p.shots as any[]).map((s) => clip(s.s, s.e, R.v1, H.v1, SC[s.scene], `${s.n} · ${s.size}`, 'v' + s.n))}
       {(p.a1 as any[]).map((a, i) => clip(a.s, a.e, R.a1, H.a1, AUD, a.name + (a.echo ? ' (echo)' : ''), 'a1' + i, 1, a.echo))}
-      {(p.a2 as any[]).map((a, i) => <g key={'a2' + i}>{clip(a.s, a.e, R.a2, H.a2, '#3F7F68', a.name, 'a2c' + i)}
-        {a.fadeOut && vis(a.fadeOut, a.e) && <path d={`M${X(a.fadeOut)} ${R.a2 + 3} L${X(a.e)} ${R.a2 + H.a2 - 3}`} stroke="#0D1015" strokeWidth={2.5} />}</g>)}
+      {(p.a2 as any[]).map((a, i) => {
+        const hh = a.lane === undefined ? H.a2 : H.a2 / 2, yy = R.a2 + (a.lane === 1 ? H.a2 / 2 : 0);
+        return <g key={'a2' + i}>{clip(a.s, a.e, yy, hh, '#3F7F68', a.lane === undefined ? a.name : '', 'a2c' + i)}
+          {a.lane !== undefined && vis(a.s, a.e) && <text x={Math.max(X0, X(a.s)) + 6} y={yy + hh - 3} fill="#EDEFF2" fontFamily={EN} fontWeight={800} fontSize={10}>{a.name}</text>}
+          {a.fadeOut && vis(a.fadeOut, a.e) && <path d={`M${X(a.fadeOut)} ${yy + 2} L${X(a.e)} ${yy + hh - 2}`} stroke="#0D1015" strokeWidth={2.5} />}
+          {a.fadeIn && vis(a.s, a.fadeIn) && <path d={`M${X(a.s)} ${yy + hh - 2} L${X(a.fadeIn)} ${yy + 2}`} stroke="#0D1015" strokeWidth={2.5} />}</g>;
+      })}
       {(p.a3 as any[]).map((a, i) => clip(a.s, a.e, R.a3, H.a3, '#5FBF8F', a.name, 'a3' + i))}
       {/* markers + lead-in spans */}
       {(p.markers as any[]).map((m, i) => {
@@ -441,6 +512,7 @@ export const SceneAnalysis: React.FC<Props> = (p) => (
     <Film {...p} />
     <Script {...p} />
     <Cards {...p} />
+    <SetPanel {...p} />
     <Legend />
     <Timeline {...p} />
   </AbsoluteFill>

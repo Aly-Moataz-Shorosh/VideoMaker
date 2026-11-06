@@ -44,6 +44,35 @@ S = {
  93: ('R', 'ELS', 'Crane Up + Pan Right', ''), 94: ('M', 'MS', 'Slow Push-in', 'Top Shot'), 95: ('M', 'MS', 'Static', 'Top Shot'),
  96: ('M', 'MS', 'Static', 'Top Shot'), 97: ('M', 'MS', 'Static', 'Top Shot'), 98: ('MB', 'MS', 'Tracking (Leading)', ''),
 }
+
+# ---------- camera MOVE from the background-only measurement (bg_motion.py), review 1 (Aly 2026-11-06) ----------
+# Rule: static = no pan/tilt (<1.5 %), no shake, no scale. Pan R/L >= 2.5 % of the frame, Tilt U/D >= 4 %. Shake (jit >= 0.9) = Handheld.
+# Scale is NOT trusted near actors (Aly: 7 and 14 have no pull-out) -> Push-in only for wide sizes with a clear scale.
+# BY EYE (onion overlays work/tracks/on*.jpg) or Aly's notes:
+EYE = {1: 'Slow Push-in', 2: 'Slow Push-in', 3: 'Truck Left (Reveal)', 4: 'Truck Left (Reveal)', 7: 'Handheld · Pan Left',
+       8: 'Truck Right', 11: 'Pan Right + Tilt Down', 12: 'Pan Right (Follow)', 13: 'Static (actor leans in)', 14: 'Handheld · Pan Left',
+       15: 'Arc Shot', 16: 'Pan Right → Darkness', 17: 'Push-in (through laundry)', 18: 'Tilt Up + Pan Right', 23: 'Whip Pan Left (Handheld)',
+       29: 'Slow Pan Left', 31: 'Truck Right', 39: 'Whip Pan Right (Handheld)', 60: 'Static (she walks into focus)', 65: 'Slow Push-in',
+       69: 'Handheld (fast)', 72: 'Whip Pan Right', 82: 'Slow Pan Left', 83: 'Handheld · Pan Left', 84: 'Whip Pan', 91: 'Tilt Up + Push-in',
+       35: 'Handheld', 36: 'Slow Tilt Up', 51: 'Slow Tilt Up', 93: 'Crane Up + Pan Right', 94: 'Slow Push-in', 98: 'Tracking (Leading)'}
+BM = {r['n']: r for r in json.load(open(W / 'bgmotion.json'))}
+def measured(n, size):
+    r = BM[n]
+    if not r.get('ok'): return None
+    x, y, z, j = r['panx'], r['pany'], r['scale'], r['jit']
+    if abs(x) < 2 and abs(y) < 2.5 and j < 0.45 and abs(z - 1) < 0.05: return 'Static'
+    parts = []
+    if abs(x) >= 2.5: parts.append(('Slow ' if abs(x) < 6 else '') + ('Pan Right' if x > 0 else 'Pan Left'))
+    if abs(y) >= 3.5: parts.append(('Slow ' if abs(y) < 8 else '') + ('Tilt Down' if y > 0 else 'Tilt Up'))
+    if z > 1.15 and size.split()[0] in ('LS', 'WS', 'MLS', 'ELS'): parts.append('Push-in')
+    mv = ' + '.join(parts)
+    if j >= 0.9: return 'Handheld' + (' · ' + mv if mv else '')
+    return mv or 'Handheld (subtle)'
+S2 = {}
+for n, (pl, size, mv, ex) in S.items():
+    S2[n] = (pl, size, EYE.get(n) or measured(n, size) or mv, ex)
+S = S2
+
 SCENE = {'PRE': 'x', 'TI': '55', 'TF': '55', 'TW': '55', 'TT': '55', 'A': '56', 'P': '56', 'N': '56', 'R': '56', 'M': '56', 'MB': '56', 'K': 'add'}
 WHO = {'PRE': 'Ibrahim · rooftop', 'TI': 'Ibrahim', 'TF': 'Fares', 'TW': 'Table (wide)', 'TT': 'Tongue', 'A': 'Alley attack',
        'P': 'Drink & pills', 'N': 'Narges', 'R': 'Rooftop', 'M': 'Money hole', 'MB': 'Ashry', 'K': 'Tongue (street)'}
@@ -51,6 +80,38 @@ shots = []
 for c in cuts:
     pl, size, mv, ex = S[c['n']]
     shots.append({'n': c['n'], 's': c['s'], 'e': c['e'], 'place': pl, 'scene': SCENE[pl], 'size': size, 'move': mv, 'extra': ex, 'who': WHO[pl]})
+
+
+# ---------- 3D set + film-camera pose per shot (diagram, from the image) ----------
+import math
+DIST = {'ECU': .55, 'Insert': .6, 'CU': .9, 'MCU': 1.3, 'MS': 1.9, 'MLS': 2.8, 'LS': 4.2, 'WS': 4.6, 'ELS': 9, 'OTS': 2.2}
+SETOF = {'PRE': 'roofN', 'TI': 'table', 'TF': 'table', 'TW': 'table', 'TT': 'table', 'A': 'alley', 'P': 'pills', 'N': 'narges',
+         'K': 'street', 'R': 'roofD', 'M': 'hole', 'MB': 'bike'}
+def unit(x, y, z):
+    n = math.sqrt(x * x + y * y + z * z); return (x / n, y / n, z / n)
+def camfor(s):
+    pl, size, mv, ex = s['place'], s['size'].split('→')[0].strip(), s['move'], s['extra']
+    d = DIST.get(size.split()[0], 1.9)
+    def frm(tg, dr, dd=d, dy=0.0):
+        u = unit(*dr); return {'pos': [round(tg[0] + u[0] * dd, 2), round(tg[1] + u[1] * dd + dy, 2), round(tg[2] + u[2] * dd, 2)], 'look': list(tg)}
+    if pl == 'TI': c = frm((-1.05, 1.05, 0), (1, 0.05, 0.4))
+    elif pl == 'TF' and size == 'OTS': c = {'pos': [-1.75, 1.3, 0.35], 'look': [1.05, 1.05, 0]}
+    elif pl == 'TF': c = frm((1.05, 1.05, 0), (-1, 0.05, 0.4))
+    elif pl == 'TW': c = {'pos': [0.25, 1.35, 4.3], 'look': [0.3, 0.8, 0]}
+    elif pl == 'TT': c = frm((0, 0.5, 0), (-0.6, 0.6, 0.5), 1.0) if size == 'Insert' else frm((-1.05, 1.3, 0), (1, 0.05, 0.4))
+    elif pl in ('A', 'P'): c = frm((0, 1.5, 0), (0.35, 0.05, 1))
+    elif pl == 'N': c = frm((0, 1.5, -1.6), (0.15, 0, 1))
+    elif pl == 'K':
+        low = 'Low Angle' in ex
+        c = frm((0, 1.4, 0), (0.4, -0.35 if low else 0.05, 1)); c['pos'][1] = 0.45 if low else c['pos'][1]
+    elif pl == 'PRE': c = frm((-0.3, 0.35, 0), (0.35, 0.12, 1))
+    elif pl == 'R': c = {'pos': [0.3, 1.8, 5.0], 'look': [0, 2.0, -0.6]}
+    elif pl == 'M': c = {'pos': [0, 2.4, 0.02], 'look': [0, 0, 0]}
+    elif pl == 'MB': c = {'pos': [0, 1.25, -2.6], 'look': [0, 1.2, 0]}
+    else: c = frm((0, 1.4, 0), (0, 0, 1))
+    c['fov'] = 32; c['move'] = mv; return c
+for s in shots:
+    s['set'] = SETOF[s['place']]; s['cam'] = camfor(s)
 
 # ---------- SOUND window: what is heard -> its line in the script ----------
 # r = [page, x0, y0, x1, y1] (pt). diff = how the film differs (Arabic). spk = speaker.
@@ -178,7 +239,7 @@ markers = [
  {'t': 159.80, 'name': 'Film Addition', 'kind': 'edit'},
  {'t': 165.033, 'name': 'Jump Cut', 'kind': 'edit'},
  {'t': 191.00, 'name': 'Fade to Silence', 'kind': 'sound', 'span': [191.0, 193.233]},
- {'t': 193.233, 'name': 'SFX: Water Drips', 'kind': 'sound'},
+ {'t': 193.15, 'name': 'SFX: Water Drips', 'kind': 'sound'},
  {'t': 203.733, 'name': 'Montage', 'kind': 'edit'},
  {'t': 223.80, 'name': 'Jump Cuts', 'kind': 'edit'},
 ]
@@ -190,9 +251,17 @@ for l in L:
         a1[-1]['e'] = l['t1']
     else:
         a1.append({'s': l['t0'], 'e': l['t1'], 'name': l['spk'], 'echo': l['echo']})
-a2 = [{'s': 0, 'e': 80.0, 'name': 'DRONE'}, {'s': 80.0, 'e': 193.233, 'name': 'MUSIC (new cue)', 'fadeOut': 191.0},
+# A2/A3 from the Demucs stems (bass = drone, other = score, drums+other onsets) + AST AudioSet labels (sfx_detect.py), review 1.
+a2 = [{'s': 0, 'e': 7.0, 'name': 'STRINGS'},
+      {'s': 23.5, 'e': 77.5, 'name': 'DRONE (low)', 'fadeOut': 74.0, 'lane': 0},
+      {'s': 72.0, 'e': 193.233, 'name': 'MUSIC (new cue)', 'fadeIn': 80.0, 'fadeOut': 191.0, 'lane': 1},
       {'s': 203.733, 'e': 242.03, 'name': 'MUSIC (montage)'}]
-a3 = [{'s': 193.233, 'e': 198.5, 'name': 'SFX: WATER DRIPS'}]
+a3 = [{'s': 5.28, 'e': 8.6, 'name': 'WHOOSH'},
+      {'s': 118.6, 'e': 119.6, 'name': 'FIRE BURST'}, {'s': 121.9, 'e': 122.9, 'name': 'FIRE BURST'}, {'s': 130.6, 'e': 131.5, 'name': 'FIRE BURST'},
+      {'s': 131.52, 'e': 134.5, 'name': 'GLASS SMASH'}, {'s': 134.9, 'e': 135.6, 'name': 'METAL CLANG'},
+      {'s': 152.32, 'e': 158.6, 'name': 'EXPLOSIONS (shop fronts)'}, {'s': 165.41, 'e': 166.9, 'name': 'BANG + GLASS SHATTER'},
+      {'s': 183.4, 'e': 184.3, 'name': 'HEARTBEAT'}, {'s': 189.41, 'e': 190.8, 'name': 'IMPACT'},
+      {'s': 193.15, 'e': 198.5, 'name': 'WATER DRIPS'}, {'s': 228.22, 'e': 230.5, 'name': 'KNOCKS'}]
 
 props = {'duration': round(len(open(W / 'shots_v4.json').read()) * 0 + cuts[-1]['e'], 3), 'tc0': 76 * 60,
          'shots': shots, 'lines': L, 'pics': pics, 'cards': C, 'notes': notes, 'marks': marks, 'markers': markers,

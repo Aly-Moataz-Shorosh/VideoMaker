@@ -28,3 +28,16 @@ Composition `scene-analysis` (`motion-library/src/scene/`), scripts `tools/recip
 ## Gotchas
 - Mixed Arabic + English in one line flips brackets: put the English part in the TITLE, keep the Arabic line Arabic; in HTML use <bdi>.
 - Markers closer than ~1 s overlap on the timeline → merge them ("Hidden Cut → Cross-Cutting").
+
+## Review 1 (Aly 2026-11-06) -> review_02
+- Camera moves were wrong (7/14 = Handheld + Pan, no tilt/pull-out; 29/83 not static). Whole-frame flow is fooled by the actors.
+  FIX = `bg_motion.py`: people masked with DeepLabV3 (torchvision CPU), LK flow on the BACKGROUND only -> pan/tilt %, scale, shake.
+  Rules in make_props (static < 2 % / 2.5 %, Pan >= 2.5 %, Tilt >= 3.5 %, shake >= 0.9 = Handheld). Scale is NOT trusted near actors
+  (no Pull-out from numbers). Doubtful ones by eye with `onion.py` (first frame red over last frame cyan + grid: grey = no move).
+  The check also caught my own errors: shot 4 = Truck LEFT, 72 = Whip PAN, 60 = static (she walks into focus).
+- SFX must be precise: Demucs stems (bass = drone, other = score, drums+other = hits) + AST AudioSet labels (`sfx_detect.py`) +
+  onsets on the effects stem for exact starts. Only events with a clear label go on A3.
+- The empty space under the film: TERMS panel = definitions of the current shot's terms (StudioBinder meanings, Egyptian Arabic);
+  cards replace it while they are up. Beside it a 3D SET view (`set3d.tsx`): diorama per set-up, film camera + frustum doing the
+  shot's move, actors, lights (approx., from the image).
+- Shot lookup at a cut frame showed the previous shot: use t = (frame + 0.02) / fps.

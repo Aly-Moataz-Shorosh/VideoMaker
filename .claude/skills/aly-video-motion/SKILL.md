@@ -352,4 +352,6 @@ Writer: tools/recipes/graphictablet/write_meta.py.
 - Film plays whole and untouched; ONE place per thing (film right, script left, card under film, timeline bottom); English terms only.
 - Every term in the shot label = its own drawing; every abbreviation = full name under it ("حد تاني ميعرفش LS / OTS").
 - Re-check any shot list I'm handed: frame-diff cut search + contact sheets (old 88 → real 98). Unsure = one question with the list.
+- Camera moves = measured on the BACKGROUND (people masked) + onion check by eye; never call a move from whole-frame flow or from
+  zoom numbers near an actor (review 1: wrong tilt/pull-out on 7/14, "static" on moving 29/83). SFX = stems + sound labels, exact onsets.
 
