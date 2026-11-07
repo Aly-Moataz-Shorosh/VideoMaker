@@ -1,5 +1,5 @@
 import React from 'react';
-import {Easing, Img, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {Easing, Img, OffthreadVideo, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {AR, EN, G, Glass, lin, Pill, spr} from '../glass/kit';
 import {bi} from './kit';
 
@@ -135,7 +135,7 @@ export const CutMeaning: React.FC<{dur: number; mode?: string; bAt?: number; res
 };
 
 // ---------- camera moves on a tripod: static / tilt / pan / push / dolly zoom (+ what the camera sees) ----------
-export const MoveScene: React.FC<{dur: number; keys?: [number, string][]; tags?: {t: number; text: string; c?: string}[]}> = ({dur, keys = [[0, 'static']], tags = []}) => {
+export const MoveScene: React.FC<{dur: number; keys?: [number, string][]; tags?: {t: number; text: string; c?: string}[]; cam?: {file: string; from: number} | null; cin?: boolean; cout?: boolean}> = ({dur, keys = [[0, 'static']], tags = [], cam = null}) => {
   const NOTE: Record<string, [string, string][]> = {
     intro: [['⬅ ➡', 'يمين وشمال'], ['⬆ ⬇', 'فوق وتحت'], ['🎥', 'قدام وورا']],
     static: [['🔒', 'الكاميرا مش بتتحرك'], ['👁', 'المتفرج بيركز في اللي جوه الكادر']],
@@ -175,8 +175,11 @@ export const MoveScene: React.FC<{dur: number; keys?: [number, string][]; tags?:
           {m === 'intro' ? ['M 0 760 L 0 700', 'M 0 1100 L 0 1160', 'M -150 930 L -210 930', 'M 150 930 L 210 930'].map((d, i) => <path key={i} d={d} stroke={GOLD} strokeWidth={10} strokeLinecap="round" opacity={0.5 + 0.5 * Math.sin(f / 6 + i)} />) : null}
         </g>
       </svg>
+      {/* his own webcam while he shows the move on the real tripod (whole width: the tripod is at the left edge) */}
+      {cam ? <div style={{position: 'absolute', left: 470, top: 650, width: 560, height: 315, borderRadius: 20, overflow: 'hidden', border: `5px solid ${GOLD}`, background: '#000', zIndex: 2}}>
+        <OffthreadVideo muted src={staticFile(cam.file)} startFrom={Math.round(cam.from * fps)} style={{width: 560, height: 315}} /></div> : null}
       {/* what the camera sees */}
-      <div style={{position: 'absolute', left: 560, top: 760, width: 440, height: 330, borderRadius: 22, overflow: 'hidden', border: `5px solid ${GOLD}`, background: '#1B2A44'}}>
+      <div style={{position: 'absolute', left: 560, top: cam ? 975 : 760, width: 440, height: cam ? 160 : 330, borderRadius: 22, overflow: 'hidden', border: `5px solid ${GOLD}`, background: '#1B2A44'}}>
         <div style={{position: 'absolute', inset: 0, transform: `translate(${vx}px, ${vy}px) scale(${bgS})`}}>
           {Array.from({length: 8}).map((_, i) => <div key={i} style={{position: 'absolute', left: -200 + i * 110, top: -100, width: 50, height: 600, background: 'rgba(255,255,255,0.08)'}} />)}
           <div style={{position: 'absolute', left: -200, right: -200, top: 230, height: 300, background: '#2B2B33'}} />

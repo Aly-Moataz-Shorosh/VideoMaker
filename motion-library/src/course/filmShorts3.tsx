@@ -194,4 +194,34 @@ export const TwoBeauty: React.FC<{dur: number; mode?: string; leftAt?: number; r
   );
 };
 
-export const filmScenes3: Record<string, React.FC<any>> = {Rule180, ComposeRules, AspectCut, FactCard, TwoBeauty};
+
+// ---------- pictures instead of text (Aly 2026-11-07, short 08: "حط الصور محدش هيقرا كل ده"): one big picture at a time + a short label ----------
+export const PicBoard: React.FC<{dur: number; items: {t: number; img: string; label: string; credit?: string}[]; title?: string}> = ({dur, items, title}) => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const o = 1 - lin(f, dur - 8, dur);
+  let i = -1; items.forEach((it, j) => { if (f >= it.t * fps) i = j; });
+  return (
+    <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, opacity: o}}>
+      {title ? <div style={{position: 'absolute', left: 0, right: 0, top: 575, display: 'flex', justifyContent: 'center'}}><Pill text={title} size={42} /></div> : null}
+      {items.map((it, j) => {
+        if (j !== i && j !== i - 1) return null;
+        const p = spr(f, fps, it.t * fps, 150, 15), out = j === i - 1 ? lin(f, items[i].t * fps, items[i].t * fps + 10) : 0;
+        if (j === i - 1 && out >= 1) return null;
+        return (
+          <div key={j} style={{position: 'absolute', left: 70, top: 660, width: 940, opacity: Math.min(1, p * 1.4) * (1 - out), transform: `scale(${0.85 + 0.15 * p}) rotate(${(j % 2 ? 1.5 : -1.5) * (1 - p)}deg)`}}>
+            <div style={{padding: 12, borderRadius: 26, background: '#fff', boxShadow: '0 30px 70px rgba(0,0,0,0.6)'}}>
+              <Img src={staticFile(it.img)} style={{width: 916, height: 520, objectFit: 'contain', background: '#111', borderRadius: 16, display: 'block'}} />
+              <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 8px 2px', direction: 'rtl'}}>
+                <span style={{fontFamily: AR, fontWeight: 900, fontSize: 44, color: INK}}>{bi(it.label)}</span>
+                {it.credit ? <span style={{fontFamily: AR, fontWeight: 700, fontSize: 22, color: '#5A6270'}}>{bi(it.credit)}</span> : null}
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+export const filmScenes3: Record<string, React.FC<any>> = {Rule180, ComposeRules, AspectCut, FactCard, TwoBeauty, PicBoard};

@@ -98,3 +98,49 @@ What he wants to say (rebuild the short around it, motion for each part):
 - Caption + txt: he said 'Camera gear' (not 'كاميرا كير').
 - Rushed ('متكروت') -> don't squeeze: keep his full sentences and pauses, include the parts I cut (remote button, track, stabilizer/gimbal, handheld, waterproof case; drone line only with a verified source or as he said it marked weak).
 - Show each thing he names correctly at that moment (src = a + zoom on the pictured item; tripod, remote, track/dolly, gimbal, waterproof case).
+
+# Review 2 (2026-11-07) - collect all notes first, execute only after he says he is done
+
+## 04 split diopter
+- "انت بوظته": he liked the FIRST version (archive_v2/04_split_diopter = fs_data2 short 4). Go back to it EXACTLY and only ADD the new الجزيرة scene (raw 3458.3-3474.4). Do not change anything else (keep the old hook, crops, scenes). Keep the word-gap cut fix only if it does not change the look.
+
+## 05 cut meaning
+- At ~0:25 (the FactCard about Kuleshov): show the experiment VIDEO itself (Mozzhukhin face + soup / coffin / woman). Find a free/public-domain copy (Wikimedia Commons) and show it with the card.
+
+## 06 camera moves
+- The tripod is NOT visible in his webcam rectangle (crop cut the left side) -> show the whole webcam width where the tripod is.
+- He did NOT ask to put his video OVER the motion: the MoveScene motion must stay visible -> show his webcam rectangle WITH the motion (e.g. in place of / beside the "الكاميرا شايفة كده" preview), not instead of it.
+- Do not keep the words "Once upon a time.." (he thinks the clip is La La Land): cut those words; the clip he plays at ~3582-3600 = La La Land (2016)? check, tag accordingly.
+- The sentence "انت بتزق الكاميرا.." is said TWICE at the end -> keep it once.
+- The last frame (boxing / Raging Bull) is not the best -> pick another dolly-zoom shot from the examples he played (3730-3830).
+
+## 08 two beauties
+- Too much text ("محدش هيقرا كل ده") -> PICTURES instead of text lists (real calligraphy, hieroglyphs, posters/frames of الست and الفيل الأزرق, light painting, camera move...).
+- "الفيديو مبقاش له اي معنى": better to use the video(s) he gave (his 2 new recordings 20261107_075021 / 075352 — still not found on disk; ask for the path / to put them in input).
+
+## 10 script
+- Hook far too long -> short punchy hook (a few seconds).
+- Script AND scene TOGETHER on screen all the time (script page/lines + the matching film shot side by side or stacked, like style 20 scene-analysis), not some parts only scene and others only script.
+
+## 12 framing
+- No hook: start directly with the topic (drop the hook piece + the rewind label).
+
+## 13 process
+- No hook: start directly (drop the hook piece + rewind label).
+
+## 15 visual literacy
+- Add the clip where Youssef Chahine talks (course ~1366-1385, "We work with a visual language", with its own sound) and a shot of Martin Scorsese talking (~1416-1461, raw with sound, short).
+
+## 16 composition
+- REMOVE short 16 completely (archive the file, do not delete; series becomes 19 -> renumber? ask/keep numbers: move later shorts up or leave a gap — decide: renumber 17-20 to 16-19 and TOTAL 19).
+- Keep the order: put a NEW reel in slot 16 instead (no renumbering). Candidate (not used by any other short): his breakdown of the scene from the film "زي النهاردة" (CH28 ~4048-4414 s: jump cuts, over-the-shoulder, fast whip pan, sound effects / clock and fridge sounds, CH29 ~4414-4500).
+
+## 18 aspect ratio
+- At the end, while he says YouTube the frame shows the vertical one -> key the ratios on his exact words: "التلفزيون 4:3 / 16:9" ~1171.8-1175.8, "اليوتيوب.. لاند اسكيب" 1186.2 = 16:9, "تقلب بموبايل" 1189.0 = 9:16, "استجرام.. مربع او ريل" 1190.8 = 1:1 then 9:16.
+
+## 19 animation vs film
+- No hook.
+- "محتاج يتظبط احسن": measure the real positions of each item on his drawing (gridded frame at ~509 s and ~466 s) and zoom exactly on each word as he says it, with a clear label; smoother pace.
+
+## 20 camera gear (and ALL FactCards: 05 too)
+- When I put the source card, the picture disappeared (empty stage) -> NEVER remove the picture: keep his screen / the drone picture he showed (~3856-3862 small drone image) in the card, and put the FactCard ON TOP of it (bottom part), not alone.

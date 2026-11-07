@@ -95,3 +95,8 @@ import fs_data3 as _D3
 SHORTS.update(_D3.SHORTS)
 for _k, _v in _D3.CAP.items(): CAP[_k] = _v
 _D2.FIX.update(_D3.FIX_MORE)
+
+# review 2 (2026-11-07)
+import fs_data4 as _D4
+SHORTS.update(_D4.SHORTS)
+for _k, _v in _D4.CAP.items(): CAP[_k] = _v

@@ -28,7 +28,8 @@ export const courseShortSchema = z.object({
   voice: z.array(z.object({file: z.string(), from: z.number(), to: z.number(), at: z.number(), gain: z.number().default(1)})).default([]),
   screens: z.array(z.object({t: z.number(), d: z.number(), file: z.string(), from: z.number(), keys: z.array(z.object({t: z.number(), sx: z.number(), sy: z.number(), sw: z.number()})).default([]),
     marks: z.array(z.object({t: z.number(), d: z.number(), x: z.number(), y: z.number(), r: z.number().default(46), w: z.number().default(0), h: z.number().default(0), label: z.string().default('')})).default([]), y: z.number().default(980),
-    dual: z.object({top: z.object({sx: z.number(), sy: z.number(), sw: z.number()}), bottom: z.object({sx: z.number(), sy: z.number(), sw: z.number()})}).nullable().default(null), under: z.boolean().default(false),
+    dual: z.object({top: z.object({sx: z.number(), sy: z.number(), sw: z.number()}), bottom: z.object({sx: z.number(), sy: z.number(), sw: z.number()}),
+      bottomFile: z.string().nullable().default(null), bottomFrom: z.number().nullable().default(null), labels: z.array(z.string()).nullable().default(null)}).nullable().default(null), under: z.boolean().default(false),
     cin: z.boolean().default(false), cout: z.boolean().default(false)})).default([]), // cin/cout: the card stays from the screen piece before/after (one video, not separate shots)
   cues: z.array(cue).default([]),
   cta: z.object({file: z.string(), at: z.number(), d: z.number(), qr: z.string(), vol: z.number().default(1), word: z.string().default('كورس'), thumb: z.string().nullable().default(null)}).nullable().default(null),
@@ -111,20 +112,21 @@ const SeriesFrame: React.FC<{no: number; total: number; title: string; at: strin
 
 // a setting and its result at the same moment: the panel he changes on top, the picture it changes below (Aly 2026-10-18)
 type DMark = {t: number; d: number; x: number; y: number; r: number; label: string};
-const DualCard: React.FC<{file: string; from: number; d: number; top: {sx: number; sy: number; sw: number}; bottom: {sx: number; sy: number; sw: number}; acc: string; under?: boolean; marks?: DMark[]; cin?: boolean; cout?: boolean}> = (
-  {file, from, d, top, bottom, acc, under = false, marks = [], cin = false, cout = false}) => {
+const DualCard: React.FC<{file: string; from: number; d: number; top: {sx: number; sy: number; sw: number}; bottom: {sx: number; sy: number; sw: number}; acc: string; under?: boolean; marks?: DMark[]; cin?: boolean; cout?: boolean;
+  bottomFile?: string | null; bottomFrom?: number | null; labels?: string[] | null}> = (
+  {file, from, d, top, bottom, acc, under = false, marks = [], cin = false, cout = false, bottomFile = null, bottomFrom = null, labels = null}) => {
   const {w: SRCW, h: SRCH} = useSrc();
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const st = useStage();
   const W = CW, H2 = (st.h - 12) / 2;
   const pIn = cin ? 1 : spr(f, fps, 0, 140, 16), o = cout ? 1 : 1 - lin(f, d * fps - 8, d * fps); // one card across pieces (film course shorts)
-  const pane = (c: {sx: number; sy: number; sw: number}, label: string, delay: number) => {
+  const pane = (c: {sx: number; sy: number; sw: number}, label: string, delay: number, pf: string = file, pfrom: number = from) => {
     const k = W / c.sw;
     const q = cin ? 1 : spr(f, fps, delay, 150, 16);
     return (
       <div style={{position: 'relative', width: W, height: H2, borderRadius: 22, overflow: 'hidden', background: '#000', transform: `translateX(${(1 - q) * (delay ? 60 : -60)}px)`, opacity: Math.min(1, q * 1.4)}}>
-        <OffthreadVideo muted src={staticFile(file)} startFrom={Math.round(from * fps)} style={{position: 'absolute', left: -c.sx * k, top: -c.sy * k, width: SRCW * k, height: SRCH * k}} />
+        <OffthreadVideo muted src={staticFile(pf)} startFrom={Math.round(pfrom * fps)} style={{position: 'absolute', left: -c.sx * k, top: -c.sy * k, width: SRCW * k, height: SRCH * k}} />
         {/* click marks (Aly: "مكنتش باين انا بدوس فين") — drawn in the pane that shows the clicked point */}
         {marks.map((m, j) => {
           const ch = c.sw * H2 / W;
@@ -148,8 +150,8 @@ const DualCard: React.FC<{file: string; from: number; d: number; top: {sx: numbe
     <div style={{position: 'absolute', left: 520 - W / 2 + 8, top: under ? st.top + H2 + 40 : st.top, transform: `scale(${0.92 + 0.08 * pIn})`, opacity: Math.min(1, pIn * 1.4) * o}}>
       <Glass w={W + 24} pad={12} r={34} glow={acc}>
         <div style={{display: 'flex', flexDirection: 'column', gap: 12}}>
-          {under ? null : pane(top, 'الإعداد', 0)}
-          {pane(bottom, under ? 'على الشاشة' : 'النتيجة', under ? 0 : 6)}
+          {under ? null : pane(top, labels ? labels[0] : 'الإعداد', 0)}
+          {pane(bottom, labels ? labels[1] : under ? 'على الشاشة' : 'النتيجة', under ? 0 : 6, bottomFile ?? file, bottomFrom ?? from)}
         </div>
       </Glass>
     </div>
@@ -459,7 +461,8 @@ export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues
       <L.Bg />
       {screens.map((s, i) => !live(s.t, s.d) ? null : (
         <Sequence key={'s' + i} from={fr(s.t)} durationInFrames={fr(s.d)} layout="none">
-          {s.dual ? <DualCard file={s.file} from={s.from} d={s.d} top={s.dual.top} bottom={s.dual.bottom} acc={L.acc} under={s.under} marks={s.marks} cin={s.cin} cout={s.cout} />
+          {s.dual ? <DualCard file={s.file} from={s.from} d={s.d} top={s.dual.top} bottom={s.dual.bottom} acc={L.acc} under={s.under} marks={s.marks} cin={s.cin} cout={s.cout}
+            bottomFile={s.dual.bottomFile} bottomFrom={s.dual.bottomFrom} labels={s.dual.labels} />
             : <ScreenCard file={s.file} from={s.from} d={s.d} keys={s.keys} marks={s.marks} y={s.y} acc={L.acc} cin={s.cin} cout={s.cout} />}
         </Sequence>
       ))}

@@ -14,6 +14,8 @@ PROJ = Path(__file__).resolve().parents[2]
 PUB = 'projects/filmcourse/'
 SRC = PROJ / 'input/2026-11-06 14-39-41.mp4'
 FPS, GAP = 30, 0.12
+VOICE = 'course.mp4'  # the public file his voice + circle come from (08 = his phone recording, set by make_f08.py)
+DB_CACHE = 'work/db10.npy'
 _t = json.load(open(PROJ / 'work/transcript.json', encoding='utf-8'))
 EPW = [(w['w'].strip(), w['start'], w['end']) for s_ in _t['sentences'] for w in s_['words'] if w['w'].strip()]
 CHS = [c for c in json.load(open(PROJ / 'work/chapters.json', encoding='utf-8'))['chapters'] if c.get('src') is not None]
@@ -31,7 +33,7 @@ def full_at(s):
 
 def db10():
     if not _db:
-        f = PROJ / 'work/db10.npy'
+        f = PROJ / DB_CACHE
         if not f.exists():
             raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', str(SRC), '-vn', '-ac', '1', '-ar', '16000', '-f', 's16le', '-'], capture_output=True).stdout
             a = np.frombuffer(raw, np.int16).astype(np.float32) / 32768
@@ -107,12 +109,12 @@ def build(n):
     FIX = getattr(__import__('fs_data2'), 'FIX', {})
     AUTOW = [dict(w, w=FIX.get(w['w'], w['w'])) for w in (json.load(open(wf, encoding='utf-8')) if wf.exists() else [])
              if not BAD.search(w['w']) and not _re.search(r'(.)\1{3,}', w['w'])]  # no 'ووووو' (music hallucinations)
-    kind = lambda q: ('none' if not 0 <= q < len(plan) else plan[q][0].get('show', 'under' if plan[q][0].get('under') else 'screen'))
+    kind = lambda q: ('none' if not 0 <= q < len(plan) else plan[q][0].get('show', 'under' if plan[q][0].get('under') else 'pair' if plan[q][0].get('pair') else 'screen'))
     for k, ((pc, a, b), lv) in enumerate(zip(plan, levels)):
         d = b - a
         gain = 1.0 if pc.get('raw') else round(float(10 ** ((target - lv) / 20)), 3)
-        voice.append(dict(file=PUB + 'course.mp4', **{'from': a}, to=b, at=round(t, 3), gain=min(1.25, max(0.5, gain))))
-        if not pc.get('nocam'): cam.append(dict(t=round(t, 3), d=round(d + GAP, 3), file=PUB + 'course.mp4', **{'from': a}, **{k: v for k, v in WC.crop(a + 0.5).items() if k in ('sx', 'sy', 's')}, pos=spec.get('cam', 'tr')))  # Aly: his webcam square -> small round circle
+        voice.append(dict(file=PUB + VOICE, **{'from': a}, to=b, at=round(t, 3), gain=min(1.25, max(0.5, gain))))
+        if not pc.get('nocam'): cam.append(dict(t=round(t, 3), d=round(d + GAP, 3), file=PUB + VOICE, **{'from': a}, **(spec.get('camfix') or {k: v for k, v in WC.crop(a + 0.5).items() if k in ('sx', 'sy', 's')}), pos=spec.get('cam', 'tr')))  # Aly: his webcam square -> small round circle
         cap = caps[k] if k < len(caps) else None
         ew = [w for w in EPW if a - 0.05 <= w[1] < b]
         if cap == '' or pc.get('raw'):  # a clip he played: no captions (its own sound)
@@ -138,7 +140,7 @@ def build(n):
         # one card across consecutive pieces of the same kind (never after the hook: the rewind is a new start)
         cin = kind(k - 1) == show and not pc.get('rew') and k > 0
         cout = kind(k + 1) == show and not plan[k + 1][0].get('rew') if k + 1 < len(plan) else False
-        if show in ('screen', 'under'):
+        if show in ('screen', 'under', 'pair'):
             src = pc.get('src', a)
             keys = [dict(t=0, **pc['crop'])] + [dict(t=round(zt - src, 2), **zc) for zt, zc in pc.get('zoom', [])]
             if cin and show == 'screen':
@@ -146,7 +148,14 @@ def build(n):
                 keys = [dict(t=0, **(pz[-1][1] if pz else prev['crop'])), dict(t=0.45, **pc['crop'])] + keys[1:]
             dual = dict(top=pc['crop'], bottom=pc['crop']) if show == 'under' else None
             fl = PUB + pc.get('file', 'course.mp4')
-            if pc.get('seq'):  # [(offset in the piece, src second in the file, crop or None)] -> one card, cut to each shot
+            if pc.get('pair'):  # Aly 2026-11-07 (short 10): script (course screen, this second) on top + the film shot under it, together
+                pr = pc['pair']; sq = pr['seq']
+                for j, (off, ss, cr) in enumerate(sq):
+                    end_ = sq[j + 1][0] if j + 1 < len(sq) else d + (GAP if cout else 0)
+                    screens.append(dict(t=round(t + off, 3), d=round(end_ - off, 3), file=PUB + 'course.mp4', **{'from': round(a + off, 3)}, keys=[dict(t=0, **pr['top'])], marks=[], y=740,
+                                        dual=dict(top=pr['top'], bottom=cr, bottomFile=PUB + pr['file'], bottomFrom=ss, labels=['السكريبت', 'المشهد']), under=False,
+                                        cin=cin or j > 0, cout=cout or j + 1 < len(sq)))
+            elif pc.get('seq'):  # [(offset in the piece, src second in the file, crop or None)] -> one card, cut to each shot
                 sq = pc['seq']
                 for j, (off, ss, cr) in enumerate(sq):
                     end_ = sq[j + 1][0] if j + 1 < len(sq) else d + (GAP if cout else 0)
@@ -165,6 +174,8 @@ def build(n):
             cues.append(dict(t=round(t, 3), d=round(max(d, 3.0) + (GAP if cout else 0), 3), k=show, p=dict(shift(pc.get('anim', {}), a), cin=cin2, cout=cout)))
         if pc.get('film'):
             cues.append(dict(t=round(t + 0.3, 3), d=round(min(d - 0.3, 5.0), 3), k='FilmTag', p=dict(pc['film'], x=60, y=1285 if show == 'under' else 1290)))
+        if pc.get('fact'):  # a dated fact + source ON TOP of the picture (never instead of it, Aly 2026-11-07)
+            cues.append(dict(t=round(t + 0.2, 3), d=round(d - 0.2, 3), k='FactCard', p=pc['fact']))
         if pc.get('rew'):
             cues.append(dict(t=round(t, 3), d=1.3, k='Label', p=dict(text='⏪ من الأول', img=None)))
         for lb in pc.get('labels', []):
@@ -186,7 +197,7 @@ def build(n):
     body = [pc for pc in spec['pieces'] if pc.get('rew')] or spec['pieces']
     props = dict(fps=FPS, duration=round(dur, 3), stage=(dict(top=430, h=840) if any(pc.get('under') for pc in spec['pieces']) else SD.STAGE), look='film', brand=dict(logo='film', name='كورس Film making'), src=dict(w=1280, h=720),
                  footer=dict(face=PUB + 'pics/ch_face.png', name=PUB + 'pics/ch_name.png'),
-                 series=dict(no=spec['no'], total=SD.TOTAL, title=spec['title'].replace('*', '').replace('_', ' '), at=full_at(body[0]['a']), chap=[c for c in CHS if c['src'] <= body[0]['a'] + 0.01][-1]['n']),
+                 series=dict(no=spec['no'], total=SD.TOTAL, title=spec['title'].replace('*', '').replace('_', ' '), at=spec.get('at') or full_at(body[0]['a']), chap=spec.get('chap') or [c for c in CHS if c['src'] <= body[0]['a'] + 0.01][-1]['n']),
                  voice=voice, cam=cam, screens=screens, cues=cues, cta=None, end=end, music=[], sfx=sfx, env=[round(v, 2) for v in env], words=words)
     out = PROJ / f'work/shorts/props_{n:02d}.json'
     out.parent.mkdir(exist_ok=True)
