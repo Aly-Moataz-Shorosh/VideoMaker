@@ -224,4 +224,36 @@ export const PicBoard: React.FC<{dur: number; items: {t: number; img: string; la
   );
 };
 
-export const filmScenes3: Record<string, React.FC<any>> = {Rule180, ComposeRules, AspectCut, FactCard, TwoBeauty, PicBoard};
+
+// ---------- short 08 (Aly review 3): a line splits الشكل (right) / المحتوى (left); a picture per side when he says it; small chips for styles ----------
+export const BeautySplit: React.FC<{dur: number; items?: {t: number; side: string; img: string; label: string}[]; chips?: {t: number; side: string; text: string}[]; cin?: boolean; cout?: boolean; under?: boolean}> = ({dur, items = [], chips = [], cin = false, cout = false}) => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const pIn = cin ? 1 : spr(f, fps, 0, 140, 16), o = cout ? 1 : 1 - lin(f, dur - 8, dur);
+  const col = (side: string, x: number, title: string, c: string) => {
+    const it = [...items].reverse().find((q) => q.side === side && f >= q.t * fps);
+    const ch = [...chips].reverse().find((q) => q.side === side && f >= q.t * fps && (!it || q.t >= it.t));
+    const p = it ? spr(f, fps, it.t * fps, 150, 15) : 0;
+    return (
+      <div style={{position: 'absolute', left: x, top: 330, width: 470, direction: 'rtl'}}>
+        <div style={{textAlign: 'center', fontFamily: AR, fontWeight: 900, fontSize: 40, color: c}}>{title}</div>
+        {it ? <div key={it.t} style={{marginTop: 10, opacity: Math.min(1, p * 1.5), transform: `scale(${0.85 + 0.15 * p})`}}>
+          <Img src={staticFile(it.img)} style={{width: 470, height: 300, objectFit: 'cover', borderRadius: 18, border: `4px solid ${c}`, display: 'block', boxShadow: `0 0 30px ${c}55`}} />
+          <div style={{marginTop: 8, textAlign: 'center', fontFamily: AR, fontWeight: 900, fontSize: 32, color: '#fff'}}>{bi(it.label)}</div>
+        </div> : null}
+        {ch ? <div key={'c' + ch.t} style={{position: 'absolute', left: 0, right: 0, top: it ? 410 : 120, display: 'flex', justifyContent: 'center', transform: `scale(${spr(f, fps, ch.t * fps, 200, 12)})`}}>
+          <div style={{padding: '8px 20px', borderRadius: 22, background: c, fontFamily: AR, fontWeight: 900, fontSize: 32, color: INK}}>{bi(ch.text)}</div></div> : null}
+      </div>
+    );
+  };
+  return (
+    <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, opacity: Math.min(1, pIn * 1.4) * o}}>
+      <div style={{position: 'absolute', left: 40, top: 320}}><Glass w={1000} h={548} pad={0} r={36} glow={GOLD}><div /></Glass></div>
+      <div style={{position: 'absolute', left: 538, top: 340, width: 4, height: 500, background: `linear-gradient(180deg, ${GOLD}, ${BLUE})`, borderRadius: 2}} />
+      {col('form', 560, 'جمال الشكل', GOLD)}
+      {col('content', 50, 'جمال المحتوى', BLUE)}
+    </div>
+  );
+};
+
+export const filmScenes3: Record<string, React.FC<any>> = {Rule180, ComposeRules, AspectCut, FactCard, TwoBeauty, PicBoard, BeautySplit};

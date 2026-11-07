@@ -135,7 +135,7 @@ export const CutMeaning: React.FC<{dur: number; mode?: string; bAt?: number; res
 };
 
 // ---------- camera moves on a tripod: static / tilt / pan / push / dolly zoom (+ what the camera sees) ----------
-export const MoveScene: React.FC<{dur: number; keys?: [number, string][]; tags?: {t: number; text: string; c?: string}[]; cam?: {file: string; from: number} | null; cin?: boolean; cout?: boolean}> = ({dur, keys = [[0, 'static']], tags = [], cam = null}) => {
+export const MoveScene: React.FC<{dur: number; keys?: [number, string][]; tags?: {t: number; text: string; c?: string}[]; cam?: {file: string; from: number} | null; cin?: boolean; cout?: boolean; tk?: [number, number][]; pk?: [number, number][]; clip?: {file: string; from: number} | null}> = ({dur, keys = [[0, 'static']], tags = [], cam = null, tk, pk, clip = null}) => {
   const NOTE: Record<string, [string, string][]> = {
     intro: [['⬅ ➡', 'يمين وشمال'], ['⬆ ⬇', 'فوق وتحت'], ['🎥', 'قدام وورا']],
     static: [['🔒', 'الكاميرا مش بتتحرك'], ['👁', 'المتفرج بيركز في اللي جوه الكادر']],
@@ -151,12 +151,15 @@ export const MoveScene: React.FC<{dur: number; keys?: [number, string][]; tags?:
   const osc = Math.sin(t / 16);
   const names: Record<string, string> = {intro: 'Camera movement · حركة الكاميرا', static: 'Static · الكاميرا ثابتة', tilt: 'Tilt · فوق وتحت', pan: 'Pan · يمين وشمال',
     push: 'Push in · تقرّب لقدام', dolly: 'Dolly zoom · ترجع لورا وتعمل زوم'};
-  const tilt = m === 'tilt' ? osc * 22 : 0, pan = m === 'pan' ? osc : 0;
+  // Aly 2026-11-07: the drawn move follows HIS real move (keys on his words), else a loop
+  const kv = (ks: [number, number][]) => { let i = 0; while (i + 1 < ks.length && f >= ks[i + 1][0] * fps) i++; const a = ks[i], b = ks[Math.min(i + 1, ks.length - 1)];
+    return b === a ? a[1] : a[1] + (b[1] - a[1]) * lin(f, a[0] * fps, b[0] * fps, 0, 1, Easing.inOut(Easing.cubic)); };
+  const tilt = m === 'tilt' ? (tk ? kv(tk) : osc) * 22 : 0, pan = m === 'pan' ? (pk ? kv(pk) : osc) : 0;
   const prog = lin(t, 0, 3 * fps, 0, 1, Easing.inOut(Easing.cubic)) * (m === 'push' || m === 'dolly' ? 1 : 0);
   const tx = m === 'push' ? prog * 120 : m === 'dolly' ? -prog * 120 : 0;
   // preview: push -> subject grows; dolly -> subject same size, background grows; tilt/pan -> view slides
   const subS = m === 'push' ? 1 + prog * 0.8 : 1, bgS = m === 'dolly' ? 1 + prog * 1.2 : m === 'push' ? 1 + prog * 0.4 : 1;
-  const vy = m === 'tilt' ? -osc * 60 : 0, vx = m === 'pan' ? -osc * 90 : 0;
+  const vy = m === 'tilt' ? -(tilt / 22) * 60 : 0, vx = m === 'pan' ? -pan * 90 : 0;
   return (
     <Frame dur={dur}>
       <div style={{position: 'absolute', left: 0, right: 0, top: 590, display: 'flex', justifyContent: 'center'}}><Pill text={names[m] ?? m} size={40} /></div>
@@ -176,10 +179,10 @@ export const MoveScene: React.FC<{dur: number; keys?: [number, string][]; tags?:
         </g>
       </svg>
       {/* his own webcam while he shows the move on the real tripod (whole width: the tripod is at the left edge) */}
-      {cam ? <div style={{position: 'absolute', left: 470, top: 650, width: 560, height: 315, borderRadius: 20, overflow: 'hidden', border: `5px solid ${GOLD}`, background: '#000', zIndex: 2}}>
-        <OffthreadVideo muted src={staticFile(cam.file)} startFrom={Math.round(cam.from * fps)} style={{width: 560, height: 315}} /></div> : null}
+      {cam ? <div style={{position: 'absolute', left: 500, top: 640, width: 520, height: 292, borderRadius: 20, overflow: 'hidden', border: `5px solid ${GOLD}`, background: '#000', zIndex: 2}}>
+        <OffthreadVideo muted src={staticFile(cam.file)} startFrom={Math.round(cam.from * fps)} style={{width: 520, height: 292}} /></div> : null}
       {/* what the camera sees */}
-      <div style={{position: 'absolute', left: 560, top: cam ? 975 : 760, width: 440, height: cam ? 160 : 330, borderRadius: 22, overflow: 'hidden', border: `5px solid ${GOLD}`, background: '#1B2A44'}}>
+      <div style={{position: 'absolute', left: cam ? 540 : 560, top: cam ? 950 : 760, width: 440, height: cam ? 210 : 330, borderRadius: 22, overflow: 'hidden', border: `5px solid ${GOLD}`, background: '#1B2A44'}}>
         <div style={{position: 'absolute', inset: 0, transform: `translate(${vx}px, ${vy}px) scale(${bgS})`}}>
           {Array.from({length: 8}).map((_, i) => <div key={i} style={{position: 'absolute', left: -200 + i * 110, top: -100, width: 50, height: 600, background: 'rgba(255,255,255,0.08)'}} />)}
           <div style={{position: 'absolute', left: -200, right: -200, top: 230, height: 300, background: '#2B2B33'}} />
@@ -187,10 +190,11 @@ export const MoveScene: React.FC<{dur: number; keys?: [number, string][]; tags?:
         <svg width={440} height={330} style={{position: 'absolute', left: 0, top: 0}}>
           <g transform={`translate(${220 + vx * 0.4} ${300 + vy}) scale(${0.7 * subS})`}><Person /></g>
         </svg>
+        {clip ? <OffthreadVideo muted src={staticFile(clip.file)} startFrom={Math.round(clip.from * fps)} style={{position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover'}} /> : null}
         <div style={{position: 'absolute', left: 14, top: 10, fontFamily: EN, fontWeight: 800, fontSize: 24, color: '#fff'}}><span style={{color: RED}}>●</span> REC</div>
       </div>
-      <div style={{position: 'absolute', left: 560, top: 1100, width: 440, textAlign: 'center', fontFamily: AR, fontWeight: 800, fontSize: 26, color: G.soft}}>الكاميرا شايفة كده</div>
-      <div style={{position: 'absolute', left: 560, top: 1150, width: 440, display: 'flex', flexDirection: 'column', gap: 8, direction: 'rtl'}}>
+      <div style={{position: 'absolute', left: cam ? 540 : 560, top: cam ? 1165 : 1100, width: 440, textAlign: 'center', fontFamily: AR, fontWeight: 800, fontSize: 26, color: G.soft}}>{clip ? 'مثال حقيقي من فيلم' : 'الكاميرا شايفة كده'}</div>
+      <div style={{position: 'absolute', left: cam ? 70 : 560, top: cam ? 1306 : 1150, width: cam ? 940 : 440, display: 'flex', flexDirection: cam ? 'row' : 'column', flexWrap: 'wrap', justifyContent: cam ? 'center' : 'flex-start', gap: cam ? 22 : 8, direction: 'rtl'}}>
         {(NOTE[m] ?? []).map(([ic, tx], i) => (<div key={m + i} style={{display: 'flex', alignItems: 'center', gap: 12, opacity: lin(t, 8 + i * 10, 18 + i * 10), fontFamily: AR, fontWeight: 900, fontSize: 30, color: '#fff'}}>
           <span style={{fontSize: 30, minWidth: 70, textAlign: 'center'}}>{ic}</span>{bi(tx)}</div>))}
       </div>

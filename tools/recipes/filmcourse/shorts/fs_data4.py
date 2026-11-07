@@ -25,11 +25,11 @@ SHORTS[6] = dict(no=6, chapter=26, title='حركة الكاميرا و *Dolly zo
     dict(a=3626.2, b=3634.8, crop=L(40, 60, 1000), src=3766.0, film=FT('Guardians of the Galaxy Vol. 2', '2017', 'مثال Dolly zoom'), lab=[(0.3, 'Dolly zoom', None, 2.2)]),
     dict(a=3474.3, b=3484.8, show='MoveScene', anim=dict(keys=[[3474.3, 'intro']]), rew=True),
     dict(a=3493.3, b=3512.1, show='MoveScene', nocam=True, anim=dict(keys=[[3493.3, 'static']], cam={'file': 'projects/filmcourse/wc06.mp4', 'from': round(3493.3 - 3480, 2)})),
-    dict(a=3523.6, b=3548.1, show='MoveScene', nocam=True, anim=dict(keys=[[3523.6, 'tilt']], cam={'file': 'projects/filmcourse/wc06.mp4', 'from': round(3523.6 - 3480, 2)})),
-    dict(a=3548.1, b=3562.8, show='MoveScene', nocam=True, anim=dict(keys=[[3548.1, 'pan']], cam={'file': 'projects/filmcourse/wc06.mp4', 'from': round(3548.1 - 3480, 2)})),
-    dict(a=3573.0, b=3579.9, crop=L(150, 30, 840), src=3584, film=FT('La La Land', '2016')),
+    dict(a=3523.6, b=3548.1, show='MoveScene', nocam=True, anim=dict(keys=[[3523.6, 'tilt']], tk=[[3523.6, 0], [3531.2, 0], [3531.6, 1], [3532.1, -1], [3532.8, 0], [3539.2, 0], [3539.6, 1], [3541.2, 1], [3541.6, -1], [3542.6, 0]], cam={'file': 'projects/filmcourse/wc06.mp4', 'from': round(3523.6 - 3480, 2)})),
+    dict(a=3548.1, b=3562.8, show='MoveScene', nocam=True, anim=dict(keys=[[3548.1, 'pan']], pk=[[3548.1, 0], [3555.2, 0], [3555.6, -1], [3557.2, -1], [3557.6, 1], [3558.6, 1], [3559.0, -1], [3560.0, 0]], cam={'file': 'projects/filmcourse/wc06.mp4', 'from': round(3548.1 - 3480, 2)})),
+    dict(a=3573.0, b=3579.9, crop=L(150, 30, 840), src=3591.0, film=FT('La La Land', '2016'), kw=[('Whip pan', 'Pan سريع بين الاتنين', 5.2)]),
     dict(a=3606.1, b=3614.3, show='MoveScene', anim=dict(keys=[[3606.1, 'push'], [3610.5, 'dolly']])),
-    dict(a=3626.2, b=3634.8, show='MoveScene', anim=dict(keys=[[3626.2, 'dolly']], tags=[T(3626.8, 'تزق الترايبود لورا'), T(3630.8, 'وتعمل زوم عكس الحركة')])),
+    dict(a=3626.2, b=3634.8, show='MoveScene', anim=dict(keys=[[3626.2, 'dolly']], clip={'file': 'projects/filmcourse/course.mp4', 'from': 3766.0})),
 ])
 
 # 10: short hook; script (top) + the film shot (bottom) TOGETHER the whole time

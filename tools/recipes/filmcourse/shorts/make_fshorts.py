@@ -89,9 +89,9 @@ def shift(anim, a):
     """scene props written in SOURCE seconds -> seconds from the start of this piece (values < 100 are already relative)."""
     o = json.loads(json.dumps(anim))
     mv = lambda t: round(t - a, 3) if t > 100 else t
-    for k in ('modes', 'steps', 'keys', 'hi'):
+    for k in ('modes', 'steps', 'keys', 'hi', 'tk', 'pk'):
         if k in o: o[k] = [[mv(x[0]), *x[1:]] for x in o[k]]
-    for k in ('tags', 'pics'):
+    for k in ('tags', 'pics', 'items', 'chips'):
         if k in o: o[k] = [dict(x, t=mv(x['t'])) for x in o[k]]
     if 'outB' in o: o['outB'] = mv(o['outB'])
     return o
@@ -165,7 +165,7 @@ def build(n):
                 screens.append(dict(t=round(t, 3), d=round(d + (GAP if cout else 0), 3), file=fl, **{'from': src}, keys=keys, marks=[], y=740,
                                     dual=dual, under=show == 'under', cin=cin, cout=cout))
             if show == 'under' and pc.get('anim'):
-                cues.append(dict(t=round(t, 3), d=round(d + (GAP if cout else 0), 3), k='PowerStairs', p=dict(shift(pc['anim'], a), under=True, cin=cin, cout=cout)))
+                cues.append(dict(t=round(t, 3), d=round(d + (GAP if cout else 0), 3), k=pc.get('ak', 'PowerStairs'), p=dict(shift(pc['anim'], a), under=True, cin=cin, cout=cout)))
         elif show.startswith('big:'):
             txt, _, sub = show[4:].partition('|')
             cues.append(dict(t=round(t, 3), d=round(d, 3), k='Big', p=dict(text=txt, sub=sub or None, ico=pc.get('ico'))))

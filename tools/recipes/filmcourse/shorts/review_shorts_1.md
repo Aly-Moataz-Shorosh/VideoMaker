@@ -144,3 +144,20 @@ What he wants to say (rebuild the short around it, motion for each part):
 
 ## 20 camera gear (and ALL FactCards: 05 too)
 - When I put the source card, the picture disappeared (empty stage) -> NEVER remove the picture: keep his screen / the drone picture he showed (~3856-3862 small drone image) in the card, and put the FactCard ON TOP of it (bottom part), not alone.
+
+# Review 3 (2026-11-07)
+
+## 06 camera moves
+- "الكاميرا شايفة كده" preview is too small/hidden (his webcam inset pushed it) -> give the preview its room; move the text notes BELOW (empty area under the card).
+- The drawn camera motion must follow his REAL move in the webcam (same direction + timing of each tilt/pan he does).
+- ~1:21: the La La Land clip shown is a static shot -> show the part where the camera pans left-right (whip pan between them, ~3586-3600).
+- End (dolly zoom): the real example video is missing -> show the dolly-zoom film clip at the end too (not only the hook).
+
+## 08 two beauties
+- When he says "بيوت شعر": show famous poems / classic verses (calligraphed famous verses).
+- Layout: a line splitting LEFT / RIGHT (الشكل vs المحتوى); put the content (pictures/motion) and HIS VIDEO stacked one over the other (use the empty top area, red arrow) — not only a small circle.
+- After الأفوكاتو he says سمك لبن تمر هندي -> bring a scene from it (missing).
+- When he says الفيل الأزرق -> use a scene from الفيل الأزرق 2.
+- I cut too much -> keep his recording (075352) as it was, whole (no big cuts; only tiny breath/silence trims).
+- At ~1:44 there is a silence -> no silent gaps.
+- Some pictures were unrelated: every picture must match what he says, NO picture used twice, + motion graphics that express his words.
