@@ -8,6 +8,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import fs_data as SD
+import webcam as WC
 
 PROJ = Path(__file__).resolve().parents[2]
 PUB = 'projects/filmcourse/'
@@ -65,6 +66,14 @@ def fit(a, b):
     first_start = min([w[1] for w in inside] or [a])
     s = max(s, int((first_start - 0.15) * 100))
     e = min(e, int((max(last_end, b) + 0.30) * 100))
+    # Aly 2026-11-07 (short 04): "يا تقطع بعد ما الكلمة تخلص يا قبلها بس مش في نصها" -> move each edge to the quietest 10 ms
+    # valley near it (the gap between two words), never into the middle of a sound
+    def valley(i, lo, hi):
+        seg = d[max(0, i + lo):i + hi]
+        sm = np.convolve(seg, np.ones(5) / 5, mode='same')
+        return max(0, i + lo) + int(np.argmin(sm))
+    s = valley(s, -25, 8)
+    e = valley(e, -8, 30)
     return round(s / 100, 2), round(e / 100, 2)
 
 
@@ -90,23 +99,23 @@ def build(n):
     spec = SD.SHORTS[n]
     voice, screens, cues, sfx, env, words, cam = [], [], [], [], [], [], []
     t = 0.3
-    plan = [(pc, *fit(pc['a'], pc['b'])) for pc in spec['pieces']]
+    plan = [(pc, *((pc['a'], pc['b']) if pc.get('raw') else fit(pc['a'], pc['b']))) for pc in spec['pieces']]  # raw = a clip he played, exact edges, its own sound
     levels = [level(a, b) for _, a, b in plan]
-    target = float(np.median(levels))
+    target = float(np.median([lv for (pc, _, _), lv in zip(plan, levels) if not pc.get('raw')] or levels))
     caps = SD.CAP.get(n, [])
     wf = PROJ / f'work/shorts/words_{n:02d}.json'
     FIX = getattr(__import__('fs_data2'), 'FIX', {})
     AUTOW = [dict(w, w=FIX.get(w['w'], w['w'])) for w in (json.load(open(wf, encoding='utf-8')) if wf.exists() else [])
-             if not BAD.search(w['w']) and not _re.search(r'(.){3,}', w['w'])]  # no 'ووووو' (music hallucinations)
+             if not BAD.search(w['w']) and not _re.search(r'(.)\1{3,}', w['w'])]  # no 'ووووو' (music hallucinations)
     kind = lambda q: ('none' if not 0 <= q < len(plan) else plan[q][0].get('show', 'under' if plan[q][0].get('under') else 'screen'))
     for k, ((pc, a, b), lv) in enumerate(zip(plan, levels)):
         d = b - a
-        gain = round(float(10 ** ((target - lv) / 20)), 3)
+        gain = 1.0 if pc.get('raw') else round(float(10 ** ((target - lv) / 20)), 3)
         voice.append(dict(file=PUB + 'course.mp4', **{'from': a}, to=b, at=round(t, 3), gain=min(1.25, max(0.5, gain))))
-        if not pc.get('nocam'): cam.append(dict(t=round(t, 3), d=round(d + GAP, 3), file=PUB + 'course.mp4', **{'from': a}, **SD.webcam(a), pos=spec.get('cam', 'tr')))  # Aly: his webcam square -> small round circle
+        if not pc.get('nocam'): cam.append(dict(t=round(t, 3), d=round(d + GAP, 3), file=PUB + 'course.mp4', **{'from': a}, **{k: v for k, v in WC.crop(a + 0.5).items() if k in ('sx', 'sy', 's')}, pos=spec.get('cam', 'tr')))  # Aly: his webcam square -> small round circle
         cap = caps[k] if k < len(caps) else None
         ew = [w for w in EPW if a - 0.05 <= w[1] < b]
-        if cap == '':
+        if cap == '' or pc.get('raw'):  # a clip he played: no captions (its own sound)
             pass
         elif cap and ew:
             toks = cap.replace('_', ' ').split()
@@ -136,8 +145,16 @@ def build(n):
                 prev = plan[k - 1][0]; pz = prev.get('zoom', [])
                 keys = [dict(t=0, **(pz[-1][1] if pz else prev['crop'])), dict(t=0.45, **pc['crop'])] + keys[1:]
             dual = dict(top=pc['crop'], bottom=pc['crop']) if show == 'under' else None
-            screens.append(dict(t=round(t, 3), d=round(d + (GAP if cout else 0), 3), file=PUB + 'course.mp4', **{'from': src}, keys=keys, marks=[], y=740,
-                                dual=dual, under=show == 'under', cin=cin, cout=cout))
+            fl = PUB + pc.get('file', 'course.mp4')
+            if pc.get('seq'):  # [(offset in the piece, src second in the file, crop or None)] -> one card, cut to each shot
+                sq = pc['seq']
+                for j, (off, ss, cr) in enumerate(sq):
+                    end_ = sq[j + 1][0] if j + 1 < len(sq) else d + (GAP if cout else 0)
+                    screens.append(dict(t=round(t + off, 3), d=round(end_ - off, 3), file=fl, **{'from': ss}, keys=[dict(t=0, **(cr or pc['crop']))], marks=[], y=740,
+                                        dual=None, under=False, cin=cin or j > 0, cout=cout or j + 1 < len(sq)))
+            else:
+                screens.append(dict(t=round(t, 3), d=round(d + (GAP if cout else 0), 3), file=fl, **{'from': src}, keys=keys, marks=[], y=740,
+                                    dual=dual, under=show == 'under', cin=cin, cout=cout))
             if show == 'under' and pc.get('anim'):
                 cues.append(dict(t=round(t, 3), d=round(d + (GAP if cout else 0), 3), k='PowerStairs', p=dict(shift(pc['anim'], a), under=True, cin=cin, cout=cout)))
         elif show.startswith('big:'):
@@ -163,8 +180,9 @@ def build(n):
     for c, n_ in zip(labs, labs[1:]):
         c['d'] = round(max(0.5, min(c['d'], n_['t'] - c['t'] - 0.05)), 3)
     end_at = round(t + 0.1, 3)
-    end = dict(at=end_at, d=SD.END_D, thumb=PUB + 'pics/film_course_thumb.jpg', qr=PUB + 'qr/film_course.png', title='الكورس الكامل على القناة')
-    dur = end_at + SD.END_D
+    end = dict(at=end_at, d=SD.END_D + (1.5 if spec.get('more') else 0), thumb=PUB + 'pics/film_course_thumb.jpg', qr=PUB + 'qr/film_course.png', title='الكورس الكامل على القناة',
+               more=spec.get('more', []))  # Aly 2026-11-07 (short 11): two videos at the end
+    dur = end_at + end['d']
     body = [pc for pc in spec['pieces'] if pc.get('rew')] or spec['pieces']
     props = dict(fps=FPS, duration=round(dur, 3), stage=(dict(top=430, h=840) if any(pc.get('under') for pc in spec['pieces']) else SD.STAGE), look='film', brand=dict(logo='film', name='كورس Film making'), src=dict(w=1280, h=720),
                  footer=dict(face=PUB + 'pics/ch_face.png', name=PUB + 'pics/ch_name.png'),

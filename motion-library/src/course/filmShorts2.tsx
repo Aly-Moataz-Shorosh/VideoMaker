@@ -106,7 +106,6 @@ export const CutMeaning: React.FC<{dur: number; mode?: string; bAt?: number; res
       <div style={{marginTop: 10, textAlign: 'center', fontFamily: AR, fontWeight: 900, fontSize: 34, color: '#fff', direction: 'rtl'}}>{bi(label)}</div>
     </div>
   );
-  const trainX = 430 - ((f - tb) * 9) % 900;
   return (
     <Frame dur={dur}>
       {shot(80, 'لقطة 1: واحد بيبص', pa, (
@@ -114,9 +113,18 @@ export const CutMeaning: React.FC<{dur: number; mode?: string; bAt?: number; res
           <line x1={175} y1={95} x2={420} y2={95} stroke={GOLD} strokeWidth={4} strokeDasharray="12 10" /><circle cx={182} cy={95} r={6} fill={INK} /></svg>))}
       {mode === 'music' ? shot(570, 'لقطة 2: موسيقى', pb, (
         <>{[0, 1, 2].map((i) => <Img key={i} src={fl(i % 2 ? 'musical_note' : 'musical_notes')} style={{position: 'absolute', left: 60 + i * 120, top: 120 + 40 * Math.sin(f / 9 + i), width: 110, height: 110}} />)}</>))
-        : shot(570, 'لقطة 2: قطر بيعدي', pb, (
-        <><div style={{position: 'absolute', left: 0, right: 0, top: 210, height: 10, background: '#555'}} />
-          <Img src={fl('train')} style={{position: 'absolute', left: trainX, top: 90, width: 220, height: 220}} /></>))}
+        : shot(570, 'لقطة 2: قطر بيعدي', pb, (() => {
+          const u = ((Math.max(0, f - tb) / (2.6 * fps)) % 1), sc = 0.12 + 1.9 * u * u;  // far -> near, accelerating
+          const cx = 300 - 250 * u * u, cy = 95 + 150 * u * u;                         // along the rails to the bottom-left
+          return (<>
+            <div style={{position: 'absolute', inset: 0, background: 'linear-gradient(180deg,#4A6A95 0%,#2B3A55 38%,#3A3328 38%,#241F18 100%)'}} />
+            <svg width={430} height={300} style={{position: 'absolute', left: 0, top: 0}}>
+              <path d="M 300 92 L -40 300 M 312 92 L 120 300" stroke="#9AA3AE" strokeWidth={5} />
+              {Array.from({length: 9}).map((_, i) => { const v = (i / 9 + (f / 40) % (1 / 9)) ** 2; return <line key={i} x1={300 - 330 * v} y1={92 + 208 * v} x2={312 - 182 * v} y2={92 + 208 * v} stroke="#6B5A44" strokeWidth={2 + 8 * v} />; })}
+            </svg>
+            <Img src={fl('train')} style={{position: 'absolute', left: cx - 110 * sc, top: cy - 110 * sc, width: 220 * sc, height: 220 * sc, filter: `blur(${u > 0.85 ? 2 : 0}px)`}} />
+          </>);
+        })())}
       <div style={{position: 'absolute', left: 510, top: 760, width: 60, height: 60, opacity: f >= tb - 10 ? 1 : 0, transform: `scale(${1 + cut})`}}>
         <Img src={fl('scissors')} style={{width: 60, height: 60}} /></div>
       <div style={{position: 'absolute', left: 0, right: 0, top: 1040, display: 'flex', justifyContent: 'center', opacity: lin(f, tb, tb + 10)}}>
@@ -128,6 +136,14 @@ export const CutMeaning: React.FC<{dur: number; mode?: string; bAt?: number; res
 
 // ---------- camera moves on a tripod: static / tilt / pan / push / dolly zoom (+ what the camera sees) ----------
 export const MoveScene: React.FC<{dur: number; keys?: [number, string][]; tags?: {t: number; text: string; c?: string}[]}> = ({dur, keys = [[0, 'static']], tags = []}) => {
+  const NOTE: Record<string, [string, string][]> = {
+    intro: [['⬅ ➡', 'يمين وشمال'], ['⬆ ⬇', 'فوق وتحت'], ['🎥', 'قدام وورا']],
+    static: [['🔒', 'الكاميرا مش بتتحرك'], ['👁', 'المتفرج بيركز في اللي جوه الكادر']],
+    tilt: [['⬆', 'تبص لفوق'], ['⬇', 'تبص لتحت'], ['📍', 'الترايبود ثابت مكانه']],
+    pan: [['⬅', 'تلف شمال'], ['➡', 'تلف يمين'], ['📍', 'الترايبود ثابت مكانه']],
+    push: [['🎥 ➡', 'الكاميرا نفسها بتقرّب'], ['🧍', 'الشخص بيكبر في الكادر']],
+    dolly: [['🎥 ⬅', 'الكاميرا بترجع لورا'], ['🔍 ➕', 'وزوم لقدام في نفس الوقت'], ['🌀', 'الشخص ثابت.. والخلفية بتتمط']],
+  };
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const {k} = keyAt(f, fps, keys);
@@ -171,7 +187,11 @@ export const MoveScene: React.FC<{dur: number; keys?: [number, string][]; tags?:
         <div style={{position: 'absolute', left: 14, top: 10, fontFamily: EN, fontWeight: 800, fontSize: 24, color: '#fff'}}><span style={{color: RED}}>●</span> REC</div>
       </div>
       <div style={{position: 'absolute', left: 560, top: 1100, width: 440, textAlign: 'center', fontFamily: AR, fontWeight: 800, fontSize: 26, color: G.soft}}>الكاميرا شايفة كده</div>
-      {tagsAt(f, fps, tags, 1180)}
+      <div style={{position: 'absolute', left: 560, top: 1150, width: 440, display: 'flex', flexDirection: 'column', gap: 8, direction: 'rtl'}}>
+        {(NOTE[m] ?? []).map(([ic, tx], i) => (<div key={m + i} style={{display: 'flex', alignItems: 'center', gap: 12, opacity: lin(t, 8 + i * 10, 18 + i * 10), fontFamily: AR, fontWeight: 900, fontSize: 30, color: '#fff'}}>
+          <span style={{fontSize: 30, minWidth: 70, textAlign: 'center'}}>{ic}</span>{bi(tx)}</div>))}
+      </div>
+      {tagsAt(f, fps, tags, 1280)}
     </Frame>
   );
 };
@@ -217,20 +237,20 @@ export const Pipeline: React.FC<{dur: number; items: {name: string; ar: string; 
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const cur = hi.length ? keyAt(f, fps, hi).k[1] : -1;
-  const n = steps.length, gap = Math.min(140, 640 / Math.max(1, n));
+  const n = steps.length, gap = Math.min(200, 700 / Math.max(1, n));
   return (
     <Frame dur={dur}>
       {steps.map((s, i) => {
         const p = spr(f, fps, s.at * fps, 170, 14);
         if (f < s.at * fps) return null;
-        const on = i === cur, y = 600 + i * gap;
+        const on = i === cur, y = 590 + i * gap;
         return (
-          <div key={i} style={{position: 'absolute', left: 110, top: y, width: 860, height: gap - 18, display: 'flex', alignItems: 'center', gap: 22, direction: 'rtl', padding: '0 22px', boxSizing: 'border-box',
+          <div key={i} style={{position: 'absolute', left: 70, top: y, width: 940, height: gap - 18, display: 'flex', alignItems: 'center', gap: 22, direction: 'rtl', padding: '0 22px', boxSizing: 'border-box',
             borderRadius: 26, background: on ? GOLD : 'rgba(10,14,22,0.85)', border: `3px solid ${on ? '#fff' : 'rgba(255,255,255,0.25)'}`, opacity: Math.min(1, p * 1.5),
             transform: `translateX(${(1 - p) * 80}px) scale(${on ? 1.04 : 1})`, boxShadow: on ? `0 0 40px ${GOLD}99` : 'none'}}>
             <Img src={fl(s.img)} style={{width: gap - 50, height: gap - 50}} />
             <div style={{flex: 1}}>
-              <div style={{fontFamily: AR, fontWeight: 900, fontSize: 40, color: on ? INK : '#fff'}}>{bi(s.ar)}</div>
+              <div style={{fontFamily: AR, fontWeight: 900, fontSize: n > 3 ? 40 : 48, color: on ? INK : '#fff'}}>{bi(s.ar)}</div>
               <div style={{fontFamily: EN, fontWeight: 800, fontSize: 26, color: on ? INK : GOLD}}>{s.name}</div>
             </div>
             <div style={{fontFamily: EN, fontWeight: 900, fontSize: 44, color: on ? INK : 'rgba(255,255,255,0.4)'}}>{i + 1}</div>

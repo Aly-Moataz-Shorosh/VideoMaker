@@ -3,6 +3,7 @@ import {Easing, Img, staticFile, useCurrentFrame, useVideoConfig} from 'remotion
 import {AR, EN, G, Glass, lin, Pill, spr} from '../glass/kit';
 import {bi} from './kit';
 import {filmScenes2} from './filmShorts2';
+import {filmScenes3} from './filmShorts3';
 
 // Explaining scenes for the film-making course shorts (2026-11-06). Every scene draws what he says in that sentence
 // (Aly: "ال icons مش بتبقى كافية" -> real explaining motion, real pictures of his own setups).
@@ -263,4 +264,4 @@ export const AngleVS: React.FC<{dur: number; cards: {img: string; name: string; 
   );
 };
 
-export const filmScenes: Record<string, React.FC<any>> = {AngleScene, PowerStairs, ToolsLadder, AngleVS, ...filmScenes2};
+export const filmScenes: Record<string, React.FC<any>> = {AngleScene, PowerStairs, ToolsLadder, AngleVS, ...filmScenes2, ...filmScenes3};

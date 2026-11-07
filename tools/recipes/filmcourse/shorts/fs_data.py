@@ -33,19 +33,21 @@ def webcam(a):
     return dict(sx=1065, sy=558, s=160) if a < 1500 else dict(sx=1085, sy=590, s=130)
 
 ST = lambda *k: [list(x) for x in k]
-HP_STEPS = ST((4580, 0, 2), (4611.9, 0, 2), (4617.2, 3, 2), (4623.1, 3, 4), (4628.5, 4, 3), (4630.0, 3, 4), (4631.3, 4, 4), (4661.5, 4, 4),
-              (4662.1, 3, 4), (4665.2, 4, 3), (4666.0, 4, 3))
+# Aly review 2026-11-07: they climb in turns the whole scene; at the END the BLACK one goes down a step ("دي اللي نزلت")
+# and the pink one goes up ("وبعد كده طلعت") -> eye level / power with her. Same in the hook.
+HP_STEPS = ST((4580, 0, 2), (4611.9, 0, 2), (4617.2, 3, 2), (4623.1, 3, 4), (4628.5, 4, 3), (4630.0, 3, 4), (4631.3, 3, 3), (4661.5, 3, 3),
+              (4662.1, 3, 2), (4665.2, 4, 2), (4666.0, 4, 2))
 HP_TAGS = [dict(t=4589.7, text='إزاي تنقل السلطة بالكاميرا؟'), dict(t=4611.9, text='الأطول = السلطة الأعلى'), dict(t=4617.2, text='طلعت سلمة.. السلطة معاها'),
            dict(t=4623.1, text='طلعت سلمة أعلى.. السلطة اتنقلت'), dict(t=4627.1, text='حرب.. رايحة جاية'), dict(t=4659.2, text='الكلمة القاضية', c='#E5232B'),
-           dict(t=4662.0, text='نزلت سلمة..', c='#E5232B'), dict(t=4665.2, text='وطلعت تاني.. السلطة بقت معاها'), dict(t=4670.1, text='Push in + Zoom'), dict(t=4673.3, text='والتانية خرجت من الكادر')]
+           dict(t=4662.0, text='السودا نزلت سلمة..', c='#E5232B'), dict(t=4665.2, text='والبينك طلعت.. السلطة بقت معاها'), dict(t=4670.1, text='Push in + Zoom'), dict(t=4673.3, text='والتانية خرجت من الكادر')]
 HP_ANIM = dict(steps=HP_STEPS, tags=HP_TAGS, outB=4673.3)
 HPF = dict(title='Harry Potter and the Order of the Phoenix', year='2007', note='المشهد اللي عرضه في الكورس')
 
 SHORTS = {
-    2: dict(no=2, chapter=8, cam='tr', title='كروما من *طرحة أمي*', pieces=[
+    2: dict(no=2, chapter=8, cam='tr', title='كروما من *طرحة*', pieces=[
         dict(a=814.0, b=820.2, crop=RESULT, lab=[(0.2, 'النتيجة', 'clapper_board', 2.4)]),
         dict(a=767.24, b=781.27, show='big:الأدوات بتساعدك بس|متبقاش مقيد بيها.. انت ممكن تعمل أي حاجة', ico='clap', rew=True),
-        dict(a=781.77, b=794.41, crop=ROOM, zoom=[(785.2, SCARF)], labels=[('طرحة', 'طرحة أمي'), ('السلم', 'وراها طرحة تانية')]),
+        dict(a=781.77, b=794.41, crop=ROOM, zoom=[(785.2, SCARF)], labels=[('طرحة', 'طرحة خضرا'), ('السلم', 'وراها طرحة تانية')]),
         dict(a=794.41, b=804.87, crop=BUNK, labels=[('السرير', 'سلم السرير اللي فوق')]),
         dict(a=804.92, b=813.6, crop=ROOM, zoom=[(808.2, CHAIR)], labels=[('كورسي', 'كرسي + علبة جزمة'), ('كاميرا', 'كاميرا قديمة جدا')]),
         dict(a=814.0, b=820.2, crop=RESULT, labels=[('كروب', 'Crop')]),
@@ -53,7 +55,7 @@ SHORTS = {
         dict(a=830.7, b=840.4, crop=STUDIO_L, zoom=[(834.9, STUDIO_R)], labels=[('استوديو', 'استوديو + مايك'), ('سنتر', 'Journey to the center')]),
         dict(a=840.4, b=845.73, crop=STUDIO_R, zoom=[(842.4, TABLET)], labels=[('التابلت', 'تابلت')]),
         dict(a=847.54, b=855.62, show='ToolsLadder', anim=dict(fit=[340, 1330], title='أدواتك بتتغير.. الغاية لأ', titleAt=4.6, items=[
-            dict(img='projects/filmcourse/stills/setup_bunk.jpg', text='سلم السرير', at=0.1), dict(img='projects/filmcourse/stills/setup_result.jpg', text='طرحة أمي', at=0.6),
+            dict(img='projects/filmcourse/stills/setup_bunk.jpg', text='سلم السرير', at=0.1), dict(img='projects/filmcourse/stills/setup_result.jpg', text='الطرحة', at=0.6),
             dict(img='projects/filmcourse/stills/setup_roof.jpg', text='السطح', at=1.1), dict(img='projects/filmcourse/stills/setup_studio.jpg', text='استوديو', at=1.6),
             dict(img='projects/filmcourse/stills/setup_tablet.jpg', text='تابلت', at=2.1)])),
     ]),
@@ -87,3 +89,9 @@ STAGE = dict(top=545, h=760)  # screen card under his circle strip (Aly 2026-11-
 
 import fs_data2 as _D2
 SHORTS.update(_D2.SHORTS); CAP.update(_D2.CAP)
+
+# review 1 (2026-11-07)
+import fs_data3 as _D3
+SHORTS.update(_D3.SHORTS)
+for _k, _v in _D3.CAP.items(): CAP[_k] = _v
+_D2.FIX.update(_D3.FIX_MORE)

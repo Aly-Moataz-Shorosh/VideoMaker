@@ -39,7 +39,8 @@ export const courseShortSchema = z.object({
   // series identity (audio course 2026-10-26: same frame, its own name/logo) + recording size + end card (thumbnail + QR, never a QR alone)
   brand: z.object({logo: z.string().default('Pr'), name: z.string().default('كورس Premiere')}).default({logo: 'Pr', name: 'كورس Premiere'}),
   src: z.object({w: z.number(), h: z.number()}).default({w: 1276, h: 720}),
-  end: z.object({at: z.number(), d: z.number(), thumb: z.string(), qr: z.string(), title: z.string().default('الكورس الكامل على القناة')}).nullable().default(null),
+  end: z.object({at: z.number(), d: z.number(), thumb: z.string(), qr: z.string(), title: z.string().default('الكورس الكامل على القناة'),
+    more: z.array(z.object({thumb: z.string(), qr: z.string(), title: z.string()})).default([])}).nullable().default(null),
   footer: z.object({face: z.string(), name: z.string()}).nullable().default(null), // channel logo + name at the very bottom (Aly 2026-10-26)
   // his webcam square of the recording as a small round circle (Aly 2026-11-06, film course shorts): one entry per piece, crop in src px
   stage: z.object({top: z.number(), h: z.number()}).default({top: 430, h: 840}),
@@ -426,6 +427,23 @@ const CamCircle: React.FC<{file: string; from: number; sx: number; sy: number; s
     </div>);
 };
 
+const EndCard2: React.FC<{items: {thumb: string; qr: string; title: string}[]; dur: number; acc: string}> = ({items, dur, acc}) => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const o = 1 - lin(f, dur - 8, dur);
+  return (
+    <AbsoluteFill style={{opacity: o, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 40, paddingTop: 200}}>
+      {items.map((it, i) => { const p = spr(f, fps, i * 8, 140, 16); return (
+        <div key={i} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, opacity: Math.min(1, p * 1.4), transform: `translateY(${(1 - p) * 40}px)`}}>
+          <div style={{fontFamily: AR, fontWeight: 900, fontSize: 44, color: '#fff', direction: 'rtl'}}>{bi(it.title)}</div>
+          <div style={{display: 'flex', gap: 22, alignItems: 'center', direction: 'rtl'}}>
+            <Img src={staticFile(it.thumb)} style={{width: 620, height: 349, objectFit: 'cover', borderRadius: 22, border: `4px solid ${acc}`}} />
+            <div style={{background: '#fff', padding: 10, borderRadius: 16}}><Img src={staticFile(it.qr)} style={{width: 200, height: 200, display: 'block'}} /></div>
+          </div></div>); })}
+      <div style={{fontFamily: AR, fontWeight: 800, fontSize: 34, color: G.soft}}>امسح الـ QR أو اللينكات في الوصف</div>
+    </AbsoluteFill>);
+};
+
 export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues, cta, music, sfx, env, words, brand, src, end, footer, cam, stage}) => {
   const {fps} = useVideoConfig();
   const now = useCurrentFrame();
@@ -467,7 +485,8 @@ export const CourseShort: React.FC<Props> = ({look, series, voice, screens, cues
         else el = <AnimV name={c.k} {...(c.p as any)} dur={d} />;
         return <Sequence key={'c' + i} from={fr(c.t)} durationInFrames={d} layout="none">{el}</Sequence>;
       })}
-      {end ? <Sequence from={fr(end.at)} durationInFrames={fr(end.d)}><EndCard thumb={end.thumb} qr={end.qr} title={end.title} dur={fr(end.d)} acc={L.acc} /></Sequence> : null}
+      {end ? <Sequence from={fr(end.at)} durationInFrames={fr(end.d)}>{end.more.length ? <EndCard2 items={[{thumb: end.thumb, qr: end.qr, title: end.title}, ...end.more]} dur={fr(end.d)} acc={L.acc} />
+        : <EndCard thumb={end.thumb} qr={end.qr} title={end.title} dur={fr(end.d)} acc={L.acc} />}</Sequence> : null}
       {cta ? <Sequence from={fr(cta.at)} durationInFrames={fr(cta.d)}><CtaV file={cta.file} dur={fr(cta.d)} qr={cta.qr} vol={cta.vol} acc={L.acc} word={cta.word} thumb={cta.thumb} /></Sequence> : null}
       {inCta ? null : <L.Fx />}
       {inEnd || inCta ? null : cam.map((c, i) => !live(c.t, c.d) ? null : (

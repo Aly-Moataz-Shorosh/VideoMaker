@@ -62,7 +62,7 @@ SHORTS = {
         dict(a=2509.0, b=2526.4, crop=L(300, 60, 700), src=2508, kw=[('Establishing shot', 'تعرف انت فين من غير ما حد يقولك', 1.0)]),
         dict(a=2393.6, b=2402.1, crop=L(400, 100, 500), src=2400, rew=True, kw=[('Shot size', 'حجم اللقطة', 1.0)]),
         dict(a=2421.1, b=2445.3, crop=FULL, src=2428, zoom=[(2436, L(160, 0, 960))], labels=[('عينين', 'Extreme close up'), ('الكتاف', 'Close up / Medium'), ('كله', 'Full shot')]),
-        dict(a=2445.3, b=2465.9, crop=L(20, 40, 640), src=2450, zoom=[(2455, L(620, 40, 640))], kw=[('Wide / Full / Medium', 'كل حجم بيقول حاجة', 6.0)]),
+        dict(a=2445.3, b=2465.9, crop=L(20, 40, 640), zoom=[(2455, L(620, 40, 640))], kw=[('Wide / Full / Medium', 'كل حجم بيقول حاجة', 6.0)]),
         dict(a=2509.0, b=2530.6, crop=L(300, 60, 700), src=2508, kw=[("Show, don't tell", 'ورّي.. متحكيش', 17.0)]),
     ]),
     # 10 the script describes everything before shooting
@@ -114,7 +114,7 @@ SHORTS = {
     # 15 visual literacy
     15: dict(no=15, chapter=16, title='محو *الأمية البصرية*', pieces=[
         dict(a=1735.4, b=1744.1, show='LiteracyScene', anim=dict(rows=[dict(img='musical_notes', a='كلنا بنسمع أغاني', b='مش كلنا بنكتبها', at=0.1), dict(img='scroll', a='كلنا بنستمتع بالزخارف', b='مش كلنا بنقراها', at=2.4)])),
-        dict(a=1465.5, b=1487.0, crop=FULL, src=1440, rew=True, lab=[(0.4, 'Martin Scorsese', None, 2.2)], kw=[('Visual literacy', 'إنك تقرا الصورة وتكتبها', 6.0)]),
+        dict(a=1465.5, b=1487.0, crop=L(150, 30, 840), src=1440, rew=True, lab=[(0.4, 'Martin Scorsese', None, 2.2)], kw=[('Visual literacy', 'إنك تقرا الصورة وتكتبها', 6.0)]),
         dict(a=1732.5, b=1744.1, show='LiteracyScene', anim=dict(rows=[dict(img='musical_notes', a='كلنا بنسمع أغاني', b='مش كلنا بنكتبها', at=1.0), dict(img='scroll', a='كلنا بنستمتع بالزخارف', b='مش كلنا بنقراها', at=4.7)])),
         dict(a=1744.9, b=1761.7, show='LiteracyScene', anim=dict(rows=[dict(img='cinema', a='كلنا بنحب الأفلام', b='مش كلنا بنقرا حروفها', at=0.2)],
              letters=['Shot size', 'Angle', 'Framing', 'Focus', 'Movement', 'Cut'], lettersAt=8.0)),
