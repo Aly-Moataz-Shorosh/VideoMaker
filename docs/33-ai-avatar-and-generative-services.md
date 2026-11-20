@@ -168,3 +168,7 @@ identity consistency and much more expensive → B-roll, not the talking head.
   Avatar 6 Turbo 1080p 12 s = 4 credits (≈ 20/min, ≈ 0.33/s). Real speech rate of the twin voice = 2.6 words/s (not 2.2).
   create_speech_without_player withTimestamps gives word timings (can replace Whisper for timing). The studio look
   a7e1bb9b… is PORTRAIT → 16:9 YouTube needs a landscape look in the set (create_avatar_looks), never a 16:9 cover crop.
+- 2026-11-20 full narration (23 create_speech_without_player calls, one per chapter, 17:40 total) = 23 credits → HeyGen
+  voice ≈ 1 credit PER REQUEST (a 3:52 chapter = 1 credit), not per minute. Long texts read slower (2.29 w/s avg).
+  QA without listening: tools/transcribe.py + word diff vs script (project work/scripts/check_voice.py); Whisper's VAD
+  drops some sentences → re-check suspect spots with vad_filter=False before calling them missing.
