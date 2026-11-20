@@ -1,0 +1,14 @@
+ستايل 25 — HUD motion (كروت، أرقام، خريطة، كابشن) — layers شفافة
+الحالة: مسودة (draft) — كارت ستايل اتعمل في RUN_v9 (2026-11-20)، لسه مااتجربش ولا اتوافق عليه.
+الفيديو: «عالم الـ AI كله» (projects/2026-11-20 avatar aiFullVideoCost)
+
+الشكل:
+كروت زجاج داكن بحدود cyan، عدّادات Montserrat 900، Cairo للعربي، badge «AI × بإشراف علي» ثابت فوق شمال
+
+الأدوات والموديل:
+Remotion composition ai-world-hud (src/aiworld/AiWorld.tsx): kinds badge / families / counter / card → WebM VP9 alpha أو ProRes 4444 (--image-format=png) → layer فوق الفيديو في CapCut/Premiere
+
+البرومبت / الألوان:
+ألوان: ink #EAF2FF، cyan #38E1FF، gold #FFC24B، violet #8B7BFF، bg #05070D. خط: Cairo (عربي) + Montserrat (أرقام/إنجليزي).
+
+التجربة (Tip 15): 3 لقطات صغيرة رخيصة الأول، واللي يكسب يتحفظ هنا بـ sample.mp4 + cover.jpg.

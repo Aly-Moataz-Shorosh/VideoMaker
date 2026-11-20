@@ -324,3 +324,7 @@ Done (2026-10-06):
 - 2026-11-20 avatar tests 01-04 done (photo avatar, black-shirt frame, real-footage lipsync, HeyGen voice clone) — results +
   Aly's review in docs/33 §7; recipe for mixed AI videos in docs/34. Next: Aly records a base take + HeyGen consent (digital twin),
   and decides on voice (own recording vs ElevenLabs PVC).
+- 2026-11-20 RUN_v9 `projects/2026-11-20 avatar aiFullVideoCost` (YouTube 16:9 «عالم الـ AI كله», script v6 + narration_v1 ≈ 21:45,
+  227-shot shotlist, sources_v5 + 30 marked evidence shots, alpha HUD layers, Blender blockouts jet/lab/bridge, rough_cut_v1 720p
+  placeholders, cost_plan_v1 with 3 bundles). NO paid generation yet — waiting for Aly to pick a bundle (HeyGen 10 s test first).
+  Draft styles 21-25 (not approved). Logos library brand/logos-tools/index.md.

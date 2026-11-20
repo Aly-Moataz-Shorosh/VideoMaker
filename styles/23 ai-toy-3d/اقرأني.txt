@@ -1,0 +1,14 @@
+ستايل 23 — Toy 3D (شخصيات أصلية بس)
+الحالة: مسودة (draft) — كارت ستايل اتعمل في RUN_v9 (2026-11-20)، لسه مااتجربش ولا اتوافق عليه.
+الفيديو: «عالم الـ AI كله» (projects/2026-11-20 avatar aiFullVideoCost)
+
+الشكل:
+بلاستيك لامع زي أفلام الأنيميشن العائلية، الأدوات = لعب على مكتب بتشتغل مع بعض، نسخة لعبة من علي (نفس الملامح)
+
+الأدوات والموديل:
+Higgsfield nano_banana_2 (keyframe، 1.5 كريدت) ← Kling 4.0 image-to-video (16.25 / 5 ث 1080p)
+
+البرومبت / الألوان:
+Prompt: «original toy figures (NOT any known character or brand design), glossy vinyl plastic, rounded shapes, soft studio light, tilt-shift desk scene, toy version of the man in the reference photo, warm colors». ممنوع أي IP معروف.
+
+التجربة (Tip 15): 3 لقطات صغيرة رخيصة الأول، واللي يكسب يتحفظ هنا بـ sample.mp4 + cover.jpg.

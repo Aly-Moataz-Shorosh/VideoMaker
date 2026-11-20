@@ -1,0 +1,14 @@
+ستايل 22 — Cinematic 3D (طيارة، معمل، كوبري، خزنة)
+الحالة: مسودة (draft) — كارت ستايل اتعمل في RUN_v9 (2026-11-20)، لسه مااتجربش ولا اتوافق عليه.
+الفيديو: «عالم الـ AI كله» (projects/2026-11-20 avatar aiFullVideoCost)
+
+الشكل:
+Blender blockout رمادي للحركة والكاميرا ← Higgsfield يلبّس الشكل الواقعي؛ قبل/بعد كلحظة flex
+
+الأدوات والموديل:
+Blender 5.2 tools/blender/aiworld_blockouts.py (jet / lab / bridge) ← Higgsfield Kling 3.0 Omni Edit (video-to-video، 10 كريدت/5 ث) أو Seedance 2.5 start frame = <scene>_last.png
+
+البرومبت / الألوان:
+Prompt: «photoreal cinematic, metallic fighter-jet parts floating in an exploded view, thin glowing cyan cables between parts, dark hangar, volumetric light, anamorphic flare, keep the exact camera move and object motion of the reference video»
+
+التجربة (Tip 15): 3 لقطات صغيرة رخيصة الأول، واللي يكسب يتحفظ هنا بـ sample.mp4 + cover.jpg.

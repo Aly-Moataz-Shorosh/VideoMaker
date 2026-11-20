@@ -1,0 +1,14 @@
+ستايل 21 — AI live action (علي الـ AI في أماكن حقيقية)
+الحالة: مسودة (draft) — كارت ستايل اتعمل في RUN_v9 (2026-11-20)، لسه مااتجربش ولا اتوافق عليه.
+الفيديو: «عالم الـ AI كله» (projects/2026-11-20 avatar aiFullVideoCost)
+
+الشكل:
+علي الـ AI (HeyGen twin) جوه مكان متولّد بإضاءة واحدة، كاميرا بتتحرك (orbit / push-in)، objects طايرة حواليه
+
+الأدوات والموديل:
+HeyGen create_video_from_avatar: look a7e1bb9b7018931d094475ee25d87042 + reference_look_id twin c7e371d6395d4e0aa59618d58f57e326، صوت twin 68fd7b29cfa643748b68c0992c1dc70c (كتابة عادية، «علي شُرُش»). المكان: look جديد جوه المكان (create_avatar_looks) مش keying.
+
+البرومبت / الألوان:
+Prompt: «Aly, same face and outfit as reference, standing inside <place>, soft key light from the left matching the set, cinematic 35mm, shallow depth of field, calm natural gestures, eyes to camera». Look = اللوك يتولد جوه المكان (Tip 3).
+
+التجربة (Tip 15): 3 لقطات صغيرة رخيصة الأول، واللي يكسب يتحفظ هنا بـ sample.mp4 + cover.jpg.

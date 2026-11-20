@@ -156,3 +156,11 @@ identity consistency and much more expensive → B-roll, not the talking head.
   («مش علي الحقيقي»). Name in text: «علي شُرُش». Take id=bf8dec2090184fd5ac774f6aaf97b980.
 - 2026-11-20 even «مش علي الحقيقي» still came out «عليا» → Aly's fix: rephrase to «أنا مش هو الحقيقي». Rule: avoid «علي»
   right after «مش»/at phrase end in HeyGen voice; rephrase around it.
+- 2026-11-20 RUN_v9 (YouTube 16:9 «عالم الـ AI كله», autonomous, no paid generation): balances via claude.ai connectors (HeyGen
+  get_current_user 574, ElevenLabs account_get_usage 33,240 chars, Higgsfield balance 3000.35 ultra; Suno needs `/mcp`).
+  Higgsfield estimates: Seedance 2.5 5 s 1080p = 80 / 720p = 35, Seedance 2.5 Flash 720p = 25, Cinema Studio 4.0 1080p = 80,
+  Kling 4.0 5 s 1080p = 16.25 (10 s = 32.5), Kling 3.0 Omni Edit 5 s = 10, nano_banana_2 image = 1.5, gpt_image_2_6 = 0.25.
+  HeyGen pricing page gives NO credits-per-minute → always a 10 s test first and read the balance diff.
+  HeyGen calls the twin model "Avatar 6" (not "Avatar V"). New free pieces: Remotion `ai-world-rough` / `ai-world-hud`
+  (src/aiworld, alpha needs --image-format=png), Blender `tools/blender/aiworld_blockouts.py` (Blender 5.x: media_type VIDEO),
+  `tools/fetch_logos.py` (Tip 13), draft styles 21-25. Project files: cost_plan_v1.md, sources_v5.md, work/, output/.

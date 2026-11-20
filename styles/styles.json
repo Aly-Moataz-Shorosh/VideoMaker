@@ -187,6 +187,51 @@
    "build": "composition 'scene-analysis' (src/scene/SceneAnalysis.tsx, anims.tsx, set3d.tsx)",
    "recipe": "docs/32-recipe-scene-analysis.md",
    "scripts": "tools/recipes/ibrahimLabyad/ (cuts.py, contact.py, bg_motion.py, onion.py, retr.py, sfx_detect.py, make_props.py, make_sss.py)"
+  },
+  "21": {
+   "folder": "21 ai-live-action",
+   "name": "AI live action (علي الـ AI في أماكن حقيقية)",
+   "approved": "NO — draft style card (RUN_v9 2026-11-20), not reviewed by Aly",
+   "build": "HeyGen create_video_from_avatar: look a7e1bb9b7018931d094475ee25d87042 + reference_look_id twin c7e371d6395d4e0aa59618d58f57e326، صوت twin 68fd7b29cfa643748b68c0992c1dc70c (كتابة عادية، «علي شُرُش»). المكان: look جديد جوه المكان (create_avatar_looks) مش keying.",
+   "look": "علي الـ AI (HeyGen twin) جوه مكان متولّد بإضاءة واحدة، كاميرا بتتحرك (orbit / push-in)، objects طايرة حواليه",
+   "prompt": "Prompt: «Aly, same face and outfit as reference, standing inside <place>, soft key light from the left matching the set, cinematic 35mm, shallow depth of field, calm natural gestures, eyes to camera». Look = اللوك يتولد جوه المكان (Tip 3).",
+   "project": "projects/2026-11-20 avatar aiFullVideoCost"
+  },
+  "22": {
+   "folder": "22 ai-cinematic-3d",
+   "name": "Cinematic 3D (طيارة، معمل، كوبري، خزنة)",
+   "approved": "NO — draft style card (RUN_v9 2026-11-20), not reviewed by Aly",
+   "build": "Blender 5.2 tools/blender/aiworld_blockouts.py (jet / lab / bridge) ← Higgsfield Kling 3.0 Omni Edit (video-to-video، 10 كريدت/5 ث) أو Seedance 2.5 start frame = <scene>_last.png",
+   "look": "Blender blockout رمادي للحركة والكاميرا ← Higgsfield يلبّس الشكل الواقعي؛ قبل/بعد كلحظة flex",
+   "prompt": "Prompt: «photoreal cinematic, metallic fighter-jet parts floating in an exploded view, thin glowing cyan cables between parts, dark hangar, volumetric light, anamorphic flare, keep the exact camera move and object motion of the reference video»",
+   "project": "projects/2026-11-20 avatar aiFullVideoCost"
+  },
+  "23": {
+   "folder": "23 ai-toy-3d",
+   "name": "Toy 3D (شخصيات أصلية بس)",
+   "approved": "NO — draft style card (RUN_v9 2026-11-20), not reviewed by Aly",
+   "build": "Higgsfield nano_banana_2 (keyframe، 1.5 كريدت) ← Kling 4.0 image-to-video (16.25 / 5 ث 1080p)",
+   "look": "بلاستيك لامع زي أفلام الأنيميشن العائلية، الأدوات = لعب على مكتب بتشتغل مع بعض، نسخة لعبة من علي (نفس الملامح)",
+   "prompt": "Prompt: «original toy figures (NOT any known character or brand design), glossy vinyl plastic, rounded shapes, soft studio light, tilt-shift desk scene, toy version of the man in the reference photo, warm colors». ممنوع أي IP معروف.",
+   "project": "projects/2026-11-20 avatar aiFullVideoCost"
+  },
+  "24": {
+   "folder": "24 ai-2d-cartoon",
+   "name": "2D cartoon (الـ skills، الدوشة → صورة، الأغنية)",
+   "approved": "NO — draft style card (RUN_v9 2026-11-20), not reviewed by Aly",
+   "build": "Higgsfield nano_banana_2 keyframes + Remotion/HyperFrames أنيميشن (مجاني) أو Kling 4.0 للحركة",
+   "look": "كرتون 2D خطوط نضيفة، كراسات بتتفتح وبيطلع منها رسومات، noise بيتحول لصورة",
+   "prompt": "Prompt: «flat 2D cartoon, clean bold outlines, limited palette navy/cyan/gold, paper texture, original characters only»",
+   "project": "projects/2026-11-20 avatar aiFullVideoCost"
+  },
+  "25": {
+   "folder": "25 ai-hud-motion",
+   "name": "HUD motion (كروت، أرقام، خريطة، كابشن) — layers شفافة",
+   "approved": "NO — draft style card (RUN_v9 2026-11-20), not reviewed by Aly",
+   "build": "Remotion composition ai-world-hud (src/aiworld/AiWorld.tsx): kinds badge / families / counter / card → WebM VP9 alpha أو ProRes 4444 (--image-format=png) → layer فوق الفيديو في CapCut/Premiere",
+   "look": "كروت زجاج داكن بحدود cyan، عدّادات Montserrat 900، Cairo للعربي، badge «AI × بإشراف علي» ثابت فوق شمال",
+   "prompt": "ألوان: ink #EAF2FF، cyan #38E1FF، gold #FFC24B، violet #8B7BFF، bg #05070D. خط: Cairo (عربي) + Montserrat (أرقام/إنجليزي).",
+   "project": "projects/2026-11-20 avatar aiFullVideoCost"
   }
  },
  "_always": "Every style: his ORIGINAL voice (only per-sentence gain to one level, no cleanup), edges fitted on the waveform, sfx, CTA clip + comment card at the end of shorts, <video>.txt beside every output, sfx + voice stems. Word script only on request. Shorts: ASK one short (whole goal of the video) or several (suggestions, he picks) first; no short ever reaches 3:00."

@@ -9,6 +9,7 @@ import {CourseShort, courseShortSchema} from './course/Short';
 import {StageShort, stageShortSchema} from './stage/StageShort';
 import {MeetShort, meetShortSchema} from './enta/MeetShort';
 import {SceneAnalysis, sceneAnalysisSchema} from './scene/SceneAnalysis';
+import {AiWorldRough, aiWorldSchema, AiHud, aiHudSchema} from './aiworld/AiWorld';
 
 // Every template: 16:9 composition `<id-with-dashes>` and, when v, 9:16 `<id>-v`.
 export const Root: React.FC = () => (
@@ -54,5 +55,13 @@ export const Root: React.FC = () => (
     <Composition id="scene-analysis" component={SceneAnalysis} schema={sceneAnalysisSchema} defaultProps={sceneAnalysisSchema.parse({})}
       fps={30} width={1920} height={1080} durationInFrames={90}
       calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * 30))})} />
+    {/* «عالم الـ AI كله» 16:9 rough cut + transparent HUD layers (2026-11-20). Props from projects/<code>/work/scripts/make_props.py */}
+    <Composition id="ai-world-rough" component={AiWorldRough} schema={aiWorldSchema} defaultProps={aiWorldSchema.parse({})}
+      fps={25} width={1920} height={1080} durationInFrames={250}
+      calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * props.fps)), fps: props.fps,
+        width: props.outW, height: Math.round(props.outW * 9 / 16)})} />
+    <Composition id="ai-world-hud" component={AiHud} schema={aiHudSchema} defaultProps={aiHudSchema.parse({})}
+      fps={25} width={1920} height={1080} durationInFrames={125}
+      calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * 25))})} />
   </>
 );

@@ -1,0 +1,14 @@
+ستايل 24 — 2D cartoon (الـ skills، الدوشة → صورة، الأغنية)
+الحالة: مسودة (draft) — كارت ستايل اتعمل في RUN_v9 (2026-11-20)، لسه مااتجربش ولا اتوافق عليه.
+الفيديو: «عالم الـ AI كله» (projects/2026-11-20 avatar aiFullVideoCost)
+
+الشكل:
+كرتون 2D خطوط نضيفة، كراسات بتتفتح وبيطلع منها رسومات، noise بيتحول لصورة
+
+الأدوات والموديل:
+Higgsfield nano_banana_2 keyframes + Remotion/HyperFrames أنيميشن (مجاني) أو Kling 4.0 للحركة
+
+البرومبت / الألوان:
+Prompt: «flat 2D cartoon, clean bold outlines, limited palette navy/cyan/gold, paper texture, original characters only»
+
+التجربة (Tip 15): 3 لقطات صغيرة رخيصة الأول، واللي يكسب يتحفظ هنا بـ sample.mp4 + cover.jpg.
