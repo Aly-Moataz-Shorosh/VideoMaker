@@ -164,3 +164,7 @@ identity consistency and much more expensive → B-roll, not the talking head.
   HeyGen calls the twin model "Avatar 6" (not "Avatar V"). New free pieces: Remotion `ai-world-rough` / `ai-world-hud`
   (src/aiworld, alpha needs --image-format=png), Blender `tools/blender/aiworld_blockouts.py` (Blender 5.x: media_type VIDEO),
   `tools/fetch_logos.py` (Tip 13), draft styles 21-25. Project files: cost_plan_v1.md, sources_v5.md, work/, output/.
+- 2026-11-20 HeyGen REAL PRICES (10 s test, Aly picked bundle "المقترح"): twin voice TTS 12 s = 1 credit (≈ 5/min),
+  Avatar 6 Turbo 1080p 12 s = 4 credits (≈ 20/min, ≈ 0.33/s). Real speech rate of the twin voice = 2.6 words/s (not 2.2).
+  create_speech_without_player withTimestamps gives word timings (can replace Whisper for timing). The studio look
+  a7e1bb9b… is PORTRAIT → 16:9 YouTube needs a landscape look in the set (create_avatar_looks), never a 16:9 cover crop.
