@@ -186,3 +186,10 @@ identity consistency and much more expensive → B-roll, not the talking head.
   + prompt "the EXACT man from the reference photo… do not change or beautify". Presenter = HeyGen photo look made from
   that real 1920x1080 frame INSIDE the twin group (create_photo_avatar with avatarGroupId, 1 credit) → native 16:9, then
   Avatar 6 Turbo + reference_look_id twin + motionExpressiveness "less" (12 s = 4 credits). Look fbbb101ecad2a8e987ac830c6ffb7fe5.
+- 2026-11-20 RUN_v9 clips (bundle المقترح): REAL Higgsfield prices: Kling 4.0 image-to-video 1080p = 3.75/s (5 s 18.75, 6 s 22.5 —
+  the 16.25 in cost_plan_v1 was text-to-video), Seedance 2.5 omni_reference start_image 720p 5 s no audio = 35, Kling 3.0
+  Omni Edit pro (video_references = blockout mp4 + image_references = keyframe) ≈ 12 per 5-6 s. 37 clips = 861.5 credits,
+  all done in ~5 min in 3 parallel batches. Keyframe job ids work directly as start_image values. Kling outputs 1924x1076
+  (scale to 1080p). Blockout→look worked for the bridge, too abstract for the jet (blockout shapes dominate) → give the edit
+  a detailed blockout or use image-to-video from a keyframe instead. Prompt rule: "keep the man's face" ONLY on shots with
+  Aly; other shots "keep the scene… do not add people".
