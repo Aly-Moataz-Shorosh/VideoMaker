@@ -16,11 +16,13 @@ const TYPE: Record<string, {c: string; n: string}> = {
 const ar: React.CSSProperties = {fontFamily: 'Cairo, sans-serif', direction: 'rtl', unicodeBidi: 'isolate'};
 
 const shot = z.object({n: z.number(), chapter: z.string(), start: z.number(), dur: z.number(), type: z.string(),
-  style: z.string(), world: z.string(), what: z.string(), tool: z.string(), free_paid: z.string(), cost: z.any(), transition: z.string()});
+  style: z.string(), world: z.string(), what: z.string(), tool: z.string(), free_paid: z.string(), cost: z.any(), transition: z.string(),
+  // rough cut v2 (real material): src = clip in public/, rate = playbackRate to fill the shot, bg = blurred clip behind a card
+  src: z.string().optional(), rate: z.number().optional(), label: z.string().optional(), bg: z.string().optional()});
 export const aiWorldSchema = z.object({
   fps: z.number().default(25), duration: z.number().default(10), outW: z.number().default(1920),
   shots: z.array(shot).default([]),
-  caps: z.array(z.object({a: z.number(), b: z.number(), t: z.string()})).default([]),
+  caps: z.array(z.object({a: z.number(), b: z.number(), t: z.string(), song: z.boolean().optional()})).default([]),
   chapters: z.array(z.object({id: z.string(), title: z.string(), start: z.number(), end: z.number()})).default([]),
 });
 export const aiHudSchema = z.object({
@@ -121,8 +123,24 @@ const Blockout: React.FC<{s: z.infer<typeof shot>; clip: string}> = ({s, clip}) 
   </AbsoluteFill>
 );
 
+// v2: the real clip of the shot (HeyGen avatar / Higgsfield clip / Blender look), muted (voice = separate track)
+const RealShot: React.FC<{s: z.infer<typeof shot>}> = ({s}) => {
+  const T = TYPE[s.type] || TYPE.E;
+  return (
+    <AbsoluteFill style={{background: '#05070d'}}>
+      <OffthreadVideo src={staticFile(s.src!)} muted playbackRate={s.rate || 1} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+      <div style={{position: 'absolute', top: 30, right: 36, display: 'flex', gap: 10, alignItems: 'center', background: 'rgba(6,9,18,.62)',
+        border: `1.5px solid ${T.c}`, borderRadius: 12, padding: '4px 14px'}}>
+        <span style={{fontFamily: 'Montserrat', color: T.c, fontSize: 20, fontWeight: 800}}>#{s.n} · {s.chapter}</span>
+        {s.label && <span style={{fontFamily: 'Montserrat', color: dim, fontSize: 18}}>{s.label}</span>}
+      </div>
+    </AbsoluteFill>
+  );
+};
+
 const ShotView: React.FC<{s: z.infer<typeof shot>; bare?: boolean}> = ({s, bare}) => {
-  if (s.type === 'D' && BLOCK[s.chapter] && !bare) return <Blockout s={s} clip={BLOCK[s.chapter]} />;
+  if (s.src) return <RealShot s={s} />;
+  if (s.type === 'D' && BLOCK[s.chapter] && !bare && !s.bg) return <Blockout s={s} clip={BLOCK[s.chapter]} />;
   const f = useCurrentFrame(); const {fps} = useVideoConfig();
   const T = TYPE[s.type] || TYPE.E;
   const push = interpolate(f, [0, s.dur * fps], [1.0, 1.08]);
@@ -131,6 +149,9 @@ const ShotView: React.FC<{s: z.infer<typeof shot>; bare?: boolean}> = ({s, bare}
   const paid = s.free_paid === 'paid';
   return (
     <AbsoluteFill style={{background: worldBg(s.world), overflow: 'hidden'}}>
+      {s.bg && <AbsoluteFill style={{transform: `scale(${1.06 * push})`}}>
+        <OffthreadVideo src={staticFile(s.bg)} muted style={{width: '100%', height: '100%', objectFit: 'cover', filter: 'blur(14px) brightness(.45) saturate(1.1)'}} />
+      </AbsoluteFill>}
       <AbsoluteFill style={{transform: `scale(${push})`}}>
         {[...Array(14)].map((_, i) => {
           const x = (hash(s.world + i) % 1000) / 10, y = (hash(i + s.what) % 1000) / 10;
@@ -189,7 +210,8 @@ const RoughInner: React.FC<z.infer<typeof aiWorldSchema>> = ({shots, caps, chapt
       <Badge />
       {ch && <div style={{...ar, position: 'absolute', left: 40, bottom: 34, color: dim, fontSize: 26, fontWeight: 700}}>{ch.title}</div>}
       {cap && <div style={{...ar, position: 'absolute', left: 0, right: 0, bottom: 96, textAlign: 'center'}}>
-        <span style={{background: 'rgba(0,0,0,.62)', color: ink, fontSize: 52, fontWeight: 800, padding: '6px 22px', borderRadius: 14}}>{cap.t}</span>
+        <span style={{background: 'rgba(0,0,0,.62)', color: cap.song ? gold : ink, fontSize: cap.song ? 56 : 52, fontWeight: 800, padding: '6px 22px',
+          borderRadius: 14, border: cap.song ? `1.5px solid ${gold}88` : 'none'}}>{cap.song ? '♪ ' : ''}{cap.t}</span>
       </div>}
     </AbsoluteFill>
   );
