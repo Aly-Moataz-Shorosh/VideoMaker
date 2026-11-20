@@ -180,3 +180,9 @@ identity consistency and much more expensive → B-roll, not the talking head.
   last frames for jet/lab/bridge → same face + same camera as the blockout). A false "nsfw" flag is NOT charged; reword
   once. Uploads to Higgsfield: PUT needs header `If-None-Match: *` (it is in SignedHeaders). HeyGen NEW LOOK (e.g.
   landscape 16:9): create_avatar_looks only opens a card — the owner clicks Generate (prompt look = 1 credit).
+- 2026-11-20 Aly on his generated face: "مش بهي كفاية وانا من غير دقن"، "مش اصلع عندي شعر خفيف"، then "اعملني بالظبط زي
+  شكلي بالتيشيرت الاسود في الاوضة وورايا الـ pc". RULE: never describe his face in words (beard/bald guesses were wrong);
+  the ONLY face reference = a real frame of his black-t-shirt room video (`C:\_working pc\sample for ai\Timeline 1 (Resolve)f.mp4`)
+  + prompt "the EXACT man from the reference photo… do not change or beautify". Presenter = HeyGen photo look made from
+  that real 1920x1080 frame INSIDE the twin group (create_photo_avatar with avatarGroupId, 1 credit) → native 16:9, then
+  Avatar 6 Turbo + reference_look_id twin + motionExpressiveness "less" (12 s = 4 credits). Look fbbb101ecad2a8e987ac830c6ffb7fe5.
