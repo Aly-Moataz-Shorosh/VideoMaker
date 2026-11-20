@@ -193,3 +193,8 @@ identity consistency and much more expensive → B-roll, not the talking head.
   (scale to 1080p). Blockout→look worked for the bridge, too abstract for the jet (blockout shapes dominate) → give the edit
   a detailed blockout or use image-to-video from a keyframe instead. Prompt rule: "keep the man's face" ONLY on shots with
   Aly; other shots "keep the scene… do not add people".
+- 2026-11-20 AVATAR BATCH TRICK: cut the voice of every avatar shot from the timeline wav, join them with 0.4 s silence,
+  ONE create_video_from_avatar call (audioAssetId; upload via create_asset_upload_batch + PUT + complete_asset_batch),
+  then cut the result back per shot (project work/scripts/cut_avatar.py). 34 shots / 208 s = 70 credits (~0.34/s), ~10 min.
+- 2026-11-20 Suno via connector: custom lyrics + style, 1 call = 2 songs = 10 credits (v6, 180 s). Downloading a song costs a
+  suno.com DOWNLOAD credit (audio-download → requires_credit; cdn1 mp3 links are 403) → download only the version Aly picks.
