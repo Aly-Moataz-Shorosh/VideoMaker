@@ -203,3 +203,8 @@ identity consistency and much more expensive → B-roll, not the talking head.
   free) with the new style + the remaining lyrics → 2 continuations = 10 credits → `audio-full-song` joins (free). QA without
   ears: `audio-listen` (free) with a JSON ask (transition, same voice, bpm/key before/after, outro cut?) → both kept the voice,
   84.5 BPM, G minor. Bonus: a 180 s song can squeeze its last lines (B1 outro in 3 s) — the extension gives them room.
+- 2026-11-20 Suno PRONUNCIATION: English loanwords written in Arabic letters come out wrong ("بكسل" → "baksel", "برومبت" →
+  "brom-e-pt", "فريم" → "feriim"); in LATIN letters inside the Arabic line they come out right (MCP was the proof). Fix a finished
+  song with `audio-covers-create` on it (new lyrics, audio_influence 0.8 keeps melody + section changes, 10 credits / 2 takes) and
+  check every word with `audio-listen` (free, JSON per word with time). Careful: a fatha/shadda on ق (بِتْقَرَّر) pushed the
+  singer to MSA Q — for Egyptian ق write أ (بتأرّر). One take of a cover can lose the structure (trap at 0:23) → always check both.
