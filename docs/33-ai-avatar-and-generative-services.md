@@ -198,3 +198,8 @@ identity consistency and much more expensive → B-roll, not the talking head.
   then cut the result back per shot (project work/scripts/cut_avatar.py). 34 shots / 208 s = 70 credits (~0.34/s), ~10 min.
 - 2026-11-20 Suno via connector: custom lyrics + style, 1 call = 2 songs = 10 credits (v6, 180 s). Downloading a song costs a
   suno.com DOWNLOAD credit (audio-download → requires_credit; cdn1 mp3 links are 403) → download only the version Aly picks.
+- 2026-11-20 Suno STYLE MIX in one song (Aly: B ballad for the old tools → A trap for computer/AI): NOT a cut between two songs
+  (other singer/key) but `audio-extensions-create` on the first song at the section start (time from `audio-lyrics-alignment`,
+  free) with the new style + the remaining lyrics → 2 continuations = 10 credits → `audio-full-song` joins (free). QA without
+  ears: `audio-listen` (free) with a JSON ask (transition, same voice, bpm/key before/after, outro cut?) → both kept the voice,
+  84.5 BPM, G minor. Bonus: a 180 s song can squeeze its last lines (B1 outro in 3 s) — the extension gives them room.
