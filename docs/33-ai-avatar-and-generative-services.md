@@ -176,3 +176,7 @@ identity consistency and much more expensive → B-roll, not the talking head.
   `output/audio_stems_vN/` = voice_full_timeline.wav (video length) + voice_chapters/NN_Cxx.wav + sfx/ + music/ (each
   also one full-length wav) + سكريبت_التسجيل.txt (text per chapter + start time). Timing is built FROM the voice files
   (build_timeline_v2.py), so his own recording per chapter = re-run timing, nothing else changes.
+- 2026-11-20 keyframes: 30 × Higgsfield nano_banana_2 16:9 1k = 45 credits (refs: studio look photo for Aly, Blender
+  last frames for jet/lab/bridge → same face + same camera as the blockout). A false "nsfw" flag is NOT charged; reword
+  once. Uploads to Higgsfield: PUT needs header `If-None-Match: *` (it is in SignedHeaders). HeyGen NEW LOOK (e.g.
+  landscape 16:9): create_avatar_looks only opens a card — the owner clicks Generate (prompt look = 1 credit).
