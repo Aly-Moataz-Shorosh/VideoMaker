@@ -15,6 +15,7 @@ Full context: `docs/01-about-aly.md`.
 - Short, practical, step by step. One question at a time at most.
 - Code: clean and simple, no over-engineering. UIs: calm and descriptive.
 - Free tools only. No paid services, no subscriptions beyond what he already has.
+  EXCEPTION (Aly 2026-11-20): HeyGen, ElevenLabs, Higgsfield (he pays for them) — ONLY in `avatar` mode, rules in `docs/33`.
 
 ## Read order (load only what the task needs — saves tokens)
 0. Skill `.claude/skills/aly-video-motion/SKILL.md` — what Aly loved (repeat) + his review mistakes (never repeat).
@@ -25,7 +26,10 @@ Full context: `docs/01-about-aly.md`.
 4. `docs/06-brand-and-setup.md` — DISCOVER brand/setup from his folders. Aly does NOT fill forms;
    ask him only what you truly can't find, in one short message.
 5. Tutorial/UI shorts: `docs/16-recipe-tutorial-short.md` (proven recipe + review lessons).
-6. Only if needed: `docs/02-current-workflow.md`, `docs/04-pipeline-plan.md`, `docs/08-token-rules.md`,
+6. AI avatar / AI voice / generated B-roll (Aly not on camera): `docs/33-ai-avatar-and-generative-services.md`
+   (MCP servers heygen, elevenlabs, higgsfield in `.mcp.json`; first run `/mcp` → Authenticate each).
+   Hybrid video (real-footage lipsync + generated Aly + B-roll + 3D + motion): `docs/34-recipe-hybrid-ai-reel.md`.
+7. Only if needed: `docs/02-current-workflow.md`, `docs/04-pipeline-plan.md`, `docs/08-token-rules.md`,
    `docs/09-chat-history.md`.
 
 ## Hard rules
@@ -33,7 +37,8 @@ Full context: `docs/01-about-aly.md`.
   (reels-publisher, instagram-comment-dm). Read only.
 - Never open/read video files as frames to "look" at them (exception: ONE frame when 06 says so). Work from text (transcripts, JSON, code).
   To check a motion visually, render ONE still frame (PNG), not a video.
-- Never put money-costing services in the flow.
+- Never put money-costing services in the flow — except HeyGen / ElevenLabs / Higgsfield in `avatar` mode (docs/33):
+  say the credit cost before every generation, shortest test first, never auto-regenerate.
 - NEVER delete a video file (full videos, render chunks, reviews, mixes) without asking Aly first (2026-10-25). If only the opening/ending changed, render those and splice the old middle.
 - When a job is DONE, delete all TEMP files yourself (Aly 2026-10-28): render chunks/parts, PNG frame sequences, Blender frames already
   encoded, bundles, temp mixes, still checks. Keep final videos + .txt, review videos, public/ clips, inputs. Next smart redo = the delivered video as base.
@@ -311,3 +316,11 @@ Done (2026-10-06):
   top-right (stage prop top 545/h 760; "مش عايز overlap"). New scenes `src/course/filmShorts.tsx` + `filmShorts2.tsx` (AngleScene, PowerStairs,
   ToolsLadder, AngleVS, FocusScene, CutMeaning, MoveScene, TreeScene, Pipeline, LiteracyScene, AspectScene). Render bundle/temp on D:/Temp (E: ~6 GB free).
   Scripts `tools/recipes/filmcourse/shorts/`. v1 pilots in output/shorts/archive_v1. Rendered overnight after his 'كمل' — waiting for his review.
+- 2026-11-20 NEW MODE `avatar` (Aly NOT on camera): his face/body = HeyGen avatar, his voice = ElevenLabs clone (Egyptian),
+  B-roll = Higgsfield; MCP servers in `.mcp.json` (here + project root), OAuth via `/mcp`. Knowledge + rules + pipeline +
+  studio options (Remotion / three.js / Blender) + HyperFrames note: `docs/33`. Test project `projects/2026-11-20 avatar avatarTest`
+  (inputs prepared from `C:\_working pc\sample for ai`; steps in its `RUN.md`) — NOT generated yet (needs Aly's OAuth sign-in).
+  new-project.bat option 6 = avatar. NOT committed yet (written from Cowork) -> commit + push at the start of the next session.
+- 2026-11-20 avatar tests 01-04 done (photo avatar, black-shirt frame, real-footage lipsync, HeyGen voice clone) — results +
+  Aly's review in docs/33 §7; recipe for mixed AI videos in docs/34. Next: Aly records a base take + HeyGen consent (digital twin),
+  and decides on voice (own recording vs ElevenLabs PVC).

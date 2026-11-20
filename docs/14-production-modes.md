@@ -8,6 +8,7 @@
 | `shorts` | a long video (local file or YouTube link → yt-dlp) | step 1: list of N proposed shorts with scripts (start/end, hook, title) → Aly says "نفذ" → step 2: N vertical 9:16 shorts, heavy graphics | NO intro. CTA/reference to long video at end |
 | `shorts-raw` | RAW footage (not edited) | same as shorts, but each short is also cut: `"cut": true` (silences, false starts, repeated takes — rules in docs/13) | NO intro |
 | `faceless` | voice-only video / audio | every second covered by full-screen motion/infographics (no talking head) | per length rule |
+| `avatar` (2026-11-20) | a SCRIPT (no footage) | AI Aly: ElevenLabs voice → HeyGen avatar lip-sync → Remotion studio + motion + Higgsfield B-roll. Paid services: rules + pipeline in docs/33 | per length rule |
 
 - **Aly now edits himself** (cuts, takes, silences). Default = NO cutting (`"cut": false`): keep his edit, only add motion.
   Exception: folder type `shorts-raw` → `"cut": true` per short. Type is the 2nd word of the project folder name.

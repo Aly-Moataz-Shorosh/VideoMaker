@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "heygen": {
+      "type": "http",
+      "url": "https://mcp.heygen.com/mcp/v1/"
+    },
+    "elevenlabs": {
+      "type": "http",
+      "url": "https://api.elevenlabs.io/v1/mcp"
+    },
+    "higgsfield": {
+      "type": "http",
+      "url": "https://mcp.higgsfield.ai/mcp"
+    },
+    "suno": {
+      "type": "http",
+      "url": "https://api.suno.com/mcp"
+    }
+  }
+}
