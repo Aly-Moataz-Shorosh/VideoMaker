@@ -172,3 +172,7 @@ identity consistency and much more expensive → B-roll, not the talking head.
   voice ≈ 1 credit PER REQUEST (a 3:52 chapter = 1 credit), not per minute. Long texts read slower (2.29 w/s avg).
   QA without listening: tools/transcribe.py + word diff vs script (project work/scripts/check_voice.py); Whisper's VAD
   drops some sentences → re-check suspect spots with vad_filter=False before calling them missing.
+- RULE (Aly 2026-11-20): every audio SEPARATE so the AI voice can be swapped or he records himself: project
+  `output/audio_stems_vN/` = voice_full_timeline.wav (video length) + voice_chapters/NN_Cxx.wav + sfx/ + music/ (each
+  also one full-length wav) + سكريبت_التسجيل.txt (text per chapter + start time). Timing is built FROM the voice files
+  (build_timeline_v2.py), so his own recording per chapter = re-run timing, nothing else changes.
