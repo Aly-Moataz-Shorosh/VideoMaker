@@ -14,6 +14,10 @@ SITES = {
     "antigravity": "https://antigravity.google", "blender": "https://docs.blender.org", "remotion": "https://www.remotion.dev",
     "ffmpeg": "https://ffmpeg.org", "comfyui": "https://www.comfy.org", "capcut": "https://www.capcut.com",
     "kling": "https://klingai.com", "runway": "https://runwayml.com",
+    # 2026-11-21 rough cut v3 (only the ones the first pass did not get)
+    "seedance": "https://seed.bytedance.com", "bytedance": "https://www.bytedance.com", "gemini": "https://gemini.google.com",
+    "qwen": "https://qwen.ai", "ollama": "https://ollama.com", "ltx": "https://ltx.studio", "firefly": "https://firefly.adobe.com",
+    "luma": "https://lumalabs.ai", "youtube": "https://www.youtube.com", "warner": "https://www.wmg.com", "believe": "https://www.believe.com",
 }
 
 
