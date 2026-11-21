@@ -328,3 +328,9 @@ Done (2026-10-06):
   227-shot shotlist, sources_v5 + 30 marked evidence shots, alpha HUD layers, Blender blockouts jet/lab/bridge, rough_cut_v1 720p
   placeholders, cost_plan_v1 with 3 bundles). NO paid generation yet — waiting for Aly to pick a bundle (HeyGen 10 s test first).
   Draft styles 21-25 (not approved). Logos library brand/logos-tools/index.md.
+- 2026-11-21 aiFullVideoCost rough cut v3 `output/rough_cut_v3.mp4` (21:05) after Aly's 22 notes on v2 (`review_rough_v2_notes.md`): NO cards/captions,
+  one visual per SENTENCE (`work/scripts/plan_v3_data.py` -> plan_v3.md; on-screen content hand-written in plan_v3_content*.py, every item on its WORD),
+  composition `ai-world-v3` (src/aiworld/V3.tsx). Studio = GENERATED S4g (Nefertari stars + Cairo mashrabiya); Aly's face: image models redraw him
+  (rejected) -> HeyGen look from S4g inside his twin (22 shots) + RVM cut-out of his real avatar (11 shots); opening 0 real room -> 2 -> 1 with glitch.
+  «نص» -> «كلام مكتوب» (2 sentences re-voiced). QA gates: blackdetect + freezedetect + lip-sync 0-5 ms; only changed scenes re-rendered + spliced.
+  Waiting for Aly's review. Temp videos listed in errors_log #26 (ask before deleting).

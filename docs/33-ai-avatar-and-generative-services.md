@@ -208,3 +208,10 @@ identity consistency and much more expensive → B-roll, not the talking head.
   song with `audio-covers-create` on it (new lyrics, audio_influence 0.8 keeps melody + section changes, 10 credits / 2 takes) and
   check every word with `audio-listen` (free, JSON per word with time). Careful: a fatha/shadda on ق (بِتْقَرَّر) pushed the
   singer to MSA Q — for Egyptian ق write أ (بتأرّر). One take of a cover can lose the structure (trap at 0:23) → always check both.
+- 2026-11-21 Aly's FACE in a new place: nano_banana edits / generations redraw him (features, head, shoulders change — rejected even
+  with character sheets as refs). What works: HeyGen photo look from the generated studio image INSIDE his twin group (Avatar 6 Turbo,
+  reference_look_id = twin) — he picked this; or RVM cut-out of his real avatar (low feather 0.35 + colours of how he looks in the generated
+  still). Generate empty "plates" for cut-outs ("remove the man, keep the empty chair"). Paid generations can be blocked by Claude Code auto
+  mode -> say it, never work around, ask Aly to approve the prompt.
+- Image-to-image example on screen = the SAME image edited (jacket colour, beard) with a wipe — never a different picture.
+
