@@ -111,6 +111,13 @@ question with the list. A newly approved look = a new numbered folder (sample.mp
    nothing over it. Labels go BESIDE a picture (solid yellow box, one line), never on it; stamps never on faces; "same moment" pairs =
    same camera view in both (real vs Playmobil). Many angles in a hook = tiles playing at once ("كلهم parallel").
 
+21. (AI-world long video, rough cut v2 review 2026-11-21 — 22 notes, he stopped watching) NO placeholder cards ever: one explaining visual
+   per SENTENCE, on its WORD (plan table first, he can read it; content hand-written, never plan prose on screen). Logo on every name;
+   "عندي فيديو" = thumbnail + QR; a list once then a HUD; a clip only on the sentence about it (named camera move = a clip with that move);
+   image-to-image = the SAME picture edited. Before sending: blackdetect + freezedetect + lip-sync; no clip restarts in two shots in a row,
+   no slow-motion to fill time (24 fps clips stutter), no freeze to fill chapter gaps — next shot starts early. Fix = re-render only the
+   changed frame ranges and splice. His face in a new place: HeyGen look inside his twin, never an image-model redraw ([[aly-ai-face-reference]]).
+
 ## ONLINE interview (style 14, enta cs ep01 2026-10-20, docs/22 'حاسبات ep01') — cadre switching + background "حلوة جدا جدا"
 - Google Meet/Zoom screen recording: hide the meeting UI, tiles on a calm dark bg, NO decorative frame ("دوشة"), switch cadres
   (two / one big / person + card) instead of zoom; zoom only inside a tile, ≤ 1.08. Sides by gaze (usually Aly left, guest right).
