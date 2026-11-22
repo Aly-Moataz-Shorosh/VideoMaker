@@ -117,6 +117,12 @@ question with the list. A newly approved look = a new numbered folder (sample.mp
    image-to-image = the SAME picture edited. Before sending: blackdetect + freezedetect + lip-sync; no clip restarts in two shots in a row,
    no slow-motion to fill time (24 fps clips stutter), no freeze to fill chapter gaps — next shot starts early. Fix = re-render only the
    changed frame ranges and splice. His face in a new place: HeyGen look inside his twin, never an image-model redraw ([[aly-ai-face-reference]]).
+22. (AI-world v5 review 2026-11-22 — 50 notes) LOGICAL ORDER: a term is defined before it is used (LLM/agent before Claude, MCP before
+   «X has MCP»); separators = a real 1.5 s pause showing the TREE MAP of the whole video (done ✓ dimmed, next lit), never a card over items;
+   every word / step / trick gets a REAL picture or clip (numbered steps & tricks); PDF pages are rebuilt as motion from the pictures inside
+   them; Claude pictures from claude.ai / the app (no CLI, no private chat titles); a group of items enters one by one but LEAVES together;
+   the song never repeats a shot (generate the missing lines), his logo (face top-right, name bottom-left) + subscribe on the last line;
+   show the total cost of the video as an invoice. Never mix Arabic + English + numbers in one rtl line (write «10 دولار»).
 
 ## ONLINE interview (style 14, enta cs ep01 2026-10-20, docs/22 'حاسبات ep01') — cadre switching + background "حلوة جدا جدا"
 - Google Meet/Zoom screen recording: hide the meeting UI, tiles on a calm dark bg, NO decorative frame ("دوشة"), switch cadres
