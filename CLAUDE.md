@@ -357,6 +357,13 @@ Done (2026-10-06):
   scenes in v6 time `v6_new.py` (clamped inside their section); props `make_props_v6.py` (song = 42 unique shots); sfx `make_sfx_v6.py`; render
   `render_v6.sh` (bundle D:/Temp/bundle_aiw6, chunks D:/Temp/aiw6_chunks). PDF pictures extracted to work/pdf_imgs (motion, not page shots).
   Open: looks jungle + galabeya/Burj (HeyGen card waits for Aly), his Genjutsu FB reel file, Cowork screenshot.
+- 2026-11-23 aiFullVideoCost rough cut v7 `output/rough_cut_v7.mp4` after Aly's 21 notes on v6 (`review_rough_v6_notes.md`, «نفذ»; he was upset: v5 notes
+  marked ✓ but not in the video). Composition `ai-world-v7` (src/aiworld/V7.tsx). Specs stay in v6 time (`v7_new.py` patches + M67 = v6→v7 map through the
+  SOURCE second); timeline `make_timeline_v7.py` (حربية whole, «ست» once = 2nd «ت» cut from the HeyGen file, first tree 4.43 s on HIS «This is the Aly Show»
+  sting `genjutsu_intro_sting`, other separators 2.6 s + his transition_a, silent HOLDS after S009.2/.3/.5). Props `make_props_v7.py`: MAP6 runs merged
+  (numbers on واحد…وستة), boards never start/stay blank, FACES layer = his lip-synced avatar 3.5 s inside the 34 avatar windows where it hides nothing
+  (face time 44 s in v6 -> ~98 s), song = one shot per line (SONGPLAN, playbackRate if the line is longer), whole face logo + his calligraphy signature +
+  our SubscribePress + handles. Audit sheets of v6 per v5 note: `work/audit_v6/`. RULE: still-check every note at its time before writing ✓.
 - 2026-11-22 `projects/2026-11-22 reel-h garrett warren short video` (his 9:16 phone recording: Garrett Warren, Avatar stunt coordinator, Q&A at
   UTH Festival 2026, GEM, style 13) -> `output/garrett_warren_uth.mp4` (2:05) + .txt. NEW composition `uth-reel` (src/uth/UthReel.tsx): phone footage
   full frame + calm zoom, hook ("if your pre-vis is good, I'll hire you") + rewind + answer from "Hit me", EN captions from ElevenLabs Scribe (Aly asked;
