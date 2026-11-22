@@ -19,7 +19,7 @@ But (v2 review): keep the sentence that gives the hook its meaning (what it's FO
 
 ## 0. Style number first
 `notes.txt` line `الستايل: NN` → `styles/styles.json` tells the recipe/scripts for that number (01 youtube-motion, 02 reels-roto,
-03 tutorial-short, 04 film-faceless, 05 film-face, 06 vhs-faceless, 07 map-history, 08 timeline-history, 09 pop-studio, 10 glass-face, 11 tutorial-hook-glass, 12 lottie-mix, 13 lecture-stage, 14 online-interview, 15 glass-face-talk, 16 journey-series, 17 online-episode-3d, 18 meet-shorts, 19 trend-reel-3d, 20 scene-analysis; samples in `styles/`). No number → ask him ONE
+03 tutorial-short, 04 film-faceless, 05 film-face, 06 vhs-faceless, 07 map-history, 08 timeline-history, 09 pop-studio, 10 glass-face, 11 tutorial-hook-glass, 12 lottie-mix, 13 lecture-stage, 14 online-interview, 15 glass-face-talk, 16 journey-series, 17 online-episode-3d, 18 meet-shorts, 19 trend-reel-3d, 20 scene-analysis, 26 event-talk-reel; 21-25 = AI drafts; samples in `styles/`). No number → ask him ONE
 question with the list. A newly approved look = a new numbered folder (sample.mp4 12 s, cover.jpg, اقرأني.txt) + styles.json entry.
 
 ## 1. Read the job first
@@ -360,6 +360,15 @@ Writer: tools/recipes/graphictablet/write_meta.py.
 - Every 3D clip plays from its own start (Sequence per layer). Transitions must tell a story (studio inside a building -> out the
   window -> the city). Replicate the reference he names (RWA podcast set) closely, wide normal-lens framing, enough light.
 - Nothing overlaps; his camera crop centred on his face; the guest never flashes; rings/highlights fitted to the real text box.
+
+## Reel from an EVENT he attended = style 26 event-talk-reel (Garrett Warren @ UTH Festival 2026, 2026-11-22, docs/35) — v2 APPROVED
+- His phone footage fills 9:16; hook = guest's strongest line + rewind; start where he names ("hit me"). Real pictures on EVERY sentence
+  (official film videos via yt_frames.py, Commons portraits), who-is card + event card with sources, credits line.
+- Foreign speaker: English captions EXACT (ElevenLabs Scribe when he asks — real cost can be ~18x the estimate) + Egyptian Arabic under each line.
+  Title on screen: ENGLISH with the Arabic under it; say what the question is about (here "while filming").
+- Footer: his face + YouTube/TikTok/Instagram @alyshorosh + Facebook aly.shorosh, ONE line, centred both ways; no name image, no LinkedIn/Behance.
+- .txt in English when the reel is English; first line "I attended … and recorded this moment myself".
+- Never "و" between two English words in Arabic text (renders like "g"). Cut camera pieces in separate ffmpeg runs (split graph dropped frames).
 
 ## Film SCENE ANALYSIS = style 20 scene-analysis (Ibrahim El Abyad 2026-11-06, docs/32) — review_02 APPROVED
 - Film plays whole and untouched; ONE place per thing (film right, script left, card under film, timeline bottom); English terms only.

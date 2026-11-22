@@ -232,6 +232,15 @@
    "look": "كروت زجاج داكن بحدود cyan، عدّادات Montserrat 900، Cairo للعربي، badge «AI × بإشراف علي» ثابت فوق شمال",
    "prompt": "ألوان: ink #EAF2FF، cyan #38E1FF، gold #FFC24B، violet #8B7BFF، bg #05070D. خط: Cairo (عربي) + Montserrat (أرقام/إنجليزي).",
    "project": "projects/2026-11-20 avatar aiFullVideoCost"
+  },
+  "26": {
+   "folder": "26 event-talk-reel",
+   "name": "Reel from an event Aly attended: his vertical phone recording of a foreign guest fills 9:16 (calm zoom per scene), hook = strongest line + rewind, event tag + English title (yellow keyword box) with the Arabic title under it, English captions (ElevenLabs Scribe, fixed by ear + sources) with Egyptian Arabic translation under each line, tray of REAL pictures on every sentence (official film videos via yt_frames.py, Commons portraits) + who-is card, event card, term cards, counter, VS, credits line, centred footer = channel face + YT/TikTok/IG @alyshorosh + FB aly.shorosh",
+   "approved": "Garrett Warren UTH reel v2 (2026-11-22, 'thanks save knowledge and style')",
+   "input": "his vertical phone video + event name + guest + start sentence",
+   "build": "composition 'uth-reel' (src/uth/UthReel.tsx)",
+   "recipe": "docs/35-recipe-event-talk-reel.md",
+   "scripts": "tools/recipes/uthgarrett/ (transcribe_en.py, yt_sheet.py, yt_frames.py, plan.py, make_cam.py, make_props.py)"
   }
  },
  "_always": "Every style: his ORIGINAL voice (only per-sentence gain to one level, no cleanup), edges fitted on the waveform, sfx, CTA clip + comment card at the end of shorts, <video>.txt beside every output, sfx + voice stems. Word script only on request. Shorts: ASK one short (whole goal of the video) or several (suggestions, he picks) first; no short ever reaches 3:00."
