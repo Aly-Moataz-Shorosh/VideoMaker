@@ -20,6 +20,7 @@ export const uthReelSchema = z.object({
   hookEnd: z.number().default(0),
   rewind: z.object({t: z.number(), d: z.number(), from: z.string(), to: z.string()}).nullable().default(null),
   head: z.string().default(''),
+  headEn: z.string().default(''),
   tag: z.string().default(''),
   tagAr: z.string().default(''),
   caps: z.array(z.object({t0: z.number(), t1: z.number(), en: z.array(word), ar: z.string()})).default([]),
@@ -323,23 +324,33 @@ const BiCaps: React.FC<{caps: Props['caps']}> = ({caps}) => {
 };
 
 // ---------- header: event tag + the question ----------
-const Header: React.FC<{tag: string; tagAr: string; head: string}> = ({tag, tagAr, head}) => {
+// Aly 2026-11-22: English title on top, the Arabic one under it (smaller, no box)
+const Header: React.FC<{tag: string; tagAr: string; head: string; headEn: string}> = ({tag, tagAr, head, headEn}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const words = groupLatin(head);
+  const enWords = headEn.split(' ');
   return (
     <div style={{position: 'absolute', left: 40, right: 40, top: Y.tag, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10}}>
       <div style={{display: 'flex', gap: 14, alignItems: 'center', opacity: spr(f, fps, 2, 150, 15)}}>
         <span style={{...en(24, S.ink, 900), background: S.yellow, borderRadius: 10, padding: '3px 12px', letterSpacing: 2}}>{tag}</span>
         <span style={{...ar(26, S.white, 800)}}>{tagAr}</span>
       </div>
-      <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '4px 14px', direction: 'rtl'}}>
-        {words.map((w, i) => {
+      {headEn ? <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '2px 13px', direction: 'ltr', maxWidth: 980}}>
+        {enWords.map((w, i) => {
           const a = spr(f, fps, 4 + i * 2, 190, 14);
           const box = w.startsWith('*') && w.endsWith('*');
+          return <span key={i} style={{display: 'inline-block', ...en(48, box ? S.ink : S.white, 900), opacity: a, transform: `translateY(${(1 - a) * 20}px) ${box ? 'rotate(-2deg)' : ''}`,
+            background: box ? S.yellow : undefined, borderRadius: 12, padding: box ? '2px 14px' : undefined, textShadow: box ? undefined : '0 6px 24px rgba(0,0,0,0.7)'}}>{w.replace(/\*/g, '')}</span>;
+        })}
+      </div> : null}
+      <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '4px 12px', direction: 'rtl'}}>
+        {words.map((w, i) => {
+          const a = spr(f, fps, 10 + i * 2, 190, 14);
           const clean = bi(w.replace(/\*/g, ''));
-          return <span key={i} style={{display: 'inline-block', ...ar(52,box ? S.ink : S.white), opacity: a, transform: `translateY(${(1 - a) * 20}px) ${box ? 'rotate(-2deg)' : ''}`,
-            background: box ? S.yellow : undefined, borderRadius: 12, padding: box ? '0 16px 4px' : undefined, textShadow: box ? undefined : '0 6px 24px rgba(0,0,0,0.7)'}}>{clean}</span>;
+          const sz = headEn ? 36 : 52;
+          return <span key={i} style={{display: 'inline-block', ...ar(sz, headEn ? '#FFE7A3' : S.white, headEn ? 800 : 900), opacity: a, transform: `translateY(${(1 - a) * 20}px)`,
+            textShadow: '0 6px 24px rgba(0,0,0,0.8)'}}>{clean}</span>;
         })}
       </div>
     </div>
@@ -358,22 +369,20 @@ const Footer: React.FC = () => {
   return (
     <div style={{position: 'absolute', left: 30, right: 30, top: Y.foot, height: 92, borderRadius: 24, background: 'rgba(7,9,18,0.78)', border: '1px solid rgba(255,255,255,0.14)',
       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, padding: '0 18px'}}>
+      {/* Aly 2026-11-22: no channel-name image; face + handles on ONE line, vertically centred */}
       <Img src={staticFile(P + 'ch_face.png')} style={{height: 70}} />
-      <div style={{display: 'flex', flexDirection: 'column', gap: 6}}>
-        <Img src={staticFile(P + 'ch_name.png')} style={{height: 32, alignSelf: 'flex-start'}} />
-        <div style={{display: 'flex', gap: 24, alignItems: 'center', flexWrap: 'nowrap'}}>
-          <span style={{display: 'flex', alignItems: 'center', gap: 7}}>
-            {['youtube-icon', 'tiktok', 'instagram'].map((i) => <Img key={i} src={staticFile(`logos/${i}.svg`)}
-              style={i === 'tiktok' ? {width: 32, height: 32, background: '#fff', borderRadius: 8, padding: 4, boxSizing: 'border-box'} : {width: 32, height: 32}} />)}
-            <span style={{...en(26, S.white, 700)}}>@alyshorosh</span></span>
-          {h('facebook', 'aly.shorosh')}
-        </div>
+      <div style={{display: 'flex', gap: 24, alignItems: 'center', flexWrap: 'nowrap'}}>
+        <span style={{display: 'flex', alignItems: 'center', gap: 7}}>
+          {['youtube-icon', 'tiktok', 'instagram'].map((i) => <Img key={i} src={staticFile(`logos/${i}.svg`)}
+            style={i === 'tiktok' ? {width: 32, height: 32, background: '#fff', borderRadius: 8, padding: 4, boxSizing: 'border-box'} : {width: 32, height: 32}} />)}
+          <span style={{...en(26, S.white, 700)}}>@alyshorosh</span></span>
+        {h('facebook', 'aly.shorosh')}
       </div>
     </div>
   );
 };
 
-export const UthReel: React.FC<Props> = ({duration, cam, voice, hookEnd, rewind, head, tag, tagAr, caps, cues, sfx, zoom}) => {
+export const UthReel: React.FC<Props> = ({duration, cam, voice, hookEnd, rewind, head, headEn, tag, tagAr, caps, cues, sfx, zoom}) => {
   const {fps} = useVideoConfig();
   const now = useCurrentFrame();
   const fr = (s: number) => Math.round(s * fps);
@@ -404,7 +413,7 @@ export const UthReel: React.FC<Props> = ({duration, cam, voice, hookEnd, rewind,
         Avatar stills © 20th Century Studios (official featurette & trailer) · Portraits: Dick Thomas Johnson, CC BY 2.0</div>
       {rewind ? <Sequence from={fr(rewind.t)} durationInFrames={fr(rewind.d)} layout="none"><Rewind dur={fr(rewind.d)} from={rewind.from} to={rewind.to} /></Sequence> : null}
       {inRew ? null : <BiCaps caps={caps} />}
-      <Header tag={tag} tagAr={tagAr} head={head} />
+      <Header tag={tag} tagAr={tagAr} head={head} headEn={headEn} />
       <div style={{position: 'absolute', left: 0, top: 0, height: 8, width: W * now / Math.max(1, fr(duration)), background: `linear-gradient(90deg, ${S.blue}, ${S.violet}, ${S.red})`}} />
       <Footer />
       {voice ? <Audio src={staticFile(voice)} /> : null}

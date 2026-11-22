@@ -9,6 +9,7 @@ HOOK = (112.77, 119.10)
 MAIN = (3.74, 121.43)
 REW_F = 27   # 0.9 s rewind
 
+HEAD_EN = 'How did they imagine *Avatar* while filming with no VFX?'
 HEAD = 'إزاي بيتخيّلوا *Avatar* أثناء التصوير من غير مؤثرات؟'
 TAG = 'UTH FESTIVAL 2026'
 TAG_AR = 'المتحف المصري الكبير'

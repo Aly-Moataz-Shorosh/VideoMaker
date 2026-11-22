@@ -65,7 +65,7 @@ for c in cs[1:]:
         zoom += [[c['t'] - 0.01, zoom[-1][1]], [c['t'] + 0.35, z]]
 props = {'duration': round(tl['duration'], 3), 'cam': 'projects/uth/cam.mp4', 'voice': 'projects/uth/voice.wav',
          'hookEnd': HL, 'rewind': {'t': HL, 'd': RW, 'from': '1:53', 'to': '0:04'},
-         'head': P.HEAD, 'tag': P.TAG, 'tagAr': P.TAG_AR, 'caps': caps, 'cues': cs, 'sfx': sfx, 'zoom': zoom}
+         'head': P.HEAD, 'headEn': P.HEAD_EN, 'tag': P.TAG, 'tagAr': P.TAG_AR, 'caps': caps, 'cues': cs, 'sfx': sfx, 'zoom': zoom}
 (W / 'props.json').write_text(json.dumps(props, ensure_ascii=False, indent=1), encoding='utf-8')
 print('duration', props['duration'], 'caps', len(caps), 'cues', len(cs))
 for c in caps:

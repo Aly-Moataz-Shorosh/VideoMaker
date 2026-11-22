@@ -363,4 +363,5 @@ Done (2026-10-06):
   981 credits — the estimate said 54) fixed by ear (Jon Landau, rookery) + Egyptian Arabic line under each, tray of REAL stills (official Avatar
   featurette/trailer frames via yt_frames.py, Commons portraits CC BY 2.0) on every word, footer = channel face + name + YT/TikTok/IG @alyshorosh +
   FB aly.shorosh (Aly: no LinkedIn/Behance). Avoid "و" between two English words in Arabic text (rendered like "g"). Scripts tools/recipes/uthgarrett/.
-  APPROVED ("تمام كده", 2026-11-22). Temp renders in work/tmp (raw*.mp4 + pieces) kept until Aly says delete.
+  APPROVED ("تمام كده", 2026-11-22). v2 `output/v2/` = English title + Arabic under it, footer face + handles on one line (no name image), .txt in English
+  ("I attended … and recorded this moment myself"). Temp renders in work/tmp (raw*.mp4 + pieces) kept until Aly says delete.
