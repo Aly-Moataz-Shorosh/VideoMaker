@@ -7,6 +7,7 @@ import {FilmShort, filmShortSchema} from './film/FilmShort';
 import {Course, courseSchema} from './course/Course';
 import {CourseShort, courseShortSchema} from './course/Short';
 import {StageShort, stageShortSchema} from './stage/StageShort';
+import {UthReel, uthReelSchema} from './uth/UthReel';
 import {MeetShort, meetShortSchema} from './enta/MeetShort';
 import {SceneAnalysis, sceneAnalysisSchema} from './scene/SceneAnalysis';
 import {AiWorldRough, aiWorldSchema, AiHud, aiHudSchema} from './aiworld/AiWorld';
@@ -45,6 +46,10 @@ export const Root: React.FC = () => (
       fps={30} width={1080} height={1920} durationInFrames={90}
       calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * props.fps)), fps: props.fps})} />
     {/* New Stage 19 lecture shorts (2026-10-18). Props from projects/<code>/work/scripts/make_short.py */}
+    {/* Garrett Warren talk @ UTH Festival 2026 (2026-11-22). Props from projects/<code>/work/scripts/make_props.py */}
+    <Composition id="uth-reel" component={UthReel} schema={uthReelSchema} defaultProps={uthReelSchema.parse({})}
+      fps={30} width={1080} height={1920} durationInFrames={90}
+      calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * 30))})} />
     <Composition id="stage-short" component={StageShort} schema={stageShortSchema} defaultProps={stageShortSchema.parse({})}
       fps={30} width={1080} height={1920} durationInFrames={90}
       calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * 30))})} />
