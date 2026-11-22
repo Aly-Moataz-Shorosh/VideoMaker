@@ -13,6 +13,7 @@ import {AiWorldRough, aiWorldSchema, AiHud, aiHudSchema} from './aiworld/AiWorld
 import {AiWorldV3, aiV3Schema} from './aiworld/V3';
 import {AiWorldV4, aiV4Schema} from './aiworld/V4';
 import {AiWorldV5, aiV5Schema} from './aiworld/V5';
+import {AiWorldV6, aiV6Schema} from './aiworld/V6';
 
 // Every template: 16:9 composition `<id-with-dashes>` and, when v, 9:16 `<id>-v`.
 export const Root: React.FC = () => (
@@ -65,6 +66,11 @@ export const Root: React.FC = () => (
         width: props.outW, height: Math.round(props.outW * 9 / 16)})} />
     {/* rough cut v3: one visual per sentence (Aly's 22 notes 2026-11-21). Props from projects/<code>/work/scripts/make_props_v3.py */}
     <Composition id="ai-world-v3" component={AiWorldV3} schema={aiV3Schema} defaultProps={aiV3Schema.parse({})}
+      fps={25} width={1920} height={1080} durationInFrames={250}
+      calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * props.fps)), fps: props.fps,
+        width: props.outW, height: Math.round(props.outW * 9 / 16)})} />
+    {/* rough cut v6: Aly's 50 notes on v5 (2026-11-22) — new order, tree-map separators. Props: make_props_v6.py */}
+    <Composition id="ai-world-v6" component={AiWorldV6} schema={aiV6Schema} defaultProps={aiV6Schema.parse({})}
       fps={25} width={1920} height={1080} durationInFrames={250}
       calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * props.fps)), fps: props.fps,
         width: props.outW, height: Math.round(props.outW * 9 / 16)})} />

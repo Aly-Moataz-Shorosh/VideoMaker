@@ -350,3 +350,10 @@ Done (2026-10-06):
   (cuts snapped to silence + 10 ms fades), `make_sfx_v5.py` (sfx stem + mix); render `render_v5.sh` (D:/Temp/aiw5_chunks), QA `qa_v5.py`.
   Pending (needs /mcp auth or Aly): «3D» re-voices (5 sentences), text→video example, face circle in the HeyGen part, old HeyGen tests,
   «لغة السينما» link, magnific.com screenshot, the Genjutsu reel file.
+- 2026-11-22 aiFullVideoCost rough cut v6 `output/rough_cut_v6.mp4` after Aly's 50 notes on v5 (`review_rough_v5_notes.md`, «نفذ كله»; status table at its end):
+  composition `ai-world-v6` (src/aiworld/V6.tsx) = v5 + TreeMap separators (scene `SEP`, 1.6 s, whole-video tree, done ✓ dimmed, next lit) + SongBrand
+  (his logo face top-right / name bottom-left, subscribe + platforms on the last line). New ORDER + 3 new narrations (N1 LLM/agent, N2 MCP, N3 skills) in
+  `make_timeline_v6.py`; avatar sync in any order (skip = source second − clip start). Scenes: v5 specs moved to v6 time (`v6_specs.py` C()) + new
+  scenes in v6 time `v6_new.py` (clamped inside their section); props `make_props_v6.py` (song = 42 unique shots); sfx `make_sfx_v6.py`; render
+  `render_v6.sh` (bundle D:/Temp/bundle_aiw6, chunks D:/Temp/aiw6_chunks). PDF pictures extracted to work/pdf_imgs (motion, not page shots).
+  Open: looks jungle + galabeya/Burj (HeyGen card waits for Aly), his Genjutsu FB reel file, Cowork screenshot.

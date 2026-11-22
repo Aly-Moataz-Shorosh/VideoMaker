@@ -10,6 +10,7 @@ from mathutils import Vector
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else ["jet", "."]
 SCENE, OUT = argv[0], argv[1]
 ENGINE = argv[2] if len(argv) > 2 else "WORKBENCH"
+STATIC = SCENE.endswith("_static")
 os.makedirs(OUT, exist_ok=True)
 FPS = 25
 
@@ -138,7 +139,7 @@ elif SCENE == "lab":  # high-tech lab: robot arm places a part, macro push-in
     sun(angle=60, rot_z=-40, energy=3)
     camera([(1, (3.5, -3.8, 2.6)), (125, (0.2, -1.6, 1.45))], (-0.3, 0, 1.2), N)
 
-elif SCENE == "bridge":  # Qasr al-Nil style bridge (generic blockout: arches + pedestals as boxes) rises piece by piece
+elif SCENE in ("bridge", "bridge_static"):  # Qasr al-Nil style bridge (generic blockout: arches + pedestals as boxes) rises piece by piece
     N = 150
     add("cube", (0, 0, -0.3), (40, 8, 0.2), m=mat("water", (0.1, 0.25, 0.4)))      # river
     add("cube", (0, 11, 0), (40, 3, 0.4), m=DARK); add("cube", (0, -11, 0), (40, 3, 0.4), m=DARK)  # banks
@@ -152,9 +153,24 @@ elif SCENE == "bridge":  # Qasr al-Nil style bridge (generic blockout: arches + 
     for s in (-1, 1):  # pedestals on both ends
         for x in (-1.4, 1.4):
             pieces.append(add("cube", (x, s * 9.6, 1.0), (0.35, 0.6, 0.6), m=GOLD))
-    for i, o in enumerate(pieces):
-        p = o.location.copy()
-        key(o, 1, loc=(p.x, p.y, p.z - 6)); key(o, 6 + i * 3, loc=(p.x, p.y, p.z - 6)); key(o, 20 + i * 3, loc=p)
+    if not STATIC:   # v1: the bridge rises piece by piece
+        for i, o in enumerate(pieces):
+            p = o.location.copy()
+            key(o, 1, loc=(p.x, p.y, p.z - 6)); key(o, 6 + i * 3, loc=(p.x, p.y, p.z - 6)); key(o, 20 + i * 3, loc=p)
+    else:            # v6 (Aly): the bridge stands still like in the generated clip; cars cross it, boats drift, the banks have buildings
+        for k in range(6):   # cars (boxes) both ways on the deck
+            lane = -0.5 if k % 2 else 0.5; y0 = -8 + k * 2.6; dy = 7 if k % 2 == 0 else -7
+            c = add("cube", (lane, y0, 1.45), (0.35, 0.6, 0.25), m=mat(f"car{k}", (0.85, 0.7, 0.2) if k % 3 == 0 else (0.75, 0.75, 0.78)))
+            key(c, 1, loc=(lane, y0, 1.45)); key(c, N, loc=(lane, y0 + dy, 1.45))
+        for k, (x, y) in enumerate(((-9, -4), (-14, 2), (8, 4))):   # boats (sailboats as box + mast)
+            b = add("cube", (x, y, 0.0), (0.9, 0.35, 0.2), m=mat(f"boat{k}", (0.9, 0.9, 0.85)))
+            m_ = add("cube", (x, y, 0.9), (0.04, 0.04, 0.9), m=DARK)
+            for o_ in (b, m_):
+                p_ = o_.location.copy(); key(o_, 1, loc=p_); key(o_, N, loc=(p_.x + 2.5, p_.y, p_.z))
+        for s_ in (-1, 1):   # city blocks on both banks
+            for k in range(9):
+                h = 1.5 + (k * 37 % 5) * 0.8
+                add("cube", (-16 + k * 4, s_ * 14, h / 2), (1.5, 1.4, h / 2), m=DARK)
     sun(angle=35, rot_z=10, f_end=N, rot_z_end=110, energy=4)
     path = [(f, (14 * math.cos(math.radians(-60 + f * 0.9)), 14 * math.sin(math.radians(-60 + f * 0.9)), 5 + f * 0.02)) for f in range(1, N + 1, 15)]
     camera(path, (0, 0, 1), N)
