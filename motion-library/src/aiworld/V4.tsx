@@ -3,7 +3,7 @@
 // by meaning, ENTERS on its word and LEAVES smoothly ('out'); paper Title; the show's glitch (EntaGlitch) on the opening cuts;
 // only the BACKGROUND moves (stars), never text/objects; captions = the script on its word times. Props: make_props_v4.py.
 import React from 'react';
-import {AbsoluteFill, Img, OffthreadVideo, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, Easing, Img, OffthreadVideo, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {z} from 'zod';
 import {fontCss} from '../blocks/theme';
 import {Item} from '../enta/BoardBiz';
@@ -18,7 +18,7 @@ const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 // Arabic line with English words kept in their place (each Latin run isolated) — note 5
 export const Rtl: React.FC<{text: string; hi?: string}> = ({text, hi}) => (
   <span style={{direction: 'rtl', unicodeBidi: 'isolate'}}>
-    {text.split(/(\*[^*]+\*|[A-Za-z0-9][\w.+\-/$%]*(?:\s+[A-Za-z0-9][\w.+\-/$%]*)*)/g).map((p, i) =>
+    {text.split(/(\*[^*]+\*|[A-Za-z0-9](?:[\w.:+\-/$%]*[\w+$%])?(?:\s+[A-Za-z0-9](?:[\w.:+\-/$%]*[\w+$%])?)*)/g).map((p, i) =>
       p.startsWith('*') ? <span key={i} style={{color: hi ?? gold}}>{p.slice(1, -1)}</span>
         : /^[A-Za-z0-9]/.test(p) ? <bdi key={i} dir="ltr">{p}</bdi> : <span key={i}>{p}</span>)}
   </span>
@@ -136,7 +136,8 @@ const Browser: React.FC<{s: Scene}> = ({s}) => {
           <div style={{marginLeft: 20, flex: 1, height: 30, borderRadius: 15, background: '#0b0f1c', color: 'rgba(243,238,223,.7)', fontFamily: 'Montserrat', fontSize: 18,
             display: 'flex', alignItems: 'center', padding: '0 16px'}}>{cur.url ?? s.url ?? ''}</div>
         </div>
-        <Img src={S(cur.src)} style={{width: '100%', height: 750, objectFit: 'cover', objectPosition: cur.pos ?? 'top'}} />
+        <Img src={S(cur.src)} style={{width: '100%', height: 750, objectFit: 'cover',   /* the page scrolls slowly like a screen recording (a still page = a frozen frame) */
+          objectPosition: cur.pos ?? `50% ${interpolate(f, [cur.at + 15, cur.out ?? s.dur * fps], [0, 100], {...clamp, easing: Easing.inOut(Easing.sin)})}%`}} />
       </div>
     </AbsoluteFill>
   );
@@ -153,14 +154,17 @@ const Split: React.FC<{s: Scene}> = ({s}) => {
     return (
       <div key={i} style={{position: 'relative', width: 860, height: 484, borderRadius: 12, overflow: 'hidden', ...stickerBorder(7), background: '#0b1020',
         transform: `translateY(${(1 - p) * 50}px) rotate(${i ? 1.2 : -1.2}deg)`, opacity: Math.min(1, p * 1.5)}}>
-        <Img src={S(d.src)} style={{width: '100%', height: '100%', objectFit: 'cover', opacity: d.prompt ? reveal : 1}} />
+        {!d.src ? <div style={{position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: E.paper, color: E.ink, fontFamily: 'Cairo',
+          fontWeight: 900, fontSize: 64, padding: 40, textAlign: 'center'}}><Rtl text={d.cap ?? ''} hi={E.orange} /></div>
+          : /\.(mp4|webm)$/.test(d.src) ? <Sequence from={t0} layout="none"><OffthreadVideo src={S(d.src)} muted startFrom={3} style={{width: '100%', height: '100%', objectFit: 'cover'}} /></Sequence>
+          : <Img src={S(d.src)} style={{width: '100%', height: '100%', objectFit: 'cover', opacity: d.prompt ? reveal : 1}} />}
         {d.before ? <div style={{position: 'absolute', inset: 0, clipPath: `inset(0 0 0 ${wipe * 100}%)`}}>
           <Img src={S(d.before)} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
           <div style={{position: 'absolute', top: 0, bottom: 0, left: 0, width: 6, background: E.mustard}} /></div> : null}
         {d.prompt && reveal < 1 ? <div style={{position: 'absolute', inset: 0, background: `rgba(8,14,36,${0.93 - 0.9 * reveal})`, padding: 30, fontFamily: 'Consolas, monospace',
           fontSize: 25, lineHeight: 1.45, color: '#cfe3ff', direction: 'ltr', textAlign: 'left'}}><span style={{color: E.mustard}}>prompt › </span>
           {String(d.prompt).slice(0, Math.floor(String(d.prompt).length * typed))}</div> : null}
-        {d.cap ? <div style={{position: 'absolute', bottom: 14, right: 14, background: E.paper, color: E.ink, fontFamily: 'Cairo', fontWeight: 900, fontSize: 30, padding: '4px 18px',
+        {d.cap && d.src ? <div style={{position: 'absolute', bottom: 14, right: 14, background: E.paper, color: E.ink, fontFamily: 'Cairo', fontWeight: 900, fontSize: 30, padding: '4px 18px',
           borderRadius: 8, ...stickerBorder(4)}}><Rtl text={d.cap} hi={E.orange} /></div> : null}
       </div>);
   };
@@ -228,7 +232,7 @@ const SceneView: React.FC<{s: Scene; families: string[]}> = ({s, families}) => {
 const Captions: React.FC<{caps: z.infer<typeof aiV4Schema>['caps']; t: number}> = ({caps, t}) => {
   const c = caps.find((x) => t >= x.a && t < x.b);
   if (!c) return null;
-  const o = interpolate(t, [c.a, c.a + 0.12, c.b - 0.12, c.b], [0, 1, 1, 0], clamp);
+  const e_ = Math.min(0.12, (c.b - c.a) / 3), o = interpolate(t, [c.a, c.a + e_, c.b - e_, c.b], [0, 1, 1, 0], clamp);
   return (
     <div style={{position: 'absolute', left: 0, right: 0, bottom: 34, display: 'flex', justifyContent: 'center', opacity: o, fontFamily: 'Cairo'}}>
       <div style={{background: 'rgba(5,8,21,.72)', color: ink, fontWeight: 800, fontSize: 44, padding: '4px 26px', borderRadius: 12, maxWidth: 1500, textAlign: 'center'}}>

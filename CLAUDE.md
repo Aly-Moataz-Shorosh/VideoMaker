@@ -333,4 +333,11 @@ Done (2026-10-06):
   composition `ai-world-v3` (src/aiworld/V3.tsx). Studio = GENERATED S4g (Nefertari stars + Cairo mashrabiya); Aly's face: image models redraw him
   (rejected) -> HeyGen look from S4g inside his twin (22 shots) + RVM cut-out of his real avatar (11 shots); opening 0 real room -> 2 -> 1 with glitch.
   «نص» -> «كلام مكتوب» (2 sentences re-voiced). QA gates: blackdetect + freezedetect + lip-sync 0-5 ms; only changed scenes re-rendered + spliced.
-  Waiting for Aly's review. Temp videos listed in errors_log #26 (ask before deleting).
+  Temp videos listed in errors_log #26 (ask before deleting).
+- 2026-11-22 aiFullVideoCost rough cut v4 `output/rough_cut_v4.mp4` (21:03) after Aly's 16 notes on v3 (`review_rough_v3_notes.md`): composition
+  `ai-world-v4` (src/aiworld/V4.tsx) = the «انت بتشتغل ايه» kit (enta `Item`: taped photos, Fluent chips, paper text, logos, counters) entering on
+  their WORD and fading out; only the bg moves; opening glitch = the show's EntaGlitch; captions = the SCRIPT on word times (not over the song).
+  Timeline `make_timeline_v4.py` (Magnific sentence re-voiced, «عايز تبدأ…» removed, English names re-timed by Whisper), props `make_props_v4.py`
+  + `plan_v4_content.py`: plan rows are avatar SHOT windows, not sentences -> an item moves to the scene where its word is said; a pause > 2.5 s
+  starts a new item group; min hold 1.5 s; real PDF proof pages + Higgsfield page; browser pages scroll slowly (a still page = freeze).
+  Render `work/scripts/render_v4.sh` (4 chunks on D:/Temp/aiw4_chunks), QA `qa_v4.py`. Waiting for Aly's review.
