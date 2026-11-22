@@ -340,4 +340,13 @@ Done (2026-10-06):
   Timeline `make_timeline_v4.py` (Magnific sentence re-voiced, «عايز تبدأ…» removed, English names re-timed by Whisper), props `make_props_v4.py`
   + `plan_v4_content.py`: plan rows are avatar SHOT windows, not sentences -> an item moves to the scene where its word is said; a pause > 2.5 s
   starts a new item group; min hold 1.5 s; real PDF proof pages + Higgsfield page; browser pages scroll slowly (a still page = freeze).
-  Render `work/scripts/render_v4.sh` (4 chunks on D:/Temp/aiw4_chunks), QA `qa_v4.py`. Waiting for Aly's review.
+  Render `work/scripts/render_v4.sh` (4 chunks on D:/Temp/aiw4_chunks), QA `qa_v4.py`.
+- 2026-11-22 aiFullVideoCost rough cut v5 `output/rough_cut_v5.mp4` after Aly's 33 notes on v4 (`review_rough_v4_notes.md`, he stopped at 8:10:
+  «صلحها في كله»). Composition `ai-world-v5` (src/aiworld/V5.tsx): ONE star background on video time, full-frame glitch + sfx, safe area
+  (x 96–1824, y 110–925) + 20% smaller, breadcrumb «family › sub» + separator card per sub-category, EXPLAINING diagrams (Node = picture/
+  looping clip/logo + label, Edge draws itself, live voice Wave from the voice envelope, green PriceBar + cash sfx, Scan = OCR/boxes, Typed).
+  Content = `work/scripts/v5_specs.py` (each spec replaces [a,b] with one diagram board, items on their words) applied by `v5_apply.py`
+  (trim/insert, fix_short ≥3 s, overlap resolver) inside `make_props_v5.py`; checks `check_overlap_v5.py`; audio `make_timeline_v5.py`
+  (cuts snapped to silence + 10 ms fades), `make_sfx_v5.py` (sfx stem + mix); render `render_v5.sh` (D:/Temp/aiw5_chunks), QA `qa_v5.py`.
+  Pending (needs /mcp auth or Aly): «3D» re-voices (5 sentences), text→video example, face circle in the HeyGen part, old HeyGen tests,
+  «لغة السينما» link, magnific.com screenshot, the Genjutsu reel file.
