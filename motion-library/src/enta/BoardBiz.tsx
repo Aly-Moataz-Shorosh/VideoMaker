@@ -190,7 +190,7 @@ const Card: React.FC<{d: Record<string, any>; f: number; o: number}> = ({d, f, o
   );
 };
 
-const Item: React.FC<{d: Record<string, any>; f: number}> = ({d, f}) => {
+export const Item: React.FC<{d: Record<string, any>; f: number}> = ({d, f}) => {
   const at = d.at ?? 0;
   if (f < at) return null;
   if (d.out !== undefined && f >= d.out + 10) return null;
