@@ -351,22 +351,22 @@ const Footer: React.FC = () => {
   const P = 'projects/uth/';
   const h = (icon: string, text: string) => (
     <span style={{display: 'flex', alignItems: 'center', gap: 6}}>
-      <Img src={staticFile(`logos/${icon}.svg`)} style={{width: 26, height: 26}} />
-      <span style={{...en(21, S.white, 700)}}>{text}</span></span>
+      <Img src={staticFile(`logos/${icon}.svg`)} style={{width: 32, height: 32}} />
+      <span style={{...en(26, S.white, 700)}}>{text}</span></span>
   );
+  // Aly 2026-11-22: only YouTube, TikTok, Instagram, Facebook (LinkedIn/Behance not important)
   return (
     <div style={{position: 'absolute', left: 30, right: 30, top: Y.foot, height: 92, borderRadius: 24, background: 'rgba(7,9,18,0.78)', border: '1px solid rgba(255,255,255,0.14)',
-      display: 'flex', alignItems: 'center', gap: 14, padding: '0 18px'}}>
+      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, padding: '0 18px'}}>
       <Img src={staticFile(P + 'ch_face.png')} style={{height: 70}} />
       <div style={{display: 'flex', flexDirection: 'column', gap: 6}}>
         <Img src={staticFile(P + 'ch_name.png')} style={{height: 32, alignSelf: 'flex-start'}} />
-        <div style={{display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'nowrap'}}>
-          <span style={{display: 'flex', alignItems: 'center', gap: 6}}>
-            {['youtube-icon', 'instagram', 'tiktok'].map((i) => <Img key={i} src={staticFile(`logos/${i}.svg`)} style={{width: 26, height: 26}} />)}
-            <span style={{...en(21, S.white, 700)}}>@alyshorosh</span></span>
+        <div style={{display: 'flex', gap: 24, alignItems: 'center', flexWrap: 'nowrap'}}>
+          <span style={{display: 'flex', alignItems: 'center', gap: 7}}>
+            {['youtube-icon', 'tiktok', 'instagram'].map((i) => <Img key={i} src={staticFile(`logos/${i}.svg`)}
+              style={i === 'tiktok' ? {width: 32, height: 32, background: '#fff', borderRadius: 8, padding: 4, boxSizing: 'border-box'} : {width: 32, height: 32}} />)}
+            <span style={{...en(26, S.white, 700)}}>@alyshorosh</span></span>
           {h('facebook', 'aly.shorosh')}
-          {h('linkedin', 'in/shorosh')}
-          <span style={{...en(21, S.white, 700)}}><b style={{color: '#4F7BFF'}}>Bē</b> shorosh</span>
         </div>
       </div>
     </div>

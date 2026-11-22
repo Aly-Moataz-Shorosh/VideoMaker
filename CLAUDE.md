@@ -357,3 +357,10 @@ Done (2026-10-06):
   scenes in v6 time `v6_new.py` (clamped inside their section); props `make_props_v6.py` (song = 42 unique shots); sfx `make_sfx_v6.py`; render
   `render_v6.sh` (bundle D:/Temp/bundle_aiw6, chunks D:/Temp/aiw6_chunks). PDF pictures extracted to work/pdf_imgs (motion, not page shots).
   Open: looks jungle + galabeya/Burj (HeyGen card waits for Aly), his Genjutsu FB reel file, Cowork screenshot.
+- 2026-11-22 `projects/2026-11-22 reel-h garrett warren short video` (his 9:16 phone recording: Garrett Warren, Avatar stunt coordinator, Q&A at
+  UTH Festival 2026, GEM, style 13) -> `output/garrett_warren_uth.mp4` (2:05) + .txt. NEW composition `uth-reel` (src/uth/UthReel.tsx): phone footage
+  full frame + calm zoom, hook ("if your pre-vis is good, I'll hire you") + rewind + answer from "Hit me", EN captions from ElevenLabs Scribe (Aly asked;
+  981 credits — the estimate said 54) fixed by ear (Jon Landau, rookery) + Egyptian Arabic line under each, tray of REAL stills (official Avatar
+  featurette/trailer frames via yt_frames.py, Commons portraits CC BY 2.0) on every word, footer = channel face + name + YT/TikTok/IG @alyshorosh +
+  FB aly.shorosh (Aly: no LinkedIn/Behance). Avoid "و" between two English words in Arabic text (rendered like "g"). Scripts tools/recipes/uthgarrett/.
+  Waiting for Aly's review. Temp: work/tmp (pieces + raw renders, ask before deleting), D:/Temp/bundle_uth.
