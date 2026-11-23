@@ -57,3 +57,8 @@
 | hyperframes-site.svg | https://hyperframes.heygen.com | https://hyperframes.heygen.com/favicon.svg | 2026-11-23 |
 | photoshop | https://commons.wikimedia.org/wiki/File:Adobe_Photoshop_CC_icon.svg | https://upload.wikimedia.org/wikipedia/commons/a/af/Adobe_Photoshop_CC_icon.svg | 2026-11-23 |
 | after-effects | https://commons.wikimedia.org/wiki/File:Adobe_After_Effects_CC_icon.svg | https://upload.wikimedia.org/wikipedia/commons/c/cb/Adobe_After_Effects_CC_icon.svg | 2026-11-23 |
+
+## added 2026-11-23 (aiFullVideoCost v10)
+- magnific-mark.png — white «M» mark on black (from Wikimedia Commons «File:Magnific logo.svg», public domain); magnific-wordmark.png — full wordmark white on black.
+- luma-card.png — Luma logo (lumalabs.ai header, captured 2026-11-23) on a dark card (the old luma.ico is white = invisible on white cards).
+- whisper-fw-card.png — Whisper has no own logo: the real faster-whisper repo header (the tool we run), labelled «Whisper (OpenAI)» (2026-11-23).

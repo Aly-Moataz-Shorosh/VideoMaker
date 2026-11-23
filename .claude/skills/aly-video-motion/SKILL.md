@@ -237,6 +237,18 @@ check adds ~650 MB). Check `df -h` before and after.
 Add what he liked to section 2 and every mistake to section 3 (with the fix), plus the memory file
 `aly-review-*-lessons`. Keep this skill short; details go to docs/17.
 
+**aiFullVideoCost v9 review (2026-11-23) — repeat / never again:**
+- LOVED: «same input, several changes» = the ORIGINAL on top + the results in a row under it, arrows, each result on its word, REAL generated examples
+  (v2v: style / pharaoh / neon street). Reuse this layout for any «one thing, many variants» idea.
+- KIDS GROUP = several DIFFERENT performances (3 kid voices x 2 takes, ElevenLabs v4) shouting together with a small random spread + cheer AFTER the shout.
+  NEVER pitch-shifted / delayed copies of one take (= echo / chorus, Aly heard it). Let him hear ONE name before making all.
+- LIP SYNC GATE = picture vs sound, not voice vs voice: tools/lipsync_lag.py (MediaPipe mouth vs voice, long windows); natural = mouth ~80 ms before the sound;
+  fix clips whose sound clearly leads (work/scripts/lipfix_v10.py). The opening skip must include the first voice piece's start offset.
+- A talking face in a circle = his face CENTRED (face_center_v10.py), never a still photo while he talks.
+- Every card shows ITS product (no Claude Code clip on a Cowork / Chrome card); a web clip always shows its source; logos from the official site
+  (bot-check = use Wikimedia Commons / the site header, never bypass); a white logo never on a white card.
+- Separators find their part by NAME; no board may cover a separator. Logos appear on their own word.
+
 **OVERLAP LAW (Aly 2026-11-23): no element ever overlaps another one on screen at the same moment, in ANY video, hand-placed cards too.**
 Run an automatic resolver + an overlap check that must report 0 before every render (aiworld: v9_resolve.py + check_overlap_v9.py). The old resolver
 only moved kit items and treated hand-placed cards as fixed -> a chip landed on a thumbnail in v9 before this law.
