@@ -237,6 +237,12 @@ check adds ~650 MB). Check `df -h` before and after.
 Add what he liked to section 2 and every mistake to section 3 (with the fix), plus the memory file
 `aly-review-*-lessons`. Keep this skill short; details go to docs/17.
 
+**LAW (Aly 2026-11-23): every note he gives MUST be executed; NO new version is made until all of them are done.**
+- Write each note into the project sheet `review_*_notes.md` the moment he says it (numbered + status table), not only in memory.
+- A new version (v2, v3, ...) is delivered ONLY when every row is ✓, checked on a still at its exact time.
+- Note blocked (paid credits, /mcp sign-in, a file from him)? Ask him right away for what it needs and hold the version. Never deliver while a note is open,
+  and never let it drop silently (v8 shipped without the kids voices from the v7 notes).
+
 ## LOTTIE MIX (style 12, aftereffects-to-code 2026-10-16, docs/26): v3 APPROVED ("ده ممتاز حلو اوي")
 - He can write several style numbers ("2 and 6 and 10") → blend them into ONE look (bg from one, cards from another, touches from the third).
 - Simple + fast tutorial short (~1:20): one sentence per step, his "trying it" clip + use cases after the result, explain every term.

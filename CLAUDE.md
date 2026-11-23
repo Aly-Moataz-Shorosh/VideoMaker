@@ -33,6 +33,8 @@ Full context: `docs/01-about-aly.md`.
    `docs/09-chat-history.md`.
 
 ## Hard rules
+- REVIEW NOTES LAW (Aly 2026-11-23): every note he gives MUST be executed. Write each one into the project sheet `review_*_notes.md` as he says it.
+  NO new version until every note is ✓ (still-checked). Blocked by credits, /mcp or a missing file -> ask him and hold the version; never drop a note silently.
 - Never edit, move or delete anything in the Codex folder or in Aly's other automations
   (reels-publisher, instagram-comment-dm). Read only.
 - Never open/read video files as frames to "look" at them (exception: ONE frame when 06 says so). Work from text (transcripts, JSON, code).
