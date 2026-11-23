@@ -364,6 +364,8 @@ Done (2026-10-06):
   (numbers on واحد…وستة), boards never start/stay blank, FACES layer = his lip-synced avatar 3.5 s inside the 34 avatar windows where it hides nothing
   (face time 44 s in v6 -> ~98 s), song = one shot per line (SONGPLAN, playbackRate if the line is longer), whole face logo + his calligraphy signature +
   our SubscribePress + handles. Audit sheets of v6 per v5 note: `work/audit_v6/`. RULE: still-check every note at its time before writing ✓.
+  Aly reviewed v7 (2026-11-23): 50 notes in `review_rough_v7_notes.md` (not executed yet) -> next chat builds v8 from the handoff `RUN_v10.md`
+  (pipeline, order decisions to ask, credit items needing /mcp, his new input recordings, 1920x1080, face = circle over boards, no code/PowerShell for beginners).
 - 2026-11-22 `projects/2026-11-22 reel-h garrett warren short video` (his 9:16 phone recording: Garrett Warren, Avatar stunt coordinator, Q&A at
   UTH Festival 2026, GEM, style 13) -> `output/garrett_warren_uth.mp4` (2:05) + .txt. NEW composition `uth-reel` (src/uth/UthReel.tsx): phone footage
   full frame + calm zoom, hook ("if your pre-vis is good, I'll hire you") + rewind + answer from "Hit me", EN captions from ElevenLabs Scribe (Aly asked;
