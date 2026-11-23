@@ -47,3 +47,13 @@
 | youtube.png | https://www.youtube.com | https://www.youtube.com/s/desktop/95c3254f/img/favicon_144x144.png | 2026-11-21 |
 | warner.png | https://www.wmg.com | https://www.wmg.com/wp-content/uploads/2022/09/cropped-favicon-180x180.png | 2026-11-21 |
 | believe.png | https://www.believe.com | https://www.believe.com/wp-content/uploads/2026/01/cropped-favicon-180x180.png | 2026-11-21 |
+| synthesia.png | https://www.synthesia.io | https://cdn.prod.website-files.com/65e89895c5a4b8d764c0d710/6618fd69d436784c0bba5e9e_webclip.png | 2026-11-23 |
+| d-id.png | https://www.d-id.com | https://www.d-id.com/wp-content/uploads/2024/10/D-ID-logo-350x350-1-300x300.png | 2026-11-23 |
+| hedra.png | https://www.hedra.com | https://imagedelivery.net/yn_JX_LzJpQI9TTynGwR_Q/brand/favicon-20261020/apple-touch-icon.png/public | 2026-11-23 |
+| captions.png | https://www.captions.ai | https://captions.ai/mrkt-static/apple-touch-icon.png | 2026-11-23 |
+| promoat.png | https://www.promoat.ai | https://www.promoat.ai/apple-icon.png?apple-icon.3xs8gkg15y0fd.png?dpl=dpl_3PocyGUMEKezrravMbLXVU9ZpzYC | 2026-11-23 |
+| cursor.png | https://cursor.com | https://cursor.com/marketing-static/apple-touch-icon-light.png | 2026-11-23 |
+| chatgpt.png | https://chatgpt.com | https://chatgpt.com/cdn/assets/favicon-180x180.9e0103ce69.png | 2026-11-23 |
+| hyperframes-site.svg | https://hyperframes.heygen.com | https://hyperframes.heygen.com/favicon.svg | 2026-11-23 |
+| photoshop | https://commons.wikimedia.org/wiki/File:Adobe_Photoshop_CC_icon.svg | https://upload.wikimedia.org/wikipedia/commons/a/af/Adobe_Photoshop_CC_icon.svg | 2026-11-23 |
+| after-effects | https://commons.wikimedia.org/wiki/File:Adobe_After_Effects_CC_icon.svg | https://upload.wikimedia.org/wikipedia/commons/c/cb/Adobe_After_Effects_CC_icon.svg | 2026-11-23 |

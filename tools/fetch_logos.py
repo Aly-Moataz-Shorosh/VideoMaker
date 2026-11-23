@@ -18,6 +18,11 @@ SITES = {
     "seedance": "https://seed.bytedance.com", "bytedance": "https://www.bytedance.com", "gemini": "https://gemini.google.com",
     "qwen": "https://qwen.ai", "ollama": "https://ollama.com", "ltx": "https://ltx.studio", "firefly": "https://firefly.adobe.com",
     "luma": "https://lumalabs.ai", "youtube": "https://www.youtube.com", "warner": "https://www.wmg.com", "believe": "https://www.believe.com",
+    # 2026-11-23 rough cut v8 (Aly's v7 notes 12, 23, 30, 36, 44)
+    "synthesia": "https://www.synthesia.io", "d-id": "https://www.d-id.com", "hedra": "https://www.hedra.com", "captions": "https://www.captions.ai",
+    "promoat": "https://www.promoat.ai", "magnific": "https://magnific.ai", "cursor": "https://cursor.com", "chatgpt": "https://chatgpt.com",
+    "photoshop": "https://www.adobe.com/products/photoshop.html", "after-effects": "https://www.adobe.com/products/aftereffects.html",
+    "hyperframes-site": "https://hyperframes.heygen.com",
 }
 
 

@@ -116,6 +116,24 @@ if SCENE == "jet":  # fighter jet (generic, original) -> exploded view = 6 famil
     sun()
     camera([(1, (9, -6, 2.6)), (60, (7, -7, 3.2)), (150, (3, -9, 8))], (0, 0, 2.6), N)
 
+elif SCENE in ("jetfly", "jetsun"):  # v8 (Aly note 18): «Blender بالكود: الكاميرا بتطير / الشمس بتغرب» on the assembled grey jet
+    N = 100
+    floor()
+    add("cyl", (0, 0, 2), (0.45, 0.45, 3.2), rot=(0, math.radians(90), 0)); add("cone", (3.9, 0, 2), (0.45, 0.45, 0.8), rot=(0, math.radians(90), 0))
+    add("sphere", (1.8, 0, 2.4), (0.9, 0.35, 0.3), m=CYAN)
+    add("cube", (-0.2, 1.9, 2), (1.2, 1.6, 0.06), rot=(0, 0, math.radians(-18))); add("cube", (-0.2, -1.9, 2), (1.2, 1.6, 0.06), rot=(0, 0, math.radians(18)))
+    add("cube", (-2.8, 0, 2.8), (0.6, 0.06, 0.8))
+    for x in (-6, -3, 3, 6):   # hangar pillars so the motion / shadows read
+        for y in (-5, 5): add("cube", (x, y, 2.5), (0.25, 0.25, 2.5), m=DARK)
+    if SCENE == "jetfly":   # the camera flies: far -> low fly-by past the wing -> up over the jet (keyframes = code)
+        sun(angle=55, rot_z=30)
+        camera([(1, (14, -10, 6)), (40, (5, -4.5, 2.4)), (70, (-3, -4, 3.2)), (100, (-7, 2, 7))], (0.5, 0, 2.1), N)
+    else:   # the sun goes down: high and white -> low and orange, long shadows (rotation + colour keyed by code)
+        s_ = sun(angle=30, rot_z=40, f_end=N, rot_z_end=120, energy=5)
+        s_.data.color = (1, 1, 1); s_.data.keyframe_insert("color", frame=1)
+        s_.data.color = (1.0, 0.45, 0.15); s_.data.keyframe_insert("color", frame=N)
+        camera([(1, (11, -8, 4.5)), (100, (10, -8.6, 4.2))], (0, 0, 2), N)
+
 elif SCENE == "lab":  # high-tech lab: robot arm places a part, macro push-in
     N = 125
     floor()
@@ -185,7 +203,8 @@ if ENGINE == "WORKBENCH":
     sc.display.shading.show_shadows = True
     sc.display.shading.show_cavity = True
 else:
-    sc.render.engine = "BLENDER_EEVEE_NEXT" if "BLENDER_EEVEE_NEXT" in bpy.types.RenderEngine.bl_rna.properties["bl_idname"].enum_items.keys() else "BLENDER_EEVEE"
+    try: sc.render.engine = "BLENDER_EEVEE_NEXT"
+    except TypeError: sc.render.engine = "BLENDER_EEVEE"   # Blender 5.x: EEVEE Next is called BLENDER_EEVEE again
 w = bpy.data.worlds.new("w"); w.color = (0.02, 0.025, 0.04); sc.world = w
 sc.render.resolution_x, sc.render.resolution_y, sc.render.resolution_percentage = 1280, 720, 100
 if hasattr(sc.render.image_settings, "media_type"):  # Blender 5.x: video is a media type
