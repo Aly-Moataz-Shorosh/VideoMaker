@@ -17,6 +17,7 @@ import {AiWorldV5, aiV5Schema} from './aiworld/V5';
 import {AiWorldV6, aiV6Schema} from './aiworld/V6';
 import {AiWorldV7, aiV7Schema} from './aiworld/V7';
 import {AiWorldV8, aiV8Schema, HandlesLayer} from './aiworld/V8';
+import {AiWorldV9, aiV9Schema, HandlesLayer9} from './aiworld/V9';
 
 // Every template: 16:9 composition `<id-with-dashes>` and, when v, 9:16 `<id>-v`.
 export const Root: React.FC = () => (
@@ -77,6 +78,14 @@ export const Root: React.FC = () => (
       calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * props.fps)), fps: props.fps,
         width: props.outW, height: Math.round(props.outW * 9 / 16)})} />
     {/* rough cut v6: Aly's 50 notes on v5 (2026-11-22) — new order, tree-map separators. Props: make_props_v6.py */}
+    {/* rough cut v9: Aly's v8 notes (2026-11-23): kids on the separators, 6 lip-synced looks, handles bottom-left. Props: make_props_v9.py */}
+    <Composition id="ai-world-v9" component={AiWorldV9} schema={aiV9Schema} defaultProps={aiV9Schema.parse({})}
+      fps={25} width={1920} height={1080} durationInFrames={250}
+      calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * props.fps)), fps: props.fps,
+        width: props.outW, height: Math.round(props.outW * 9 / 16)})} />
+    <Composition id="ai-world-v9-handles" component={HandlesLayer9} defaultProps={{outW: 1920, duration: 10}}
+      fps={25} width={1920} height={1080} durationInFrames={250}
+      calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * 25))})} />
     {/* rough cut v8: Aly's 55 notes on v7 (2026-11-23). Props: make_props_v8.py. + the handles layer alone (transparent) for his Premiere project */}
     <Composition id="ai-world-v8" component={AiWorldV8} schema={aiV8Schema} defaultProps={aiV8Schema.parse({})}
       fps={25} width={1920} height={1080} durationInFrames={250}

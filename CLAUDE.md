@@ -33,6 +33,10 @@ Full context: `docs/01-about-aly.md`.
    `docs/09-chat-history.md`.
 
 ## Hard rules
+- OVERLAP LAW (Aly 2026-11-23, «take care from overlaps, make sure it is general rule»): NOTHING on screen may overlap anything shown
+  at the same moment, and everything stays inside the safe area — hand-placed cards included. Every props build runs a general
+  resolver (aiworld: `work/scripts/v9_resolve.py`, moves the later card + its arrows to the nearest free spot) and an overlap check
+  that must print 0 (`check_overlap_v9.py <props>`); in other compositions do the same check before rendering.
 - REVIEW NOTES LAW (Aly 2026-11-23): every note he gives MUST be executed. Write each one into the project sheet `review_*_notes.md` as he says it.
   NO new version until every note is ✓ (still-checked). Blocked by credits, /mcp or a missing file -> ask him and hold the version; never drop a note silently.
 - Never edit, move or delete anything in the Codex folder or in Aly's other automations

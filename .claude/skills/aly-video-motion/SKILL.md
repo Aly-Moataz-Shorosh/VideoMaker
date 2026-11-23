@@ -237,6 +237,10 @@ check adds ~650 MB). Check `df -h` before and after.
 Add what he liked to section 2 and every mistake to section 3 (with the fix), plus the memory file
 `aly-review-*-lessons`. Keep this skill short; details go to docs/17.
 
+**OVERLAP LAW (Aly 2026-11-23): no element ever overlaps another one on screen at the same moment, in ANY video, hand-placed cards too.**
+Run an automatic resolver + an overlap check that must report 0 before every render (aiworld: v9_resolve.py + check_overlap_v9.py). The old resolver
+only moved kit items and treated hand-placed cards as fixed -> a chip landed on a thumbnail in v9 before this law.
+
 **LAW (Aly 2026-11-23): every note he gives MUST be executed; NO new version is made until all of them are done.**
 - Write each note into the project sheet `review_*_notes.md` the moment he says it (numbered + status table), not only in memory.
 - A new version (v2, v3, ...) is delivered ONLY when every row is ✓, checked on a still at its exact time.
