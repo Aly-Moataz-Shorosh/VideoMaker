@@ -391,7 +391,15 @@ Done (2026-10-06):
   Pipeline v10 = make_timeline_v10 -> words_v10_files -> make_props_v10 (v10_new.py specs; HeyGen batch `assets/ai/heygen/v10/avatar_batch_v10.mp4`
   placed by SENTENCE IDS; blank-fill rule; filler wall pictures; Arabic «و»/RTL rule; v10_resolve + check_overlap_v10 = 0) -> make_sfx_v10 (kids10_NN groups)
   -> render_v10.sh -> qa_v10.py (black/freeze + lip gate on the final file) + qa_audio_v10.py (Whisper hear-check). Bill = make_bill_v10.py (account numbers).
-  Sheet `review_rough_v9_notes.md` 56/56 ✓ with evidence. Chunks D:/Temp/aiw10_chunks kept (ask). Waiting for Aly's review.
+  Sheet `review_rough_v9_notes.md` 56/56 ✓ with evidence. Chunks D:/Temp/aiw10_chunks kept (ask). Aly reviewed v10: 16 notes in `review_rough_v10_notes.md`.
+- 2026-11-24 aiFullVideoCost rough cut v11 (Aly «دي تكون النسخة الاخيرة متغلطش و نفذ»): `output/rough_cut_v11.mp4` (27:24.7). Composition `ai-world-v11`
+  (V11.tsx = V10 + Txt: English-only lines drawn LTR, centre watermark .012). New twin lines (HeyGen batch v11, 39 credits): N1b_a..i (libraries ->
+  concepts -> the audiobook example -> «تعالوا نسمع النتيجة» -> result in an 11 s hold), N25c2 (understand/order/wait loop), N25e2, N37a..d (Playmobil script).
+  Pipeline v11 = make_timeline_v11 -> words_v11_files -> whisper_words_v11 + words_real_v11 (REAL word times, logos snap to the heard name) ->
+  make_props_v11 (v11_new.py = v10_new run in v11 time via AIW_TIMELINE + patches; lipfix_v11 = clip sound vs voice; one face at a time;
+  v11_resolve = MEASURED pill sizes + grids as one block; check_overlap_v11 = 0) -> make_sfx_v11 -> redo_v11.py (reuse v10 frames only where the
+  seconds are identical) -> render_v11.sh (pieces + frame-count check + concat filter) -> qa_v11.py / qa_audio_v11.py.
+  «تجربة حقيقية» rebuilt (one idea per sentence, PDF pictures deduped work/pdf13/unique_v11.json). Parts D:/Temp/aiw11_parts (ask before deleting).
 - 2026-11-22 `projects/2026-11-22 reel-h garrett warren short video` (his 9:16 phone recording: Garrett Warren, Avatar stunt coordinator, Q&A at
   UTH Festival 2026, GEM, style 13) -> `output/garrett_warren_uth.mp4` (2:05) + .txt. NEW composition `uth-reel` (src/uth/UthReel.tsx): phone footage
   full frame + calm zoom, hook ("if your pre-vis is good, I'll hire you") + rewind + answer from "Hit me", EN captions from ElevenLabs Scribe (Aly asked;

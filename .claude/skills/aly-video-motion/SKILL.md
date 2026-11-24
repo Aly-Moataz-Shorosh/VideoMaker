@@ -259,6 +259,23 @@ Add what he liked to section 2 and every mistake to section 3 (with the fix), pl
 - Colour names in props must be palette names the component maps (E.mustard ...): a plain «mustard» is not a CSS colour -> the arrow was invisible.
 - A bill/summary board needs time to READ: add a silent hold after its sentence (3 s for 5 lines).
 
+**aiFullVideoCost v10 review (2026-11-24) — repeat / never again:**
+- An example must be EXPLAINED before its result: the idea (why it matters) -> the steps (folder, prompt, code, open libraries, output files)
+  -> «تعالوا نسمع النتيجة» -> the result in its own hold, clearly labelled. A result that starts out of nowhere looks like a mistake.
+- Explaining lines are said by his twin TALKING in the circle («صوت و صورة»), never voice over a still.
+- «Before / after» examples use REAL simple material (his plain talking video -> the SAME video with our real motion layer on it; the motion alone on
+  a checkerboard = transparent). Two unrelated generated shots do not explain anything.
+- Concepts, not names: library names change by year / language; show the concept (Transcript / OCR / TTS) with a tiny explaining visual.
+- Logos «on their word» use the REAL audio (Whisper word timestamps), never the script order (Premiere/Photoshop were swapped vs the script).
+- Overlap checker boxes must be MEASURED on a rendered still (text pill height = 1.55*size + 22 px); an unmeasured model printed «0» on a stack.
+- Picture walls / fillers = random = forbidden. One idea per sentence, ≤ ~6 things, ordered grids that move as ONE block, no picture twice
+  (dedupe by image content: the same thumbnail sits on several PDF pages).
+- His face in ONE place at a time (a scene with its own face hides the circle). Avatar clips line up by their OWN sound, not a mouth measure;
+  never ask a clip past its last frame (frozen picture).
+- An all-English line inside the RTL layout reads backwards («(OpenAI) Whisper») -> draw it LTR; mixed lines start with Arabic.
+- Smart redo: reuse old frames ONLY where the seconds are identical (the star background runs on video time); diff scene + captions + faces +
+  breadcrumb per scene; never splice by stream copy (decode + concat filter), check every piece's frame count.
+
 **OVERLAP LAW (Aly 2026-11-23): no element ever overlaps another one on screen at the same moment, in ANY video, hand-placed cards too.**
 Run an automatic resolver + an overlap check that must report 0 before every render (aiworld: v9_resolve.py + check_overlap_v9.py). The old resolver
 only moved kit items and treated hand-placed cards as fixed -> a chip landed on a thumbnail in v9 before this law.
