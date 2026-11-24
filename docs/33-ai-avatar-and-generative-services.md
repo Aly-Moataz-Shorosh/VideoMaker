@@ -215,3 +215,6 @@ identity consistency and much more expensive → B-roll, not the talking head.
   mode -> say it, never work around, ask Aly to approve the prompt.
 - Image-to-image example on screen = the SAME image edited (jacket colour, beard) with a wipe — never a different picture.
 
+## Approved kit (2026-11-24)
+The presenter + studio that Aly approved (twin c7e371d6…, voice 68fd7b29…, main studio look S4g f1f77fad…, other looks, Higgsfield face/studio refs,
+thumbnail method) is saved as a reusable kit for every topic and style: `docs/37-avatar-studio-kit.md` + `brand/avatar-studio/kit.json`.

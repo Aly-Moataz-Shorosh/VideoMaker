@@ -259,6 +259,9 @@ Add what he liked to section 2 and every mistake to section 3 (with the fix), pl
 - Colour names in props must be palette names the component maps (E.mustard ...): a plain «mustard» is not a CSS colour -> the arrow was invisible.
 - A bill/summary board needs time to READ: add a silent hold after its sentence (3 s for 5 lines).
 
+**AI PRESENTER + STUDIO KIT (2026-11-24)**: when Aly is not on camera, in ANY style, use his approved twin + voice + the S4g studio (and the other
+looks) from `brand/avatar-studio/kit.json`; how-to in docs/37 (batch method, circle placement by sentence id + trimmed silence, thumbnails).
+
 **STYLE 27 ai-world-explainer APPROVED (2026-11-24, rough cut v11)** — the whole recipe + every rule it cost is in docs/36; read it before any
 long AI-made video (twin explains, separators with kids, one board per sentence, real-word logos, measured overlap check, partial render).
 Thumbnail he asked me to MAKE: his real twin frame cut out (tools/matte.py --png) + HTML -> headless Chrome screenshot (Arabic shaping,

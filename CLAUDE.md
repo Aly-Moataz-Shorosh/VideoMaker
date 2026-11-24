@@ -30,6 +30,8 @@ Full context: `docs/01-about-aly.md`.
    (MCP servers heygen, elevenlabs, higgsfield in `.mcp.json`; first run `/mcp` → Authenticate each).
    Hybrid video (real-footage lipsync + generated Aly + B-roll + 3D + motion): `docs/34-recipe-hybrid-ai-reel.md`.
    A whole long video made with AI (twin explains, separators, boards per sentence): `docs/36-recipe-ai-world-explainer.md` (style 27).
+   His AI PRESENTER + STUDIO kit (twin, voice, S4g studio + other looks, IDs, thumbnails) for ANY topic / ANY style: `docs/37-avatar-studio-kit.md`,
+   files `brand/avatar-studio/` (kit.json).
 7. Only if needed: `docs/02-current-workflow.md`, `docs/04-pipeline-plan.md`, `docs/08-token-rules.md`,
    `docs/09-chat-history.md`.
 

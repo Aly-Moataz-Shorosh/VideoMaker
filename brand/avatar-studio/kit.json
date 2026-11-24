@@ -1,0 +1,30 @@
+{
+ "_about": "Aly's AI presenter kit (approved in «عالم الـ AI كله» v11, 2026-11-24). Use it for ANY topic and ANY style when Aly is not on camera. Recipe: docs/37-avatar-studio-kit.md",
+ "heygen": {
+  "group_id": "f13f38cec9b54909949260ef321fc947",
+  "twin_reference_look": {"id": "c7e371d6395d4e0aa59618d58f57e326", "name": "Aly Moataz -- 1", "type": "digital_twin", "use": "engine.reference_look_id (his real motion) for every look"},
+  "voice_id": "68fd7b29cfa643748b68c0992c1dc70c",
+  "voice_rules": "HeyGen Voice instant clone of his twin recording; plain Egyptian Arabic script (no IPA, no full diacritics); English tool names written in English; «عود» re-voiced once (check instruments/rare words by ear)",
+  "engine": {"type": "heygen-avatar-6-turbo", "reference_look_id": "c7e371d6395d4e0aa59618d58f57e326", "motion_expressiveness": "less"},
+  "video": {"aspect": "16:9", "resolution": "1080p", "cost_note": "v11 batch: 113 s of speech = 39 credits (Creator plan, 600 / month)"},
+  "main_studio_look": {"id": "f1f77fad0dfae53462efdbd5de0c7634", "name": "Aly S4g studio (Nefertari stars + Cairo mashrabiya, 16:9)", "image": "studio_S4g_with_aly.jpg", "empty_plate": "studio_S4g_empty_plate.png",
+                       "use": "THE studio of the channel's AI videos — full-frame twin shots + the talking circle (face centred, top-left)"},
+  "other_looks": [
+   {"id": "bf8ea0fe5fa6b762b487f3e65805dd5f", "name": "Aly podcast studio (16:9)", "image": "look_podcast_studio.png"},
+   {"id": "480af08953824ecbe27928647bbda8d4", "name": "Aly standing presenter wide (16:9)", "image": "look_presenter_wide.png"},
+   {"id": "fbbb101ecad2a8e987ac830c6ffb7fe5", "name": "Aly room black t-shirt (real frame, 16:9)"},
+   {"id": "730a4cb19467472533e464026d7cfcf0", "name": "beach, sitting relaxed (16:9)"},
+   {"id": "b6d60d4b61188382ad8efa20777f75fd", "name": "Aly jungle explorer (16:9)"},
+   {"id": "7073dc887af2774dea1a06a6d76823fc", "name": "Aly galabeya Burj Khalifa (16:9)"},
+   {"id": "a7e1bb9b7018931d094475ee25d87042", "name": "Aly sitting/standing as the presenter (PORTRAIT 9:16 — reels only)"}
+  ]
+ },
+ "higgsfield": {
+  "studio_reference_media": "58fced38-1a9d-4f39-8487-9d16c7c2aa34",
+  "face_reference_media": "3e25541a-3062-4592-9ff8-31170430270b",
+  "face_cutout_file": "aly_face_cutout.png",
+  "thumbnail_model": "gpt_image_2_6 (16:9, 2k, high) — 4 credits / 2 images",
+  "thumbnail_example": "thumbnail_example_puppet.jpg (approved direction 2026-11-24: puppet on golden strings, blue smoke, moderate surprise, «الـ AI بيحرّكني!»)",
+  "warning": "image models REDRAW his face: always pass the real face reference + «keep the man exactly as in reference», then compare face crops before using"
+ }
+}
