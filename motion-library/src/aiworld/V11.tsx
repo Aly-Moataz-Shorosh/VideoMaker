@@ -24,6 +24,8 @@ import {enter} from '../blocks/anim';
 import {Rtl} from './V4';
 import {SubscribePress} from '../templates/SubscribePress';
 
+// shorts (Short11.tsx) reuse this world; they hide the stage title / song lyrics through this context (v11 itself unchanged)
+export const V11Opts = React.createContext<{noTitle?: boolean; noLyrics?: boolean; W?: number; H?: number}>({});
 const gold = '#E9B949', navy = '#0B1430', ink = '#F3EEDF', green = '#3DDC84', greenDark = '#178A4C';
 const S = (p?: string) => (p ? staticFile(p) : '');
 const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
@@ -49,7 +51,7 @@ type Scene = z.infer<typeof scene>;
 type D = Record<string, any>;
 
 // ---------- ONE background for the whole video: stars drift on VIDEO time, each star wraps alone off-screen (no jump) ----------
-const StarField: React.FC = () => {
+export const StarField: React.FC = () => {
   const f = useCurrentFrame();
   const W = 23 * 92, drift = f * 0.22;
   const push = 1.035 + 0.025 * Math.sin(f / (25 * 18));
@@ -71,8 +73,8 @@ const StarField: React.FC = () => {
 
 // ---------- paper title: smaller, inside the safe area (note 24) ----------
 const PaperTitle: React.FC<{text?: string; dur: number; at?: number}> = ({text, dur, at = 3}) => {
-  const f = useCurrentFrame(); const {fps} = useVideoConfig();
-  if (!text || f < at) return null;
+  const f = useCurrentFrame(); const {fps} = useVideoConfig(); const opts = React.useContext(V11Opts);
+  if (!text || f < at || opts.noTitle) return null;
   const p = enter(f, fps, at), o = interpolate(f, [dur * fps - 12, dur * fps - 2], [1, 0], clamp);
   return (
     <div style={{position: 'absolute', top: 128, left: 0, right: 0, display: 'flex', justifyContent: 'center', opacity: o}}>
@@ -84,7 +86,7 @@ const PaperTitle: React.FC<{text?: string; dur: number; at?: number}> = ({text, 
   );
 };
 
-const ClipSeq: React.FC<{c: z.infer<typeof clip>; start: number}> = ({c, start}) => {
+export const ClipSeq: React.FC<{c: z.infer<typeof clip>; start: number}> = ({c, start}) => {
   const {fps} = useVideoConfig();
   return (
     <Sequence from={Math.round((c.from - start) * fps)} durationInFrames={Math.max(1, Math.round(c.dur * fps))}>
@@ -94,7 +96,7 @@ const ClipSeq: React.FC<{c: z.infer<typeof clip>; start: number}> = ({c, start})
 };
 
 // ---------- full-frame glitch TRANSITION (note 1): the picture itself is sliced and pushed + the show's bars + a flash ----------
-const GlitchCut: React.FC<{s: Scene; g: number}> = ({s, g}) => {
+export const GlitchCut: React.FC<{s: Scene; g: number}> = ({s, g}) => {
   const f = useCurrentFrame(); const {fps} = useVideoConfig();
   const at = Math.round((g - s.start) * fps), k = f - at;
   if (k < -5 || k > 6) return null;
@@ -186,9 +188,10 @@ const Edge: React.FC<{d: D; f: number}> = ({d, f}) => {
   const [x1, y1, x2, y2] = d.pts; const mx = (x1 + x2) / 2 + (d.bend ?? 0), my = (y1 + y2) / 2 - Math.abs(d.bend ?? 0) * 0.3;
   const path = `M${x1},${y1} Q${mx},${my} ${x2},${y2}`; const L = Math.hypot(x2 - x1, y2 - y1) * 1.15;
   const ang = Math.atan2(y2 - my, x2 - mx) * 180 / Math.PI;
-  const col = d.color ? ((E as Record<string, string>)[d.color] ?? d.color) : gold;   // palette names ('mustard' is not a CSS colour: those arrows were invisible)
+  const col = d.color ? ((E as Record<string, string>)[d.color] ?? d.color) : gold;
+  const {W: stW = 1920, H: stH = 1080} = React.useContext(V11Opts);   // palette names ('mustard' is not a CSS colour: those arrows were invisible)
   return (
-    <svg width={1920} height={1080} style={{position: 'absolute', inset: 0, opacity: o}}>
+    <svg width={stW} height={stH} style={{position: 'absolute', inset: 0, opacity: o}}>
       <path d={path} fill="none" stroke={col} strokeWidth={d.wd ?? 4} strokeLinecap="round" strokeDasharray={`${L} ${L}`} strokeDashoffset={L * (1 - k)} />
       {d.arrow !== false && k > 0.95 ? <g transform={`translate(${x2},${y2}) rotate(${ang})`}><path d="M-16,-9 L0,0 L-16,9" fill="none" stroke={col} strokeWidth={d.wd ?? 4} strokeLinecap="round" /></g> : null}
     </svg>
@@ -256,7 +259,7 @@ const Typed: React.FC<{d: D; f: number}> = ({d, f}) => {
   );
 };
 
-const Diagram: React.FC<{items: D[]}> = ({items}) => {
+export const Diagram: React.FC<{items: D[]}> = ({items}) => {
   const f = useCurrentFrame();
   return (
     <AbsoluteFill style={{fontFamily: 'Cairo'}}>
@@ -283,7 +286,7 @@ const Puppet: React.FC<{d: D; f: number}> = ({d, f}) => {
   const bx1 = hx - 90 * s, bx2 = hx + 90 * s, ly = y - 20 * s + bob;
   return (
     <AbsoluteFill style={{opacity: o}}>
-      <svg width={1920} height={1080} style={{position: 'absolute', inset: 0}}>
+      <svg width={React.useContext(V11Opts).W ?? 1920} height={React.useContext(V11Opts).H ?? 1080} style={{position: 'absolute', inset: 0}}>
         <g transform={`rotate(${sw} ${hx} ${barY})`}>
           <line x1={bx1} y1={barY} x2={bx2} y2={barY} stroke="#C8763D" strokeWidth={10 * s} strokeLinecap="round" />
           <line x1={hx} y1={barY - 30 * s} x2={hx} y2={barY + 30 * s} stroke="#C8763D" strokeWidth={10 * s} strokeLinecap="round" />
@@ -374,7 +377,7 @@ const Split: React.FC<{s: Scene}> = ({s}) => {
     {s.items.filter((d) => d.k === 'split').map(side)}</AbsoluteFill>;
 };
 
-const Diffusion: React.FC<{s: Scene}> = ({s}) => {
+export const Diffusion: React.FC<{s: Scene}> = ({s}) => {
   const f = useCurrentFrame(); const {fps} = useVideoConfig();
   const d = s.items.find((x) => x.k === 'diff'); if (!d) return null;
   const k = interpolate(f, [d.at ?? 0, s.dur * fps - 15], [0, 1], clamp), out = interpolate(f, [s.dur * fps - 6, s.dur * fps - 1], [1, 0], clamp);
@@ -398,7 +401,7 @@ const Lyr: React.FC<{s: Scene}> = ({s}) => {
     <AbsoluteFill>
       {s.clips.map((c, i) => <ClipSeq key={i} c={c} start={s.start} />)}
       <AbsoluteFill style={{background: 'linear-gradient(transparent 55%, rgba(5,8,21,.78))'}} />
-      <div style={{position: 'absolute', bottom: 110, left: 160, right: 160, display: 'flex', flexWrap: 'wrap', gap: '6px 16px', justifyContent: 'center', direction: 'rtl', fontFamily: 'Cairo'}}>
+      <div style={{position: 'absolute', bottom: 110, display: React.useContext(V11Opts).noLyrics ? 'none' : 'flex', left: 160, right: 160, flexWrap: 'wrap', gap: '6px 16px', justifyContent: 'center', direction: 'rtl', fontFamily: 'Cairo'}}>
         {words.map((w, i) => {
           const p = enter(f, fps, Math.round((w.t - s.start) * fps));
           const o = line ? interpolate(t, [line.end - 0.35, line.end - 0.05], [1, 0], clamp) : 1;
@@ -585,7 +588,7 @@ const SubSep: React.FC<{name: string; fam: string}> = ({name, fam}) => {
   );
 };
 
-const SceneView: React.FC<{s: Scene; families: string[]; subs: {a: number; b: number; name: string; fam: number; parent?: string}[]}> = ({s, families, subs}) => {
+export const SceneView: React.FC<{s: Scene; families: string[]; subs: {a: number; b: number; name: string; fam: number; parent?: string}[]}> = ({s, families, subs}) => {
   const {fps} = useVideoConfig();
   const video = ['AV', 'CLIP', 'LYR'].includes(s.k);
   return (
@@ -625,7 +628,7 @@ const FaceRing: React.FC<{c: z.infer<typeof clip>; dur: number}> = ({c, dur}) =>
     </div>
   );
 };
-const FaceShot: React.FC<{c: z.infer<typeof clip>}> = ({c}) => {
+export const FaceShot: React.FC<{c: z.infer<typeof clip>}> = ({c}) => {
   const {fps} = useVideoConfig();
   const dur = Math.max(1, Math.round(c.dur * fps));
   return (

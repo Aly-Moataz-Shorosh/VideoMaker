@@ -20,6 +20,8 @@ import {AiWorldV8, aiV8Schema, HandlesLayer} from './aiworld/V8';
 import {AiWorldV9, aiV9Schema, HandlesLayer9} from './aiworld/V9';
 import {AiWorldV10, aiV10Schema, HandlesLayer10} from './aiworld/V10';
 import {AiWorldV11, aiV11Schema, HandlesLayer11} from './aiworld/V11';
+import {AiWorldShort11, short11Schema} from './aiworld/Short11';
+import {AiWorldVShort11, vshortSchema} from './aiworld/VShort11';
 
 // Every template: 16:9 composition `<id-with-dashes>` and, when v, 9:16 `<id>-v`.
 export const Root: React.FC = () => (
@@ -81,6 +83,13 @@ export const Root: React.FC = () => (
         width: props.outW, height: Math.round(props.outW * 9 / 16)})} />
     {/* rough cut v6: Aly's 50 notes on v5 (2026-11-22) — new order, tree-map separators. Props: make_props_v6.py */}
     {/* rough cut v11: Aly's 16 notes on v10 (2026-11-24): centre watermark .012, rest = V10. Props: make_props_v11.py */}
+    {/* vertical shorts from v11 (reach method, 2026-11-24). Props: work/scripts/shorts_props.py */}
+    <Composition id="ai-world-vshort" component={AiWorldVShort11} schema={vshortSchema} defaultProps={vshortSchema.parse({})}
+      fps={25} width={1080} height={1920} durationInFrames={250}
+      calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * props.fps))})} />
+    <Composition id="ai-world-short" component={AiWorldShort11} schema={short11Schema} defaultProps={short11Schema.parse({})}
+      fps={25} width={1080} height={1920} durationInFrames={250}
+      calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * props.fps))})} />
     <Composition id="ai-world-v11" component={AiWorldV11} schema={aiV11Schema} defaultProps={aiV11Schema.parse({})}
       fps={25} width={1920} height={1080} durationInFrames={250}
       calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * props.fps)), fps: props.fps,

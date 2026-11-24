@@ -49,3 +49,14 @@ order unless the series is a COURSE (course order) — his existing rule wins. .
 ## 6. After 10 shorts are live
 Run the optimization loop (`optimization.md`, `scripts/reach_batch.py`): ratios, outliers, comment research, 3 hypotheses → the next
 batch's test variables. Write what we learned into the feedback log so the next cut starts smarter.
+
+## 7. Shorts from an AI-generated long video (style 27, aiFullVideoCost 2026-11-24)
+- Aly: «مش عايز إطار horizontal جوه الـ vertical» — never put the 16:9 frame (or a camera crop of it) inside a 9:16 short when the video
+  is motion + generated: RE-LAY OUT the boards natively for 9:16 and REGENERATE the full-frame generated clips in 9:16.
+- Pipeline (project `work/scripts/`): `shorts_data.py` (cards + v11 pieces, posting order) → `shorts_cut.py` (word-edge snap; 'raw' keeps
+  holds / music / results) → `shorts_vprops.py` (vertical packer: blocks in speaking order → rows → first free gap, hand-over when full,
+  cards enlarged up to ×2.2 for the phone, grids scale as one picture, arrows redrawn, SEP parts trimmed, overlap safety net = 0) →
+  comp `ai-world-vshort` (`motion-library/src/aiworld/VShort11.tsx`: title band hook → title → CTA, talking circle beside the title,
+  word captions with English runs LTR, handles footer) → `shorts_stills.sh N "t…"` → `render_shorts.sh N…` (audio from the final mix,
+  -16 LUFS, CRF 23) → `shorts_txt.py`. Full-frame clips: `shorts/vertical_clips.json` maps each 16:9 file to its 9:16 regeneration.
+- No new voice is needed for hooks when the line already exists in the long video: cut it from later and play it first.
