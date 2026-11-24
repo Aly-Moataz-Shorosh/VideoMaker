@@ -403,7 +403,7 @@ Done (2026-10-06):
   «تجربة حقيقية» rebuilt (one idea per sentence, PDF pictures deduped work/pdf13/unique_v11.json).
   APPROVED v11 (Aly «دي تكون النسخة الاخيرة» + «save knowledge and the new style», 2026-11-24) -> **style 27 ai-world-explainer** (styles/27, recipe
   `docs/36-recipe-ai-world-explainer.md`, scripts `tools/recipes/aiworld/`). Deliverables: `output/rough_cut_v11.txt` (titles, description with
-  chapters + sources, pinned comment), thumbnails `output/thumbnail_v11_A.jpg` / `_B.jpg` (his REAL twin frame cut out, HTML -> headless Chrome). Render parts deleted with his OK (2026-11-24).
+  chapters + sources, pinned comment), thumbnails `output/thumbnail_v11_hf_1.jpg` / `_2.jpg` (Higgsfield gpt_image_2_6 from the local draft `thumbnail_v11_A.jpg` + his real cut-out face — Aly prefers Higgsfield for thumbnails). Render parts deleted with his OK (2026-11-24).
 - 2026-11-22 `projects/2026-11-22 reel-h garrett warren short video` (his 9:16 phone recording: Garrett Warren, Avatar stunt coordinator, Q&A at
   UTH Festival 2026, GEM, style 13) -> `output/garrett_warren_uth.mp4` (2:05) + .txt. NEW composition `uth-reel` (src/uth/UthReel.tsx): phone footage
   full frame + calm zoom, hook ("if your pre-vis is good, I'll hire you") + rewind + answer from "Hit me", EN captions from ElevenLabs Scribe (Aly asked;

@@ -62,7 +62,9 @@ Related: docs/33 (avatar mode, HeyGen / ElevenLabs / Higgsfield rules), docs/34 
    PSNR of final vs pieces at ±1 frame (alignment).
 9. Deliverables: ONE video (no clean / Premiere copy unless asked), `<video>.txt` (العناوين / الوصف with chapters from the separator times +
    sources + one hashtag line / الكومنت المثبت), thumbnail (`make_thumbnail_v11.py`: his REAL twin frame cut out with tools/matte.py --png,
-   HTML -> headless Chrome screenshot, big Arabic text high, tool logos on an oval, no overlap).
+   HTML -> headless Chrome screenshot, big Arabic text high, tool logos on an oval, no overlap) = the LAYOUT DRAFT; Aly prefers the final from
+   Higgsfield (gpt_image_2_6, 16:9, 2k, high, 4 credits / 2 images) with the draft + his real cut-out face as references and «keep the man exactly
+   as in reference 2»; compare face crops with the reference before sending (output/thumbnail_v11_hf_1/2.jpg).
 
 ## 4. Generation notes (avatar mode)
 - New twin lines: ONE HeyGen TTS request for all lines (voice 68fd7b29…, `withTimestamps`), split by the character timestamps, Whisper-check
