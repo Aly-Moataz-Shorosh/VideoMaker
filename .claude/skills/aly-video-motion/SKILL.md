@@ -248,6 +248,16 @@ Add what he liked to section 2 and every mistake to section 3 (with the fix), pl
 - Every card shows ITS product (no Claude Code clip on a Cowork / Chrome card); a web clip always shows its source; logos from the official site
   (bot-check = use Wikimedia Commons / the site header, never bypass); a white logo never on a white card.
 - Separators find their part by NAME; no board may cover a separator. Logos appear on their own word.
+- Generated avatar clips (HeyGen batch) are placed by SENTENCE IDs from the current timeline, never by stored seconds: one new hold moved every
+  circle 1.5 s off in v10 (caught on a still, fixed in make_props_v10.py).
+- NEVER a blank stretch: an empty / nearly empty scene (a 0.1 s clip stretched over a hold, an empty page after a separator) is removed and the
+  board before it stays (or the next one starts earlier, title at once). Holds you add need a board that lasts through them.
+- Picture walls (PDF photos) are FILLERS: when a real explanation card needs the spot, the filler leaves early or never shows (v10_resolve.py).
+  Two boards over the same seconds = one board (merge), never two that cancel each other.
+- Arabic text: a lone «و» between two English words reads like «g» even with a space -> write «،» (Claude Code، Codex); a line that STARTS with an
+  English word runs left-to-right -> start every mixed line with Arabic (bill: «استخدمت 405 كريدت في HeyGen ...»), no parentheses.
+- Colour names in props must be palette names the component maps (E.mustard ...): a plain «mustard» is not a CSS colour -> the arrow was invisible.
+- A bill/summary board needs time to READ: add a silent hold after its sentence (3 s for 5 lines).
 
 **OVERLAP LAW (Aly 2026-11-23): no element ever overlaps another one on screen at the same moment, in ANY video, hand-placed cards too.**
 Run an automatic resolver + an overlap check that must report 0 before every render (aiworld: v9_resolve.py + check_overlap_v9.py). The old resolver

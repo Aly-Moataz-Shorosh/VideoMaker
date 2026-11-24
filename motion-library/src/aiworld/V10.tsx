@@ -183,10 +183,11 @@ const Edge: React.FC<{d: D; f: number}> = ({d, f}) => {
   const [x1, y1, x2, y2] = d.pts; const mx = (x1 + x2) / 2 + (d.bend ?? 0), my = (y1 + y2) / 2 - Math.abs(d.bend ?? 0) * 0.3;
   const path = `M${x1},${y1} Q${mx},${my} ${x2},${y2}`; const L = Math.hypot(x2 - x1, y2 - y1) * 1.15;
   const ang = Math.atan2(y2 - my, x2 - mx) * 180 / Math.PI;
+  const col = d.color ? ((E as Record<string, string>)[d.color] ?? d.color) : gold;   // palette names ('mustard' is not a CSS colour: those arrows were invisible)
   return (
     <svg width={1920} height={1080} style={{position: 'absolute', inset: 0, opacity: o}}>
-      <path d={path} fill="none" stroke={d.color ?? gold} strokeWidth={d.wd ?? 4} strokeLinecap="round" strokeDasharray={`${L} ${L}`} strokeDashoffset={L * (1 - k)} />
-      {d.arrow !== false && k > 0.95 ? <g transform={`translate(${x2},${y2}) rotate(${ang})`}><path d="M-16,-9 L0,0 L-16,9" fill="none" stroke={d.color ?? gold} strokeWidth={d.wd ?? 4} strokeLinecap="round" /></g> : null}
+      <path d={path} fill="none" stroke={col} strokeWidth={d.wd ?? 4} strokeLinecap="round" strokeDasharray={`${L} ${L}`} strokeDashoffset={L * (1 - k)} />
+      {d.arrow !== false && k > 0.95 ? <g transform={`translate(${x2},${y2}) rotate(${ang})`}><path d="M-16,-9 L0,0 L-16,9" fill="none" stroke={col} strokeWidth={d.wd ?? 4} strokeLinecap="round" /></g> : null}
     </svg>
   );
 };
