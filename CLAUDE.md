@@ -385,7 +385,13 @@ Done (2026-10-06):
   N25/N38/N43/N55a/b, OPEN gap before S003.1, separator length = kids shout + cheer) -> words_v9_files -> make_props_v9 (v9_new.py = all v8 specs moved by M89
   through the source + new boards; note 3 rule: a board never starts under a full-frame face; v9_resolve.py = GENERAL OVERLAP LAW) -> make_sfx_v9 (kids9_NN
   in motion-library/public/sfx) -> render_v9.sh -> qa_v9. Generated assets: assets/ai/heygen/v9 (jobs_v9.md has every id), assets/ai/elevenlabs/kids_v9,
-  assets/ai/higgsfield/v9. Sheet `review_rough_v8_notes.md` (all ✓). Waiting for Aly's review.
+  assets/ai/higgsfield/v9. Sheet `review_rough_v8_notes.md` (all ✓). Aly reviewed v9: 56 notes in `review_rough_v9_notes.md`.
+- 2026-11-24 aiFullVideoCost rough cut v10 (Aly «متنساش اي حاجة بقى و نفذ يلا»): `output/rough_cut_v10.mp4` (25:33.8, ONE file, handles burned, no clean/Premiere).
+  Composition `ai-world-v10` (V10.tsx: TreeMap by sep name, 5 static faint watermarks, Puppet, FaceRing centring, palette colour names in arrows).
+  Pipeline v10 = make_timeline_v10 -> words_v10_files -> make_props_v10 (v10_new.py specs; HeyGen batch `assets/ai/heygen/v10/avatar_batch_v10.mp4`
+  placed by SENTENCE IDS; blank-fill rule; filler wall pictures; Arabic «و»/RTL rule; v10_resolve + check_overlap_v10 = 0) -> make_sfx_v10 (kids10_NN groups)
+  -> render_v10.sh -> qa_v10.py (black/freeze + lip gate on the final file) + qa_audio_v10.py (Whisper hear-check). Bill = make_bill_v10.py (account numbers).
+  Sheet `review_rough_v9_notes.md` 56/56 ✓ with evidence. Chunks D:/Temp/aiw10_chunks kept (ask). Waiting for Aly's review.
 - 2026-11-22 `projects/2026-11-22 reel-h garrett warren short video` (his 9:16 phone recording: Garrett Warren, Avatar stunt coordinator, Q&A at
   UTH Festival 2026, GEM, style 13) -> `output/garrett_warren_uth.mp4` (2:05) + .txt. NEW composition `uth-reel` (src/uth/UthReel.tsx): phone footage
   full frame + calm zoom, hook ("if your pre-vis is good, I'll hire you") + rewind + answer from "Hit me", EN captions from ElevenLabs Scribe (Aly asked;
