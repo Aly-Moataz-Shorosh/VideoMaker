@@ -12,6 +12,9 @@ Deep docs (read only what the job needs): `docs/14` modes · `docs/13` plan rule
 ## 00. Shorts count — ASK first (Aly 2026-10-14)
 Before any shorts job ask: one short or several? One = the WHOLE goal of the video (complete tutorial, no missing step).
 Several = give him suggestions, he picks. NEVER build before he picks (cs ep01 2026-10-21: my pick rejected) — list each idea with length + % motion graphics, most motion first. HARD RULE: no short ever reaches 3:00 (CTA included).
+REACH METHOD (Aly 2026-11-24, Homus course): pick and script shorts with skill `aly-reach-method` (`references/shorts-from-long.md`):
+each idea gets type A reach / B trust / C action (his split 55/35/10), a proven format (series when ≥ 5), 3 hooks (visual first frame),
+target signal (rewatch/share/save/comment) and a score /50 — add these columns to the table he picks from. Scripts / AI videos: same skill.
 TUTORIAL short = SIMPLE + FAST (~1 min, Aly 2026-10-16: 2:51 was "طويل على الفاضي"; the CTA sends them to the full video):
 hook → tool → download → convert → code → result → compare → summary, ONE key sentence each. "Whole goal" = the goal in brief.
 But (v2 review): keep the sentence that gives the hook its meaning (what it's FOR), show the tool's real look before its plugin, add his real

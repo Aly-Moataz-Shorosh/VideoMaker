@@ -35,3 +35,6 @@ projects/_tests/
 
 # third-party repos cloned for reference (blender-skills, MIT) - not part of VideoMaker
 tools/external/
+
+# course material Aly bought (Homus) — local only
+references/Homus/

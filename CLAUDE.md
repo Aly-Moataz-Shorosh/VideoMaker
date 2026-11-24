@@ -32,6 +32,8 @@ Full context: `docs/01-about-aly.md`.
    A whole long video made with AI (twin explains, separators, boards per sentence): `docs/36-recipe-ai-world-explainer.md` (style 27).
    His AI PRESENTER + STUDIO kit (twin, voice, S4g studio + other looks, IDs, thumbnails) for ANY topic / ANY style: `docs/37-avatar-studio-kit.md`,
    files `brand/avatar-studio/` (kit.json).
+6b. Writing a SCRIPT, cutting SHORTS from a long video, or scripting an AI video for REACH: skill `.claude/skills/aly-reach-method/`
+   (Homus course method, his split 55% reach / 35% trust / 10% action; summary `docs/38-reach-method-homus.md`).
 7. Only if needed: `docs/02-current-workflow.md`, `docs/04-pipeline-plan.md`, `docs/08-token-rules.md`,
    `docs/09-chat-history.md`.
 
@@ -414,3 +416,7 @@ Done (2026-10-06):
   FB aly.shorosh (Aly: no LinkedIn/Behance). Avoid "و" between two English words in Arabic text (rendered like "g"). Scripts tools/recipes/uthgarrett/.
   APPROVED v2 = **style 26 event-talk-reel** (styles/26, recipe docs/35). v2 `output/v2/` = English title + Arabic under it, footer face + handles on one line (no name image), .txt in English
   ("I attended … and recorded this moment myself"). Temp renders in work/tmp (raw*.mp4 + pieces) kept until Aly says delete.
+- 2026-11-24 REACH METHOD: Aly's Homus course (`references/Homus/`, not in git — course material) studied in full -> skill
+  `aly-reach-method` (funnel A/B/C + his split 55/35/10, formats + series, hook ladder + visual first frame, keep/one-up/new promise,
+  22 techniques, score /50, shorts-from-long method, AI-video script order, optimization loop + `scripts/reach_batch.py`). Summary docs/38.
+  Copies: Content Creator `.claude/skills/` + `claude-code-setup/skills/` + `claude-code-setup/aly-reach-method.zip` (claude.ai upload).
