@@ -259,6 +259,11 @@ Add what he liked to section 2 and every mistake to section 3 (with the fix), pl
 - Colour names in props must be palette names the component maps (E.mustard ...): a plain «mustard» is not a CSS colour -> the arrow was invisible.
 - A bill/summary board needs time to READ: add a silent hold after its sentence (3 s for 5 lines).
 
+**STYLE 27 ai-world-explainer APPROVED (2026-11-24, rough cut v11)** — the whole recipe + every rule it cost is in docs/36; read it before any
+long AI-made video (twin explains, separators with kids, one board per sentence, real-word logos, measured overlap check, partial render).
+Thumbnail he asked me to MAKE: his real twin frame cut out (tools/matte.py --png) + HTML -> headless Chrome screenshot (Arabic shaping,
+SVG logos), big Arabic text high, logos on an oval clear of the text and of his body, 2 versions = the first 2 titles.
+
 **aiFullVideoCost v10 review (2026-11-24) — repeat / never again:**
 - An example must be EXPLAINED before its result: the idea (why it matters) -> the steps (folder, prompt, code, open libraries, output files)
   -> «تعالوا نسمع النتيجة» -> the result in its own hold, clearly labelled. A result that starts out of nowhere looks like a mistake.

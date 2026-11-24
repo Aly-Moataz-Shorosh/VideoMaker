@@ -241,6 +241,16 @@
    "build": "composition 'uth-reel' (src/uth/UthReel.tsx)",
    "recipe": "docs/35-recipe-event-talk-reel.md",
    "scripts": "tools/recipes/uthgarrett/ (transcribe_en.py, yt_sheet.py, yt_frames.py, plan.py, make_cam.py, make_props.py)"
+  },
+  "27": {
+   "folder": "27 ai-world-explainer",
+   "name": "AI-world explainer: long 16:9 YouTube video made entirely with AI — Aly's HeyGen twin (full-frame + talking circle top-left), families/sub-parts with TreeMap separators + kids shouting the name, breadcrumb, star background, one explaining board per sentence (real pictures / logos on their REAL word / diagrams / counters / typed code), examples explained step by step before «تعالوا نسمع النتيجة» + the result, real-number bill, Suno song with static faint watermarks, summary map, «الـ AI مش ساحر», CTA with his real photo",
+   "approved": "«عالم الـ AI كله» rough cut v11 (2026-11-24, «دي تكون النسخة الاخيرة» + «save knowledge and the new style»)",
+   "input": "script (or idea -> script in his words), credit OK for HeyGen / ElevenLabs / Higgsfield, his real material (PDF, recordings, screenshots)",
+   "build": "composition 'ai-world-v11' (src/aiworld/V11.tsx + enta kit)",
+   "recipe": "docs/36-recipe-ai-world-explainer.md (+ docs/33 avatar mode)",
+   "scripts": "tools/recipes/aiworld/ (make_timeline_v11, words_real_v11, v11_new, make_props_v11, v11_resolve, check_overlap_v11, make_sfx_v11, redo_v11, render_v11.sh, qa_v11, make_thumbnail_v11)",
+   "replaces": "drafts 21–25 (parts of this video before approval)"
   }
  },
  "_always": "Every style: his ORIGINAL voice (only per-sentence gain to one level, no cleanup), edges fitted on the waveform, sfx, CTA clip + comment card at the end of shorts, <video>.txt beside every output, sfx + voice stems. Word script only on request. Shorts: ASK one short (whole goal of the video) or several (suggestions, he picks) first; no short ever reaches 3:00."

@@ -29,6 +29,7 @@ Full context: `docs/01-about-aly.md`.
 6. AI avatar / AI voice / generated B-roll (Aly not on camera): `docs/33-ai-avatar-and-generative-services.md`
    (MCP servers heygen, elevenlabs, higgsfield in `.mcp.json`; first run `/mcp` → Authenticate each).
    Hybrid video (real-footage lipsync + generated Aly + B-roll + 3D + motion): `docs/34-recipe-hybrid-ai-reel.md`.
+   A whole long video made with AI (twin explains, separators, boards per sentence): `docs/36-recipe-ai-world-explainer.md` (style 27).
 7. Only if needed: `docs/02-current-workflow.md`, `docs/04-pipeline-plan.md`, `docs/08-token-rules.md`,
    `docs/09-chat-history.md`.
 
@@ -399,7 +400,10 @@ Done (2026-10-06):
   make_props_v11 (v11_new.py = v10_new run in v11 time via AIW_TIMELINE + patches; lipfix_v11 = clip sound vs voice; one face at a time;
   v11_resolve = MEASURED pill sizes + grids as one block; check_overlap_v11 = 0) -> make_sfx_v11 -> redo_v11.py (reuse v10 frames only where the
   seconds are identical) -> render_v11.sh (pieces + frame-count check + concat filter) -> qa_v11.py / qa_audio_v11.py.
-  «تجربة حقيقية» rebuilt (one idea per sentence, PDF pictures deduped work/pdf13/unique_v11.json). Render parts deleted with his OK (2026-11-24).
+  «تجربة حقيقية» rebuilt (one idea per sentence, PDF pictures deduped work/pdf13/unique_v11.json).
+  APPROVED v11 (Aly «دي تكون النسخة الاخيرة» + «save knowledge and the new style», 2026-11-24) -> **style 27 ai-world-explainer** (styles/27, recipe
+  `docs/36-recipe-ai-world-explainer.md`, scripts `tools/recipes/aiworld/`). Deliverables: `output/rough_cut_v11.txt` (titles, description with
+  chapters + sources, pinned comment), thumbnails `output/thumbnail_v11_A.jpg` / `_B.jpg` (his REAL twin frame cut out, HTML -> headless Chrome). Render parts deleted with his OK (2026-11-24).
 - 2026-11-22 `projects/2026-11-22 reel-h garrett warren short video` (his 9:16 phone recording: Garrett Warren, Avatar stunt coordinator, Q&A at
   UTH Festival 2026, GEM, style 13) -> `output/garrett_warren_uth.mp4` (2:05) + .txt. NEW composition `uth-reel` (src/uth/UthReel.tsx): phone footage
   full frame + calm zoom, hook ("if your pre-vis is good, I'll hire you") + rewind + answer from "Hit me", EN captions from ElevenLabs Scribe (Aly asked;
