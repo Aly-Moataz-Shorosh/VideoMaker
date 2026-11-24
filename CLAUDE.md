@@ -399,7 +399,7 @@ Done (2026-10-06):
   make_props_v11 (v11_new.py = v10_new run in v11 time via AIW_TIMELINE + patches; lipfix_v11 = clip sound vs voice; one face at a time;
   v11_resolve = MEASURED pill sizes + grids as one block; check_overlap_v11 = 0) -> make_sfx_v11 -> redo_v11.py (reuse v10 frames only where the
   seconds are identical) -> render_v11.sh (pieces + frame-count check + concat filter) -> qa_v11.py / qa_audio_v11.py.
-  «تجربة حقيقية» rebuilt (one idea per sentence, PDF pictures deduped work/pdf13/unique_v11.json). Parts D:/Temp/aiw11_parts (ask before deleting).
+  «تجربة حقيقية» rebuilt (one idea per sentence, PDF pictures deduped work/pdf13/unique_v11.json). Render parts deleted with his OK (2026-11-24).
 - 2026-11-22 `projects/2026-11-22 reel-h garrett warren short video` (his 9:16 phone recording: Garrett Warren, Avatar stunt coordinator, Q&A at
   UTH Festival 2026, GEM, style 13) -> `output/garrett_warren_uth.mp4` (2:05) + .txt. NEW composition `uth-reel` (src/uth/UthReel.tsx): phone footage
   full frame + calm zoom, hook ("if your pre-vis is good, I'll hire you") + rewind + answer from "Hit me", EN captions from ElevenLabs Scribe (Aly asked;
