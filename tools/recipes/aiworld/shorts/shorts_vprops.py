@@ -43,11 +43,15 @@ def item_boxes(s):
     return bs
 
 GAPX, GAPY = 30, 58
-BIG = 2.2
+BIG = 3.0
 def _bb(items, end):
     bs = [v11_resolve._bx(d, end) for d in items]
     bs = [b for b in bs if b]
     return (min(b[0] for b in bs), min(b[1] for b in bs), max(b[2] for b in bs), max(b[3] for b in bs)) if bs else None
+
+def _fit_size(d, want):
+    n = len(str(d.get('label') or '')); extra = 1.4 if d.get('emo') else 0
+    return min(want, (ZONE[2] - ZONE[0] - 60) / max(1.0, n * 0.6 + extra)) if n else want
 
 def _shift(items, dx, dy):
     for d in items:
@@ -82,6 +86,31 @@ def relayout(s):
     its = [d for d in s['items'] if d.get('k') not in SKIPK and d.get('x') is not None and ('y' in d or d.get('k') == 'bar')]
     if not its: return 'empty'
     for d in its: d.setdefault('at', 0)
+    # Aly 2026-11-24: 3+ pictures that come together = ONE clean matrix of 2 columns, same size (never a small one on top of another)
+    for gk in {d['grid'] for d in its if d.get('grid')}:   # an old grid of pictures becomes a clean matrix too
+        g0 = [d for d in its if d.get('grid') == gk and d.get('k') == 'node' and d.get('src')]
+        if len(g0) >= 3:
+            for d in g0: d.pop('grid'); d['at0'] = d['at']; d['at'] = min(q['at'] for q in g0)   # one block (each still pops on its own word below)
+    pics = sorted([d for d in its if d.get('k') == 'node' and d.get('src') and not d.get('grid')], key=lambda d: d['at'])
+    mi = 0
+    while pics:
+        g = [q for q in pics if q['at'] - pics[0]['at'] <= 25]
+        pics = [q for q in pics if q not in g]
+        if len(g) < 3: continue
+        g.sort(key=lambda d: (round(d['y'] / 60), -d['x']))   # reading order: top row first, right to left
+        ar = g[0].get('ar', 16 / 9); lab = 80 if any(d.get('label') for d in g) else 0
+        best = None
+        for cols in (2, 3, 4, 5):   # the biggest pictures that fit: full width and at most ~75% of the board height
+            rows = -(-len(g) // cols)
+            w_ = min(470, (ZONE[2] - ZONE[0] - 30 * (cols - 1)) / cols, ((ZONE[3] - ZONE[1]) * 0.75 / rows - 30 - lab) * ar)
+            if best is None or w_ > best[1]: best = (cols, w_)
+        cols, w = best[0], round(best[1]); h = w / ar + lab
+        for i, d in enumerate(g):
+            c = i % cols
+            d['w'] = w; d['x'] = round(960 + ((cols - 1) / 2 - c) * (w + 30)); d['y'] = round(300 + (i // cols) * (h + 30)); d['grid'] = f'mx{mi}'
+            d['size'] = max(d.get('size', 30), 34)
+            if d.get('at0') is not None: d['at'] = d.pop('at0')
+        mi += 1
     groups = {}
     for d in its:
         key = ('grid', d['grid']) if d.get('grid') else ('bars',) if d.get('k') == 'bar' else ('one', id(d))
@@ -91,18 +120,33 @@ def relayout(s):
     for g in groups.values():
         bb = _bb(g, end)
         if not bb: continue
-        grow = min(BIG, Wz * 0.92 / max(1, bb[2] - bb[0]), (ZONE[3] - ZONE[1]) * 0.55 / max(1, bb[3] - bb[1]))
+        grow = min(BIG, Wz * 0.92 / max(1, bb[2] - bb[0]), (ZONE[3] - ZONE[1]) * 0.7 / max(1, bb[3] - bb[1]))
         if grow > 1.05: _shrink(g, grow); bb = _bb(g, end)   # phone size: cards made for 1920 are enlarged for the 1080-wide frame
+        for d in g:   # Aly «كبر شوية»: no small text on a phone — pills >= 46 px, labels under pictures >= 36 px, typed >= 32 px
+            if d.get('k') == 'node': d['size'] = round(_fit_size(d, max(d.get('size', 30), 36 if (d.get('src') or d.get('logo')) else 46)), 1)
+            elif d.get('k') == 'typed': d['size'] = max(d.get('size', 24), 32)
+        bb = _bb(g, end)
         for _ in range(3):
             if bb[2] - bb[0] <= Wz: break
             _shrink(g, Wz / (bb[2] - bb[0]) * 0.97); bb = _bb(g, end)
         blocks.append(dict(items=g, box=bb, orig=bb, at=min(d['at'] for d in g), out=max(min(d.get('out', end), end) for d in g)))
     blocks.sort(key=lambda b: b['at'])
+    merged = []
+    for b in blocks:   # a bare logo and the line that comes right after it on the same height = one block (logo on top)
+        a0 = merged[-1] if merged else None
+        if a0 and len(a0['items']) == 1 and a0['items'][0].get('logo') and not a0['items'][0].get('label')                 and b['at'] - a0['at'] <= 25 and abs((b['orig'][1] + b['orig'][3]) / 2 - (a0['orig'][1] + a0['orig'][3]) / 2) < 60:
+            ab, bb2 = a0['box'], b['box']
+            _shift(b['items'], (ab[0] + ab[2]) / 2 - (bb2[0] + bb2[2]) / 2, ab[3] + 10 - bb2[1])
+            a0['items'] = a0['items'] + b['items']; a0['box'] = _bb(a0['items'], end); a0['out'] = max(a0['out'], b['out'])
+            continue
+        merged.append(b)
+    blocks = merged
     rows = []
     for b in blocks:
         w = b['box'][2] - b['box'][0]
         r = rows[-1] if rows else None
-        together = r and len(r['bl']) < 3 and b['at'] - r['at'] <= 25          # entered (almost) together -> share a row
+        small = w <= Wz * 0.5 and r and r['w'] <= Wz * 0.5
+        together = r and small and len(r['bl']) < 3 and b['at'] - r['at'] <= 25          # small things entering together share a row
         side = r and len(r['bl']) < 3 and abs((b['orig'][1] + b['orig'][3]) / 2 - r['cy']) < 70 and b['at'] - r['at'] <= 50             and abs(b['orig'][0] - r['bl'][-1]['orig'][0]) > 60
         if (together or side) and r['w'] + GAPX + w > Wz:
             k = (Wz - GAPX * len(r['bl'])) / (r['w'] - GAPX * (len(r['bl']) - 1) + w)
@@ -112,6 +156,13 @@ def relayout(s):
                 w = b['box'][2] - b['box'][0]
                 r['w'] = sum(q['box'][2] - q['box'][0] for q in r['bl']) + GAPX * (len(r['bl']) - 1)
                 r['h'] = max(q['box'][3] - q['box'][1] for q in r['bl'])
+        if side and r['w'] + GAPX + w > Wz + 1 and len(r['bl']) == 1:
+            # a table row (logo + its line) that can't sit side by side: stack them as ONE block (logo on top, line under it)
+            a0 = r['bl'][0]; ab, bb2 = a0['box'], b['box']
+            _shift(b['items'], (ab[0] + ab[2]) / 2 - (bb2[0] + bb2[2]) / 2, ab[3] + 10 - bb2[1])
+            a0['items'] = a0['items'] + b['items']; a0['box'] = _bb(a0['items'], end); a0['out'] = max(a0['out'], b['out'])
+            r['w'] = a0['box'][2] - a0['box'][0]; r['h'] = a0['box'][3] - a0['box'][1]; r['out'] = max(r['out'], b['out'])
+            continue
         if (together or side) and r['w'] + GAPX + w <= Wz + 1:
             r['bl'].append(b); r['w'] += GAPX + w; r['h'] = max(r['h'], b['box'][3] - b['box'][1]); r['out'] = max(r['out'], b['out'])
         else:
@@ -128,6 +179,17 @@ def relayout(s):
             if ok or not vis: break
             old = min(vis, key=lambda q: q['at'])   # hand-over: the oldest row leaves just before this one enters
             if old['at'] + 12 > r['at'] - 2:   # entered together: nothing can leave -> make this row smaller, else give up (counted)
+                if not r.get('lifted'):   # first: rows that came WITH this one move up into free space left by rows that already left
+                    r['lifted'] = True; moved = False
+                    for q in vis:
+                        others = [o for o in vis if o is not q]
+                        for ny in sorted([ZONE[1]] + [o['y'] + o['h'] + GAPY for o in others]):
+                            if ny >= q['y']: break
+                            if all(ny + q['h'] + GAPY <= o['y'] or ny >= o['y'] + o['h'] + GAPY for o in others):
+                                for b in q['bl']:
+                                    _shift(b['items'], 0, ny - q['y']); b['box'] = (b['box'][0], b['box'][1] + ny - q['y'], b['box'][2], b['box'][3] + ny - q['y'])
+                                q['y'] = ny; moved = True; break
+                    if moved: continue
                 tries = r.get('tries', 0)
                 if tries >= 3:   # last resort: the old row leaves anyway (a fast hand-over beats an overlap)
                     old['out'] = max(old['at'] + 1, r['at'] - 2)
@@ -136,8 +198,10 @@ def relayout(s):
                         for d in b['items']: d['out'] = min(d.get('out', end), old['out'])
                     continue
                 r['tries'] = tries + 1
+                avail = ZONE[3] - (max(q['y'] + q['h'] for q in vis) + GAPY)   # shrink exactly to the free space under what stays
+                kk = max(0.6, min(0.95, avail / max(1, r['h'])))
                 for b in r['bl']:
-                    _shrink(b['items'], 0.82); b['box'] = _bb(b['items'], end)
+                    _shrink(b['items'], kk); b['box'] = _bb(b['items'], end)
                 r['h'] = max(b['box'][3] - b['box'][1] for b in r['bl']); r['w'] = sum(b['box'][2] - b['box'][0] for b in r['bl']) + GAPX * (len(r['bl']) - 1)
                 continue
             old['out'] = max(old['at'] + 12, r['at'] - 2)
@@ -158,6 +222,8 @@ def relayout(s):
         r['y'] += dy
         for b in r['bl']:
             _shift(b['items'], 0, dy); b['box'] = (b['box'][0], b['box'][1] + dy, b['box'][2], b['box'][3] + dy)
+    for d in [d for r in placed for b in r['bl'] for d in b['items']]:   # «كبر شوية»: text never ends up tiny after a row squeeze
+        if d.get('k') == 'node': d['size'] = round(_fit_size(d, max(d.get('size', 30), 32 if (d.get('src') or d.get('logo')) else 40)), 1)
     # safety net (overlap law): any two cards still on screen together and touching -> the earlier one leaves before the later enters
     flat = sorted([d for b in [b for r in placed for b in r['bl']] for d in b['items']], key=lambda d: d['at'])
     for i, a in enumerate(flat):

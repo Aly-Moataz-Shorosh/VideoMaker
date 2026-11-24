@@ -60,3 +60,6 @@ batch's test variables. Write what we learned into the feedback log so the next 
   word captions with English runs LTR, handles footer) → `shorts_stills.sh N "t…"` → `render_shorts.sh N…` (audio from the final mix,
   -16 LUFS, CRF 23) → `shorts_txt.py`. Full-frame clips: `shorts/vertical_clips.json` maps each 16:9 file to its 9:16 regeneration.
 - No new voice is needed for hooks when the line already exists in the long video: cut it from later and play it first.
+- Aly's layout notes on the vertical boards (2026-11-24): «2x3 matrix أحسن من الـ overlap الصغير» → 3+ pictures that come together =
+  ONE clean matrix, same size (2 columns up to 6, more columns only when needed), never a small picture over others;
+  «كبر شوية» → cards up to ×3, text pills ≥ 40-46 px, labels under pictures ≥ 32-36 px, a big group gets its own row.
