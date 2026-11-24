@@ -60,9 +60,9 @@ const VBrowser: React.FC<{s: Scene}> = ({s}) => {
   const cur = [...pages].reverse().find((d) => f >= d.at) ?? pages[0];
   if (!cur) return null;
   const p = enter(f, fps, cur.at), o = interpolate(f, [(cur.out ?? s.dur * fps) - 10, cur.out ?? s.dur * fps], [1, 0], clamp);
-  const Wd = 960, H = 980;
+  const Wd = 960, H = 760;   // a page-shaped window (the 16:10 page fills it), scrolling down like v11
   return (
-    <div style={{position: 'absolute', left: 60, top: 400, width: Wd, height: H + 44, borderRadius: 18, overflow: 'hidden', background: '#0e1220',
+    <div style={{position: 'absolute', left: 60, top: 390, width: Wd, height: H + 44, borderRadius: 18, overflow: 'hidden', background: '#0e1220',
       boxShadow: '0 30px 80px rgba(0,0,0,.6)', ...stickerBorder(6), transform: `translateY(${(1 - p) * 50}px) scale(${0.92 + 0.08 * p})`, opacity: Math.min(1, p * 1.5) * o}}>
       <div style={{height: 44, background: '#1a2036', display: 'flex', alignItems: 'center', gap: 9, padding: '0 16px'}}>
         {['#FF5A6E', '#F5C451', '#4CD37A'].map((c) => <div key={c} style={{width: 13, height: 13, borderRadius: 7, background: c}} />)}
@@ -71,8 +71,8 @@ const VBrowser: React.FC<{s: Scene}> = ({s}) => {
       </div>
       <div style={{width: Wd, height: H, overflow: 'hidden', position: 'relative'}}>
         {/* the whole page width, scrolling down slowly (a still page = freeze) */}
-        <Img src={S(cur.src)} style={{position: 'absolute', left: 0, width: Wd,
-          top: interpolate(f, [cur.at + 15, cur.out ?? s.dur * fps], [0, -H * 0.9], {...clamp, easing: Easing.inOut(Easing.sin)})}} />
+        <Img src={S(cur.src)} style={{width: '100%', height: '100%', objectFit: 'cover',
+          objectPosition: cur.pos ?? `50% ${interpolate(f, [cur.at + 15, cur.out ?? s.dur * fps], [0, 100], {...clamp, easing: Easing.inOut(Easing.sin)})}%`}} />
       </div>
     </div>
   );

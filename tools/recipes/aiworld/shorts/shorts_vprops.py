@@ -309,9 +309,18 @@ def build(sd):
             if d.get('label') in SIMPLE:
                 d['label'], sub = SIMPLE[d['label']]
                 if sub: d['sub'] = sub
-        if s['k'] in ('BOARD', 'AV', 'CLIP', 'WEB'): modes.append(relayout(s))
+        if s['k'] in ('BOARD', 'AV', 'CLIP', 'WEB'):
+            global ZONE
+            keep = ZONE
+            if s['k'] in ('AV', 'CLIP'): ZONE = (70, 1020, 1010, 1420)   # his face / the shot stays clear: cards in the lower part only
+            if s['k'] == 'WEB': ZONE = (70, 1230, 1010, 1420)            # under the browser
+            try: modes.append(relayout(s))
+            finally: ZONE = keep
         for c in s.get('clips', []):
-            if c['src'] in VCLIPS: c['src'] = VCLIPS[c['src']]; c['vertical'] = True
+            if c['src'] in VCLIPS:   # [9:16 file, the second of the source where that file starts]
+                nsrc, s0, k = (VCLIPS[c['src']] + [1.0])[:3]   # k = 9:16 file length / source window length (24 fps output is a bit longer)
+                c['src'] = nsrc; c['skip'] = max(0.0, round((c.get('skip', 0) - s0) * k, 3));   # (other uses of the same shot outside the short's window may fall before it)
+                c['rate'] = round(c.get('rate', 1) * k, 4); c['vertical'] = True
             elif s['k'] in ('AV', 'CLIP', 'LYR'): flagged.append(c['src'].split('/')[-1])
     left = []
     nov = sum(overlaps(s) for s in scenes)

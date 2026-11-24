@@ -65,3 +65,6 @@ batch's test variables. Write what we learned into the feedback log so the next 
   «كبر شوية» → cards up to ×3, text pills ≥ 40-46 px, labels under pictures ≥ 32-36 px, a big group gets its own row.
 - «الـ text خارجة بره الشاشة و حاول تبسطها» (2026-11-24): long board lines are rewritten SHORT for the phone — one big line + a small
   line under it (`SIMPLE` map in shorts_vprops.py), text width always capped to the frame, a tool's logo stays on top of its own line.
+- 9:16 for generated clips (2026-11-25): his twin lines -> HeyGen (portrait look inside his group from a 9:16 frame of the studio, audio = the
+  voice stem of those lines; far cheaper than Higgsfield); other shots -> Higgsfield `reframe` 720p (keeps the SAME shot, outpaints top/bottom,
+  5.25 credits/s, fails under ~5 s: cut each used window to >= 5 s, output is 24 fps and ~1% longer -> playbackRate = k).

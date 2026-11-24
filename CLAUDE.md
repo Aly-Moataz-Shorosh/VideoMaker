@@ -420,3 +420,9 @@ Done (2026-10-06):
   `aly-reach-method` (funnel A/B/C + his split 55/35/10, formats + series, hook ladder + visual first frame, keep/one-up/new promise,
   22 techniques, score /50, shorts-from-long method, AI-video script order, optimization loop + `scripts/reach_batch.py`). Summary docs/38.
   Copies: Content Creator `.claude/skills/` + `claude-code-setup/skills/` + `claude-code-setup/aly-reach-method.zip` (claude.ai upload).
+- 2026-11-25 aiFullVideoCost -> 14 VERTICAL SHORTS `output/shorts/NN_slug.mp4` + .txt (posting order, reach method: 8 A / 5 B / 1 C). Aly: no 16:9 frame
+  inside 9:16 -> comp `ai-world-vshort` (VShort11.tsx) with boards RE-LAID OUT by `shorts_vprops.py` (vertical packer, picture matrix, big
+  cards, short two-line bill cards, cards under his face in twin scenes, overlap 0); full-frame generated clips made 9:16: twin lines on HeyGen
+  (new PORTRAIT look d16362fc… in his group, ~5 credits), jet/song/real-room shots = Higgsfield REFRAME 720p (5.25 credits/s, needs >= ~5 s
+  clips, 24 fps output -> rate factor k), ids in assets/ai/*/jobs*.md. Scripts tools/recipes/aiworld/shorts/. Recipe in skill aly-reach-method
+  references/shorts-from-long.md §7. Short 7 end card = thumbnail only: add the QR when the long video's link exists.
