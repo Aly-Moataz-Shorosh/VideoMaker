@@ -63,3 +63,5 @@ batch's test variables. Write what we learned into the feedback log so the next 
 - Aly's layout notes on the vertical boards (2026-11-24): «2x3 matrix أحسن من الـ overlap الصغير» → 3+ pictures that come together =
   ONE clean matrix, same size (2 columns up to 6, more columns only when needed), never a small picture over others;
   «كبر شوية» → cards up to ×3, text pills ≥ 40-46 px, labels under pictures ≥ 32-36 px, a big group gets its own row.
+- «الـ text خارجة بره الشاشة و حاول تبسطها» (2026-11-24): long board lines are rewritten SHORT for the phone — one big line + a small
+  line under it (`SIMPLE` map in shorts_vprops.py), text width always capped to the frame, a tool's logo stays on top of its own line.

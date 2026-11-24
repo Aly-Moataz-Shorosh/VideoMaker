@@ -7,7 +7,7 @@ W="$PWD"; ML="$W/../../../motion-library"; SRC="$W/../output/rough_cut_v11.mp4";
 for n in "$@"; do
   N=$(printf %02d $n)
   SLUG=$(python -c "import sys;sys.path.insert(0,'scripts');from shorts_data import SHORTS;print([s['slug'] for s in SHORTS if s['n']==$n][0])")
-  P="$W/shorts/vprops_$N.json"
+  P="$(cygpath -w "$W/shorts/vprops_$N.json")"
   # ---- audio
   python -I - "$P" "$(cygpath -w "$SRC")" "$(cygpath -w $T/a_$N.wav)" <<'PY'
 import json, subprocess, sys
@@ -24,7 +24,7 @@ PY
   # ---- picture
   NF=$(python -c "import json;p=json.load(open(r'$P',encoding='utf-8'));print(round(p['duration']*25))")
   (cd "$ML" && TEMP='D:\Temp\shr\t' TMP='D:\Temp\shr\t' npx remotion render D:/Temp/bundle_short ai-world-vshort "$(cygpath -w $T/v_$N.mp4)" --muted --crf=18 \
-     --concurrency=6 --timeout=240000 --props="$(cygpath -w "$P")" > $T/log_$N.txt 2>&1) || { echo "#$N render FAILED"; tail -5 $T/log_$N.txt; continue; }
+     --concurrency=6 --timeout=240000 --props="$P" > $T/log_$N.txt 2>&1) || { echo "#$N render FAILED"; tail -5 $T/log_$N.txt; continue; }
   rm -rf $T/t
   got=$(ffprobe -v error -count_frames -select_streams v:0 -show_entries stream=nb_read_frames -of default=nk=1:nw=1 $T/v_$N.mp4 | tr -cd 0-9)
   [ "$got" = "$NF" ] || echo "#$N WARNING frames $got expected $NF"

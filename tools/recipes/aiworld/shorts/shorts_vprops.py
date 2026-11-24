@@ -22,7 +22,26 @@ CUTS = {c['n']: c for c in json.load(open('shorts/cuts.json', encoding='utf-8'))
 W = sorted(json.load(open('words_v11_real.json', encoding='utf-8')), key=lambda w: w['a'])
 VCLIPS = json.load(open('shorts/vertical_clips.json', encoding='utf-8')) if os.path.exists('shorts/vertical_clips.json') else {}
 SKIPK = {'titleAt', 'line', 'brand', 'subscribe', 'sep', 'edge', 'split', 'diff', 'page', 'circle', 'puppet'}
+# Aly «حاول تبسطها»: long board lines are rewritten SHORT for the phone (big line + small line under it)
+SIMPLE = {
+ 'استخدمت 444 كريدت من 600 في HeyGen ـ اشتراك Creator بـ 29$ في الشهر': ('444 كريدت من 600', 'اشتراك Creator ـ 29$ في الشهر'),
+ 'استخدمت حوالي 1088 كريدت في Higgsfield ـ اشتراك Ultra': ('حوالي 1088 كريدت', 'اشتراك Ultra'),
+ 'استخدمت 9197 حرف في ElevenLabs ـ اشتراك Starter بـ 6$ في الشهر': ('9197 حرف', 'اشتراك Starter ـ 6$ في الشهر'),
+ 'استخدمت 40 كريدت في Suno = 8 نسخ للأغنية ـ اشتراك Pro بـ 10$ في الشهر': ('40 كريدت = 8 نسخ للأغنية', 'اشتراك Pro ـ 10$ في الشهر'),
+ 'الاشتراك الشهري في Claude ـ الخطط بتبدأ من 20$': ('اشتراك شهري', 'الخطط من 20$'),
+ 'كله جوه الاشتراكات الشهرية.. ومفيش ولا دولار زيادة': ('كله جوه الاشتراكات.. ولا دولار زيادة', None),
+ 'ببلاش على جهازك: Whisper · Blender · Remotion · HyperFrames · ffmpeg · ComfyUI': ('ببلاش على جهازك', 'Whisper · Blender · Remotion · ffmpeg · ComfyUI'),
+ 'Higgsfield: بالكريدت حسب الخطة': ('Higgsfield', 'بالكريدت حسب الخطة'),
+}
 SEPS = sorted(s['start'] for s in P['scenes'] if s['k'] == 'SEP')
+
+def _bxv(d, end):
+    """v11 box + the real place of a text card WITH a sub line: Node centres the whole column (pill + sub) on y"""
+    if d.get('k') == 'node' and d.get('label') and d.get('sub') and not d.get('src') and not d.get('logo') and d.get('y') is not None:
+        sz = d.get('size', 30); ph = 1.55 * sz + 22; sh = sz * 0.72 * 1.5 + 6; tot = ph + sh
+        w = max(len(str(d['label'])) * sz * 0.6 + 48, len(str(d['sub'])) * sz * 0.72 * 0.6 + 20)
+        return (d['x'] - w / 2, d['y'] - tot / 2 - 4, d['x'] + w / 2, d['y'] + tot / 2 + 4)
+    return v11_resolve._bx(d, end)
 
 def trim_seps(pieces):
     out = []
@@ -37,7 +56,7 @@ def item_boxes(s):
     end = int(s['dur'] * FPS); bs = []
     for d in s['items']:
         if d.get('k') in SKIPK or d.get('x') is None: continue
-        try: b = v11_resolve._bx(d, end)
+        try: b = _bxv(d, end)
         except Exception: b = None
         if b: bs.append(b)
     return bs
@@ -45,7 +64,7 @@ def item_boxes(s):
 GAPX, GAPY = 30, 58
 BIG = 3.0
 def _bb(items, end):
-    bs = [v11_resolve._bx(d, end) for d in items]
+    bs = [_bxv(d, end) for d in items]
     bs = [b for b in bs if b]
     return (min(b[0] for b in bs), min(b[1] for b in bs), max(b[2] for b in bs), max(b[3] for b in bs)) if bs else None
 
@@ -224,12 +243,18 @@ def relayout(s):
             _shift(b['items'], 0, dy); b['box'] = (b['box'][0], b['box'][1] + dy, b['box'][2], b['box'][3] + dy)
     for d in [d for r in placed for b in r['bl'] for d in b['items']]:   # «كبر شوية»: text never ends up tiny after a row squeeze
         if d.get('k') == 'node': d['size'] = round(_fit_size(d, max(d.get('size', 30), 32 if (d.get('src') or d.get('logo')) else 40)), 1)
+    for r in placed:   # logo-on-top blocks: the line sits under the logo again after the text got bigger
+        for b in r['bl']:
+            it = b['items']
+            if len(it) > 1 and it[0].get('logo') and not it[0].get('label'):
+                lb = _bxv(it[0], end); ob = _bb(it[1:], end)
+                if lb and ob: _shift(it[1:], (lb[0] + lb[2]) / 2 - (ob[0] + ob[2]) / 2, lb[3] + 10 - ob[1])
     # safety net (overlap law): any two cards still on screen together and touching -> the earlier one leaves before the later enters
     flat = sorted([d for b in [b for r in placed for b in r['bl']] for d in b['items']], key=lambda d: d['at'])
     for i, a in enumerate(flat):
-        ba = v11_resolve._bx(a, end)
+        ba = _bxv(a, end)
         for c in flat[i + 1:]:
-            bc = v11_resolve._bx(c, end)
+            bc = _bxv(c, end)
             if ba and bc and min(a.get('out', end), c.get('out', end)) - max(a['at'], c['at']) >= 8 and v11_resolve._hit(ba, bc):
                 a['out'] = max(a['at'] + 1, c['at'] - 2)
     for r in placed:
@@ -261,10 +286,10 @@ def overlaps(s):
     end = int(s['dur'] * FPS); n = 0
     its = [d for d in s['items'] if d.get('k') not in SKIPK and d.get('x') is not None and 'at' in d]
     for i, a in enumerate(its):
-        ba = v11_resolve._bx(a, end)
+        ba = _bxv(a, end)
         if not ba: continue
         for b in its[i + 1:]:
-            bb = v11_resolve._bx(b, end)
+            bb = _bxv(b, end)
             if not bb: continue
             t = min(a.get('out', end), b.get('out', end)) - max(a['at'], b['at'])
             if t >= 8 and v11_resolve._hit(ba, bb): n += 1
@@ -280,6 +305,10 @@ def build(sd):
     modes, flagged = [], []
     for s in scenes:
         s['title'] = None
+        for d in s['items']:
+            if d.get('label') in SIMPLE:
+                d['label'], sub = SIMPLE[d['label']]
+                if sub: d['sub'] = sub
         if s['k'] in ('BOARD', 'AV', 'CLIP', 'WEB'): modes.append(relayout(s))
         for c in s.get('clips', []):
             if c['src'] in VCLIPS: c['src'] = VCLIPS[c['src']]; c['vertical'] = True
