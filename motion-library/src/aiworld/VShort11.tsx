@@ -28,7 +28,7 @@ export const vshortSchema = z.object({
   pieces: z.array(z.object({a: z.number(), b: z.number(), o: z.number()})).default([]),
   title: z.string().default(''), hook: z.string().default(''), cta: z.string().default(''), ctaFrom: z.number().default(9999),
   words: z.array(z.object({a: z.number(), b: z.number(), w: z.string()})).default([]), series: z.string().default(''),
-  end: z.object({from: z.number(), thumb: z.string(), line1: z.string(), line2: z.string()}).optional(),
+  end: z.object({from: z.number(), thumb: z.string(), qr: z.string().optional(), line1: z.string(), line2: z.string()}).optional(),
 });
 type Scene = z.infer<typeof scene>;
 type P = z.infer<typeof vshortSchema>;
@@ -195,6 +195,12 @@ const EndCard: React.FC<{e: NonNullable<P['end']>}> = ({e}) => {
       <div style={{width: 940, aspectRatio: '16/9', borderRadius: 18, overflow: 'hidden', ...stickerBorder(8), transform: `scale(${0.8 + 0.2 * k})`}}>
         <Img src={staticFile(e.thumb)} style={{width: '100%', height: '100%', objectFit: 'cover'}} /></div>
       <div style={{fontFamily: 'Cairo', fontWeight: 900, fontSize: 50, color: ink}}><Rtl text={e.line2} /></div>
+      {e.qr ? (
+        <div style={{display: 'flex', alignItems: 'center', gap: 30, opacity: interpolate(f, [18, 32], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})}}>
+          <div style={{width: 330, height: 330, background: '#fff', borderRadius: 18, padding: 14, ...stickerBorder(6)}}>
+            <Img src={staticFile(e.qr)} style={{width: '100%', height: '100%'}} /></div>
+          <div style={{fontFamily: 'Cairo', fontWeight: 900, fontSize: 44, color: gold, maxWidth: 470, lineHeight: 1.3}}><Rtl text="امسح الكود وشوف الفيديو كامل" /></div>
+        </div>) : null}
     </AbsoluteFill>
   );
 };
