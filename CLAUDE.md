@@ -426,3 +426,10 @@ Done (2026-10-06):
   (new PORTRAIT look d16362fc… in his group, ~5 credits), jet/song/real-room shots = Higgsfield REFRAME 720p (5.25 credits/s, needs >= ~5 s
   clips, 24 fps output -> rate factor k), ids in assets/ai/*/jobs*.md. Scripts tools/recipes/aiworld/shorts/. Recipe in skill aly-reach-method
   references/shorts-from-long.md §7. Short 7 end card = thumbnail only: add the QR when the long video's link exists.
+- 2026-11-27 aiFullVideoCost reels OUTRO CTA (skydive over Giza) APPROVED v4 ("تمام") = `output/cta_skydive_v4.mp4` (8.6 s, 1080x1920): Soul ID face
+  (soul_id 3ded5063…, 11 real frames), thumbnail held, banner logo + YouTube icon, REAL aerial Giza photo in the keyframe (Commons, Raimond Spekking,
+  CC BY-SA 4.0 -> credit line in every reel description that uses it), Grok Video 1.5 motion (Seedance = head-only, rejected), sync_so lip-sync
+  (its audio is +0.13 s -> mux its own track), QR top-right (youtu.be/4HLjkQdDnDE) + footer + Follow + clean wind, cut after the last word.
+  Notes sheet `assets/ai/cta_skydive/review_cta_notes.md` (27 notes ✓), jobs `v3/jobs_v3.md`, recipe `tools/recipes/aiworld/cta_skydive/`.
+  Aly: never paste the thumbnail over the clip a second time. NEXT (another chat): his edits on the 14 reels, then append this CTA to them.
+  Long video link known now -> short 07 end card can get the QR (VShort11 EndCard has optional `qr`; nothing re-rendered yet, Aly said wait).

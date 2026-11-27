@@ -215,6 +215,17 @@ identity consistency and much more expensive → B-roll, not the talking head.
   mode -> say it, never work around, ask Aly to approve the prompt.
 - Image-to-image example on screen = the SAME image edited (jacket colour, beard) with a wipe — never a different picture.
 
+### Skydive CTA (2026-11-27, approved v4) — what worked
+- Face: Soul ID (soul_2) from 11 REAL frames of his videos (normal lens > wide selfies; wide selfies puff the face). 25 credits, ~20 min.
+- Image edits (nano_banana_2_1) keep the subject but will NOT change scale of background objects (pyramids stayed huge 3x) -> put a
+  REAL photo in the keyframe locally (`tools/recipes/aiworld/cta_skydive/real_ground.py`); keep the photo's own colours (a per-channel
+  colour match turned the hazy city blue -> the video model made it water).
+- Motion: Seedance 2.5 gave head-only motion + rigid paper in 7 drafts; Grok Video 1.5 (720p, 40.5 cr/9 s) gave real whole-body freefall,
+  Aly picked it over Cinema Studio 3.0. Say in the prompt: hands hold the object to the LAST frame, stay high (no zoom to the ground).
+- sync_so: give the speaker point on the real face (a printed face is a 2nd face); its output audio = the voice +0.13 s -> mux ITS track.
+  Cut right after the last word (the source mouth keeps moving).
+- Do not paste the held picture again on top of the clip (Aly: «متحطش الصورة مرتين»), even if the model garbles its small text.
+
 ## Approved kit (2026-11-24)
 The presenter + studio that Aly approved (twin c7e371d6…, voice 68fd7b29…, main studio look S4g f1f77fad…, other looks, Higgsfield face/studio refs,
 thumbnail method) is saved as a reusable kit for every topic and style: `docs/37-avatar-studio-kit.md` + `brand/avatar-studio/kit.json`.
