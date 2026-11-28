@@ -437,3 +437,14 @@ Writer: tools/recipes/graphictablet/write_meta.py.
 - Camera moves = measured on the BACKGROUND (people masked) + onion check by eye; never call a move from whole-frame flow or from
   zoom numbers near an actor (review 1: wrong tilt/pull-out on 7/14, "static" on moving 29/83). SFX = stems + sound labels, exact onsets.
 
+
+## Whole SONG as a vertical reel (aiFullVideoCost song, 2026-11-28) — APPROVED after 2 reviews ("thanks")
+Comp `ai-world-vsong` (src/aiworld/VSong11.tsx), props `song_vreel_props.py`, render `render_vsong.sh` (tools/recipes/aiworld/shorts/).
+- Every song shot FULL FRAME in a real 9:16 version (reuse the shorts' reframes, Higgsfield reframe 720p for the rest; test 1 shot first). Never a 16:9 frame inside.
+- LYRICS = the ORIGINAL video's way: whole line at once (dim), each word rises + turns gold on its sung time, line fades at its end.
+  NOT word-group captions; NOT extra beat pulse / float / tilt (Aly: «over»). Raised only a little above the footer.
+- Top title («أغنية كاملة اتعملت بالـ AI») only the first ~4 s, then gone (Aly: «ملوش لازمة… سيبه أول كام ثانية بس»).
+- Song watermarks of the long video re-placed for 9:16 (face logo top-right + faint static signatures) + handles footer.
+- End card 8 s: thumbnail + «مدة الفيديو: mm:ss» + QR of the full video (+ calm instrumental under it, -14 dB).
+- Mixed Arabic/English lyric: English words = one LTR token; «و»/«الـ»/«للـ»/«بالـ» glued to the English in one no-wrap block (else «و» shows like «g»
+  or sits alone at the line end); straight quotes -> «»; punctuation after English drawn outside the LTR part.

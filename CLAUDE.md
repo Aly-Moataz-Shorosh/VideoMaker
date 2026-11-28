@@ -438,3 +438,6 @@ Done (2026-10-06):
   assets/ai/higgsfield/reframe_song, jobs.json/urls.json), lyrics = ONE WHOLE LINE at a time (Aly: not word by word), v11 song watermarks re-placed
   for 9:16, English words gold + an Arabic prefix («و»/«الـ»/«للـ»/«بالـ») glued to them in one no-wrap block (else «و» looks like «g»), end card =
   thumbnail + «مدة الفيديو: 27:24» + QR. Props `song_vreel_props.py`, render `render_vsong.sh` (tools/recipes/aiworld/shorts/). Notes `review_song_reel_notes.md`.
+  Reviews (same day): title only the first 4 s; lyric line raised a little; my beat/float/tilt motion = «over» -> lyrics EXACTLY like the original v11 Lyr
+  (whole line dim, each word rises + turns gold on its time). APPROVED ("thanks"). Older versions in output/shorts/archive_song_v1 + v2 (ask before deleting).
+  Lessons in skill aly-video-motion «Whole SONG as a vertical reel» + memory aly-lyrics-whole-line.
