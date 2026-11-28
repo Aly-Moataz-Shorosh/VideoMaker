@@ -16,47 +16,33 @@ const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 const clip = z.object({src: z.string(), from: z.number(), dur: z.number(), skip: z.number().optional(), rate: z.number().optional()});
 export const vsongSchema = z.object({
   fps: z.number().default(25), duration: z.number().default(10), start: z.number().default(0), songDur: z.number().default(10),
-  clips: z.array(clip).default([]), env: z.array(z.number()).default([]),
-  lines: z.array(z.object({t: z.number(), end: z.number(), text: z.string()})).default([]),
+  clips: z.array(clip).default([]),
+  lines: z.array(z.object({t: z.number(), end: z.number(), toks: z.array(z.object({t: z.number(), w: z.string(), en: z.boolean(), pre: z.string()}))})).default([]),
   title: z.string().default(''), titleDur: z.number().default(4), face: z.string().default(''), sign: z.string().default(''),
   sub: z.object({at: z.number(), logos: z.array(z.string()), handles: z.array(z.string())}).optional(),
   end: z.object({thumb: z.string(), qr: z.string(), line1: z.string(), line2: z.string(), length: z.string()}).optional(),
 });
 type P = z.infer<typeof vsongSchema>;
 
-// a lyric line: English runs isolated LTR; a short Arabic prefix glued to the English after it by a no-break space
-// (props script: «و»/«لل»/«ال»/«بال» + NBSP) is drawn as ONE no-wrap block, so it never sits alone at a line end nor reshapes like a «g»
-const EN = /[A-Za-z0-9](?:[\w.:+\-/$%]*[\w+$%])?(?: +[A-Za-z0-9](?:[\w.:+\-/$%]*[\w+$%])?)*/g;
-const LyricText: React.FC<{text: string}> = ({text}) => {
-  const out: React.ReactNode[] = []; let last = 0, m: RegExpExecArray | null, k = 0;
-  EN.lastIndex = 0;
-  while ((m = EN.exec(text))) {
-    let pre = text.slice(last, m.index), glue = '';
-    const g = pre.match(/(\S+) $/); if (g) {glue = g[1]; pre = pre.slice(0, pre.length - g[0].length);}
-    if (pre) out.push(<span key={k++}>{pre}</span>);
-    const punct = (text.slice(m.index + m[0].length).match(/^[.،,:؟?!]+/) ?? [''])[0];   // «pixel..» : the dots stay after the word (to its left)
-    out.push(<span key={k++} style={{whiteSpace: 'nowrap', direction: 'rtl', unicodeBidi: 'isolate', display: 'inline-block'}}>
-      {glue}{glue ? <span style={{display: 'inline-block', width: '0.12em'}} /> : null}<bdi dir="ltr" style={{color: gold}}>{m[0]}</bdi>{punct}</span>);
-    last = m.index + m[0].length + punct.length;
-  }
-  if (last < text.length) out.push(<span key={k++}>{text.slice(last)}</span>);
-  return <span style={{direction: 'rtl', unicodeBidi: 'isolate'}}>{out}</span>;
+// a lyric line exactly like the original v11 song (Aly review 2 «نفس طريقة الكتابة اللي في الفيديو الأصلي»): the whole line is there at once,
+// dim; each word rises in and turns gold on its own time; the line fades at its end. English tokens drawn LTR, an Arabic prefix glued to them.
+const Tok: React.FC<{k: P['lines'][number]['toks'][number]; sung: boolean; p: number; o: number}> = ({k, sung, p, o}) => {
+  const punct = k.en ? (k.w.match(/[.،,:؟?!»]+$/) ?? [''])[0] : '';
+  const w = punct ? k.w.slice(0, -punct.length) : k.w;
+  return (
+    <span style={{display: 'inline-block', whiteSpace: 'nowrap', direction: 'rtl', unicodeBidi: 'isolate', fontSize: 64, fontWeight: 900,
+      color: sung ? gold : 'rgba(243,238,223,.25)', transform: `translateY(${(1 - p) * 30}px)`, opacity: o, textShadow: '0 6px 26px rgba(0,0,0,.7)'}}>
+      {k.pre}{k.pre ? <span style={{display: 'inline-block', width: '0.12em'}} /> : null}{k.en ? <bdi dir="ltr">{w}</bdi> : w}{punct}
+    </span>);
 };
 
-// the line moves with the song (Aly review 1): a light pulse on the beats (env = song loudness above its running level),
-// a slow float and a tiny tilt; raised a little (top 1270, was 1330)
-const Lyric: React.FC<{l: P['lines'][number]; start: number; env: number[]}> = ({l, start, env}) => {
-  const f = useCurrentFrame(); const {fps} = useVideoConfig();
-  const dur = Math.round((l.end - l.t) * fps), p = enter(f, fps, 0);
-  const g = Math.round((l.t - start) * fps) + f, at = (i: number) => env[Math.max(0, Math.min(env.length - 1, i))] ?? 0.5;
-  const beat = (at(g - 1) + 2 * at(g) + at(g + 1)) / 4 - 0.5;
-  const tg = g / fps, floatY = Math.sin(tg * Math.PI / 2) * 7, tilt = Math.sin(tg * Math.PI / 3.1) * 0.6;
-  const o = interpolate(f, [dur - 8, dur - 1], [1, 0], clamp);
+const Lyric: React.FC<{l: P['lines'][number]; start: number}> = ({l}) => {
+  const f = useCurrentFrame(); const {fps} = useVideoConfig(); const t = l.t + f / fps;
+  const o = interpolate(t, [l.end - 0.35, l.end - 0.05], [1, 0], clamp);
   return (
-    <div style={{position: 'absolute', left: 70, right: 70, top: 1270, height: 330, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-      <div style={{fontFamily: 'Cairo', fontWeight: 900, fontSize: 64, lineHeight: 1.35, color: ink, textAlign: 'center', direction: 'rtl', textWrap: 'balance',
-        textShadow: '0 6px 26px rgba(0,0,0,.85), 0 2px 4px rgba(0,0,0,.9)', opacity: Math.min(1, p * 1.6) * o, transform: `translateY(${(1 - p) * 26 + floatY}px) rotate(${tilt}deg) scale(${1 + beat * 0.07})`}}>
-        <LyricText text={l.text} /></div>
+    <div style={{position: 'absolute', left: 70, right: 70, top: 1270, height: 330, display: 'flex', flexWrap: 'wrap', alignContent: 'center',
+      justifyContent: 'center', gap: '6px 16px', direction: 'rtl', fontFamily: 'Cairo', lineHeight: 1.35}}>
+      {l.toks.map((k, i) => <Tok key={i} k={k} sung={t >= k.t} p={enter(f, fps, Math.round((k.t - l.t) * fps))} o={o} />)}
     </div>
   );
 };
@@ -152,7 +138,7 @@ export const AiWorldVSong11: React.FC<P> = (p) => {
         <Marks p={p} />
         <Title text={p.title} show={p.titleDur} />
         {p.lines.map((l, i) => (
-          <Sequence key={i} from={F(l.t)} durationInFrames={Math.max(1, Math.round((l.end - l.t) * fps))}><Lyric l={l} start={p.start} env={p.env} /></Sequence>))}
+          <Sequence key={i} from={F(l.t)} durationInFrames={Math.max(1, Math.round((l.end - l.t) * fps))}><Lyric l={l} start={p.start} /></Sequence>))}
         {p.sub ? <Sequence from={F(p.sub.at)} durationInFrames={songF - F(p.sub.at)}><Sub s={p.sub} left={songF - F(p.sub.at)} /></Sequence> : null}
         <Footer />
       </Sequence>
