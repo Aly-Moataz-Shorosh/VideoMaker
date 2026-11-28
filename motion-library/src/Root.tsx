@@ -22,6 +22,7 @@ import {AiWorldV10, aiV10Schema, HandlesLayer10} from './aiworld/V10';
 import {AiWorldV11, aiV11Schema, HandlesLayer11} from './aiworld/V11';
 import {AiWorldShort11, short11Schema} from './aiworld/Short11';
 import {AiWorldVShort11, vshortSchema} from './aiworld/VShort11';
+import {AiWorldVSong11, vsongSchema} from './aiworld/VSong11';
 
 // Every template: 16:9 composition `<id-with-dashes>` and, when v, 9:16 `<id>-v`.
 export const Root: React.FC = () => (
@@ -85,6 +86,10 @@ export const Root: React.FC = () => (
     {/* rough cut v11: Aly's 16 notes on v10 (2026-11-24): centre watermark .012, rest = V10. Props: make_props_v11.py */}
     {/* vertical shorts from v11 (reach method, 2026-11-24). Props: work/scripts/shorts_props.py */}
     <Composition id="ai-world-vshort" component={AiWorldVShort11} schema={vshortSchema} defaultProps={vshortSchema.parse({})}
+      fps={25} width={1080} height={1920} durationInFrames={250}
+      calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * props.fps))})} />
+    {/* the whole song as a vertical reel (2026-11-28). Props: work/scripts/song_vreel_props.py */}
+    <Composition id="ai-world-vsong" component={AiWorldVSong11} schema={vsongSchema} defaultProps={vsongSchema.parse({})}
       fps={25} width={1080} height={1920} durationInFrames={250}
       calculateMetadata={({props}) => ({durationInFrames: Math.max(1, Math.round(props.duration * props.fps))})} />
     <Composition id="ai-world-short" component={AiWorldShort11} schema={short11Schema} defaultProps={short11Schema.parse({})}

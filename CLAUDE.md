@@ -433,3 +433,8 @@ Done (2026-10-06):
   Notes sheet `assets/ai/cta_skydive/review_cta_notes.md` (27 notes ✓), jobs `v3/jobs_v3.md`, recipe `tools/recipes/aiworld/cta_skydive/`.
   Aly: never paste the thumbnail over the clip a second time. NEXT (another chat): his edits on the 14 reels, then append this CTA to them.
   Long video link known now -> short 07 end card can get the QR (VShort11 EndCard has optional `qr`; nothing re-rendered yet, Aly said wait).
+- 2026-11-28 aiFullVideoCost WHOLE SONG as a vertical reel `output/shorts/song_full_vertical.mp4` (+ .txt; 3:10 song + 8 s end card): comp `ai-world-vsong`
+  (src/aiworld/VSong11.tsx): every song shot full frame in 9:16 (14 reused from the shorts + 28 new Higgsfield reframes 720p = 771 credits,
+  assets/ai/higgsfield/reframe_song, jobs.json/urls.json), lyrics = ONE WHOLE LINE at a time (Aly: not word by word), v11 song watermarks re-placed
+  for 9:16, English words gold + an Arabic prefix («و»/«الـ»/«للـ»/«بالـ») glued to them in one no-wrap block (else «و» looks like «g»), end card =
+  thumbnail + «مدة الفيديو: 27:24» + QR. Props `song_vreel_props.py`, render `render_vsong.sh` (tools/recipes/aiworld/shorts/). Notes `review_song_reel_notes.md`.
