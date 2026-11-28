@@ -16,9 +16,9 @@ const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 const clip = z.object({src: z.string(), from: z.number(), dur: z.number(), skip: z.number().optional(), rate: z.number().optional()});
 export const vsongSchema = z.object({
   fps: z.number().default(25), duration: z.number().default(10), start: z.number().default(0), songDur: z.number().default(10),
-  clips: z.array(clip).default([]),
+  clips: z.array(clip).default([]), env: z.array(z.number()).default([]),
   lines: z.array(z.object({t: z.number(), end: z.number(), text: z.string()})).default([]),
-  title: z.string().default(''), face: z.string().default(''), sign: z.string().default(''),
+  title: z.string().default(''), titleDur: z.number().default(4), face: z.string().default(''), sign: z.string().default(''),
   sub: z.object({at: z.number(), logos: z.array(z.string()), handles: z.array(z.string())}).optional(),
   end: z.object({thumb: z.string(), qr: z.string(), line1: z.string(), line2: z.string(), length: z.string()}).optional(),
 });
@@ -43,14 +43,19 @@ const LyricText: React.FC<{text: string}> = ({text}) => {
   return <span style={{direction: 'rtl', unicodeBidi: 'isolate'}}>{out}</span>;
 };
 
-const Lyric: React.FC<{l: P['lines'][number]; start: number}> = ({l, start}) => {
+// the line moves with the song (Aly review 1): a light pulse on the beats (env = song loudness above its running level),
+// a slow float and a tiny tilt; raised a little (top 1270, was 1330)
+const Lyric: React.FC<{l: P['lines'][number]; start: number; env: number[]}> = ({l, start, env}) => {
   const f = useCurrentFrame(); const {fps} = useVideoConfig();
   const dur = Math.round((l.end - l.t) * fps), p = enter(f, fps, 0);
+  const g = Math.round((l.t - start) * fps) + f, at = (i: number) => env[Math.max(0, Math.min(env.length - 1, i))] ?? 0.5;
+  const beat = (at(g - 1) + 2 * at(g) + at(g + 1)) / 4 - 0.5;
+  const tg = g / fps, floatY = Math.sin(tg * Math.PI / 2) * 7, tilt = Math.sin(tg * Math.PI / 3.1) * 0.6;
   const o = interpolate(f, [dur - 8, dur - 1], [1, 0], clamp);
   return (
-    <div style={{position: 'absolute', left: 70, right: 70, top: 1330, height: 330, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+    <div style={{position: 'absolute', left: 70, right: 70, top: 1270, height: 330, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
       <div style={{fontFamily: 'Cairo', fontWeight: 900, fontSize: 64, lineHeight: 1.35, color: ink, textAlign: 'center', direction: 'rtl', textWrap: 'balance',
-        textShadow: '0 6px 26px rgba(0,0,0,.85), 0 2px 4px rgba(0,0,0,.9)', opacity: Math.min(1, p * 1.6) * o, transform: `translateY(${(1 - p) * 26}px)`}}>
+        textShadow: '0 6px 26px rgba(0,0,0,.85), 0 2px 4px rgba(0,0,0,.9)', opacity: Math.min(1, p * 1.6) * o, transform: `translateY(${(1 - p) * 26 + floatY}px) rotate(${tilt}deg) scale(${1 + beat * 0.07})`}}>
         <LyricText text={l.text} /></div>
     </div>
   );
@@ -87,9 +92,11 @@ const Sub: React.FC<{s: NonNullable<P['sub']>; left: number}> = ({s, left}) => {
   );
 };
 
-const Title: React.FC<{text: string; songDur: number}> = ({text, songDur}) => {
+// the title only opens the reel (Aly review 1: «سيبه أول كام ثانية بس»), then fades out
+const Title: React.FC<{text: string; show: number}> = ({text, show}) => {
   const f = useCurrentFrame(); const {fps} = useVideoConfig(); const k = enter(f, fps, 0);
-  const o = interpolate(f, [songDur * fps - 15, songDur * fps], [1, 0], clamp);
+  const o = interpolate(f, [show * fps - 12, show * fps], [1, 0], clamp);
+  if (f > show * fps) return null;
   return (
     <div style={{position: 'absolute', top: 170, left: 150, right: 150, display: 'flex', justifyContent: 'center', opacity: o}}>
       <div style={{background: E.paper, color: E.ink, fontFamily: 'Cairo', fontWeight: 900, fontSize: 46, padding: '4px 26px', borderRadius: 14, ...stickerBorder(6),
@@ -143,9 +150,9 @@ export const AiWorldVSong11: React.FC<P> = (p) => {
         {p.clips.map((c, i) => <ClipSeq key={i} c={c} start={p.start} />)}
         <AbsoluteFill style={{background: 'linear-gradient(transparent 58%, rgba(5,8,21,.82))'}} />
         <Marks p={p} />
-        <Title text={p.title} songDur={p.songDur} />
+        <Title text={p.title} show={p.titleDur} />
         {p.lines.map((l, i) => (
-          <Sequence key={i} from={F(l.t)} durationInFrames={Math.max(1, Math.round((l.end - l.t) * fps))}><Lyric l={l} start={p.start} /></Sequence>))}
+          <Sequence key={i} from={F(l.t)} durationInFrames={Math.max(1, Math.round((l.end - l.t) * fps))}><Lyric l={l} start={p.start} env={p.env} /></Sequence>))}
         {p.sub ? <Sequence from={F(p.sub.at)} durationInFrames={songF - F(p.sub.at)}><Sub s={p.sub} left={songF - F(p.sub.at)} /></Sequence> : null}
         <Footer />
       </Sequence>

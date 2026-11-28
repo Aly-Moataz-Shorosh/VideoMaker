@@ -29,7 +29,17 @@ for d in [d for d in L['items'] if d['k'] == 'line']:
     lines.append(dict(t=round(d['t'], 3), end=round(d['end'], 3), text=txt))
 sub = [d for d in L['items'] if d['k'] == 'subscribe'][0]
 END = 8.0
-props = dict(fps=25, start=L['start'], songDur=round(L['dur'], 3), duration=round(L['dur'] + END, 3), clips=clips, lines=lines,
+# the song's loudness per frame (0..1, smoothed) -> the lyric line pulses / floats with the music (Aly review 1: «يتحرك مع الأغنية شوية»)
+import numpy as np
+raw = subprocess.run(['ffmpeg', '-v', 'error', '-ss', str(L['start']), '-t', str(L['dur']), '-i', '../output/rough_cut_v11.mp4', '-vn', '-ac', '1', '-ar', '8000',
+                      '-f', 's16le', '-'], capture_output=True, check=True).stdout
+a = np.frombuffer(raw, np.int16).astype(np.float32) / 32768; n = int(L['dur'] * 25); hop = 8000 // 25
+rms = np.array([np.sqrt(np.mean(a[i * hop:(i + 1) * hop] ** 2) + 1e-9) for i in range(n)])
+db = 20 * np.log10(rms); lo, hi = np.percentile(db, 10), np.percentile(db, 98)
+e = np.clip((db - lo) / (hi - lo), 0, 1)
+fast = np.convolve(e, np.ones(3) / 3, 'same'); slow = np.convolve(e, np.ones(25) / 25, 'same')
+env = [round(float(x), 3) for x in np.clip((fast - slow) * 2.2 + 0.5, 0, 1)]   # beats above the running level
+props = dict(fps=25, start=L['start'], songDur=round(L['dur'], 3), duration=round(L['dur'] + END, 3), clips=clips, lines=lines, env=env,
              title='أغنية كاملة اتعملت بالـ AI', face='projects/aiworld/v6/imgs/v7__logo_face_full.png', sign='brand/signature-calligraphy.png',
              sub=dict(at=round(L['start'] + sub['at'] / 25, 3), logos=sub['logos'], handles=sub['handles']),
              end=dict(thumb='projects/aiworld/shorts/thumb_final.jpg', qr='projects/aiworld/shorts/qr_full.png', line1='الأغنية دي من فيديو كامل',
